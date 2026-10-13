@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Access\Models;
 
+use App\Domain\Audit\Concerns\Auditable;
 use App\Support\Ids\HasPublicUlid;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -48,7 +49,29 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, HasPublicUlid, HasRoles, Notifiable, PasskeyAuthenticatable, SoftDeletes, TwoFactorAuthenticatable;
+    use Auditable, HasApiTokens, HasFactory, HasPublicUlid, HasRoles, Notifiable, PasskeyAuthenticatable, SoftDeletes, TwoFactorAuthenticatable;
+
+    /**
+     * Mirrors the column defaults so freshly created models diff correctly in the audit log.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'locale' => 'en',
+        'digits' => 'latn',
+        'show_hijri' => false,
+        'status' => 'active',
+    ];
+
+    /**
+     * Login bookkeeping is recorded as auth events, not model diffs.
+     *
+     * @return list<string>
+     */
+    protected function auditExcept(): array
+    {
+        return ['last_login_at'];
+    }
 
     /**
      * Get the attributes that should be cast.

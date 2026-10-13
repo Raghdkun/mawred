@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Support\Http;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
@@ -22,6 +24,16 @@ use Illuminate\Support\Carbon;
 #[Fillable(['owner', 'key', 'request_hash', 'status', 'response_status', 'response_headers', 'response_body', 'expires_at'])]
 final class IdempotencyKey extends Model
 {
+    use MassPrunable;
+
+    /**
+     * @return Builder<self>
+     */
+    public function prunable(): Builder
+    {
+        return self::query()->where('expires_at', '<', now());
+    }
+
     /**
      * @return array<string, string>
      */
