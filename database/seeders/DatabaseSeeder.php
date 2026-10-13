@@ -4,24 +4,18 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Domain\Access\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\Production\ProductionSeeder;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+/**
+ * `db:seed` runs the production seed only. Demo and performance data are separate (brief §21):
+ *   php artisan db:seed --class="Database\Seeders\Demo\DemoSeeder"
+ *   php artisan db:seed --class="Database\Seeders\Performance\PerformanceSeeder"
+ */
+final class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $this->call(ProductionSeeder::class);
     }
 }

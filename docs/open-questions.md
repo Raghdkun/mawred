@@ -32,7 +32,7 @@ All questions below were answered by the product owner. Items still waiting on a
 | D26 | Geofence | **Policy-driven per branch: `block` / `flag` (default) / `off`.** Flagged punches need a reason and go to the daily board. | Attendance, Policies |
 | D27 | API coverage | **Mobile-first slice per phase**: employee- and approver-facing features plus whatever the web async widgets need. Admin builders stay web-only. | ADR-0012, roadmap |
 
-| D28 | Canvas assets | **Exported into `/design`**: `design/motion/` (Brand board 07 motion spec), `design/illustrations/` (SVG), `design/screens/` (PNG/SVG frames, arriving per phase). ⏳ | Motion, PageState, visual QA |
+| D28 | Canvas assets | ✅ Received: `design/canvas-source/*.dc.html` (motion spec in `Motion.dc.html`, DS pages, color, type) and `design/illustrations/current/` (34 illustrations, light and dark). ⏳ Screen frames still arrive per phase. | Motion, PageState, visual QA |
 | D29 | Team scope | **Keep both**: the matrix cell shows "Team", which expands to *Direct reports* or *Whole team tree* (default: tree). "None" means the permission is absent. | ADR-0005, screen 38 |
 | D30 | Precedence display | **6 visual levels, 7 logical**: the "Employment type / grade" card shows both sub-levels (grade, then employment type, which wins). The explainer chip names the exact sub-level. | ADR-0010, screens 18–19 |
 | D31 | Unofficial WA label | **"Unofficial — WhatsApp Web (WAHA)"** everywhere the handoff says "OpenWA". The design copy is updated to match. | ADR-0015, screens 40–41 |

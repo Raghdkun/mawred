@@ -77,12 +77,12 @@
             "@php artisan dev"
         ],
         "lint": [
-            "pint --parallel",
-            "rector process --no-progress-bar"
+            "rector process --no-progress-bar",
+            "pint --parallel"
         ],
         "lint:check": [
-            "pint --parallel --test",
-            "rector process --dry-run --no-progress-bar"
+            "rector process --dry-run --no-progress-bar",
+            "pint --parallel --test"
         ],
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",

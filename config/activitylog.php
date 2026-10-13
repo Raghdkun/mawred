@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\Audit\Models\Activity;
+use App\Domain\Audit\Support\LogAuditedActivity;
 use Spatie\Activitylog\Actions\CleanActivityLogAction;
-use Spatie\Activitylog\Actions\LogActivityAction;
-use Spatie\Activitylog\Models\Activity;
 
 return [
 
@@ -17,7 +17,8 @@ return [
      * When the clean command is executed, all recording activities older than
      * the number of days specified here will be deleted.
      */
-    'clean_after_days' => 365,
+    // Retention is handled by partition maintenance (config/partitioning.php), not activitylog:clean.
+    'clean_after_days' => 365 * 7,
 
     /*
      * If no log name is passed to the activity() helper
@@ -69,7 +70,7 @@ return [
      * are logged and cleaned. Your custom classes must extend the originals.
      */
     'actions' => [
-        'log_activity' => LogActivityAction::class,
+        'log_activity' => LogAuditedActivity::class,
         'clean_log' => CleanActivityLogAction::class,
     ],
 ];

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\Access\Models\Permission;
+use App\Domain\Access\Models\Role;
 use Spatie\Permission\DefaultTeamResolver;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 return [
 
@@ -120,7 +120,8 @@ return [
      * Set this to false if you want to implement custom logic for checking permissions.
      */
 
-    'register_permission_check_method' => true,
+    // Mawred resolves abilities through Access\Support\ScopeResolver (Gate::before), not the package.
+    'register_permission_check_method' => false,
 
     /*
      * When set to true, Laravel\Octane\Events\OperationTerminated event listener will be registered
@@ -138,7 +139,7 @@ return [
      *
      * To enable, set to true, and then create listeners to watch these events.
      */
-    'events_enabled' => false,
+    'events_enabled' => true,
 
     /*
      * Teams Feature.

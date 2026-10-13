@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Domain\Access\Enums\FieldAccess;
+use App\Domain\Access\Enums\HomeLayout;
+use App\Domain\Access\Enums\Scope;
+use App\Domain\Access\Support\Grant;
+use App\Domain\Access\Support\UserAccess;
 use Illuminate\Support\Str;
 
 return [
@@ -133,6 +138,13 @@ return [
     |
     */
 
-    'serializable_classes' => false,
+    // Only these value objects may be unserialized from the cache (resolved access, ADR-0005).
+    'serializable_classes' => [
+        UserAccess::class,
+        Grant::class,
+        Scope::class,
+        FieldAccess::class,
+        HomeLayout::class,
+    ],
 
 ];

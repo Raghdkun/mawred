@@ -13,12 +13,22 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table): void {
             $table->id();
+            $table->char('ulid', 26)->unique();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->timestampTz('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone_e164', 20)->nullable();
+            // Display preferences (ADR-0004 / ADR-0011).
+            $table->string('locale', 8)->default('en');
+            $table->string('timezone', 64)->nullable(); // null = the primary assignment's branch timezone
+            $table->string('digits', 8)->default('latn'); // latn | arab
+            $table->boolean('show_hijri')->default(false);
+            $table->string('status', 16)->default('active'); // invited | active | suspended
+            $table->timestampTz('last_login_at')->nullable();
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestampsTz();
+            $table->softDeletesTz();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table): void {

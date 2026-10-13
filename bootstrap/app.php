@@ -2,8 +2,18 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\ApplyImpersonation;
+use App\Http\Middleware\EnsureSetupComplete;
+use App\Http\Middleware\EnsureTwoFactorEnrolled;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\SetAuditContext;
+use App\Http\Middleware\TrackUserSession;
+use App\Support\Errors\DomainRuleViolation;
+use App\Support\Http\ApiErrorRenderer;
+use App\Support\Http\Middleware\AssignRequestId;
+use App\Support\Http\Middleware\EnforceIdempotency;
+use App\Support\Http\WebDomainErrorRenderer;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -19,9 +29,23 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(AssignRequestId::class);
+
+        $middleware->statefulApi();
+        $middleware->api(append: [SetAuditContext::class, EnsureTwoFactorEnrolled::class]);
+
+        $middleware->alias([
+            'idempotent' => EnforceIdempotency::class,
+        ]);
+
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
         $middleware->web(append: [
+            TrackUserSession::class,
+            ApplyImpersonation::class,
+            SetAuditContext::class,
+            EnsureTwoFactorEnrolled::class,
+            EnsureSetupComplete::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
@@ -31,4 +55,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request): bool => $request->is('api/*') || $request->expectsJson(),
         );
+
+        $exceptions->render(new ApiErrorRenderer);
+        $exceptions->render(new WebDomainErrorRenderer);
+        $exceptions->dontReport(DomainRuleViolation::class);
     })->create();

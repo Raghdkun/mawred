@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Domain\Setup\Support\Settings;
+use App\Support\Templates\SafeTemplate;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -15,7 +18,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->scoped(Settings::class);
+        $this->app->singleton(SafeTemplate::class);
     }
 
     /**
@@ -32,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
+
+        // N+1 and silent attribute bugs fail loudly outside production (brief §3).
+        Model::shouldBeStrict(! app()->isProduction());
 
         DB::prohibitDestructiveCommands(
             app()->isProduction(),
