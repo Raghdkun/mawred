@@ -199,6 +199,31 @@ export type CatalogKind = 'employment-types' | 'grades' | 'cost-centers';
 }
 namespace People {
 namespace Data {
+export type AssetData = {
+id: string,
+name: string,
+category: string | null,
+assetTag: string,
+serialNumber: string | null,
+assignedOn: string,
+dueBackOn: string | null,
+returnedOn: string | null,
+conditionNotes: string | null,
+};
+export type AssignmentData = {
+id: string,
+isPrimary: boolean,
+isCurrent: boolean,
+effectiveFrom: string,
+effectiveTo: string | null,
+branch: App.Domain.People.Data.RefData | null,
+department: App.Domain.People.Data.RefData | null,
+position: App.Domain.People.Data.RefData | null,
+manager: App.Domain.People.Data.PersonRefData | null,
+employmentType: App.Domain.People.Data.RefData | null,
+grade: App.Domain.People.Data.RefData | null,
+reason: string | null,
+};
 export type CustomFieldDefinitionInputData = {
 key: string,
 label: {
@@ -223,6 +248,21 @@ isSensitive: boolean,
 isActive: boolean,
 sortOrder: number,
 };
+export type CustomFieldValueData = {
+key: string,
+label: Record<string, string>,
+help: Record<string, string>,
+type: string,
+section: string,
+options: {
+value: string,
+label: Record<string, string>,
+}[],
+isRequired: boolean,
+isSensitive: boolean,
+access: string,
+value: any,
+};
 export type DocumentTypeInputData = {
 code: string,
 name: {
@@ -233,12 +273,46 @@ requiresExpiry: boolean,
 reminderDays: number[],
 isActive: boolean,
 };
+export type EmployeeDocumentData = {
+id: string,
+type: App.Domain.People.Data.RefData | null,
+number: string | null,
+issuedOn: string | null,
+expiresOn: string | null,
+notes: string | null,
+fileName: string | null,
+mimeType: string | null,
+size: number | null,
+uploadedAt: string,
+};
 export type EmployeeDocumentInputData = {
 documentTypeId: string,
 number: string | null,
 issuedOn: string | null,
 expiresOn: string | null,
 notes: string | null,
+};
+export type EmployeeProfileData = {
+summary: App.Domain.People.Data.EmployeeSummaryData,
+gender: string | null,
+nationality: string | null,
+maritalStatus: string | null,
+probationEndsOn: string | null,
+terminationDate: string | null,
+terminationReason: string | null,
+employmentType: App.Domain.People.Data.RefData | null,
+grade: App.Domain.People.Data.RefData | null,
+directReportsCount: number,
+account: {
+linked: boolean,
+email: string | null,
+invitation: {
+email: string,
+expiresAt: string,
+} | null,
+},
+sensitive: App.Domain.People.Data.SensitiveDetailsData,
+customFields: App.Domain.People.Data.CustomFieldValueData[],
 };
 export type EmployeeProfileInputData = {
 nameEn: string,
@@ -251,6 +325,21 @@ nationality: string | null,
 maritalStatus: string | null,
 hireDate: string | null,
 probationEndsOn: string | null,
+};
+export type EmployeeSummaryData = {
+id: string,
+number: string,
+nameEn: string,
+nameAr: string | null,
+preferredName: string | null,
+workEmail: string | null,
+workPhone: string | null,
+status: string,
+hireDate: string,
+branch: App.Domain.People.Data.RefData | null,
+department: App.Domain.People.Data.RefData | null,
+position: App.Domain.People.Data.RefData | null,
+manager: App.Domain.People.Data.PersonRefData | null,
 };
 export type HireEmployeeData = {
 nameEn: string,
@@ -265,6 +354,24 @@ gender: string | null,
 nationality: string | null,
 probationEndsOn: string | null,
 };
+export type HistoryEntryData = {
+id: string,
+event: string,
+effectiveOn: string,
+changes: Record<string, any>,
+salary: {
+minor: number,
+currency: string,
+} | null,
+note: string | null,
+recordedAt: string,
+};
+export type PersonRefData = {
+id: string,
+nameEn: string,
+nameAr: string | null,
+preferredName: string | null,
+};
 export type PlacementInputData = {
 branchId: string,
 departmentId: string | null,
@@ -272,6 +379,27 @@ positionId: string | null,
 managerId: string | null,
 employmentTypeId: string | null,
 gradeId: string | null,
+};
+export type RefData = {
+id: string,
+code: string,
+name: Record<string, string>,
+};
+export type SensitiveDetailsData = {
+access: Record<string, string>,
+nationalId: string | null,
+passport: {
+number: string | null,
+country: string | null,
+expiresOn: string | null,
+} | null,
+residency: {
+number: string | null,
+expiresOn: string | null,
+} | null,
+bank: Record<string, string | null> | null,
+personalContact: Record<string, string | null> | null,
+dateOfBirth: string | null,
 };
 export type SensitiveDetailsInputData = {
 nationalId: {

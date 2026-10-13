@@ -9,6 +9,7 @@ use App\Domain\Access\Policies\UserPolicy;
 use App\Domain\Access\Support\AccessEpoch;
 use App\Domain\Access\Support\PermissionCatalog;
 use App\Domain\Access\Support\ScopeResolver;
+use App\Domain\Access\Support\SensitiveFieldRegistry;
 use App\Listeners\Auth\RecordAuthenticationEvents;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -29,6 +30,7 @@ final class AccessServiceProvider extends ServiceProvider
         // OrgScopePredicates is bound by PeopleServiceProvider (needs People + Organization).
         $this->app->scoped(ScopeResolver::class);
         $this->app->singleton(AccessEpoch::class);
+        $this->app->singleton(SensitiveFieldRegistry::class);
     }
 
     public function boot(): void

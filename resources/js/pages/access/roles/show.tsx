@@ -23,6 +23,7 @@ import { useLocale } from '@/hooks/use-locale';
 import { componentTransition } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 import accessRoles from '@/routes/access/roles';
+import { fieldLabel } from '@/features/access/field-label';
 
 type Props = {
     role: App.Domain.Access.Data.RoleSummaryData;
@@ -32,6 +33,7 @@ type Props = {
     grants: Record<string, string>;
     defaults: Record<string, string> | null;
     sensitiveFields: string[];
+    fieldLabels: Record<string, Record<string, string>>;
     fields: Record<string, 'read' | 'write'>;
     can: { update: boolean; create: boolean; delete: boolean };
 };
@@ -60,10 +62,11 @@ export default function RoleShow({
     grants,
     defaults,
     sensitiveFields,
+    fieldLabels,
     fields,
     can,
 }: Props) {
-    const { t } = useTranslation('access');
+    const { t, i18n } = useTranslation('access');
     const { locale } = useLocale();
     const reduced = useReducedMotion() ?? false;
     const roleLabel = role.label[locale] ?? role.label.en ?? role.name;
@@ -280,11 +283,11 @@ export default function RoleShow({
                                 className="flex flex-wrap items-center justify-between gap-3 py-3"
                             >
                                 <span className="text-sm font-medium">
-                                    {t(`fields.names.${field}`, { defaultValue: field })}
+                                    {fieldLabel(field, fieldLabels, i18n.language, t)}
                                 </span>
                                 <div
                                     role="radiogroup"
-                                    aria-label={t(`fields.names.${field}`, { defaultValue: field })}
+                                    aria-label={fieldLabel(field, fieldLabels, i18n.language, t)}
                                     className="inline-flex gap-1 rounded-lg bg-surface-sunken p-1"
                                 >
                                     {(['none', 'read', 'write'] as const).map((access) => (
