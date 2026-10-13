@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mawred components: overlays, feedback, integration setup</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3859A0}a:hover{color:#263B63}
+.t-light{--bg:#F6F8FC;--fg:#182238;--card:#FFFFFF;--raised:#FFFFFF;--sunken:#EDF1F7;--muted:#EDF1F7;--mfg:#5E6A82;--fg2:#46526A;--bd:#DCE3EE;--in:#C3CDDC;--in-h:#98A4B8;--pri:#4570C0;--prifg:#FFFFFF;--pri-soft:#E6EFFB;--secfg:#2F4A80;--ring:#5B88D6;--link:#3859A0;--dng:#C2412F;--dngfg:#FFFFFF;--ok-bg:#E7F6EF;--ok:#17734F;--ok-bd:#A8DEC6;--ok-dot:#3FAE82;--warn-bg:#FDF3E2;--warn:#8A5A10;--warn-bd:#F2D199;--err-bg:#FDEDEB;--err:#B23A2E;--err-bd:#F5BDB5;--info-bg:#E4F4F6;--info:#1C6E79;--info-bd:#A9DCE2;--scrim:rgba(23,36,64,.42);--tip:#182238;--tipfg:#FFFFFF;--sh-sm:0 1px 2px rgba(38,59,99,.06),0 1px 1px rgba(38,59,99,.04);--sh-md:0 2px 4px rgba(38,59,99,.05),0 6px 16px rgba(38,59,99,.08);--sh-lg:0 4px 8px rgba(38,59,99,.05),0 16px 32px rgba(38,59,99,.10);--sh-ov:0 8px 16px rgba(38,59,99,.08),0 28px 64px rgba(38,59,99,.18);--hl:inset 0 1px 0 rgba(255,255,255,.7);--brand:#5B88D6;--lagoon:#4FB3BF;--illo-bg:#F4F8FD}
+.t-dark{--bg:#0E1626;--fg:#E8EEF8;--card:#142036;--raised:#1B2A45;--sunken:#0B1220;--muted:#1B2A45;--mfg:#8B98B0;--fg2:#AEBBD0;--bd:#2A3A58;--in:#34466A;--in-h:#4A5E86;--pri:#7FA6E3;--prifg:#0E1626;--pri-soft:#1B2A45;--secfg:#CCDDF6;--ring:#7FA6E3;--link:#A6C3EE;--dng:#F08A7E;--dngfg:#0E1626;--ok-bg:#12332B;--ok:#7FD6B1;--ok-bd:#245A4A;--ok-dot:#5CC29A;--warn-bg:#352A14;--warn:#F2C27A;--warn-bd:#5E4721;--err-bg:#3A1E22;--err:#F6A196;--err-bd:#66333A;--info-bg:#0F3036;--info:#7FCFD9;--info-bd:#1F5560;--scrim:rgba(4,8,16,.62);--tip:#E8EEF8;--tipfg:#0E1626;--sh-sm:0 1px 2px rgba(5,10,20,.4);--sh-md:0 2px 4px rgba(5,10,20,.35),0 6px 16px rgba(5,10,20,.35);--sh-lg:0 4px 8px rgba(5,10,20,.35),0 16px 32px rgba(5,10,20,.45);--sh-ov:0 8px 16px rgba(5,10,20,.4),0 28px 64px rgba(5,10,20,.6);--hl:inset 0 1px 0 rgba(255,255,255,.06);--brand:#7FA6E3;--lagoon:#4FB3BF;--illo-bg:#142036}
+.q{width:1440px;box-sizing:border-box;padding:48px;background:var(--bg);color:var(--fg);font-family:'Readex Pro','Segoe UI','Noto Sans Arabic',system-ui,sans-serif;display:flex;flex-direction:column;gap:40px;line-height:1.5;font-variant-numeric:tabular-nums}
+.q[dir=rtl]{line-height:1.7}
+.q[dir=rtl] .mir{transform:scaleX(-1)}
+.qhead{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.qtitle{font-size:28px;font-weight:600}
+.qtag{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mfg);padding:6px 12px;border:1px solid var(--bd);border-radius:999px}
+.sec{display:flex;flex-direction:column;gap:16px}
+.h{font-size:20px;font-weight:500}
+.sub{font-size:13px;color:var(--mfg)}
+.lbl{font-size:12px;color:var(--mfg)}
+.card{background:var(--card);border-radius:14px;box-shadow:var(--sh-sm),var(--hl);box-sizing:border-box}
+.btn{height:40px;padding:0 16px;border-radius:10px;border:1px solid transparent;font-family:inherit;font-size:14px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;box-sizing:border-box;line-height:1}
+.btn.sm{height:32px;padding:0 12px;font-size:13px;border-radius:8px}
+.pri{background:var(--pri);color:var(--prifg)}.out{background:var(--card);color:var(--fg);border-color:var(--in)}.gho{background:transparent;color:var(--fg)}.dng{background:var(--dng);color:var(--dngfg)}
+.ibtn{width:32px;height:32px;border-radius:8px;border:0;background:transparent;color:var(--mfg);display:inline-flex;align-items:center;justify-content:center;font-family:inherit}
+.toast{display:flex;gap:12px;align-items:flex-start;padding:14px 14px 14px 16px;border-radius:14px;background:var(--raised);border:1px solid var(--bd);box-shadow:var(--sh-lg),var(--hl);font-size:14px}
+.tic{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;position:relative}
+.frame{border-radius:14px;overflow:hidden;position:relative;background:var(--bg);border:1px solid var(--bd)}
+.ghostrow{height:14px;border-radius:7px;background:var(--muted)}
+.inp{height:40px;border-radius:10px;border:1px solid var(--in);background:var(--card);color:var(--fg);padding:0 12px;font-family:inherit;font-size:14px;box-sizing:border-box;display:flex;align-items:center;gap:8px}
+.mono{font-family:'JetBrains Mono',monospace;font-size:13px}
+.res{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid;font-size:13px;line-height:1.45}
+</style>
+</helmet>
+<div style="width: 5952px; min-height: 2400px; display: flex; gap: 64px; align-items: flex-start; background: #E9EEF5">
+  <sc-for list="{{variants}}" as="v" hint-placeholder-count="4">
+    <div class="q {{v.cls}}" dir="{{v.dir}}" lang="{{v.lang}}">
+      <div class="qhead"><div class="qtitle">{{v.t.title}}</div><div class="qtag">{{v.tag}}</div></div>
+
+      <div style="display: grid; grid-template-columns: 400px minmax(0, 1fr) 320px; gap: 24px; align-items: start">
+        <div class="sec">
+          <div class="h">{{v.t.toasts}}</div>
+          <div class="toast" role="status"><span class="tic" style="background: var(--ok-bg); color: var(--ok); box-shadow: 0 0 0 5px color-mix(in oklab, var(--ok-dot) 18%, transparent)"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span><span style="flex: 1; display: flex; flex-direction: column; line-height: 1.4"><span style="font-weight: 500">{{v.t.toast1}}</span><span class="lbl">{{v.t.toast1m}}</span></span><button type="button" class="ibtn" aria-label="{{v.t.dismiss}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>
+          <div class="toast" role="alert"><span class="tic" style="background: var(--err-bg); color: var(--err)"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M12 7v6"/><path d="M12 16.5h.01"/></svg></span><span style="flex: 1; display: flex; flex-direction: column; line-height: 1.4"><span style="font-weight: 500">{{v.t.toast2}}</span><span class="lbl">{{v.t.toast2m}}</span></span><button type="button" class="btn out sm">{{v.t.retry}}</button></div>
+          <div class="toast" role="status"><span class="tic" style="background: var(--info-bg); color: var(--info)"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M12 11v6"/><path d="M12 7.5h.01"/></svg></span><span style="flex: 1; line-height: 1.4; align-self: center">{{v.t.toast3}}</span><button type="button" class="btn gho sm" style="color: var(--link)">{{v.t.undo}}</button></div>
+          <div class="toast" role="status" style="flex-direction: column; gap: 10px"><span style="display: flex; gap: 12px; align-items: center; width: 100%"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="color: var(--pri)"><circle cx="12" cy="12" r="9" stroke-opacity=".3"/><path d="M21 12a9 9 0 0 0-9-9"/></svg><span style="flex: 1">{{v.t.toast4}}</span><span class="lbl">412 / 1,280</span></span><span style="height: 4px; width: 100%; border-radius: 2px; background: var(--muted); position: relative; overflow: hidden"><span style="position: absolute; inset-block: 0; inset-inline-start: 0; width: 32%; background: var(--pri)"></span></span></div>
+          <span class="sub">{{v.t.toastNote}}</span>
+        </div>
+        <div class="sec">
+          <div class="h">{{v.t.dialog}}</div>
+          <div class="frame" style="height: 470px; display: flex; align-items: center; justify-content: center">
+            <div style="position: absolute; inset: 0; padding: 24px; display: flex; flex-direction: column; gap: 14px"><div class="ghostrow" style="width: 40%; height: 20px"></div><div class="ghostrow"></div><div class="ghostrow" style="width: 80%"></div><div class="ghostrow" style="width: 60%"></div></div>
+            <div style="position: absolute; inset: 0; background: var(--scrim)"></div>
+            <div role="dialog" aria-modal="true" aria-labelledby="dlg" style="position: relative; width: 440px; border-radius: 20px; background: var(--raised); box-shadow: var(--sh-ov), var(--hl); padding: 24px; display: flex; flex-direction: column; gap: 16px">
+              <div style="display: flex; align-items: flex-start; gap: 12px"><span class="tic" style="width: 40px; height: 40px; background: var(--err-bg); color: var(--err)"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span style="flex: 1; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 18px; font-weight: 600">{{v.t.dlgTitle}}</span><span style="font-size: 14px; color: var(--fg2)">{{v.t.dlgBody}}</span></span><button type="button" class="ibtn" aria-label="{{v.t.close}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>
+              <div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 13px; font-weight: 500">{{v.t.dlgReason}}</label><div class="inp" style="height: 84px; align-items: flex-start; padding-top: 10px; border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 28%, transparent)">{{v.t.dlgReasonVal}}</div><span class="lbl">{{v.t.dlgHelp}}</span></div>
+              <div style="display: flex; justify-content: flex-end; gap: 8px"><button type="button" class="btn gho">{{v.t.cancel}}</button><button type="button" class="btn dng">{{v.t.reject}}</button></div>
+            </div>
+          </div>
+          <span class="sub">{{v.t.dialogNote}}</span>
+        </div>
+        <div class="sec">
+          <div class="h">{{v.t.popTip}}</div>
+          <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; min-height: 470px">
+            <button type="button" class="btn out sm" aria-expanded="true">{{v.t.balance}} · 21<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div style="position: relative; width: 100%">
+              <span style="position: absolute; top: -6px; inset-inline-start: 24px; width: 12px; height: 12px; background: var(--raised); border-top: 1px solid var(--bd); border-inline-start: 1px solid var(--bd); transform: rotate(45deg)"></span>
+              <div role="dialog" style="border-radius: 12px; background: var(--raised); border: 1px solid var(--bd); box-shadow: var(--sh-lg), var(--hl); padding: 14px; display: flex; flex-direction: column; gap: 8px; font-size: 13px">
+                <span style="font-weight: 500">{{v.t.popTitle}}</span>
+                <span style="display: flex; justify-content: space-between"><span style="color: var(--fg2)">{{v.t.pop1}}</span><span>30</span></span>
+                <span style="display: flex; justify-content: space-between"><span style="color: var(--fg2)">{{v.t.pop2}}</span><span>+3</span></span>
+                <span style="display: flex; justify-content: space-between"><span style="color: var(--fg2)">{{v.t.pop3}}</span><span>−12</span></span>
+                <span style="display: flex; justify-content: space-between; border-top: 1px solid var(--bd); padding-top: 8px; font-weight: 500"><span>{{v.t.pop4}}</span><span>21</span></span>
+              </div>
+            </div>
+            <div style="margin-top: 36px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px">
+              <span role="tooltip" style="position: relative; font-size: 12px; padding: 6px 10px; border-radius: 8px; background: var(--tip); color: var(--tipfg); box-shadow: var(--sh-md)">{{v.t.tooltip}}<span style="position: absolute; bottom: -4px; inset-inline-start: 14px; width: 8px; height: 8px; background: var(--tip); transform: rotate(45deg)"></span></span>
+              <button type="button" style="width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--in); background: var(--card); color: var(--fg2); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--ring)" aria-label="{{v.t.tooltip}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+            </div>
+            <span class="sub" style="margin-top: auto">{{v.t.popNote}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 24px; align-items: start">
+        <div class="sec">
+          <div class="h">{{v.t.drawer}}</div>
+          <div class="frame" style="height: 520px">
+            <div style="position: absolute; inset: 0; padding: 24px; display: flex; flex-direction: column; gap: 14px"><div class="ghostrow" style="width: 30%; height: 20px"></div><div class="ghostrow" style="height: 52px; border-radius: 12px"></div><div class="ghostrow" style="height: 52px; border-radius: 12px"></div><div class="ghostrow" style="height: 52px; border-radius: 12px"></div></div>
+            <div style="position: absolute; inset: 0; background: var(--scrim)"></div>
+            <aside role="dialog" aria-modal="true" style="position: absolute; inset-block: 0; inset-inline-end: 0; width: 440px; background: var(--raised); box-shadow: var(--sh-ov); display: flex; flex-direction: column">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 18px 20px; border-bottom: 1px solid var(--bd)"><span style="font-size: 17px; font-weight: 600; flex: 1">{{v.t.drTitle}}</span><span style="display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-bd)">{{v.t.pending}}</span><button type="button" class="ibtn" aria-label="{{v.t.close}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>
+              <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px; font-size: 14px; flex: 1">
+                <div style="display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 10px"><span class="lbl" style="font-size: 13px">{{v.t.drWho}}</span><span>{{v.t.drWhoVal}}</span><span class="lbl" style="font-size: 13px">{{v.t.drWhen}}</span><span>{{v.t.drWhenVal}}</span><span class="lbl" style="font-size: 13px">{{v.t.drWhy}}</span><span>{{v.t.drWhyVal}}</span></div>
+                <div class="ghostrow" style="height: 120px; border-radius: 12px"></div>
+              </div>
+              <div style="padding: 16px 20px; border-top: 1px solid var(--bd); display: flex; gap: 8px; justify-content: flex-end"><button type="button" class="btn out">{{v.t.reject}}</button><button type="button" class="btn pri">{{v.t.approve}}</button></div>
+            </aside>
+          </div>
+          <span class="sub">{{v.t.drawerNote}}</span>
+        </div>
+        <div class="sec">
+          <div class="h">{{v.t.sheet}}</div>
+          <div class="frame" style="height: 520px; width: 390px">
+            <div style="position: absolute; inset: 0; padding: 20px; display: flex; flex-direction: column; gap: 12px"><div class="ghostrow" style="width: 50%; height: 20px"></div><div class="ghostrow" style="height: 80px; border-radius: 14px"></div></div>
+            <div style="position: absolute; inset: 0; background: var(--scrim)"></div>
+            <div role="dialog" aria-modal="true" style="position: absolute; inset-inline: 0; bottom: 0; border-radius: 20px 20px 0 0; background: var(--raised); box-shadow: var(--sh-ov); padding: 10px 20px 24px; display: flex; flex-direction: column; gap: 14px">
+              <span style="width: 40px; height: 5px; border-radius: 3px; background: var(--in); align-self: center"></span>
+              <span style="font-size: 17px; font-weight: 600">{{v.t.shTitle}}</span>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+                <a href="#" style="height: 88px; border-radius: 14px; background: var(--pri-soft); color: var(--secfg); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 14px; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10.5" r="3.5"/><path d="M3.5 18.5c1.4 0 2.7-1 4.2-1s2.8 1 4.3 1 2.8-1 4.3-1 2.8 1 4.2 1"/></svg>{{v.t.qr1}}</a>
+                <a href="#" style="height: 88px; border-radius: 14px; background: var(--pri-soft); color: var(--secfg); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 14px; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>{{v.t.qr2}}</a>
+                <a href="#" style="height: 88px; border-radius: 14px; background: var(--pri-soft); color: var(--secfg); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 14px; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/></svg>{{v.t.qr3}}</a>
+                <a href="#" style="height: 88px; border-radius: 14px; background: var(--pri-soft); color: var(--secfg); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 14px; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16"/><path d="m3.5 16.5 3.5 3.5 3.5-3.5"/><path d="M17 20V4"/><path d="m13.5 7.5 3.5-3.5 3.5 3.5"/></svg>{{v.t.qr4}}</a>
+              </div>
+              <a href="#" style="text-align: center; font-size: 14px; color: var(--link)">{{v.t.allTypes}}</a>
+            </div>
+          </div>
+          <span class="sub">{{v.t.sheetNote}}</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: stretch">
+        <div class="sec">
+          <div class="h">{{v.t.empty}}</div>
+          <div class="card" style="padding: 32px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; height: 100%">
+            <svg aria-hidden="true" width="200" height="140" viewBox="0 0 200 140">
+              <ellipse cx="100" cy="112" rx="92" ry="22" fill="none" style="stroke: var(--brand)" stroke-opacity=".12" stroke-width="2"/>
+              <ellipse cx="100" cy="112" rx="64" ry="15" fill="none" style="stroke: var(--brand)" stroke-opacity=".22" stroke-width="2"/>
+              <ellipse cx="100" cy="112" rx="36" ry="8.5" fill="none" style="stroke: var(--lagoon)" stroke-opacity=".7" stroke-width="2.5"/>
+              <rect x="64" y="22" width="72" height="80" rx="12" style="fill: var(--illo-bg); stroke: var(--brand)" stroke-width="2"/>
+              <path d="M78 46h44M78 60h30M78 74h36" style="stroke: var(--brand)" stroke-opacity=".5" stroke-width="3" stroke-linecap="round"/>
+              <path d="M148 18c0 0-9 10-9 16a9 9 0 0 0 18 0c0-6-9-16-9-16z" style="fill: var(--brand)" fill-opacity=".85"/>
+            </svg>
+            <span style="font-size: 18px; font-weight: 600">{{v.t.emptyTitle}}</span>
+            <span style="font-size: 14px; color: var(--fg2); max-width: 380px">{{v.t.emptyBody}}</span>
+            <div style="display: flex; gap: 8px"><button type="button" class="btn pri">{{v.t.newRequest}}</button><button type="button" class="btn gho">{{v.t.browseTypes}}</button></div>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="h">{{v.t.progress}}</div>
+          <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 22px; height: 100%">
+            <div style="display: flex; flex-direction: column; gap: 8px"><span style="display: flex; justify-content: space-between; font-size: 13px"><span>{{v.t.pImport}}</span><span style="color: var(--fg2)">68%</span></span><span role="progressbar" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100" style="height: 8px; border-radius: 4px; background: var(--muted); position: relative; overflow: hidden"><span style="position: absolute; inset-block: 0; inset-inline-start: 0; width: 68%; background: var(--pri); border-radius: 4px"></span></span></div>
+            <div style="display: flex; flex-direction: column; gap: 8px"><span style="display: flex; justify-content: space-between; font-size: 13px"><span>{{v.t.pSync}}</span><span style="color: var(--fg2)">{{v.t.pIndet}}</span></span><span role="progressbar" style="height: 8px; border-radius: 4px; background: var(--muted); position: relative; overflow: hidden"><span style="position: absolute; inset-block: 0; inset-inline-start: 22%; width: 36%; background: linear-gradient(90deg, transparent, var(--pri), transparent); border-radius: 4px"></span></span></div>
+            <div style="display: flex; flex-direction: column; gap: 8px"><span style="display: flex; justify-content: space-between; font-size: 13px"><span>{{v.t.pQuota}}</span><span style="color: var(--err)">94%</span></span><span role="progressbar" aria-valuenow="94" style="height: 8px; border-radius: 4px; background: var(--muted); position: relative; overflow: hidden"><span style="position: absolute; inset-block: 0; inset-inline-start: 0; width: 94%; background: var(--dng); border-radius: 4px"></span></span></div>
+            <div style="display: flex; gap: 28px; align-items: center; border-top: 1px solid var(--bd); padding-top: 18px">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><svg role="img" aria-label="72%" width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" style="stroke: var(--muted)" stroke-width="7"/><circle cx="36" cy="36" r="30" fill="none" style="stroke: var(--pri)" stroke-width="7" stroke-linecap="round" stroke-dasharray="135.7 188.5" transform="rotate(-90 36 36)"/><text x="36" y="41" text-anchor="middle" font-size="15" font-weight="600" style="fill: var(--fg)" font-family="Readex Pro, sans-serif">72%</text></svg><span class="lbl">{{v.t.rLearning}}</span></div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><svg role="img" aria-label="100%" width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" style="stroke: var(--ok)" stroke-width="7"/><path d="m26 36.5 7 7 13-14" fill="none" style="stroke: var(--ok)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lbl">{{v.t.rDone}}</span></div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><svg role="img" aria-label="3 of 5" width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" style="stroke: var(--muted)" stroke-width="7" stroke-dasharray="33.7 4" transform="rotate(-87.7 36 36)"/><circle cx="36" cy="36" r="30" fill="none" style="stroke: var(--lagoon)" stroke-width="7" stroke-dasharray="33.7 4 33.7 4 33.7 79.4" transform="rotate(-87.7 36 36)"/><text x="36" y="41" text-anchor="middle" font-size="14" font-weight="600" style="fill: var(--fg)" font-family="Readex Pro, sans-serif">3/5</text></svg><span class="lbl">{{v.t.rSessions}}</span></div>
+              <span class="sub" style="flex: 1">{{v.t.progressNote}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="h">{{v.t.integration}}</div>
+        <div role="alert" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: var(--err-bg); border: 1px solid var(--err-bd); color: var(--err); font-size: 14px"><span style="width: 10px; height: 10px; border-radius: 2px; background: currentColor; flex: none"></span><span style="flex: 1"><strong style="font-weight: 600">{{v.t.bannerTitle}}</strong> {{v.t.bannerBody}}</span><button type="button" class="btn sm" style="background: var(--card); color: var(--err); border-color: var(--err-bd)">{{v.t.viewLogs}}</button><button type="button" class="btn sm dng">{{v.t.reconnect}}</button></div>
+        <div class="card" style="padding: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 13px; font-weight: 500">{{v.t.webhook}}</label>
+            <div style="display: flex"><div class="inp mono" dir="ltr" style="flex: 1; border-start-end-radius: 0; border-end-end-radius: 0; background: var(--sunken); color: var(--fg2); overflow: hidden; white-space: nowrap">https://hr.example.com/hooks/whatsapp/7f3a…</div><button type="button" class="btn out" style="border-start-start-radius: 0; border-end-start-radius: 0; border-inline-start: 0"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>{{v.t.copy}}</button></div>
+            <div style="display: flex"><div class="inp mono" dir="ltr" style="flex: 1; border-start-end-radius: 0; border-end-end-radius: 0; background: var(--sunken); color: var(--fg2)">mwr_verify_4c19e2</div><button type="button" class="btn" style="border-start-start-radius: 0; border-end-start-radius: 0; background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok-bd)"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>{{v.t.copied}}</button></div>
+            <span class="lbl">{{v.t.copyHelp}}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 13px; font-weight: 500">{{v.t.secret}}</label>
+            <div class="inp" style="padding-inline-end: 4px"><span class="mono" dir="ltr" style="flex: 1; letter-spacing: 0.12em; color: var(--fg2)">••••••••••••••••••••b7Qz</span><button type="button" class="ibtn" aria-label="{{v.t.reveal}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg></button><button type="button" class="btn out sm"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.5 4.5L20 16"/><path d="M20 20v-4h-4"/></svg>{{v.t.rotate}}</button></div>
+            <span class="lbl">{{v.t.secretHelp}}</span>
+          </div>
+          <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--bd); padding-top: 20px">
+            <div style="display: flex; flex-direction: column; gap: 10px"><span class="lbl">{{v.t.sIdle}}</span><button type="button" class="btn out"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7.5V3.5"/><path d="M15 7.5V3.5"/><path d="M6.5 7.5h11V11a5.5 5.5 0 0 1-11 0z"/><path d="M12 16.5v4"/></svg>{{v.t.test}}</button><span class="lbl">{{v.t.lastOk}}</span></div>
+            <div style="display: flex; flex-direction: column; gap: 10px"><span class="lbl">{{v.t.sTesting}}</span><button type="button" class="btn out" aria-busy="true" style="opacity: .9"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9" stroke-opacity=".3"/><path d="M21 12a9 9 0 0 0-9-9"/></svg>{{v.t.testing}}</button><span class="lbl">{{v.t.testingStep}}</span></div>
+            <div style="display: flex; flex-direction: column; gap: 10px"><span class="lbl">{{v.t.sOk}}</span><div class="res" style="background: var(--ok-bg); border-color: var(--ok-bd); color: var(--ok)"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span><strong style="font-weight: 600">{{v.t.okTitle}}</strong><br>{{v.t.okBody}}</span></div></div>
+            <div style="display: flex; flex-direction: column; gap: 10px"><span class="lbl">{{v.t.sFail}}</span><div class="res" style="background: var(--err-bg); border-color: var(--err-bd); color: var(--err)"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" style="flex: none; margin-top: 2px"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5"/><path d="M12 16.2h.01"/></svg><span><strong style="font-weight: 600" dir="ltr">401 Unauthorized</strong><br>{{v.t.failBody}} <a href="#" style="color: inherit; text-decoration: underline">{{v.t.viewLogs}}</a></span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":5952,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const en = {
+      title: 'Overlays, feedback, integration setup', toasts: 'Toasts', toast1: 'Request submitted', toast1m: 'Omar Haddad will review it', dismiss: 'Dismiss', toast2: 'Couldn’t send WhatsApp message', toast2m: 'Sent by email instead', retry: 'Retry', toast3: 'Request withdrawn', undo: 'Undo', toast4: 'Importing employees…',
+      toastNote: 'Bottom-end on desktop, top on mobile. Auto-dismiss 5 s (errors stay). Max 3 stacked. Success icon carries a ripple ring.',
+      dialog: 'Dialog', dlgTitle: 'Reject this request?', dlgBody: 'Dana will be notified by WhatsApp and email.', close: 'Close', dlgReason: 'Reason (shared with Dana)', dlgReasonVal: 'Inventory count on 20 Oct needs the full team.', dlgHelp: 'Required for rejections', cancel: 'Cancel', reject: 'Reject',
+      dialogNote: 'Focus is trapped; Esc and scrim click close non-destructive dialogs only. Destructive action sits at the reading end.',
+      popTip: 'Popover and tooltip', balance: 'Annual leave', popTitle: 'Balance breakdown', pop1: 'Entitlement 2026', pop2: 'Carried over', pop3: 'Taken', pop4: 'Available', tooltip: 'Edit request', popNote: 'Popovers hold interactive content; tooltips only short labels, shown on hover and focus after 400 ms.',
+      drawer: 'Drawer · desktop', drTitle: 'Leave early · Sara Al-Harbi', pending: 'Pending', drWho: 'Requested by', drWhoVal: 'Sara Al-Harbi · HR Specialist', drWhen: 'When', drWhenVal: 'Today, 15:00 (1 h early)', drWhy: 'Reason', drWhyVal: 'Medical appointment', approve: 'Approve',
+      drawerNote: 'Slides from the reading end (right in LTR, left in RTL). 440 px; widens to 640 px for forms.',
+      sheet: 'Bottom sheet · mobile', shTitle: 'New request', qr1: 'Day off', qr2: 'Leave early', qr3: 'Work from home', qr4: 'Shift swap', allTypes: 'All request types', sheetNote: 'Grabber, drag to dismiss, snaps at 50% and 92%.',
+      empty: 'Empty state', emptyTitle: 'No requests yet', emptyBody: 'When you ask for a day off, to leave early or anything else, it will appear here with its live status.', newRequest: 'New request', browseTypes: 'Browse request types',
+      progress: 'Progress', pImport: 'Importing 1,280 employees', pSync: 'Syncing WhatsApp templates', pIndet: 'In progress', pQuota: 'Message quota this month', rLearning: 'Learning path', rDone: 'Completed', rSessions: 'Sessions', progressNote: 'Linear for tasks, rings for personal goals. Above 90% of a limit turns danger.',
+      integration: 'Integration setup fields', bannerTitle: 'WhatsApp (OpenWA) is disconnected.', bannerBody: 'Critical alerts are falling back to email.', viewLogs: 'View logs', reconnect: 'Reconnect',
+      webhook: 'Webhook URL and verify token', copy: 'Copy', copied: 'Copied', copyHelp: 'Paste both into Meta › WhatsApp › Configuration.', secret: 'Access token', reveal: 'Reveal token', rotate: 'Rotate', secretHelp: 'Last rotated 12 Aug 2026 by Nora Al-Amri. Reveal requires re-authentication.',
+      sIdle: 'Idle', test: 'Test connection', lastOk: 'Last success: today 09:41', sTesting: 'Testing', testing: 'Testing…', testingStep: 'Calling Graph API (2 of 3)', sOk: 'Success', okTitle: 'Connected', okBody: 'Responded in 240 ms', sFail: 'Failure', failBody: 'The access token was rejected. Rotate it in Meta Business, then test again.'
+    };
+    const ar = {
+      title: 'الطبقات والتنبيهات وإعداد التكاملات', toasts: 'الإشعارات المنبثقة', toast1: 'تم إرسال الطلب', toast1m: 'سيراجعه عمر حداد', dismiss: 'إغلاق', toast2: 'تعذّر إرسال رسالة واتساب', toast2m: 'أُرسلت بالبريد الإلكتروني بدلًا منها', retry: 'إعادة', toast3: 'تم سحب الطلب', undo: 'تراجع', toast4: 'جارٍ استيراد الموظفين…',
+      toastNote: 'أسفل نهاية الشاشة على الحاسوب، وأعلاها على الجوال. تختفي بعد 5 ثوانٍ (عدا الأخطاء). 3 كحد أقصى. أيقونة النجاح تحمل حلقة تموّج.',
+      dialog: 'مربع الحوار', dlgTitle: 'رفض هذا الطلب؟', dlgBody: 'سيتم إشعار دانة عبر واتساب والبريد.', close: 'إغلاق', dlgReason: 'السبب (يظهر لدانة)', dlgReasonVal: 'جرد المخزون يوم 20 أكتوبر يحتاج الفريق كاملًا.', dlgHelp: 'مطلوب عند الرفض', cancel: 'إلغاء', reject: 'رفض',
+      dialogNote: 'التركيز محصور داخله؛ Esc والنقر خارجه يغلقان الحوارات غير الإتلافية فقط. الإجراء الإتلافي في نهاية اتجاه القراءة.',
+      popTip: 'النافذة المنبثقة والتلميح', balance: 'الإجازة السنوية', popTitle: 'تفاصيل الرصيد', pop1: 'استحقاق 2026', pop2: 'مُرحّل', pop3: 'مستخدم', pop4: 'المتاح', tooltip: 'تعديل الطلب', popNote: 'النوافذ المنبثقة لمحتوى تفاعلي؛ التلميحات لتسميات قصيرة فقط، تظهر عند التمرير والتركيز بعد 400 م.ث.',
+      drawer: 'اللوحة الجانبية · الحاسوب', drTitle: 'انصراف مبكر · سارة الحربي', pending: 'معلّق', drWho: 'مقدّم الطلب', drWhoVal: 'سارة الحربي · أخصائية موارد بشرية', drWhen: 'الوقت', drWhenVal: 'اليوم، 15:00 (قبل ساعة)', drWhy: 'السبب', drWhyVal: 'موعد طبي', approve: 'موافقة',
+      drawerNote: 'تنزلق من نهاية القراءة (اليمين في LTR، واليسار في RTL). عرض 440 بكسل، و640 للنماذج.',
+      sheet: 'اللوحة السفلية · الجوال', shTitle: 'طلب جديد', qr1: 'يوم إجازة', qr2: 'انصراف مبكر', qr3: 'عمل عن بُعد', qr4: 'تبديل مناوبة', allTypes: 'كل أنواع الطلبات', sheetNote: 'مقبض سحب، اسحب للإغلاق، تتوقف عند 50% و92%.',
+      empty: 'الحالة الفارغة', emptyTitle: 'لا توجد طلبات بعد', emptyBody: 'عندما تطلب يوم إجازة أو انصرافًا مبكرًا أو أي شيء آخر، سيظهر هنا مع حالته المباشرة.', newRequest: 'طلب جديد', browseTypes: 'تصفّح أنواع الطلبات',
+      progress: 'التقدم', pImport: 'استيراد 1,280 موظفًا', pSync: 'مزامنة قوالب واتساب', pIndet: 'قيد التنفيذ', pQuota: 'حصة الرسائل هذا الشهر', rLearning: 'مسار التعلّم', rDone: 'مكتمل', rSessions: 'الجلسات', progressNote: 'شريط خطي للمهام، وحلقات للأهداف الشخصية. فوق 90% من الحد يتحول إلى لون الخطر.',
+      integration: 'حقول إعداد التكاملات', bannerTitle: 'واتساب (OpenWA) غير متصل.', bannerBody: 'التنبيهات الحرجة تُرسل عبر البريد مؤقتًا.', viewLogs: 'عرض السجلات', reconnect: 'إعادة الاتصال',
+      webhook: 'رابط Webhook ورمز التحقق', copy: 'نسخ', copied: 'تم النسخ', copyHelp: 'الصقهما في Meta › WhatsApp › Configuration.', secret: 'رمز الوصول', reveal: 'إظهار الرمز', rotate: 'تدوير', secretHelp: 'آخر تدوير 12 أغسطس 2026 بواسطة نورة العمري. الإظهار يتطلب إعادة المصادقة.',
+      sIdle: 'خامل', test: 'اختبار الاتصال', lastOk: 'آخر نجاح: اليوم 09:41', sTesting: 'جارٍ الاختبار', testing: 'جارٍ الاختبار…', testingStep: 'استدعاء Graph API (2 من 3)', sOk: 'نجاح', okTitle: 'متصل', okBody: 'استجاب خلال 240 م.ث', sFail: 'فشل', failBody: 'تم رفض رمز الوصول. دوّره في Meta Business ثم اختبر مجددًا.'
+    };
+    const variants = [
+      { cls: 't-light', dir: 'ltr', lang: 'en', tag: 'Light · LTR · English', t: en },
+      { cls: 't-light', dir: 'rtl', lang: 'ar', tag: 'فاتح · من اليمين · العربية', t: ar },
+      { cls: 't-dark', dir: 'ltr', lang: 'en', tag: 'Dark · LTR · English', t: en },
+      { cls: 't-dark', dir: 'rtl', lang: 'ar', tag: 'داكن · من اليمين · العربية', t: ar }
+    ];
+    return { variants };
+  }
+}
+</script>
+</body>
+</html>

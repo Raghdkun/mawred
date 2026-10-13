@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PHP_VERSION: '8.4'
+  NODE_VERSION: '24'
+  PHP_EXTENSIONS: pgsql, pdo_pgsql, redis, intl, gd, bcmath, zip, pcntl, sodium
+
+jobs:
+  php-quality:
+    name: PHP lint & static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          coverage: none
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: composer lint:check
+      - run: composer analyse
+
+  js-quality:
+    name: JS lint, types, unit tests & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: cp .env.example .env && php artisan key:generate
+      - run: php artisan wayfinder:generate --with-form
+      - run: pnpm run format:check
+      - run: pnpm run lint
+      - run: pnpm run types:check
+      - run: pnpm run test
+      - run: pnpm run build
+
+  tests:
+    name: Pest (feature, unit, arch)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: mawred_testing
+          POSTGRES_USER: mawred
+          POSTGRES_PASSWORD: secret
+        ports: ['5442:5432']
+        options: >-
+          --health-cmd "pg_isready -U mawred" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:8-alpine
+        ports: ['6389:6379']
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: cp .env.example .env && php artisan key:generate
+      - run: pnpm run build
+      - run: php artisan test --parallel

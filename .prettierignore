@@ -1,0 +1,16 @@
+vendor
+node_modules
+public
+bootstrap/ssr
+storage
+resources/js/actions
+resources/js/routes
+resources/js/wayfinder
+resources/js/types/generated
+resources/js/components/ui
+resources/views/mail
+design
+docs
+composer.lock
+pnpm-lock.yaml
+.github

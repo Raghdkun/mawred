@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mawred color and semantic tokens</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3859A0}a:hover{color:#263B63}
+</style>
+</helmet>
+<div style="width: 1600px; height: 2660px; box-sizing: border-box; background: #FFFFFF; font-family: 'Readex Pro', 'Segoe UI', system-ui, sans-serif; color: #182238; padding: 72px 80px; display: flex; flex-direction: column; gap: 56px">
+
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">04 · Color</div>
+      <h2 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 500; letter-spacing: -0.015em">Soft periwinkle blue, never generic SaaS blue.</h2>
+    </div>
+    <p style="margin: 0; max-width: 520px; font-size: 16px; line-height: 1.6; color: #46526A">Every pair below is checked against WCAG AA in light and dark. Tokens export as OKLCH CSS variables for Tailwind v4 <code style="font-family: 'JetBrains Mono', monospace; font-size: 14px">@theme</code> with shadcn/ui names.</p>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 20px; font-weight: 500">Mist Blue · primary scale</div><div style="font-size: 13px; color: #5E6A82">Contrast vs white / vs Navy #0E1626</div></div>
+    <div style="display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 8px; font-variant-numeric: tabular-nums">
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #F4F8FD; border: 1px solid #EDF1F7"></div><div style="font-size: 13px; font-weight: 500">50</div><div style="font-size: 12px; color: #46526A">#F4F8FD</div><div style="font-size: 11px; color: #5E6A82">1.07 / 17.0</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #E6EFFB"></div><div style="font-size: 13px; font-weight: 500">100</div><div style="font-size: 12px; color: #46526A">#E6EFFB</div><div style="font-size: 11px; color: #5E6A82">1.16 / 15.6</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #CCDDF6"></div><div style="font-size: 13px; font-weight: 500">200</div><div style="font-size: 12px; color: #46526A">#CCDDF6</div><div style="font-size: 11px; color: #5E6A82">1.38 / 13.1</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #A6C3EE"></div><div style="font-size: 13px; font-weight: 500">300</div><div style="font-size: 12px; color: #46526A">#A6C3EE</div><div style="font-size: 11px; color: #5E6A82">1.80 / 10.0</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #7FA6E3; display: flex; align-items: flex-end; padding: 8px; box-sizing: border-box"><span style="font-size: 11px; font-weight: 500; color: #0E1626">dark primary</span></div><div style="font-size: 13px; font-weight: 500">400</div><div style="font-size: 12px; color: #46526A">#7FA6E3</div><div style="font-size: 11px; color: #5E6A82">2.48 / 7.29</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #5B88D6; display: flex; align-items: flex-end; padding: 8px; box-sizing: border-box; outline: 2px solid #182238; outline-offset: 2px"><span style="font-size: 11px; font-weight: 500; color: #0E1626">brand</span></div><div style="font-size: 13px; font-weight: 500">500</div><div style="font-size: 12px; color: #46526A">#5B88D6</div><div style="font-size: 11px; color: #5E6A82">3.54 / 5.11</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #4570C0; display: flex; align-items: flex-end; padding: 8px; box-sizing: border-box"><span style="font-size: 11px; font-weight: 500; color: #FFFFFF">UI primary</span></div><div style="font-size: 13px; font-weight: 500">600</div><div style="font-size: 12px; color: #46526A">#4570C0</div><div style="font-size: 11px; color: #5E6A82">4.85 / 3.73</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #3859A0; display: flex; align-items: flex-end; padding: 8px; box-sizing: border-box"><span style="font-size: 11px; font-weight: 500; color: #FFFFFF">links</span></div><div style="font-size: 13px; font-weight: 500">700</div><div style="font-size: 12px; color: #46526A">#3859A0</div><div style="font-size: 11px; color: #5E6A82">6.76 / 2.67</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #2F4A80"></div><div style="font-size: 13px; font-weight: 500">800</div><div style="font-size: 12px; color: #46526A">#2F4A80</div><div style="font-size: 11px; color: #5E6A82">8.71 / 2.08</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #263B63"></div><div style="font-size: 13px; font-weight: 500">900</div><div style="font-size: 12px; color: #46526A">#263B63</div><div style="font-size: 11px; color: #5E6A82">11.1 / 1.63</div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="height: 96px; border-radius: 10px; background: #172440; display: flex; align-items: flex-end; padding: 8px; box-sizing: border-box"><span style="font-size: 11px; font-weight: 500; color: #FFFFFF">logo ink</span></div><div style="font-size: 13px; font-weight: 500">950</div><div style="font-size: 12px; color: #46526A">#172440</div><div style="font-size: 11px; color: #5E6A82">15.4 / 1.17</div></div>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #46526A">500 is the brand hue (logo, illustrations, focus ring). White text needs 600 or darker, so filled buttons use 600 and text links use 700. In dark mode the primary flips to 400 with Navy text (7.29 : 1).</p>
+  </section>
+
+  <section style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 20px; font-weight: 500">Ink · blue-tinted neutrals</div>
+      <div style="display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 6px; font-variant-numeric: tabular-nums">
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #F6F8FC; border: 1px solid #EDF1F7"></div><span style="font-size: 12px; font-weight: 500">50</span><span style="font-size: 11px; color: #5E6A82">F6F8FC</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #EDF1F7"></div><span style="font-size: 12px; font-weight: 500">100</span><span style="font-size: 11px; color: #5E6A82">EDF1F7</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #DCE3EE"></div><span style="font-size: 12px; font-weight: 500">200</span><span style="font-size: 11px; color: #5E6A82">DCE3EE</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #C3CDDC"></div><span style="font-size: 12px; font-weight: 500">300</span><span style="font-size: 11px; color: #5E6A82">C3CDDC</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #98A4B8"></div><span style="font-size: 12px; font-weight: 500">400</span><span style="font-size: 11px; color: #5E6A82">98A4B8</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #6F7C93"></div><span style="font-size: 12px; font-weight: 500">500</span><span style="font-size: 11px; color: #5E6A82">6F7C93</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #5E6A82"></div><span style="font-size: 12px; font-weight: 500">600</span><span style="font-size: 11px; color: #5E6A82">5E6A82</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #46526A"></div><span style="font-size: 12px; font-weight: 500">700</span><span style="font-size: 11px; color: #5E6A82">46526A</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #2E3A52"></div><span style="font-size: 12px; font-weight: 500">800</span><span style="font-size: 11px; color: #5E6A82">2E3A52</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #182238"></div><span style="font-size: 12px; font-weight: 500">900</span><span style="font-size: 11px; color: #5E6A82">182238</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #0E1626"></div><span style="font-size: 12px; font-weight: 500">950</span><span style="font-size: 11px; color: #5E6A82">0E1626</span></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 20px; font-weight: 500">Supporting</div>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #4FB3BF"></div><span style="font-size: 12px; font-weight: 500">Lagoon</span><span style="font-size: 11px; color: #5E6A82">accent, ring</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #9B8CE8"></div><span style="font-size: 12px; font-weight: 500">Lilac</span><span style="font-size: 11px; color: #5E6A82">charts, highlight</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #5CC29A"></div><span style="font-size: 12px; font-weight: 500">Mint</span><span style="font-size: 11px; color: #5E6A82">success</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #F2B861"></div><span style="font-size: 12px; font-weight: 500">Honey</span><span style="font-size: 11px; color: #5E6A82">warning</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 64px; border-radius: 8px; background: #F08A7E"></div><span style="font-size: 12px; font-weight: 500">Coral</span><span style="font-size: 11px; color: #5E6A82">danger</span></div>
+      </div>
+      <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5E6A82">Supporting hues are fills and graphics. For text they step down to the darker feedback foregrounds below.</p>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 20px; font-weight: 500">Semantic tokens · shadcn/ui names</div>
+    <div style="border: 1px solid #DCE3EE; border-radius: 14px; overflow: hidden; font-variant-numeric: tabular-nums">
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; background: #F6F8FC; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; color: #46526A">
+        <div style="padding: 12px 20px">Token</div><div style="padding: 12px 20px">Light</div><div style="padding: 12px 20px">Dark</div><div style="padding: 12px 20px">Contrast L / D</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--background</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #F6F8FC; border: 1px solid #DCE3EE"></span>Ink 50 · #F6F8FC</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #0E1626"></span>Navy · #0E1626</div>
+        <div style="padding: 10px 20px; color: #46526A">text 14.9 / 15.5</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--card · surface</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #FFFFFF; border: 1px solid #DCE3EE"></span>White · #FFFFFF</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #142036"></span>#142036</div>
+        <div style="padding: 10px 20px; color: #46526A">text 15.9 / 14.0</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--surface-raised · popover</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #FFFFFF; border: 1px solid #DCE3EE; box-shadow: 0 2px 6px rgba(38,59,99,0.15)"></span>White + shadow-md</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #1B2A45"></span>#1B2A45</div>
+        <div style="padding: 10px 20px; color: #46526A">text 15.9 / 12.3</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--border · --input</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #DCE3EE"></span><span style="width: 28px; height: 28px; border-radius: 6px; background: #C3CDDC"></span>#DCE3EE · #C3CDDC</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #2A3A58"></span><span style="width: 28px; height: 28px; border-radius: 6px; background: #34466A"></span>#2A3A58 · #34466A</div>
+        <div style="padding: 10px 20px; color: #46526A">decorative; inputs add label + focus ring</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--foreground · text-primary</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #182238"></span>Ink 900 · #182238</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #E8EEF8; border: 1px solid #DCE3EE"></span>#E8EEF8</div>
+        <div style="padding: 10px 20px; color: #17734F; font-weight: 500">15.9 / 14.0 · AAA</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--text-secondary</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #46526A"></span>Ink 700 · #46526A</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #AEBBD0"></span>#AEBBD0</div>
+        <div style="padding: 10px 20px; color: #17734F; font-weight: 500">7.85 / 8.39 · AAA</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--muted-foreground</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #5E6A82"></span>Ink 600 · #5E6A82</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #8B98B0"></span>#8B98B0</div>
+        <div style="padding: 10px 20px; color: #17734F; font-weight: 500">5.44 / 5.60 · AA (4.80 / 4.93 on muted)</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--primary / -foreground</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="padding: 4px 10px; border-radius: 6px; background: #4570C0; color: #FFFFFF; font-size: 13px">Aa</span>Mist 600 / white</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="padding: 4px 10px; border-radius: 6px; background: #7FA6E3; color: #0E1626; font-size: 13px">Aa</span>Mist 400 / Navy</div>
+        <div style="padding: 10px 20px; color: #17734F; font-weight: 500">4.85 / 7.29 · AA</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--secondary / -foreground</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="padding: 4px 10px; border-radius: 6px; background: #E6EFFB; color: #2F4A80; font-size: 13px">Aa</span>Mist 100 / Mist 800</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="padding: 4px 10px; border-radius: 6px; background: #1B2A45; color: #CCDDF6; font-size: 13px">Aa</span>#1B2A45 / Mist 200</div>
+        <div style="padding: 10px 20px; color: #17734F; font-weight: 500">7.51 / 10.4 · AAA</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--accent / -foreground</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="padding: 4px 10px; border-radius: 6px; background: #E4F4F6; color: #1C6E79; font-size: 13px">Aa</span>Lagoon tint / deep</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="padding: 4px 10px; border-radius: 6px; background: #0F3036; color: #7FCFD9; font-size: 13px">Aa</span>#0F3036 / #7FCFD9</div>
+        <div style="padding: 10px 20px; color: #17734F; font-weight: 500">5.22 / 7.91 · AA</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--destructive / -foreground</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="padding: 4px 10px; border-radius: 6px; background: #C2412F; color: #FFFFFF; font-size: 13px">Aa</span>#C2412F / white</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="padding: 4px 10px; border-radius: 6px; background: #F08A7E; color: #0E1626; font-size: 13px">Aa</span>Coral / Navy</div>
+        <div style="padding: 10px 20px; color: #17734F; font-weight: 500">5.13 / 7.44 · AA</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--ring · --link</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #FFFFFF; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #5B88D6"></span><span style="color: #3859A0; text-decoration: underline">Mist 500 · link 700</span></div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #142036; box-shadow: 0 0 0 2px #142036, 0 0 0 4px #7FA6E3"></span>Mist 400 · link 300</div>
+        <div style="padding: 10px 20px; color: #46526A">ring 3.54 / 6.56 (≥3 : 1)</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px repeat(2, minmax(0, 1fr)) 280px; border-top: 1px solid #EDF1F7; font-size: 14px; align-items: center">
+        <div style="padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px">--sidebar-*</div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #FFFFFF; border: 1px solid #DCE3EE"></span><span style="padding: 4px 10px; border-radius: 6px; background: #E6EFFB; color: #2F4A80; font-size: 13px">active</span></div>
+        <div style="padding: 10px 20px; display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 6px; background: #101A2D"></span><span style="padding: 4px 10px; border-radius: 6px; background: #1B2A45; color: #E6EFFB; font-size: 13px">active</span></div>
+        <div style="padding: 10px 20px; color: #46526A">fg 11.4 / 11.5</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 20px; font-weight: 500">Feedback · bg / fg / border</div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <div style="padding: 14px 16px; border-radius: 10px; background: #E7F6EF; border: 1px solid #A8DEC6; color: #17734F; font-size: 14px; display: flex; justify-content: space-between"><span>Success</span><span style="font-variant-numeric: tabular-nums">5.23</span></div>
+        <div style="padding: 14px 16px; border-radius: 10px; background: #12332B; border: 1px solid #245A4A; color: #7FD6B1; font-size: 14px; display: flex; justify-content: space-between"><span>Success</span><span style="font-variant-numeric: tabular-nums">7.92</span></div>
+        <div style="padding: 14px 16px; border-radius: 10px; background: #FDF3E2; border: 1px solid #F2D199; color: #8A5A10; font-size: 14px; display: flex; justify-content: space-between"><span>Warning</span><span style="font-variant-numeric: tabular-nums">5.38</span></div>
+        <div style="padding: 14px 16px; border-radius: 10px; background: #352A14; border: 1px solid #5E4721; color: #F2C27A; font-size: 14px; display: flex; justify-content: space-between"><span>Warning</span><span style="font-variant-numeric: tabular-nums">8.56</span></div>
+        <div style="padding: 14px 16px; border-radius: 10px; background: #FDEDEB; border: 1px solid #F5BDB5; color: #B23A2E; font-size: 14px; display: flex; justify-content: space-between"><span>Danger</span><span style="font-variant-numeric: tabular-nums">5.23</span></div>
+        <div style="padding: 14px 16px; border-radius: 10px; background: #3A1E22; border: 1px solid #66333A; color: #F6A196; font-size: 14px; display: flex; justify-content: space-between"><span>Danger</span><span style="font-variant-numeric: tabular-nums">7.53</span></div>
+        <div style="padding: 14px 16px; border-radius: 10px; background: #E4F4F6; border: 1px solid #A9DCE2; color: #1C6E79; font-size: 14px; display: flex; justify-content: space-between"><span>Info</span><span style="font-variant-numeric: tabular-nums">5.22</span></div>
+        <div style="padding: 14px 16px; border-radius: 10px; background: #0F3036; border: 1px solid #1F5560; color: #7FCFD9; font-size: 14px; display: flex; justify-content: space-between"><span>Info</span><span style="font-variant-numeric: tabular-nums">7.91</span></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 20px; font-weight: 500">Integration health</div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <div style="padding: 10px 14px; border-radius: 999px; background: #E7F6EF; color: #17734F; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-self: start"><span style="width: 8px; height: 8px; border-radius: 50%; background: #3FAE82; box-shadow: 0 0 0 3px rgba(63,174,130,0.25)"></span>Healthy</div>
+        <div style="padding: 10px 14px; border-radius: 999px; background: #12332B; color: #7FD6B1; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-self: start"><span style="width: 8px; height: 8px; border-radius: 50%; background: #5CC29A"></span>Healthy</div>
+        <div style="padding: 10px 14px; border-radius: 999px; background: #FDF3E2; color: #8A5A10; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-self: start"><span style="width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); background: #E3A23F"></span>Degraded</div>
+        <div style="padding: 10px 14px; border-radius: 999px; background: #352A14; color: #F2C27A; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-self: start"><span style="width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); background: #F2B861"></span>Degraded</div>
+        <div style="padding: 10px 14px; border-radius: 999px; background: #FDEDEB; color: #B23A2E; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-self: start"><span style="width: 9px; height: 9px; border-radius: 2px; background: #E0705F"></span>Disconnected</div>
+        <div style="padding: 10px 14px; border-radius: 999px; background: #3A1E22; color: #F6A196; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-self: start"><span style="width: 9px; height: 9px; border-radius: 2px; background: #F08A7E"></span>Disconnected</div>
+        <div style="padding: 10px 14px; border-radius: 999px; background: #EDF1F7; color: #5E6A82; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-self: start"><span style="width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid #98A4B8; box-sizing: border-box"></span>Not configured</div>
+        <div style="padding: 10px 14px; border-radius: 999px; background: #1B2A45; color: #AEBBD0; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-self: start"><span style="width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid #6F7C93; box-sizing: border-box"></span>Not configured</div>
+      </div>
+      <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5E6A82">Shape carries meaning too: circle = ok, diamond = degraded, square = down, ring = not set up. Never color alone.</p>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 20px; font-weight: 500">Workflow status · light and dark</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+      <div style="padding: 24px; border-radius: 14px; background: #FFFFFF; border: 1px solid #DCE3EE; display: flex; flex-wrap: wrap; gap: 10px">
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #EDF1F7; border: 1px solid #DCE3EE; color: #46526A; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>Draft</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #FDF3E2; border: 1px solid #F2D199; color: #8A5A10; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Pending</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #EFECFC; border: 1px solid #D3CCF6; color: #5644B8; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg>In review</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #E7F6EF; border: 1px solid #A8DEC6; color: #17734F; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Approved</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #FDEDEB; border: 1px solid #F5BDB5; color: #B23A2E; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>Rejected</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #F1F3F7; border: 1px solid #DCE3EE; color: #5E6A82; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m6 18 12-12"/></svg>Cancelled</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #FCEADC; border: 1px solid #F3C7A6; color: #9E4510; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></svg>Escalated</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #E6EFFB; border: 1px solid #CCDDF6; color: #3859A0; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Returned</span>
+      </div>
+      <div style="padding: 24px; border-radius: 14px; background: #142036; display: flex; flex-wrap: wrap; gap: 10px">
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #1B2A45; border: 1px solid #2A3A58; color: #AEBBD0; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>Draft</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #352A14; border: 1px solid #5E4721; color: #F2C27A; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Pending</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #26224A; border: 1px solid #433C7E; color: #BDB2F4; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg>In review</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #12332B; border: 1px solid #245A4A; color: #7FD6B1; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Approved</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #3A1E22; border: 1px solid #66333A; color: #F6A196; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>Rejected</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #18233A; border: 1px solid #2A3A58; color: #8B98B0; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m6 18 12-12"/></svg>Cancelled</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #3A2416; border: 1px solid #66402A; color: #F5AE7E; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></svg>Escalated</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 999px; background: #18294A; border: 1px solid #2F4A80; color: #A6C3EE; font-size: 13px; font-weight: 500"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Returned</span>
+      </div>
+    </div>
+    <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5E6A82">Every status pairs a glyph with its color. Contrast ranges 4.90 to 6.92 in light and 5.38 to 8.56 in dark. The Returned glyph mirrors in RTL.</p>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 20px; font-weight: 500">Chart palette · 8 series, colorblind-safe</div><div style="font-size: 13px; color: #5E6A82">Min ΔE (OKLab ×100) under deutan / protan / tritan simulation: light 7.6 / 9.3 / 8.9 · dark 9.0 / 8.9 / 9.2</div></div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+      <div style="padding: 24px; border-radius: 14px; border: 1px solid #DCE3EE; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; font-size: 11px; color: #46526A; font-variant-numeric: tabular-nums">
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #4570C0"></div>1 · 4570C0</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #F5B83F"></div>2 · F5B83F</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #6DD0EE"></div>3 · 6DD0EE</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #14A06C"></div>4 · 14A06C</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #9C92F5"></div>5 · 9C92F5</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #C74A30"></div>6 · C74A30</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #C492BB"></div>7 · C492BB</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #263B63"></div>8 · 263B63</div>
+        </div>
+        <div style="display: flex; align-items: flex-end; gap: 10px; height: 120px; padding-top: 8px; border-bottom: 1px solid #DCE3EE">
+          <div style="flex: 1; height: 80%; background: #4570C0; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 55%; background: #F5B83F; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 68%; background: #6DD0EE; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 92%; background: #14A06C; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 47%; background: #9C92F5; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 62%; background: #C74A30; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 38%; background: #C492BB; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 74%; background: #263B63; border-radius: 4px 4px 0 0"></div>
+        </div>
+        <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #5E6A82">Light: series 2, 3, 5 and 7 fall under 3 : 1 against white, so line charts give them a 1.5 px Ink 900 at 30% outline and every chart carries direct labels or a legend.</p>
+      </div>
+      <div style="padding: 24px; border-radius: 14px; background: #142036; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; font-size: 11px; color: #AEBBD0; font-variant-numeric: tabular-nums">
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #7387F5"></div>1 · 7387F5</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #EDA021"></div>2 · EDA021</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #A7DAE4"></div>3 · A7DAE4</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #30C496"></div>4 · 30C496</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #BCA0EF"></div>5 · BCA0EF</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #DE7038"></div>6 · DE7038</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #B285B6"></div>7 · B285B6</div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 48px; border-radius: 8px; background: #EEF3FA"></div>8 · EEF3FA</div>
+        </div>
+        <div style="display: flex; align-items: flex-end; gap: 10px; height: 120px; padding-top: 8px; border-bottom: 1px solid #2A3A58">
+          <div style="flex: 1; height: 80%; background: #7387F5; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 55%; background: #EDA021; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 68%; background: #A7DAE4; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 92%; background: #30C496; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 47%; background: #BCA0EF; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 62%; background: #DE7038; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 38%; background: #B285B6; border-radius: 4px 4px 0 0"></div><div style="flex: 1; height: 74%; background: #EEF3FA; border-radius: 4px 4px 0 0"></div>
+        </div>
+        <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #AEBBD0">Dark: all eight series clear 4.5 : 1 against the card surface #142036.</p>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":2660}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

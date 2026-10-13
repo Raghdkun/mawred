@@ -1,0 +1,67 @@
+# Local development services (ADR-0019 / D23: PHP + Node run natively; services run here).
+# No bind mounts: Docker Desktop may not share external volumes, so config is baked into small images.
+# Ports are offset to avoid clashing with Homebrew Postgres/Redis on the default ports.
+name: mawred
+
+services:
+  pgsql:
+    build: ./docker/postgres
+    image: mawred/pgsql-dev:18
+    environment:
+      POSTGRES_DB: mawred
+      POSTGRES_USER: mawred
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5442:5432"
+    volumes:
+      - pgsql:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "mawred", "-d", "mawred"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6389:6379"
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    command: ["gotenberg", "--chromium-max-concurrency=2", "--api-timeout=60s"]
+    ports:
+      - "3001:3000"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  # Unofficial WhatsApp driver (D8). Started on demand: `docker compose --profile whatsapp up -d`
+  waha:
+    image: devlikeapro/waha:latest
+    profiles: ["whatsapp"]
+    environment:
+      WHATSAPP_DEFAULT_ENGINE: GOWS
+      WAHA_API_KEY: local-dev-key
+    ports:
+      - "3002:3000"
+    mem_limit: 512m
+
+  # Upload scanning (D20). Started on demand: `docker compose --profile clamav up -d`
+  clamav:
+    image: clamav/clamav:stable
+    profiles: ["clamav"]
+    ports:
+      - "3310:3310"
+
+volumes:
+  pgsql:
+  redis:

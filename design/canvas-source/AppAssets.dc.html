@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mawred app icons and channel headers</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3859A0}a:hover{color:#263B63}
+</style>
+</helmet>
+<div style="width: 1600px; height: 2280px; box-sizing: border-box; background: #F6F8FC; font-family: 'Readex Pro', 'Segoe UI', system-ui, sans-serif; color: #182238; padding: 72px 80px; display: flex; flex-direction: column; gap: 56px">
+
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">03 · App icons, splash and channel headers</div>
+      <h2 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 500; letter-spacing: -0.015em">The drop, everywhere the app lives.</h2>
+    </div>
+    <p style="margin: 0; max-width: 560px; font-size: 16px; line-height: 1.6; color: #46526A">Icon tiles use the Mist 500 → 700 diagonal with the white symbol and a pale Lagoon ring. Every item ships as SVG plus the PNG sizes each platform asks for.</p>
+  </header>
+
+  <section style="display: grid; grid-template-columns: 1fr 1fr 1.2fr 1.1fr; gap: 24px">
+    <div style="background: #FFFFFF; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 1px 2px rgba(38,59,99,0.06)">
+      <div style="font-size: 15px; font-weight: 500">Favicon</div>
+      <div style="display: flex; align-items: flex-end; gap: 24px; height: 120px">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><img src="/_blob/e202e77b3ba2615a9a34f5676af99b7e" alt="Favicon 16" style="width: 16px; height: 16px"><span style="font-size: 12px; color: #5E6A82">16</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><img src="/_blob/e202e77b3ba2615a9a34f5676af99b7e" alt="Favicon 32" style="width: 32px; height: 32px"><span style="font-size: 12px; color: #5E6A82">32</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><img src="/_blob/e202e77b3ba2615a9a34f5676af99b7e" alt="Favicon 48" style="width: 48px; height: 48px"><span style="font-size: 12px; color: #5E6A82">48</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><img src="/_blob/e202e77b3ba2615a9a34f5676af99b7e" alt="Favicon SVG" style="width: 80px; height: 80px"><span style="font-size: 12px; color: #5E6A82">SVG</span></div>
+      </div>
+      <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5E6A82">Micro cut, transparent. Mist 600 drop and deep Lagoon ring hold contrast on light and dark browser tabs.</p>
+    </div>
+    <div style="background: #FFFFFF; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 1px 2px rgba(38,59,99,0.06)">
+      <div style="font-size: 15px; font-weight: 500">Apple touch icon · 180</div>
+      <div style="height: 120px; display: flex; align-items: center"><img src="/_blob/06dfec363b47ac5e3cc7b365d47c883e" alt="Apple touch icon" style="width: 120px; height: 120px; border-radius: 27px; display: block"></div>
+      <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5E6A82">Full-bleed square, no transparency. iOS applies its own corner mask.</p>
+    </div>
+    <div style="background: #FFFFFF; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 1px 2px rgba(38,59,99,0.06)">
+      <div style="font-size: 15px; font-weight: 500">PWA · 192 / 512, any + maskable</div>
+      <div style="display: flex; align-items: center; gap: 20px; height: 120px">
+        <img src="/_blob/4a178fbf1ff0ac27f0bb270a3a295249" alt="PWA icon" style="width: 112px; height: 112px; display: block">
+        <div style="position: relative; width: 112px; height: 112px">
+          <img src="/_blob/7bc5afc556b2034da71a0adde54b398c" alt="Maskable PWA icon" style="width: 112px; height: 112px; display: block">
+          <div style="position: absolute; inset: 11px; border-radius: 50%; border: 1.5px dashed #FFFFFF"></div>
+        </div>
+        <img src="/_blob/7bc5afc556b2034da71a0adde54b398c" alt="Maskable icon in a circle mask" style="width: 80px; height: 80px; border-radius: 50%; display: block">
+      </div>
+      <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5E6A82">Maskable: symbol sits at 46% inside the 80% safe-zone circle (dashed), so any launcher mask keeps it whole.</p>
+    </div>
+    <div style="background: #FFFFFF; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 1px 2px rgba(38,59,99,0.06)">
+      <div style="font-size: 15px; font-weight: 500">App icon · 1024 (Flutter)</div>
+      <div style="height: 120px; display: flex; align-items: center; gap: 20px">
+        <img src="/_blob/d2bd6e88c1e2ee69d1fe5dc06c82ac69" alt="1024 app icon" style="width: 120px; height: 120px; border-radius: 27px; display: block; box-shadow: 0 6px 16px rgba(38,59,99,0.18)">
+        <img src="/_blob/d2bd6e88c1e2ee69d1fe5dc06c82ac69" alt="1024 app icon, Android circle" style="width: 88px; height: 88px; border-radius: 50%; display: block">
+      </div>
+      <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #5E6A82">Adds three faint ripple rings. Feeds flutter_launcher_icons for iOS and Android adaptive layers.</p>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: 600px minmax(0, 1fr); gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">PWA splash · light and dark</div>
+      <div style="display: flex; gap: 32px">
+        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center">
+          <div style="width: 260px; height: 564px; border-radius: 36px; border: 8px solid #182238; overflow: hidden; box-sizing: content-box"><img src="/_blob/e68577e93d24bf0c011beaae520df527" alt="Light splash screen" style="width: 260px; height: 564px; display: block"></div>
+          <span style="font-size: 13px; color: #5E6A82">Light · Mist 50</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center">
+          <div style="width: 260px; height: 564px; border-radius: 36px; border: 8px solid #182238; overflow: hidden; box-sizing: content-box"><img src="/_blob/08b9c99ed2cf01874641e01a99d42d1b" alt="Dark splash screen" style="width: 260px; height: 564px; display: block"></div>
+          <span style="font-size: 13px; color: #5E6A82">Dark · Navy #0E1626</span>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">Email header · 600 px · EN and AR</div>
+      <img src="/_blob/ae4b1352efb03c8071512179dc016e7e" alt="English email header" style="width: 600px; height: 120px; display: block; border-radius: 10px; box-shadow: 0 1px 2px rgba(38,59,99,0.08)">
+      <img src="/_blob/4b1080c9a8264de190a73548b34129c4" alt="Arabic email header" style="width: 600px; height: 120px; display: block; border-radius: 10px; box-shadow: 0 1px 2px rgba(38,59,99,0.08)">
+      <p style="margin: 0; max-width: 600px; font-size: 14px; line-height: 1.6; color: #46526A">When a company logo is uploaded, it replaces the Mawred lockup in this slot and Mawred moves to the "Sent via" footer (see co-branding). The AR version mirrors the layout and the ripple origin.</p>
+      <div style="margin-top: 16px; background: #FFFFFF; border-radius: 14px; padding: 20px 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 32px; font-size: 13px; line-height: 1.5; color: #46526A; font-variant-numeric: tabular-nums; box-shadow: 0 1px 2px rgba(38,59,99,0.06)">
+        <div><strong style="font-weight: 500; color: #182238">favicon.svg</strong> + favicon-16/32/48.png</div>
+        <div><strong style="font-weight: 500; color: #182238">apple-touch-icon-180.png</strong></div>
+        <div><strong style="font-weight: 500; color: #182238">pwa-icon-192/512</strong> (purpose any)</div>
+        <div><strong style="font-weight: 500; color: #182238">pwa-maskable-192/512</strong> (purpose maskable)</div>
+        <div><strong style="font-weight: 500; color: #182238">splash-light/dark</strong> 1290 × 2796</div>
+        <div><strong style="font-weight: 500; color: #182238">app-icon-1024</strong> (Flutter)</div>
+        <div><strong style="font-weight: 500; color: #182238">email-header-en/ar</strong> 600 × 120</div>
+        <div><strong style="font-weight: 500; color: #182238">whatsapp-header-en/ar</strong> 1125 × 600</div>
+        <div><strong style="font-weight: 500; color: #182238">og-careers-en/ar</strong> 1200 × 630</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">WhatsApp template header · 1125 × 600 · EN and AR</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+      <img src="/_blob/ce85b9a8cc92f378952ed30352d0e293" alt="English WhatsApp header" style="width: 100%; aspect-ratio: 1125 / 600; display: block; border-radius: 14px">
+      <img src="/_blob/6099690062842c3dad724e5adc7acde4" alt="Arabic WhatsApp header" style="width: 100%; aspect-ratio: 1125 / 600; display: block; border-radius: 14px">
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">Careers page Open Graph · 1200 × 630 · EN and AR</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+      <img src="/_blob/bcf9917639b217563e5712f30f5b4eda" alt="English careers share image" style="width: 100%; aspect-ratio: 1200 / 630; display: block; border-radius: 14px; box-shadow: 0 1px 2px rgba(38,59,99,0.08)">
+      <img src="/_blob/5af05c90a8528634f507236021d7e38a" alt="Arabic careers share image" style="width: 100%; aspect-ratio: 1200 / 630; display: block; border-radius: 14px; box-shadow: 0 1px 2px rgba(38,59,99,0.08)">
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":2280}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

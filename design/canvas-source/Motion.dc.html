@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mawred motion language</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3859A0}a:hover{color:#263B63}
+@keyframes mwRipple{0%{transform:scale(.25);opacity:.6}100%{transform:scale(1);opacity:0}}
+@keyframes mwShimmer{0%{background-position:150% 0}100%{background-position:-50% 0}}
+@keyframes mwPulse{0%{box-shadow:0 0 0 0 rgba(242,184,97,.55)}70%{box-shadow:0 0 0 10px rgba(242,184,97,0)}100%{box-shadow:0 0 0 0 rgba(242,184,97,0)}}
+@keyframes mwFill{0%,10%{height:8%}45%,100%{height:66%}}
+@keyframes mwWave{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes mwSlideL{0%,15%{opacity:0;transform:translateX(-8px)}40%,85%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(0)}}
+@keyframes mwSlideR{0%,15%{opacity:0;transform:translateX(8px)}40%,85%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(0)}}
+@keyframes mwStamp{0%,20%{opacity:0;transform:rotate(-6deg) scale(1.25)}32%,90%{opacity:1;transform:rotate(-6deg) scale(1)}100%{opacity:0;transform:rotate(-6deg) scale(1)}}
+@keyframes mwDrop{0%,30%{opacity:0;transform:translateY(-10px)}45%{opacity:1}90%,100%{opacity:0;transform:translateY(46px)}}
+@keyframes mwLift{0%,15%{transform:translateY(0) rotate(0);box-shadow:0 1px 2px rgba(38,59,99,.08)}30%,65%{transform:translateY(-6px) rotate(1.5deg) scale(1.02);box-shadow:0 16px 32px rgba(38,59,99,.18)}80%,100%{transform:translateY(0) rotate(0);box-shadow:0 1px 2px rgba(38,59,99,.08)}}
+.mw-ring{animation:mwRipple 1.5s cubic-bezier(.22,1,.36,1) infinite}
+.mw-ring.d1{animation-delay:.5s}.mw-ring.d2{animation-delay:1s}
+.mw-press{animation:mwRipple 1.6s cubic-bezier(.22,1,.36,1) infinite}
+.mw-ok{animation:mwRipple 2s cubic-bezier(.22,1,.36,1) infinite}
+.mw-ok.d1{animation-delay:.09s}.mw-ok.d2{animation-delay:.18s}
+.mw-shimmer{background:linear-gradient(90deg,#E6EFFB 30%,#F4F8FD 50%,#E6EFFB 70%);background-size:300% 100%;animation:mwShimmer 1.4s linear infinite}
+.mw-pulse{animation:mwPulse 1.6s cubic-bezier(.22,1,.36,1) infinite}
+.mw-fill{animation:mwFill 3.2s cubic-bezier(.22,1,.36,1) infinite}
+.mw-wave{animation:mwWave 1.8s linear infinite}
+.mw-ltr{animation:mwSlideL 2.4s cubic-bezier(.22,1,.36,1) infinite}
+.mw-rtl{animation:mwSlideR 2.4s cubic-bezier(.22,1,.36,1) infinite}
+.mw-stamp{animation:mwStamp 3s cubic-bezier(.22,1,.36,1) infinite}
+.mw-drop{animation:mwDrop 3s cubic-bezier(.22,1,.36,1) infinite}
+.mw-lift{animation:mwLift 3s cubic-bezier(.22,1,.36,1) infinite}
+.mw-still *{animation:none !important}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="width: 1600px; height: 1640px; box-sizing: border-box; background: #FFFFFF; font-family: 'Readex Pro', 'Segoe UI', system-ui, sans-serif; color: #182238; padding: 72px 80px; display: flex; flex-direction: column; gap: 48px">
+
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">07 · Motion language</div>
+      <h2 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 500; letter-spacing: -0.015em">Everything moves like water settling.</h2>
+    </div>
+    <p style="margin: 0; max-width: 560px; font-size: 16px; line-height: 1.6; color: #46526A">Soft spring for surfaces, no overshoot on data. 150 ms micro, 250 ms component, 400 ms page. Use the Tweaks toggle to preview the reduced-motion state.</p>
+  </header>
+
+  <section style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+    <div style="border-radius: 14px; background: #F4F8FD; height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center">
+      <div class="mw-ring" style="position: absolute; width: 150px; height: 150px; border-radius: 50%; border: 2px solid #5B88D6"></div>
+      <div class="mw-ring d1" style="position: absolute; width: 150px; height: 150px; border-radius: 50%; border: 2px solid #5B88D6"></div>
+      <div class="mw-ring d2" style="position: absolute; width: 150px; height: 150px; border-radius: 50%; border: 2px solid #5B88D6"></div>
+      <img src="/_blob/11c6b16279fd6fcfae32e3a210c37db1" alt="" style="width: 56px; height: 56px; position: relative">
+      <span style="position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 500">Loader · three rings</span>
+    </div>
+    <div style="border-radius: 14px; background: #F4F8FD; height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center">
+      <button type="button" style="position: relative; overflow: hidden; height: 44px; padding: 0 22px; border-radius: 10px; border: none; background: #4570C0; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 500">
+        <span class="mw-press" style="position: absolute; left: 30%; top: 50%; width: 180px; height: 180px; margin: -90px 0 0 -90px; border-radius: 50%; background: rgba(255,255,255,0.45)"></span>
+        <span style="position: relative">Submit request</span>
+      </button>
+      <span style="position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 500">Press ripple · from pointer</span>
+    </div>
+    <div style="border-radius: 14px; background: #F4F8FD; height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center">
+      <div class="mw-ok" style="position: absolute; width: 170px; height: 170px; border-radius: 50%; border: 2px solid #5CC29A"></div>
+      <div class="mw-ok d1" style="position: absolute; width: 170px; height: 170px; border-radius: 50%; border: 2px solid #5CC29A"></div>
+      <div class="mw-ok d2" style="position: absolute; width: 170px; height: 170px; border-radius: 50%; border: 2px solid #5CC29A"></div>
+      <div style="position: relative; width: 56px; height: 56px; border-radius: 50%; background: #5CC29A; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0E1626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+      <span style="position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 500">Success · rings from the check</span>
+    </div>
+    <div style="border-radius: 14px; background: #F4F8FD; height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 18px">
+      <div style="width: 220px; height: 130px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 2px 4px rgba(38,59,99,0.05), 0 6px 16px rgba(38,59,99,0.08); padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; position: relative">
+        <div style="font-size: 14px; font-weight: 500">Day off · 22 Oct</div>
+        <div style="font-size: 12px; color: #5E6A82">Sara Al-Harbi</div>
+        <div class="mw-stamp" style="position: absolute; right: 14px; bottom: 14px; padding: 6px 12px; border: 2px solid #17734F; border-radius: 8px; color: #17734F; font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase">Approved</div>
+        <span class="mw-drop" style="position: absolute; left: 40px; top: 4px; width: 7px; height: 9px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: #7FA6E3"></span>
+        <span class="mw-drop" style="position: absolute; left: 110px; top: 0; width: 6px; height: 8px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: #4FB3BF; animation-delay: .15s"></span>
+        <span class="mw-drop" style="position: absolute; left: 170px; top: 6px; width: 7px; height: 9px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: #9B8CE8; animation-delay: .3s"></span>
+      </div>
+      <span style="position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 500">Approval stamp · droplet confetti</span>
+    </div>
+
+    <div style="border-radius: 14px; background: #F4F8FD; height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 24px">
+      <div style="width: 96px; height: 96px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCE3EE; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; padding: 10px; box-sizing: border-box; opacity: 0.55">
+        <span style="background: #182238"></span><span style="background: #182238"></span><span></span><span style="background: #182238"></span><span></span><span style="background: #182238"></span>
+        <span style="background: #182238"></span><span></span><span style="background: #182238"></span><span></span><span style="background: #182238"></span><span style="background: #182238"></span>
+        <span></span><span style="background: #182238"></span><span></span><span style="background: #182238"></span><span></span><span></span>
+        <span style="background: #182238"></span><span></span><span style="background: #182238"></span><span style="background: #182238"></span><span></span><span style="background: #182238"></span>
+        <span style="background: #182238"></span><span style="background: #182238"></span><span></span><span></span><span style="background: #182238"></span><span></span>
+        <span></span><span style="background: #182238"></span><span style="background: #182238"></span><span></span><span style="background: #182238"></span><span style="background: #182238"></span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #8A5A10"><span class="mw-pulse" style="width: 10px; height: 10px; border-radius: 50%; background: #F2B861"></span>Waiting for scan…</div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #E7F6EF; color: #17734F; font-size: 13px; font-weight: 500"><span style="width: 8px; height: 8px; border-radius: 50%; background: #3FAE82"></span>Connected</div>
+      </div>
+      <span style="position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 500">OpenWA pairing · QR dissolves to a ripple</span>
+    </div>
+    <div style="border-radius: 14px; background: #F4F8FD; height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 20px">
+      <div style="width: 14px; height: 150px; border-radius: 999px; background: #E6EFFB; position: relative; overflow: hidden">
+        <div class="mw-fill" style="position: absolute; left: 0; right: 0; top: 0; background: #5B88D6; border-radius: 0 0 6px 6px; overflow: hidden">
+          <svg class="mw-wave" aria-hidden="true" width="56" height="6" viewBox="0 0 56 6" style="position: absolute; bottom: -2px; left: 0"><path d="M0 3c3.5 0 3.5-3 7-3s3.5 3 7 3 3.5-3 7-3 3.5 3 7 3 3.5-3 7-3 3.5 3 7 3 3.5-3 7-3 3.5 3 7 3v3H0z" fill="#5B88D6"/></svg>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 22px; font-size: 13px">
+        <span style="color: #182238; font-weight: 500">Welcome</span><span style="color: #182238; font-weight: 500">Company profile</span><span style="color: #3859A0; font-weight: 500">Languages</span><span style="color: #5E6A82">First branch</span>
+      </div>
+      <span style="position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 500">Wizard rail · fills like water</span>
+    </div>
+    <div style="border-radius: 14px; background: #F4F8FD; height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 16px">
+      <div class="mw-ltr" style="width: 120px; height: 120px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 2px 4px rgba(38,59,99,0.05), 0 6px 16px rgba(38,59,99,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; color: #46526A">EN · from left</div>
+      <div class="mw-rtl" lang="ar" style="width: 120px; height: 120px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 2px 4px rgba(38,59,99,0.05), 0 6px 16px rgba(38,59,99,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; color: #46526A">عربي · من اليمين</div>
+      <span style="position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 500">Page enter · fade + 8 px in reading direction</span>
+    </div>
+    <div style="border-radius: 14px; background: #F4F8FD; height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 10px; width: 120px">
+        <div class="mw-shimmer" style="height: 12px; border-radius: 6px"></div>
+        <div class="mw-shimmer" style="height: 12px; width: 70%; border-radius: 6px"></div>
+        <div class="mw-shimmer" style="height: 44px; border-radius: 10px"></div>
+      </div>
+      <div class="mw-lift" style="width: 120px; padding: 12px; border-radius: 12px; background: #FFFFFF; display: flex; flex-direction: column; gap: 6px; box-sizing: border-box">
+        <span style="font-size: 13px; font-weight: 500">Morning shift</span><span style="font-size: 12px; color: #5E6A82; font-variant-numeric: tabular-nums">08:00 – 16:00</span>
+      </div>
+      <span style="position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 500">Skeleton shimmer · drag lift and settle</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 20px; font-weight: 500">Motion spec</div>
+    <div style="border: 1px solid #DCE3EE; border-radius: 14px; overflow: hidden; font-size: 13px; line-height: 1.45">
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); background: #F6F8FC; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; color: #46526A">
+        <div style="padding: 12px 16px">Name</div><div style="padding: 12px 16px">Trigger</div><div style="padding: 12px 16px">Duration</div><div style="padding: 12px 16px">Easing · choreography</div><div style="padding: 12px 16px">Reduced motion</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Micro feedback</div><div style="padding: 10px 16px; color: #46526A">Hover, press, toggle</div><div style="padding: 10px 16px; color: #46526A">150 ms</div><div style="padding: 10px 16px; color: #46526A">ease-soft; color and shadow only</div><div style="padding: 10px 16px; color: #46526A">Instant state change</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Component enter / exit</div><div style="padding: 10px 16px; color: #46526A">Popover, menu, toast, sheet</div><div style="padding: 10px 16px; color: #46526A">250 ms in · 150 ms out</div><div style="padding: 10px 16px; color: #46526A">ease-spring in, ease-exit out; scale .97→1 + fade</div><div style="padding: 10px 16px; color: #46526A">150 ms fade, no scale</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Page transition</div><div style="padding: 10px 16px; color: #46526A">Route change</div><div style="padding: 10px 16px; color: #46526A">400 ms</div><div style="padding: 10px 16px; color: #46526A">ease-soft; fade + 8 px slide in reading direction (−8 → 0 LTR, +8 → 0 RTL)</div><div style="padding: 10px 16px; color: #46526A">150 ms crossfade</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Press ripple</div><div style="padding: 10px 16px; color: #46526A">Button / card press</div><div style="padding: 10px 16px; color: #46526A">450 ms</div><div style="padding: 10px 16px; color: #46526A">ease-soft; circle from pointer, scale .25→1, opacity .35→0</div><div style="padding: 10px 16px; color: #46526A">Pressed tint only</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Success ripple</div><div style="padding: 10px 16px; color: #46526A">Request submitted, saved</div><div style="padding: 10px 16px; color: #46526A">600 ms · 3 rings, 90 ms stagger</div><div style="padding: 10px 16px; color: #46526A">ease-soft; check draws 200 ms, then rings</div><div style="padding: 10px 16px; color: #46526A">Static check + one ring</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Loader</div><div style="padding: 10px 16px; color: #46526A">Wait &gt; 300 ms</div><div style="padding: 10px 16px; color: #46526A">1500 ms loop · 500 ms stagger</div><div style="padding: 10px 16px; color: #46526A">ease-soft; three rings from the drop</div><div style="padding: 10px 16px; color: #46526A">Static symbol + "Loading…"</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Approval stamp</div><div style="padding: 10px 16px; color: #46526A">Approve action</div><div style="padding: 10px 16px; color: #46526A">250 ms stamp · 600 ms ripple · 900 ms droplets</div><div style="padding: 10px 16px; color: #46526A">ease-spring stamp (scale 1.25→1, −6°); 8–12 droplets fall with ease-soft</div><div style="padding: 10px 16px; color: #46526A">Stamp fades in, no droplets</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Integration connect</div><div style="padding: 10px 16px; color: #46526A">OpenWA paired</div><div style="padding: 10px 16px; color: #46526A">300 ms dissolve · 600 ms ripple · 250 ms badge</div><div style="padding: 10px 16px; color: #46526A">QR modules fade out center-first, ripple, then "Connected" badge springs in</div><div style="padding: 10px 16px; color: #46526A">Crossfade QR → badge</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Waiting dot</div><div style="padding: 10px 16px; color: #46526A">Pairing, syncing</div><div style="padding: 10px 16px; color: #46526A">1600 ms loop</div><div style="padding: 10px 16px; color: #46526A">ease-soft; halo 0→10 px, fades</div><div style="padding: 10px 16px; color: #46526A">Solid dot + text status</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Wizard rail fill</div><div style="padding: 10px 16px; color: #46526A">Step completed</div><div style="padding: 10px 16px; color: #46526A">400 ms per step</div><div style="padding: 10px 16px; color: #46526A">ease-soft; wave surface drifts while filling</div><div style="padding: 10px 16px; color: #46526A">Instant fill, no wave</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Drag lift / drop</div><div style="padding: 10px 16px; color: #46526A">Kanban card, roster shift</div><div style="padding: 10px 16px; color: #46526A">150 ms lift · 250 ms settle</div><div style="padding: 10px 16px; color: #46526A">shadow-lg, scale 1.02, tilt 1.5° (−1.5° in RTL); settle with ease-spring</div><div style="padding: 10px 16px; color: #46526A">Shadow only, no tilt or scale</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Count-up · chart draw</div><div style="padding: 10px 16px; color: #46526A">KPI or chart enters view</div><div style="padding: 10px 16px; color: #46526A">800 ms · 600 ms, 60 ms series stagger</div><div style="padding: 10px 16px; color: #46526A">ease-soft only, never overshoot data</div><div style="padding: 10px 16px; color: #46526A">Final values immediately</div></div>
+      <div style="display: grid; grid-template-columns: 200px 200px 220px 300px minmax(0, 1fr); border-top: 1px solid #EDF1F7"><div style="padding: 10px 16px; font-weight: 500">Skeleton shimmer</div><div style="padding: 10px 16px; color: #46526A">Content loading</div><div style="padding: 10px 16px; color: #46526A">1400 ms loop</div><div style="padding: 10px 16px; color: #46526A">linear; Mist 50 band across Mist 100, travels in reading direction</div><div style="padding: 10px 16px; color: #46526A">Static Mist 100 blocks</div></div>
+    </div>
+    <div style="display: flex; gap: 24px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #46526A">
+      <span>--ease-soft: cubic-bezier(0.22, 1, 0.36, 1)</span><span>--ease-spring: linear(…) · 2.5% overshoot, surfaces only</span><span>--ease-exit: cubic-bezier(0.4, 0, 1, 1)</span>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"reducedMotion":{"editor":"boolean","default":false},"$preview":{"width":1600,"height":1640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const still = this.props.reducedMotion ?? false;
+    return { rootClass: still ? 'mw-still' : '' };
+  }
+}
+</script>
+</body>
+</html>

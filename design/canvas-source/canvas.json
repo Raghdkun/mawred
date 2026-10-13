@@ -1,0 +1,224 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-13T15:45:00Z"
+  },
+  "title": "Mawred — Brand & Design System",
+  "launch": {
+    "view": "canvas",
+    "page": "brand"
+  },
+  "pages": [
+    {
+      "id": "brand",
+      "name": "Brand board"
+    },
+    {
+      "id": "system",
+      "name": "Design system"
+    },
+    {
+      "id": "illus",
+      "name": "Illustrations"
+    }
+  ],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1600,
+      "h": 1100,
+      "title": "01 · Brand overview",
+      "page": "brand"
+    },
+    "Logo.dc.html": {
+      "x": 1680,
+      "y": 0,
+      "w": 1600,
+      "h": 2560,
+      "title": "02 · Logo system",
+      "page": "brand"
+    },
+    "AppAssets.dc.html": {
+      "x": 3360,
+      "y": 0,
+      "w": 1600,
+      "h": 2280,
+      "title": "03 · App icons, splash & channel headers",
+      "page": "brand"
+    },
+    "Color.dc.html": {
+      "x": 0,
+      "y": 2960,
+      "w": 1600,
+      "h": 2660,
+      "title": "04 · Color & semantic tokens",
+      "page": "brand"
+    },
+    "Type.dc.html": {
+      "x": 1680,
+      "y": 2960,
+      "w": 1600,
+      "h": 1960,
+      "title": "05 · Typography",
+      "page": "brand"
+    },
+    "Icons.dc.html": {
+      "x": 3360,
+      "y": 2960,
+      "w": 1600,
+      "h": 1340,
+      "title": "06 · Shape, depth & iconography",
+      "page": "brand"
+    },
+    "Motion.dc.html": {
+      "x": 5040,
+      "y": 2960,
+      "w": 1600,
+      "h": 1640,
+      "title": "07 · Motion language",
+      "page": "brand"
+    },
+    "DSActions.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 5952,
+      "h": 2560,
+      "title": "Actions & inputs — Light LTR · Light RTL · Dark LTR · Dark RTL",
+      "page": "system"
+    },
+    "DSNavigation.dc.html": {
+      "x": 0,
+      "y": 2960,
+      "w": 5952,
+      "h": 2200,
+      "title": "Navigation — Light LTR · Light RTL · Dark LTR · Dark RTL",
+      "page": "system"
+    },
+    "DSData.dc.html": {
+      "x": 0,
+      "y": 5560,
+      "w": 5952,
+      "h": 2700,
+      "title": "Data display — Light LTR · Light RTL · Dark LTR · Dark RTL",
+      "page": "system"
+    },
+    "DSFeedback.dc.html": {
+      "x": 0,
+      "y": 8660,
+      "w": 5952,
+      "h": 2400,
+      "title": "Overlays, feedback & integration setup — Light LTR · Light RTL · Dark LTR · Dark RTL",
+      "page": "system"
+    },
+    "IlloScenes.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1600,
+      "h": 2520,
+      "title": "08 · Scenes: login, onboarding, setup",
+      "page": "illus"
+    },
+    "IlloEmpty.dc.html": {
+      "x": 1680,
+      "y": 0,
+      "w": 1600,
+      "h": 1760,
+      "title": "09 · Empty states",
+      "page": "illus"
+    },
+    "IlloSystem.dc.html": {
+      "x": 3360,
+      "y": 0,
+      "w": 1600,
+      "h": 1840,
+      "title": "10 · Error, system and success moments",
+      "page": "illus"
+    },
+    "IlloAssets.dc.html": {
+      "x": 5040,
+      "y": 0,
+      "w": 1600,
+      "h": 1720,
+      "title": "11 · People, avatars and certificate",
+      "page": "illus"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Logo.dc.html",
+    "AppAssets.dc.html",
+    "Color.dc.html",
+    "Type.dc.html",
+    "Icons.dc.html",
+    "Motion.dc.html",
+    "DSActions.dc.html",
+    "DSNavigation.dc.html",
+    "DSData.dc.html",
+    "DSFeedback.dc.html",
+    "IlloScenes.dc.html",
+    "IlloEmpty.dc.html",
+    "IlloSystem.dc.html",
+    "IlloAssets.dc.html"
+  ],
+  "notes": {
+    "t_brand": {
+      "x": 0,
+      "y": -300,
+      "text": "Mawred · مَورِد — Brand board",
+      "kind": "title1",
+      "maxW": 4960,
+      "page": "brand"
+    },
+    "t_found": {
+      "x": 0,
+      "y": 2660,
+      "text": "Foundations — color, type, shape, motion",
+      "kind": "title1",
+      "maxW": 6640,
+      "page": "brand"
+    },
+    "t_act": {
+      "x": 0,
+      "y": -300,
+      "text": "Actions & inputs",
+      "kind": "title1",
+      "maxW": 5952,
+      "page": "system"
+    },
+    "t_nav": {
+      "x": 0,
+      "y": 2660,
+      "text": "Navigation",
+      "kind": "title1",
+      "maxW": 5952,
+      "page": "system"
+    },
+    "t_data": {
+      "x": 0,
+      "y": 5260,
+      "text": "Data display",
+      "kind": "title1",
+      "maxW": 5952,
+      "page": "system"
+    },
+    "t_feed": {
+      "x": 0,
+      "y": 8360,
+      "text": "Overlays, feedback & integration setup",
+      "kind": "title1",
+      "maxW": 5952,
+      "page": "system"
+    },
+    "t_illus": {
+      "x": 0,
+      "y": -300,
+      "text": "Illustration system — flat, soft gradient, built on the ripple",
+      "kind": "title1",
+      "maxW": 6640,
+      "page": "illus"
+    }
+  },
+  "designSystems": []
+}

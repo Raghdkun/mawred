@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mawred error, system and success illustrations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3859A0}a:hover{color:#263B63}
+</style>
+</helmet>
+<div style="width: 1600px; height: 1840px; box-sizing: border-box; background: #FFFFFF; font-family: 'Readex Pro', 'Segoe UI', system-ui, sans-serif; color: #182238; padding: 72px 80px; display: flex; flex-direction: column; gap: 40px">
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">10 · Error, system and success</div>
+      <h2 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 500; letter-spacing: -0.015em">Calm when it breaks, warm when it works.</h2>
+    </div>
+    <p style="margin: 0; max-width: 560px; font-size: 16px; line-height: 1.6; color: #46526A">Error art stays soft: no red alarms, just the drop in an awkward spot. The code sits in type next to the art, never inside it. Success moments animate their rings outward from the check.</p>
+  </header>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{errors}}" as="e" hint-placeholder-count="5">
+      <div style="border-radius: 14px; border: 1px solid #DCE3EE; padding: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center">
+        <img src="{{e.src}}" alt="{{e.alt}}" style="width: 360px; height: 260px; display: block">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #EDF1F7; color: #46526A">{{e.code}}</span>
+        <span style="font-size: 20px; font-weight: 600">{{e.t}}</span>
+        <span style="font-size: 14px; line-height: 1.55; color: #46526A">{{e.b}}</span>
+        <div lang="ar" dir="rtl" style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #EDF1F7; padding-top: 10px; width: 100%; align-items: center">
+          <span style="font-size: 20px; font-weight: 600; line-height: 1.5">{{e.ta}}</span>
+          <span style="font-size: 14px; line-height: 1.75; color: #46526A">{{e.ba}}</span>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 4px"><span style="height: 36px; padding: 0 14px; border-radius: 10px; background: #4570C0; color: #FFFFFF; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center">{{e.c}}</span><span lang="ar" style="height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid #C3CDDC; color: #182238; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center">{{e.ca}}</span></div>
+      </div>
+    </sc-for>
+    <div style="border-radius: 14px; background: #0E1626; padding: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; text-align: center">
+      <img src="/_blob/a7d312dbbcc3334d3b2c04736735b3a1" alt="Offline, dark" style="width: 360px; height: 260px; display: block">
+      <span style="font-size: 20px; font-weight: 600; color: #E8EEF8">You're offline</span>
+      <span style="font-size: 14px; color: #AEBBD0">Dark version · same art, dark palette</span>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 20px; font-weight: 500">Success moments · 300 × 240</div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px">
+      <sc-for list="{{wins}}" as="w" hint-placeholder-count="3">
+        <div style="border-radius: 14px; border: 1px solid #DCE3EE; padding: 18px; display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center">
+          <img src="{{w.src}}" alt="{{w.alt}}" style="width: 300px; height: 240px; display: block">
+          <span style="font-size: 18px; font-weight: 600">{{w.t}}</span>
+          <span style="font-size: 13px; color: #46526A">{{w.b}}</span>
+          <span lang="ar" dir="rtl" style="font-size: 18px; font-weight: 600; line-height: 1.5; border-top: 1px solid #EDF1F7; padding-top: 8px; width: 100%">{{w.ta}}</span>
+          <span lang="ar" dir="rtl" style="font-size: 13px; line-height: 1.7; color: #46526A">{{w.ba}}</span>
+          <span style="font-size: 11px; color: #5E6A82">{{w.file}}</span>
+        </div>
+      </sc-for>
+      <div style="border-radius: 14px; background: #0E1626; padding: 18px; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; text-align: center">
+        <img src="/_blob/e14dafdc8910dc71364d5408ddee6029" alt="Approved, dark" style="width: 300px; height: 240px; display: block">
+        <span style="font-size: 18px; font-weight: 600; color: #E8EEF8">Approved</span>
+        <span style="font-size: 13px; color: #AEBBD0">Pairs with the approval-stamp motion (07)</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":1840}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const B = (id) => '/_blob/' + id;
+    const errors = [
+      { src: B('841ebf0cb0df28d5b64edc17650a4a25'), alt: 'A padlock with the drop beside it', code: '403', t: 'You don’t have access', b: 'Ask your HR admin for the right role.', c: 'Go home', ta: 'ليست لديك صلاحية', ba: 'اطلب من مسؤول الموارد البشرية الدور المناسب.', ca: 'الرئيسية' },
+      { src: B('d41f5c514c38523df72d90b3098b51de'), alt: 'A signpost with blank signs and the drop', code: '404', t: 'We couldn’t find that page', b: 'It may have moved. Head back home or search.', c: 'Go home', ta: 'لم نجد هذه الصفحة', ba: 'ربما نُقلت. عد إلى الرئيسية أو ابحث.', ca: 'الرئيسية' },
+      { src: B('d6d858089211bf45de2719698ce01340'), alt: 'A cracked pipe dripping into a ripple, with a wrench', code: '500', t: 'Something went wrong on our side', b: 'We’ve been notified. Try again in a moment.', c: 'Try again', ta: 'حدث خطأ من جهتنا', ba: 'تم إبلاغنا. حاول مجددًا بعد قليل.', ca: 'أعد المحاولة' },
+      { src: B('e2040099d6ff1ec620cd31da96d68a67'), alt: 'A cloud with a slash and drops below', code: 'offline', t: 'You’re offline', b: 'Check-ins and requests are saved and send when you’re back.', c: 'Retry now', ta: 'أنت غير متصل', ba: 'تُحفظ عمليات الحضور والطلبات وتُرسل عند عودة الاتصال.', ca: 'أعد المحاولة' },
+      { src: B('441b1b08c0f6836114cb9c72e02c36b5'), alt: 'The drop in a hard hat between two traffic cones', code: 'maintenance', t: 'Back shortly', b: 'Mawred is being updated. Your data is safe.', c: 'Check status', ta: 'نعود قريبًا', ba: 'يجري تحديث مورد. بياناتك في أمان.', ca: 'حالة الخدمة' }
+    ];
+    const wins = [
+      { src: B('7466c49d7b3e48934842a4b077acd81b'), alt: 'A paper plane leaving a trail of droplets', file: 'mw-success-submitted.svg', t: 'Request sent', b: 'Omar Haddad will review it.', ta: 'تم إرسال الطلب', ba: 'سيراجعه عمر حداد.' },
+      { src: B('5a0515cf47d6820c5887ea9ba47cf920'), alt: 'A check with rings and droplet confetti', file: 'mw-success-approved.svg', t: 'Approved', b: 'Your day off on 22 Oct is confirmed.', ta: 'تمت الموافقة', ba: 'تم تأكيد إجازتك يوم 22 أكتوبر.' },
+      { src: B('d306f0b1a7e1b4be3dac68c1ac7404d9'), alt: 'Two plug halves joined, a chat bubble and a check', file: 'mw-success-connected.svg', t: 'WhatsApp connected', b: 'Notifications now reach people on WhatsApp.', ta: 'تم ربط واتساب', ba: 'تصل الإشعارات الآن عبر واتساب.' }
+    ];
+    return { errors, wins };
+  }
+}
+</script>
+</body>
+</html>

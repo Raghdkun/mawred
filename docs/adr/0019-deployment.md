@@ -1,0 +1,23 @@
+# ADR-0019: Single-VPS Docker Compose deployment with zero-downtime rollout
+
+- Status: Proposed
+- Date: 2026-10-13
+
+## Decision
+- **Host**: Ubuntu 24.04 LTS on a Hostinger KVM VPS.
+  - **KVM 4 (4 vCPU / 16 GB / 200 GB NVMe)**, decided (D20): ClamAV is on (~1.2–1.5 GB), plus Gotenberg Chromium, WAHA (GOWS, light), GlitchTip and SSR.
+  - A memory budget is documented in `deploy/sizing.md`.
+- **Services**: `caddy`, `app` (×1, ×2 during rollout), `horizon`, `scheduler`, `reverb`, `postgres` (18), `redis` (AOF on, separate DBs for cache/queue/session), `gotenberg`, `waha`, `clamav` (on by default, D20), `ssr`, and `glitchtip` (web + worker, sharing Postgres and Redis with a separate DB, D21). Each has a memory limit, a healthcheck, `restart: unless-stopped` and json-file log rotation.
+- **Images**: built in GitHub Actions, pushed to GHCR, tagged with the git SHA. The server only pulls.
+- **Rollout** (`deploy/deploy.sh`, run via SSH from Actions):
+  1. pull the new images;
+  2. `php artisan migrate --force` in a one-off container using the new image (migrations must be **expand-only** and backward compatible with the running code; "contract" migrations ship in a later release);
+  3. start the new `app` container next to the old one (docker-rollout style) and warm caches (`optimize`, `event:cache`, `view:cache`, Wayfinder/ziggy build-time already);
+  4. wait for `/health/ready` (DB, Redis, queue, storage, Gotenberg) to pass;
+  5. Caddy health checks shift traffic, and the old container drains and stops;
+  6. `horizon:terminate` and restart `reverb` and `scheduler` on the new tag;
+  7. a post-deploy smoke check. On failure, revert the tag and re-run the steps (migrations are forward-compatible, so no down-migration is needed).
+- **Backups**: spatie/laravel-backup runs nightly (DB dump + private disk) to **Hostinger Object Storage** (D15). Because it is the same vendor as the VPS: archives are encrypted (backup password in env and escrowed offline), the bucket keys are write-only and can't delete, versioning/object-lock is used if available, and a quarterly copy goes to a second location named in the runbook, keeping 7 daily, 4 weekly, 12 monthly and 2 yearly copies. A monthly restore drill restores to a scratch Compose project and runs the smoke suite (runbook). Hostinger snapshots are an extra layer only; they keep one slot.
+- **Monitoring**: Pulse (with its own DB connection), **GlitchTip** self-hosted with the Sentry SDK (D21; errors and performance, `request_id` correlation, PII scrubbing), a free external uptime ping (it can catch the whole host being down), `/health/live` and `/health/ready`, a cAdvisor-lite approach via `docker stats` + a node-exporter-free script that alerts on disk > 80 % and memory > 90 % through the notification system (email). An optional external uptime ping.
+- **Hardening**: `deploy/harden.sh` sets up a non-root deploy user, SSH keys only, root login disabled, UFW 22/80/443, fail2ban (sshd + Caddy auth-failure jail), unattended-upgrades, a swap file, Docker log rotation and UTC.
+- **Mail**: always through an external transactional provider. Hostinger throttles direct SMTP to 5/min anyway.

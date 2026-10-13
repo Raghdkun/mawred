@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mawred empty states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3859A0}a:hover{color:#263B63}
+</style>
+</helmet>
+<div style="width: 1600px; height: 1760px; box-sizing: border-box; background: #FFFFFF; font-family: 'Readex Pro', 'Segoe UI', system-ui, sans-serif; color: #182238; padding: 72px 80px; display: flex; flex-direction: column; gap: 40px">
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: #46526A">09 · Empty states</div>
+      <h2 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 500; letter-spacing: -0.015em">Still water: nothing here yet.</h2>
+    </div>
+    <p style="margin: 0; max-width: 560px; font-size: 16px; line-height: 1.6; color: #46526A">One object on a soft blob above still ripples, 240 × 180. Every empty state pairs the picture with a one-line title, one sentence of help and, where there is something to do, one action.</p>
+  </header>
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px">
+    <sc-for list="{{items}}" as="it" hint-placeholder-count="10">
+      <div style="border-radius: 14px; border: 1px solid #DCE3EE; padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: center; align-items: center">
+        <img src="{{it.src}}" alt="{{it.alt}}" style="width: 240px; height: 180px; display: block">
+        <span style="font-size: 16px; font-weight: 600">{{it.t}}</span>
+        <span style="font-size: 13px; line-height: 1.5; color: #46526A; min-height: 40px">{{it.b}}</span>
+        <sc-if value="{{it.hasCta}}" hint-placeholder-val="{{ true }}"><span style="height: 32px; padding: 0 12px; border-radius: 8px; background: #4570C0; color: #FFFFFF; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center">{{it.c}}</span></sc-if>
+        <div lang="ar" dir="rtl" style="display: flex; flex-direction: column; gap: 6px; align-items: center; border-top: 1px solid #EDF1F7; padding-top: 10px; width: 100%">
+          <span style="font-size: 16px; font-weight: 600; line-height: 1.5">{{it.ta}}</span>
+          <span style="font-size: 13px; line-height: 1.7; color: #46526A; min-height: 44px">{{it.ba}}</span>
+          <sc-if value="{{it.hasCta}}" hint-placeholder-val="{{ true }}"><span style="height: 32px; padding: 0 12px; border-radius: 8px; background: #4570C0; color: #FFFFFF; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center">{{it.ca}}</span></sc-if>
+        </div>
+        <span style="font-size: 11px; color: #5E6A82; margin-top: auto">{{it.file}}</span>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr minmax(0, 1.3fr); gap: 24px; align-items: stretch">
+    <div style="border-radius: 14px; background: #0E1626; display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px; flex-direction: column"><img src="/_blob/78c93a57bcc282e3ba40782711312da1" alt="Empty inbox, dark" style="width: 240px; height: 180px; display: block"><span style="font-size: 16px; font-weight: 600; color: #E8EEF8">You're all caught up</span></div>
+    <div style="border-radius: 14px; background: #0E1626; display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px; flex-direction: column"><img src="/_blob/244178a5c5e2c7e9ac796ad502388e20" alt="No search results, dark" style="width: 240px; height: 180px; display: block"><span style="font-size: 16px; font-weight: 600; color: #E8EEF8">No results for "jedah"</span></div>
+    <div style="border-radius: 14px; background: #F6F8FC; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 18px; font-weight: 500">Rules</div>
+      <ul style="margin: 0; padding-inline-start: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.55; color: #46526A">
+        <li>Size: 240 × 180 in pages and cards, 160 × 120 in drawers and tables, hidden under 120 px of height.</li>
+        <li>Every file ships light and dark; the screen picks by theme.</li>
+        <li>No text inside the art, so the same file serves English and Arabic.</li>
+        <li>A filtered list with no matches uses the search state, never "nothing here yet".</li>
+        <li>Enter motion: the ripples expand once (400 ms). Reduced motion: static.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":1760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const B = (id) => '/_blob/' + id;
+    const items = [
+      { src: B('740a404add2f819543bf6b0a35d0ff27'), alt: 'Empty tray with a drop', file: 'mw-empty-inbox.svg', t: 'You’re all caught up', b: 'New approvals and mentions will show up here.', c: '', ta: 'لا جديد لديك', ba: 'ستظهر هنا الموافقات والإشارات الجديدة.', ca: '' },
+      { src: B('9be8c11c360407c07d3fa83363210f43'), alt: 'Blank request papers with a plus', file: 'mw-empty-requests.svg', t: 'No requests yet', b: 'Ask for a day off, to leave early or anything else.', c: 'New request', ta: 'لا توجد طلبات بعد', ba: 'اطلب يوم إجازة أو انصرافًا مبكرًا أو غير ذلك.', ca: 'طلب جديد' },
+      { src: B('8c8dceba29eb367245d72512dfb63764'), alt: 'Blank ID card with the drop-person mark', file: 'mw-empty-employees.svg', t: 'No employees yet', b: 'Add people one by one or import a spreadsheet.', c: 'Import employees', ta: 'لا يوجد موظفون بعد', ba: 'أضف الموظفين واحدًا تلو الآخر أو استورد جدول بيانات.', ca: 'استيراد الموظفين' },
+      { src: B('0abc4add37d11dcce9051f5eeb7f054b'), alt: 'A CV under a magnifier', file: 'mw-empty-candidates.svg', t: 'No candidates yet', b: 'Share the job link or add a candidate by hand.', c: 'Copy job link', ta: 'لا يوجد مرشحون بعد', ba: 'شارك رابط الوظيفة أو أضف مرشحًا يدويًا.', ca: 'نسخ رابط الوظيفة' },
+      { src: B('cbcb024857c2baeb6033ca787017a169'), alt: 'Open book with a bookmark and a drop', file: 'mw-empty-trainings.svg', t: 'No trainings assigned', b: 'Browse the catalog to start a course.', c: 'Browse catalog', ta: 'لا توجد تدريبات مسندة', ba: 'تصفح الكتالوج لبدء دورة.', ca: 'تصفح الكتالوج' },
+      { src: B('8d03c82cb7867b77ee9ce65f787530e4'), alt: 'Chart card with dashed empty bars', file: 'mw-empty-reports.svg', t: 'No saved reports', b: 'Build a report from any dataset, then save it here.', c: 'New report', ta: 'لا توجد تقارير محفوظة', ba: 'أنشئ تقريرًا من أي مجموعة بيانات واحفظه هنا.', ca: 'تقرير جديد' },
+      { src: B('fd4c20165f9f3b18f9402b6c11ef5dc9'), alt: 'Empty calendar with a clock', file: 'mw-empty-schedule.svg', t: 'Nothing scheduled', b: 'Shifts, meetings and trainings will appear here.', c: '', ta: 'لا يوجد شيء مجدول', ba: 'ستظهر هنا المناوبات والاجتماعات والتدريبات.', ca: '' },
+      { src: B('98d02034133e70d27562bf8394282cf8'), alt: 'Shield with settings sliders', file: 'mw-empty-policies.svg', t: 'No policy sets', b: 'Start from a preset or a blank set.', c: 'Create policy set', ta: 'لا توجد مجموعات سياسات', ba: 'ابدأ من قالب جاهز أو من مجموعة فارغة.', ca: 'إنشاء مجموعة سياسات' },
+      { src: B('8dd4216758c7996a30c10c08ef9ec8e4'), alt: 'An unplugged plug and socket', file: 'mw-empty-integrations.svg', t: 'Not connected yet', b: 'Connect WhatsApp to notify people where they already are.', c: 'Set up', ta: 'غير متصل بعد', ba: 'اربط واتساب لتصل الإشعارات حيث يتواجد الناس.', ca: 'إعداد' },
+      { src: B('0dc5e768325d42749da12f16ff5dc42d'), alt: 'Magnifier with a question mark over still water', file: 'mw-empty-search.svg', t: 'No results for “jedah”', b: 'Check the spelling or search all branches.', c: 'Search all branches', ta: 'لا نتائج لـ «جده»', ba: 'تحقق من الإملاء أو ابحث في كل الفروع.', ca: 'البحث في كل الفروع' }
+    ].map(it => ({ ...it, hasCta: !!it.c }));
+    return { items };
+  }
+}
+</script>
+</body>
+</html>
