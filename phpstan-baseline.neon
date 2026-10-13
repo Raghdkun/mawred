@@ -137,9 +137,3 @@ parameters:
 			identifier: match.unhandled
 			count: 3
 			path: database/migrations/2026_10_13_180704_create_pulse_tables.php
-
-		-
-			message: '#^Cannot call method create\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: database/seeders/DatabaseSeeder.php

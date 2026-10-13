@@ -3,14 +3,17 @@
 declare(strict_types=1);
 
 use App\Http\Middleware\ApplyImpersonation;
+use App\Http\Middleware\EnsureSetupComplete;
 use App\Http\Middleware\EnsureTwoFactorEnrolled;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SetAuditContext;
 use App\Http\Middleware\TrackUserSession;
+use App\Support\Errors\DomainRuleViolation;
 use App\Support\Http\ApiErrorRenderer;
 use App\Support\Http\Middleware\AssignRequestId;
 use App\Support\Http\Middleware\EnforceIdempotency;
+use App\Support\Http\WebDomainErrorRenderer;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -42,6 +45,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ApplyImpersonation::class,
             SetAuditContext::class,
             EnsureTwoFactorEnrolled::class,
+            EnsureSetupComplete::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
@@ -53,4 +57,6 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(new ApiErrorRenderer);
+        $exceptions->render(new WebDomainErrorRenderer);
+        $exceptions->dontReport(DomainRuleViolation::class);
     })->create();
