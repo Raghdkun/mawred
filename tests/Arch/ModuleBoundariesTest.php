@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Access\Queries\ScopedQuery;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -72,8 +73,8 @@ foreach ($domains as $domain) {
         arch("{$domain} queries are scope-aware")
             ->expect("{$base}\\Queries")
             ->classes()
-            ->toExtend('App\Domain\Access\Queries\ScopedQuery')
-            ->ignoring('App\Domain\Access\Queries\ScopedQuery');
+            ->toExtend(ScopedQuery::class)
+            ->ignoring(ScopedQuery::class);
     }
 
     if (is_dir(dirname(__DIR__, 2)."/app/Domain/{$domain}/Policies")) {

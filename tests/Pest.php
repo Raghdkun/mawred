@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Domain\Access\Actions\SeedDefaultRoles;
+use App\Domain\Access\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,7 +46,21 @@ expect()->extend('toBeOne', fn () => $this->toBe(1));
 |
 */
 
-function something(): void
+/**
+ * Seed the permission catalog and the default roles (production seeder subset).
+ */
+function seedAccess(): void
 {
-    // ..
+    resolve(SeedDefaultRoles::class)->handle();
+}
+
+/**
+ * A user holding the given seeded or custom roles.
+ */
+function userWithRoles(string ...$roles): User
+{
+    $user = User::factory()->create();
+    $user->syncRoles($roles);
+
+    return $user->fresh() ?? $user;
 }

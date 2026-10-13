@@ -47,11 +47,14 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - **Assets**: use the SVGs from `design/` as-is (never redraw). Module icons `design/icons/mw-*.svg`; logos `design/logo/<variant>/`; app, PWA, email, WhatsApp and OG assets in `design/app-assets/`. Generic glyphs come from lucide-react.
 
 ## Design source paths (actual)
-- Tokens: `design/tokens/mawred-tokens.css` (the brief says `/design/tokens.css`)
-- Icons and logos: `design/icons`, `design/logo/{color,currentColor,dark,mono-blue,white-on-blue}`
-- App assets: `design/app-assets/{svg,png}`; PWA manifest base: `design/manifest.webmanifest`
+- See `design/README.md`. Canonical folders:
+  - Tokens: `design/tokens/mawred-tokens.css` (the brief says `/design/tokens.css`).
+  - Logos and app assets: `design/brand/logo/<variant>/`, `design/brand/app-assets/{svg,png}`, `design/brand/manifest.webmanifest`. (`design/logo` and `design/app-assets` are identical older copies.)
+  - Module icons: `design/icons/mw-*.svg`.
+  - Illustrations: `design/illustrations/current/{svg,png}/{light,dark}/mw-*.svg` (scenes, empty states, system pages, success moments, avatars, certificate frame). `previous-version/` is history only; don't use it.
+  - Canvas source: `design/canvas-source/*.dc.html`. The **motion spec is `Motion.dc.html`** (Brand board 07). DS pages: `DSActions`, `DSNavigation`, `DSData`, `DSFeedback`; also `Color`, `Type`.
 - **`design/handoff.md`**: the per-screen build spec (44 screens) and the global responsive/RTL/dark/motion rules. Read the screen's row before building it.
-- Canvas exports (⏳ D28): `design/motion/` (Brand board 07 motion spec), `design/illustrations/`, `design/screens/`. Don't invent motion or illustration specs; ask if they're missing.
+- Screen frames are still pending (they arrive per phase). Don't invent layouts beyond the handoff and the DS pages; ask.
 
 ## Testing (definition of done)
 - Pest feature tests for every Action, Policy and API endpoint, including **scope-leak** datasets (e.g. branch A cannot see branch B).
