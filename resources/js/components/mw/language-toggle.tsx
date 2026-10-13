@@ -35,6 +35,7 @@ export function LanguageToggle({ compact = false }: { compact?: boolean }) {
             onClick={switchTo}
             disabled={switching}
             aria-label={t('switchLanguage', { language: t(`common:language.${next}`) })}
+            data-test="language-toggle"
             className="text-text-secondary"
         >
             <Languages aria-hidden />

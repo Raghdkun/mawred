@@ -4,7 +4,10 @@
 > **API (D27)**: each phase ships the `/api/v1` endpoints for its employee- and approver-facing features, plus the endpoints the web async widgets use. Admin builders stay web-only.
 > Sizes are relative: S ≈ 1 week, M ≈ 2–3 weeks, L ≈ 4–6 weeks for one engineer working with AI assistance. They are planning signals, not commitments.
 
-## Phase 0 — Foundation (L)
+## Phase 0: Foundation (L) ✅ built, pending CI on GitHub (Actions account issue) and owner review
+> Demo: [docs/demos/phase-0.md](demos/phase-0.md). Deviations: D34 (ESLint 9), D35 (org scopes fail closed until Phase 1), D36 (audit export moves to Phase 8).
+
+## Phase 0: original scope
 
 **Scaffold & tooling**
 - `laravel new` with the React starter kit, in a temp dir and then merged into this repo, because `/design`, `/docs` and `CLAUDE.md` already exist. Then `git init` and the private remote `Raghdkun/mawred` (D14).

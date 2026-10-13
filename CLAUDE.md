@@ -65,11 +65,33 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Visual check via Playwright or Chrome DevTools MCP for every new or changed screen: 390/834/1440 × LTR/RTL in light mode, plus dark for ★ screens (handoff + D32). Compare against `design/screens/` when the frame exists.
 - Before you say "done", run: `composer lint && composer analyse && composer test` and `pnpm lint && pnpm typecheck && pnpm test && pnpm build`. Never claim green without running them.
 
-## Commands (filled in during Phase 0)
-- Dev: `composer dev` (server, queue, reverb, vite, logs)
-- Tests: `composer test`, `php artisan test --filter=…`, `pnpm test`
-- Quality: `composer lint` (pint + rector dry-run), `composer analyse` (larastan), `pnpm lint`, `pnpm typecheck`
-- Seeders: `php artisan db:seed --class=Database\\Seeders\\Production\\ProductionSeeder` | `Demo\\DemoSeeder` | `Performance\\PerformanceSeeder`
+## Commands
+- **Local services**: `docker compose up -d` (Postgres 18 on 5442, Redis on 6389, Gotenberg on 3001, Mailpit on 8025). WAHA and ClamAV are opt-in profiles: `docker compose --profile whatsapp --profile clamav up -d`.
+- **Fresh install**: `php artisan migrate:fresh --seed`, then `php artisan mawred:install --name=… --email=…`, then open the printed one-time link. Use `--relink` to reissue it.
+- **Dev**: `composer dev` (server, queue, Reverb on 8090, Vite, logs) or `php artisan serve` with `pnpm build`.
+- **Tests**:
+  - `composer test`: Pest Unit + Feature + Arch, in parallel, on Postgres.
+  - `composer test:browser`: Pest browser tests (Playwright, EN + AR, axe). Run `pnpm build` first.
+  - `pnpm test`: Vitest.
+- **Quality**:
+  - `composer lint` (Rector, then Pint) / `composer lint:check`
+  - `composer analyse` (Larastan level max; the baseline may only shrink)
+  - `pnpm lint`, `pnpm types:check`, `pnpm format:check`
+- **Generated code**:
+  - `php artisan typescript:transform` (Data → `resources/js/types/generated.d.ts`; CI fails if stale)
+  - `php artisan wayfinder:generate --with-form`
+  - `pnpm icons` (module icons from `design/icons`)
+- **Seeders**: `Database\Seeders\Production\ProductionSeeder` (roles and permissions; idempotent). Demo and Performance seeders arrive in Phase 1.
+- **Production image**: `docker build -f docker/app/Dockerfile -t mawred/app .`. The same image runs app, horizon, scheduler and reverb (`compose.prod.yaml`).
+
+## Gotchas learned in Phase 0
+- Docker Desktop can't bind-mount from `/Volumes/Rag`; bake config into images (see `docker/postgres`).
+- `tailwind-merge` must know the token type scale (`lib/utils.ts`), or `text-body` silently drops colour classes.
+- Logos and illustrations: pass layout classes to the wrapper; never add `hidden`/`block` to the inner `<img>`s.
+- `Event::fake()` also fakes Eloquent events: unique ids come from `HasUlids` (insert-time), never `creating` listeners.
+- Cached objects need `config/cache.php` `serializable_classes`; only value objects listed there may be cached.
+- Wayfinder 0.1 can't type `Route::redirect` (QUERY verb); use a GET closure that returns `to_route()`.
+- Rector's Laravel set rewrites code (Carbon → `Date` facade, anonymous classes → attributes); re-read files before editing them.
 
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.

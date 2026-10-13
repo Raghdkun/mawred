@@ -29,7 +29,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      */
     protected function gate(): void
     {
-        // Replaced by the `system.monitor` permission once Access roles land (Phase 0).
-        Gate::define('viewHorizon', fn (?User $user = null): bool => $user instanceof User && app()->isLocal());
+        // Queue dashboard: holders of `system.view` (ADR-0005), anyone locally.
+        Gate::define('viewHorizon', fn (?User $user = null): bool => app()->isLocal() || ($user instanceof User && $user->can('system.view')));
     }
 }

@@ -8,11 +8,11 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 | laravel/framework | 13.x (13.36) | PHP 8.3–8.5. Upgrade local PHP 8.4.1 to the latest 8.4.x |
 | Starter kit (react) | main | Inertia **v3**, React 19.2 + Compiler, Vite **8**, Tailwind 4.3, Fortify (2FA + passkeys), Wayfinder 0.1, SSR on |
 | inertiajs/inertia-laravel | 3.x | `Inertia::lazy` removed → `optional()` |
-| laravel/sanctum / horizon / reverb / pennant / pulse / boost | 4.3 / 5.50 / 1.12 / 1.26 / 1.8 / 2.10 | all support L13 |
+| laravel/sanctum / horizon / reverb / pennant / pulse / boost | 4.3 / 5.50 / 1.12 / 1.26 / 1.8 / 2.10 | all support L13. ⚠ Reverb pins guzzlehttp/psr7 ^2.6, so Guzzle stays on 7.x |
 | spatie/laravel-permission | 8.x | v7/v8 renamed events and commands; contracts accept `BackedEnum` |
 | spatie/laravel-activitylog | 5.x | ⚠ PHP 8.4; `batch_uuid` removed; namespaces moved |
 | spatie/laravel-medialibrary / translatable / data / query-builder / backup | 11 / 6 / 4 / 7 / 10 | |
-| spatie/laravel-typescript-transformer | 3.x (stable) | v3 is a rewrite |
+| spatie/laravel-typescript-transformer | 3.x (stable) | v3 is a rewrite. ⚠ laravel-data's own transformer targets v2, so Data classes use `#[TypeScript]` + `AttributedClassTransformer` |
 | dedoc/scramble | 0.13 | 0.x |
 | openspout/openspout | 5.x | PHP 8.4 |
 | sentry/sentry-laravel | 4.29 | |
@@ -37,7 +37,9 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 | i18next / react-i18next | 26 / 17 | `laravel-react-i18n` unmaintained since 2024-10 |
 | vite-plugin-pwa | 2.0 | Vite 8 ok |
 | vitest / @testing-library/react | 5.x / 16.3 | |
-| Lint | **Decided: ESLint 10 + Prettier**, replacing the kit's vite-plus (D17) | `eslint-plugin-better-tailwindcss` (logical-properties rule) works with both |
+| playwright | 1.64 | for pest-plugin-browser 5.1 (`pnpm exec playwright install chromium`) |
+| radix-ui (unified) | 1.8 | new shadcn components import from `radix-ui`; ⚠ the CLI wrote `import { cn } from "cn"`, so check generated files |
+| Lint | **ESLint 9.39 + Prettier**, replacing the kit's vite-plus (D17). ⚠ Not ESLint 10: `eslint-plugin-react` and `eslint-plugin-jsx-a11y` don't support it yet | `eslint-plugin-better-tailwindcss` (logical-properties rule) works with both |
 | @fontsource-variable/readex-pro | 5.3 | OFL-1.1, arabic + latin subsets, wght 160–700 |
 
 ## Infra
