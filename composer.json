@@ -95,7 +95,7 @@
         ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php artisan test --parallel"
+            "@php artisan test --parallel --testsuite=Unit,Feature,Arch"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
@@ -118,6 +118,10 @@
         ],
         "analyse": [
             "phpstan analyse --memory-limit=1G --no-progress"
+        ],
+        "test:browser": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test --testsuite=Browser"
         ]
     },
     "extra": {

@@ -42,3 +42,5 @@ yarn-error.log
 /opencode.json
 /opencode.jsonc
 /storage/framework/cache/phpstan
+/tests/Browser/Screenshots
+/test-results

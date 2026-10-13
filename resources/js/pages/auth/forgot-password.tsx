@@ -1,6 +1,7 @@
-// Components
-import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { Form, Head, setLayoutProps } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { DirIcon } from '@/components/mw/dir-icon';
+import { SuccessRipple } from '@/components/mw/success-ripple';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -8,60 +9,72 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { login } from '@/routes';
 import { email } from '@/routes/password';
+import { ArrowLeft } from 'lucide-react';
 
+/** Forgot password (handoff 1b): success shows the "check your email" state with a ripple. */
 export default function ForgotPassword({ status }: { status?: string }) {
+    const { t } = useTranslation('auth');
+
+    setLayoutProps(
+        status
+            ? { title: t('forgot.sentTitle'), description: t('forgot.sentDescription') }
+            : { title: t('forgot.title'), description: t('forgot.description') },
+    );
+
+    const back = (
+        <TextLink
+            href={login()}
+            className="inline-flex items-center gap-1.5 self-center text-small"
+        >
+            <DirIcon>
+                <ArrowLeft aria-hidden className="size-4" />
+            </DirIcon>
+            {t('forgot.backToLogin')}
+        </TextLink>
+    );
+
+    if (status) {
+        return (
+            <>
+                <Head title={t('forgot.pageTitle')} />
+                <SuccessRipple label={t('forgot.sentTitle')} />
+                {back}
+            </>
+        );
+    }
+
     return (
         <>
-            <Head title="Forgot password" />
-
-            {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>
-            )}
-
-            <div className="space-y-6">
-                <Form {...email.form()}>
-                    {({ processing, errors }) => (
-                        <>
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    autoComplete="off"
-                                    autoFocus
-                                    placeholder="email@example.com"
-                                />
-
-                                <InputError message={errors.email} />
-                            </div>
-
-                            <div className="my-6 flex items-center justify-start">
-                                <Button
-                                    className="w-full"
-                                    disabled={processing}
-                                    data-test="email-password-reset-link-button"
-                                >
-                                    {processing && (
-                                        <LoaderCircle className="h-4 w-4 animate-spin" />
-                                    )}
-                                    Email password reset link
-                                </Button>
-                            </div>
-                        </>
-                    )}
-                </Form>
-
-                <div className="space-x-1 text-center text-sm text-muted-foreground">
-                    <span>Or, return to</span>
-                    <TextLink href={login()}>log in</TextLink>
-                </div>
-            </div>
+            <Head title={t('forgot.pageTitle')} />
+            <Form {...email.form()} className="flex flex-col gap-5">
+                {({ processing, errors }) => (
+                    <>
+                        <div className="flex flex-col gap-1.5">
+                            <Label htmlFor="email">{t('login.email')}</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                name="email"
+                                dir="ltr"
+                                autoComplete="username"
+                                autoFocus
+                                required
+                                aria-invalid={errors.email ? true : undefined}
+                            />
+                            <InputError message={errors.email} />
+                        </div>
+                        <Button
+                            size="lg"
+                            className="w-full"
+                            loading={processing}
+                            data-test="email-password-reset-link-button"
+                        >
+                            {t('forgot.submit')}
+                        </Button>
+                    </>
+                )}
+            </Form>
+            {back}
         </>
     );
 }
-
-ForgotPassword.layout = {
-    title: 'Forgot password',
-    description: 'Enter your email to receive a password reset link',
-};

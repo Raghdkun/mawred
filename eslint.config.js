@@ -36,6 +36,7 @@ export default tseslint.config(
             'resources/js/routes/**',
             'resources/js/wayfinder/**',
             'resources/js/types/generated/**',
+            'resources/js/types/generated.d.ts',
             'resources/js/components/ui/**',
         ],
     },
@@ -83,7 +84,12 @@ export default tseslint.config(
         rules: { 'i18next/no-literal-string': 'off' },
     },
     {
-        files: ['*.config.{js,ts}', 'eslint.config.js'],
+        // Single-purpose sign-in pages focus their only field (WCAG-acceptable); dialogs never do.
+        files: ['resources/js/pages/auth/**', 'resources/js/pages/setup/claim.tsx'],
+        rules: { 'jsx-a11y/no-autofocus': 'off' },
+    },
+    {
+        files: ['*.config.{js,ts}', 'eslint.config.js', 'scripts/**'],
         languageOptions: { globals: { ...globals.node } },
     },
     prettier,

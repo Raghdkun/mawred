@@ -99,4 +99,43 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: cp .env.example .env && php artisan key:generate
       - run: pnpm run build
-      - run: php artisan test --parallel
+      - name: Generated TypeScript types are up to date
+        run: php artisan typescript:transform && git diff --exit-code resources/js/types/generated.d.ts
+      - run: php artisan test --parallel --testsuite=Unit,Feature,Arch
+
+  browser:
+    name: Pest browser (EN + AR, axe)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: mawred_testing
+          POSTGRES_USER: mawred
+          POSTGRES_PASSWORD: secret
+        ports: ['5442:5432']
+        options: >-
+          --health-cmd "pg_isready -U mawred" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:8-alpine
+        ports: ['6389:6379']
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: cp .env.example .env && php artisan key:generate
+      - run: pnpm run build
+      - run: php artisan test --testsuite=Browser

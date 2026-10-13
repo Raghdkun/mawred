@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Domain\Access\Actions\SeedDefaultRoles;
 use App\Domain\Access\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\BrowserTestCase;
 use Tests\TestCase;
 
 /*
@@ -21,6 +22,10 @@ use Tests\TestCase;
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->in('Feature');
+
+pest()->extend(BrowserTestCase::class)
+    ->use(RefreshDatabase::class)
+    ->in('Browser');
 
 /*
 |--------------------------------------------------------------------------

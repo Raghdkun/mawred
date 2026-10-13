@@ -45,6 +45,10 @@ final class AccessServiceProvider extends ServiceProvider
         });
 
         Gate::policy(User::class, UserPolicy::class);
+
+        // Operational dashboards (Pulse, API docs) follow the `system.view` permission.
+        Gate::define('viewPulse', fn (?User $user = null): bool => $user instanceof User && $user->can('system.view'));
+        Gate::define('viewApiDocs', fn (?User $user = null): bool => $this->app->isLocal() || ($user instanceof User && $user->can('system.view')));
         Event::subscribe(RecordAuthenticationEvents::class);
 
         Event::listen(

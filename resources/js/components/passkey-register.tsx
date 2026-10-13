@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { usePasskeyRegister } from '@laravel/passkeys/react';
 import { useState } from 'react';
 import InputError from '@/components/input-error';
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function PasskeyRegistration({ onSuccess }: Props) {
+    const { t } = useTranslation('settings');
     const [name, setName] = useState(() => {
         const ua = navigator.userAgent;
 
@@ -59,7 +61,7 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
     if (!isSupported) {
         return (
             <div className="text-sm text-muted-foreground">
-                Passkeys are not supported in this browser.
+                {t('security.passkeys.unsupported')}
             </div>
         );
     }
@@ -67,7 +69,7 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
     if (!showForm) {
         return (
             <Button variant="outline" onClick={() => setShowForm(true)}>
-                Add passkey
+                {t('security.passkeys.add')}
             </Button>
         );
     }
@@ -78,18 +80,17 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
             className="space-y-4 rounded-lg border border-border bg-muted/50 p-4"
         >
             <div className="grid gap-2">
-                <Label htmlFor="passkey-name">Passkey name</Label>
+                <Label htmlFor="passkey-name">{t('security.passkeys.name')}</Label>
                 <Input
                     id="passkey-name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g., MacBook Pro, iPhone"
-                    className="mt-1 block w-full border-foreground/20"
-                    autoFocus
+                    className="mt-1 block w-full"
+                    aria-describedby="passkey-name-hint"
                 />
-                <p className="text-xs text-muted-foreground">
-                    A name helps you identify this passkey later.
+                <p id="passkey-name-hint" className="text-caption text-muted-foreground">
+                    {t('security.passkeys.nameHint')}
                 </p>
             </div>
 
@@ -97,10 +98,12 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
 
             <div className="flex gap-2">
                 <Button type="submit" disabled={isLoading || !name.trim()}>
-                    {isLoading ? 'Registering...' : 'Register passkey'}
+                    {isLoading
+                        ? t('security.passkeys.registering')
+                        : t('security.passkeys.register')}
                 </Button>
                 <Button type="button" variant="ghost" onClick={handleCancel}>
-                    Cancel
+                    {t('common:actions.cancel')}
                 </Button>
             </div>
         </form>

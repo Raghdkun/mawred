@@ -1,0 +1,52 @@
+{
+    "appName": "Mawred",
+    "actions": {
+        "save": "Save",
+        "saveChanges": "Save changes",
+        "cancel": "Cancel",
+        "back": "Back",
+        "next": "Next",
+        "continue": "Continue",
+        "skip": "Skip for now",
+        "close": "Close",
+        "confirm": "Confirm",
+        "delete": "Delete",
+        "edit": "Edit",
+        "retry": "Try again",
+        "search": "Search",
+        "clear": "Clear",
+        "goHome": "Go to home",
+        "copy": "Copy",
+        "copied": "Copied",
+        "loadMore": "Load more",
+        "viewAll": "View all"
+    },
+    "states": {
+        "loading": "Loading…",
+        "empty": { "title": "Nothing here yet", "description": "When there is something to show, it will appear here." },
+        "no-results": { "title": "No matches", "description": "Try a different search or clear the filters." },
+        "error": { "title": "Something went wrong", "description": "We couldn't load this. Please try again in a moment." },
+        "offline": { "title": "You're offline", "description": "Check your connection. We'll reconnect automatically." },
+        "denied": { "title": "You don't have access", "description": "Ask an administrator if you need this page." },
+        "not-found": { "title": "Page not found", "description": "The link may be broken or the page may have moved." }
+    },
+    "status": {
+        "draft": "Draft",
+        "pending": "Pending",
+        "in-review": "In review",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled",
+        "escalated": "Escalated",
+        "returned": "Returned"
+    },
+    "health": {
+        "healthy": "Healthy",
+        "degraded": "Degraded",
+        "disconnected": "Disconnected",
+        "not-configured": "Not configured"
+    },
+    "language": { "en": "English", "ar": "العربية" },
+    "required": "Required",
+    "optional": "Optional"
+}

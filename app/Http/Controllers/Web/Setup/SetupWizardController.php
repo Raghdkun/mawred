@@ -7,15 +7,22 @@ namespace App\Http\Controllers\Web\Setup;
 use App\Domain\Access\Models\User;
 use App\Domain\Setup\Actions\CompleteSetupStep;
 use App\Domain\Setup\Actions\FinishSetup;
+use App\Domain\Setup\Actions\SaveCompanyProfile;
+use App\Domain\Setup\Actions\SaveLanguageSettings;
 use App\Domain\Setup\Actions\SkipSetupStep;
 use App\Domain\Setup\Enums\SetupStep;
 use App\Domain\Setup\Enums\StepStatus;
+use App\Domain\Setup\Support\Settings;
 use App\Domain\Setup\Support\SetupState;
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\SetLocale;
 use App\Support\Actors\Actor;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,7 +32,7 @@ use Inertia\Response;
  */
 final class SetupWizardController extends Controller
 {
-    public function show(SetupState $state, #[CurrentUser] User $user, CompleteSetupStep $complete, ?string $step = null): Response
+    public function show(SetupState $state, Settings $settings, #[CurrentUser] User $user, CompleteSetupStep $complete, ?string $step = null): Response
     {
         Gate::authorize('setup.configure');
 
@@ -38,6 +45,21 @@ final class SetupWizardController extends Controller
 
         return Inertia::render('setup/wizard', [
             'current' => $current->value,
+            'company' => [
+                'name' => $settings->get('company.name', ['en' => '', 'ar' => '']),
+                'legalName' => $settings->get('company.legal_name'),
+                'accent' => $settings->get('company.accent'),
+            ],
+            'languages' => [
+                'defaultLocale' => $settings->get('locales.default', 'en'),
+                'defaultDigits' => $settings->get('locales.default_digits', 'latn'),
+                'hijriByDefault' => (bool) $settings->get('locales.hijri_default', false),
+            ],
+            'admin' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'twoFactorEnabled' => $user->two_factor_confirmed_at !== null,
+            ],
             'complete' => $state->isComplete(),
             'steps' => array_map(fn (SetupStep $s): array => [
                 'key' => $s->value,
@@ -47,6 +69,48 @@ final class SetupWizardController extends Controller
                 'availableInPhase' => $s->availableInPhase(),
             ], SetupStep::cases()),
         ]);
+    }
+
+    public function saveCompany(Request $request, #[CurrentUser] User $user, SaveCompanyProfile $save, CompleteSetupStep $complete, SetupState $state): RedirectResponse
+    {
+        Gate::authorize('setup.configure');
+
+        $request->validate([
+            'name.en' => ['required', 'string', 'max:120'],
+            'name.ar' => ['required', 'string', 'max:120'],
+            'legalName' => ['nullable', 'string', 'max:200'],
+            'accent' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:2048', 'dimensions:max_width=4000,max_height=4000'],
+            'removeLogo' => ['sometimes', 'boolean'],
+        ]);
+
+        $save->handle(
+            Actor::user($user),
+            ['en' => $request->string('name.en')->trim()->toString(), 'ar' => $request->string('name.ar')->trim()->toString()],
+            $request->filled('legalName') ? $request->string('legalName')->trim()->toString() : null,
+            $request->filled('accent') ? strtoupper($request->string('accent')->toString()) : null,
+            $request->file('logo') instanceof UploadedFile ? $request->file('logo') : null,
+            $request->boolean('removeLogo'),
+        );
+        $complete->handle(Actor::user($user), SetupStep::Company);
+
+        return to_route('setup.show', ['step' => $state->current()->value]);
+    }
+
+    public function saveLanguages(Request $request, #[CurrentUser] User $user, SaveLanguageSettings $save, CompleteSetupStep $complete, SetupState $state): RedirectResponse
+    {
+        Gate::authorize('setup.configure');
+
+        $request->validate([
+            'defaultLocale' => ['required', Rule::in(SetLocale::SUPPORTED)],
+            'defaultDigits' => ['required', Rule::in(['latn', 'arab'])],
+            'hijriByDefault' => ['required', 'boolean'],
+        ]);
+
+        $save->handle(Actor::user($user), $request->string('defaultLocale')->toString(), $request->string('defaultDigits')->toString(), $request->boolean('hijriByDefault'));
+        $complete->handle(Actor::user($user), SetupStep::Languages);
+
+        return to_route('setup.show', ['step' => $state->current()->value]);
     }
 
     public function complete(SetupStep $step, #[CurrentUser] User $user, CompleteSetupStep $complete, SetupState $state): RedirectResponse
@@ -73,6 +137,6 @@ final class SetupWizardController extends Controller
 
         $finish->handle(Actor::user($user));
 
-        return to_route('home');
+        return to_route('setup.show', ['step' => SetupStep::Review->value]);
     }
 }

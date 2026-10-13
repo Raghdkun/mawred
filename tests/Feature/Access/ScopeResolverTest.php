@@ -11,6 +11,7 @@ use App\Domain\Access\Support\ScopeResolver;
 use App\Domain\Access\Support\SubjectBinding;
 use App\Domain\Audit\Models\Activity;
 use App\Domain\Audit\Queries\AuditLogQuery;
+use Illuminate\Support\Facades\Gate;
 
 beforeEach(fn () => seedAccess());
 
@@ -128,4 +129,13 @@ it('invalidates cached access when grants change', function (): void {
     resolve(SyncRoleGrants::class)->handle($role, ['reports.view' => Scope::Own]);
 
     expect(freshResolver()->can($user, 'reports.view'))->toBeTrue();
+});
+
+it('opens operational dashboards only to system.view holders', function (): void {
+    $admin = userWithRoles('hr_admin');
+    $employee = userWithRoles('employee');
+
+    expect(Gate::forUser($admin)->allows('viewPulse'))->toBeTrue()
+        ->and(Gate::forUser($employee)->allows('viewPulse'))->toBeFalse()
+        ->and(Gate::forUser($employee)->allows('viewHorizon'))->toBe(app()->isLocal());
 });

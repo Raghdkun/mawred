@@ -1,0 +1,44 @@
+{
+    "skipToContent": "Skip to content",
+    "companyLogo": "Company logo",
+    "poweredBy": "powered by",
+    "mawred": "Mawred",
+    "nav": {
+        "main": "Main navigation",
+        "workspace": "Workspace",
+        "admin": "Admin",
+        "home": "Home",
+        "setup": "Setup",
+        "access": "Roles & permissions",
+        "audit": "Audit log",
+        "notifications": "Inbox",
+        "me": "Me"
+    },
+    "searchPlaceholder": "Search or jump to…",
+    "switchLanguage": "Switch language to {language}",
+    "notifications": "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}",
+    "profile": "Your account",
+    "menu": {
+        "profile": "Profile",
+        "security": "Security",
+        "preferences": "Preferences",
+        "appearance": "Appearance",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "Match device",
+        "signOut": "Sign out"
+    },
+    "palette": {
+        "title": "Command palette",
+        "description": "Search pages and actions",
+        "empty": "No results",
+        "pages": "Pages",
+        "actions": "Actions",
+        "switchLanguage": "Switch language",
+        "toggleTheme": "Toggle dark mode"
+    },
+    "impersonation": {
+        "notice": "You're viewing Mawred as {target}. Signed in as {impersonator}.",
+        "stop": "Stop viewing as"
+    }
+}

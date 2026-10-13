@@ -8,9 +8,11 @@ use App\Http\Middleware\EnsureTwoFactorEnrolled;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SetAuditContext;
+use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrackUserSession;
 use App\Support\Errors\DomainRuleViolation;
 use App\Support\Http\ApiErrorRenderer;
+use App\Support\Http\InertiaErrorRenderer;
 use App\Support\Http\Middleware\AssignRequestId;
 use App\Support\Http\Middleware\EnforceIdempotency;
 use App\Support\Http\WebDomainErrorRenderer;
@@ -32,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend(AssignRequestId::class);
 
         $middleware->statefulApi();
-        $middleware->api(append: [SetAuditContext::class, EnsureTwoFactorEnrolled::class]);
+        $middleware->api(append: [SetLocale::class, SetAuditContext::class, EnsureTwoFactorEnrolled::class]);
 
         $middleware->alias([
             'idempotent' => EnforceIdempotency::class,
@@ -43,6 +45,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             TrackUserSession::class,
             ApplyImpersonation::class,
+            SetLocale::class,
             SetAuditContext::class,
             EnsureTwoFactorEnrolled::class,
             EnsureSetupComplete::class,
@@ -59,4 +62,5 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(new ApiErrorRenderer);
         $exceptions->render(new WebDomainErrorRenderer);
         $exceptions->dontReport(DomainRuleViolation::class);
+        $exceptions->respond(new InertiaErrorRenderer);
     })->create();

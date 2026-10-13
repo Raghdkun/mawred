@@ -1,17 +1,31 @@
+/** Shared auth payload from HandleInertiaRequests (only public ids and display data). */
 export type User = {
-    id: number;
+    id: string; // ULID (ADR-0003)
     name: string;
     email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    two_factor_enabled?: boolean;
-    created_at: string;
-    updated_at: string;
-    [key: string]: unknown;
+    emailVerified: boolean;
+    twoFactorEnabled: boolean;
+    preferences: {
+        locale: 'en' | 'ar';
+        digits: 'latn' | 'arab';
+        showHijri: boolean;
+        timezone: string | null;
+    };
+};
+
+export type HomeLayout = 'employee' | 'manager' | 'hr_admin';
+
+export type Access = {
+    permissions: string[];
+    roles: string[];
+    isSuperAdmin: boolean;
+    homeLayout: HomeLayout;
+    requiresTwoFactor: boolean;
 };
 
 export type Auth = {
     user: User;
+    access: Access;
 };
 
 export type Passkey = {

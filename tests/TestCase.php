@@ -15,7 +15,10 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->withoutVite();
+        // Browser tests render the real built assets; everything else skips Vite.
+        if (! $this instanceof BrowserTestCase) {
+            $this->withoutVite();
+        }
 
         // Most tests exercise a running system; setup-wizard tests call markSetupIncomplete().
         if (in_array(RefreshDatabase::class, class_uses_recursive($this), true)) {

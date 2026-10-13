@@ -8,6 +8,7 @@ use App\Concerns\PasswordValidationRules;
 use App\Domain\Access\Models\User;
 use App\Domain\Setup\Actions\IssueOwnerSetupLink;
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,16 +46,22 @@ final class OwnerClaimController extends Controller
 
         $request->validate(['password' => $this->passwordRules()]);
 
+        $locale = $request->session()->get(SetLocale::SESSION_KEY);
+
         $owner->forceFill([
             'password' => $request->string('password')->toString(),
             'status' => 'active',
             'email_verified_at' => now(),
+            // Keep the language they chose before signing in.
+            'locale' => in_array($locale, SetLocale::SUPPORTED, true) ? $locale : $owner->locale,
         ])->save();
 
         $links->consume();
 
         Auth::guard('web')->login($owner);
         $request->session()->regenerate();
+        // They just chose this password; don't ask for it again before 2FA enrolment.
+        $request->session()->passwordConfirmed();
 
         return to_route('setup.show');
     }

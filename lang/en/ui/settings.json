@@ -1,0 +1,138 @@
+{
+    "title": "Account",
+    "description": "Your profile, sign-in security and display preferences.",
+    "tabs": {
+        "label": "Account sections",
+        "profile": "Profile",
+        "security": "Security",
+        "preferences": "Preferences"
+    },
+    "profile": {
+        "pageTitle": "Profile",
+        "title": "Profile",
+        "description": "Your name and the email you sign in with.",
+        "name": "Full name",
+        "email": "Work email",
+        "unverified": "Your email address isn't verified yet.",
+        "resend": "Resend the verification email",
+        "linkSent": "A new verification link has been sent.",
+        "save": "Save profile"
+    },
+    "security": {
+        "pageTitle": "Security",
+        "password": {
+            "title": "Password",
+            "description": "Use a long, unique password.",
+            "current": "Current password",
+            "new": "New password",
+            "confirm": "Confirm new password",
+            "save": "Update password"
+        },
+        "twoFactor": {
+            "title": "Two-factor authentication",
+            "description": "Add a one-time code from an authenticator app to every sign-in.",
+            "enabledText": "On. You'll enter a 6-digit code from your authenticator app when you sign in.",
+            "disabledText": "Off. Turn it on to protect your account with a code from your phone.",
+            "requiredByRole": "Your role requires two-factor authentication. Turn it on to continue using Mawred.",
+            "enable": "Turn on two-factor",
+            "disable": "Turn off two-factor",
+            "continueSetup": "Continue setup"
+        },
+        "setup": {
+            "enableTitle": "Turn on two-factor authentication",
+            "enableDescription": "Scan the QR code with your authenticator app, or enter the setup key.",
+            "verifyTitle": "Enter the code",
+            "verifyDescription": "Enter the 6-digit code shown in your authenticator app.",
+            "enabledTitle": "Two-factor authentication is on",
+            "enabledDescription": "Keep your recovery codes somewhere safe.",
+            "manual": "or enter this key manually",
+            "copyKey": "Copy setup key",
+            "qrAlt": "QR code for your authenticator app",
+            "back": "Back",
+            "confirm": "Confirm",
+            "continue": "Continue",
+            "close": "Done"
+        },
+        "recovery": {
+            "title": "Recovery codes",
+            "description": "Use these if you lose your phone. Each code works once. Store them in a password manager.",
+            "view": "Show recovery codes",
+            "hide": "Hide recovery codes",
+            "regenerate": "Generate new codes",
+            "list": "Recovery codes",
+            "loading": "Loading recovery codes",
+            "warning": "Each code can be used once. Generating new codes replaces the old ones."
+        },
+        "passkeys": {
+            "title": "Passkeys",
+            "description": "Sign in with your fingerprint, face or device PIN instead of a password.",
+            "empty": "No passkeys yet.",
+            "add": "Add a passkey",
+            "unsupported": "This browser doesn't support passkeys.",
+            "name": "Passkey name",
+            "register": "Save passkey",
+            "registering": "Saving…",
+            "added": "Added {when}",
+            "lastUsed": "Last used {when}",
+            "remove": "Remove",
+            "removeTitle": "Remove passkey?",
+            "removeDescription": "You won't be able to sign in with “{name}” any more.",
+            "removing": "Removing…",
+            "removeConfirm": "Remove passkey",
+            "nameHint": "A name helps you recognise this passkey later."
+        },
+        "sessions": {
+            "title": "Active sessions",
+            "description": "Browsers and devices signed in to your account. Sign out any you don't recognise.",
+            "current": "This device",
+            "lastSeen": "Active {when}",
+            "signOut": "Sign out",
+            "empty": "No other active sessions."
+        },
+        "history": {
+            "title": "Recent sign-in activity",
+            "description": "The last 90 days.",
+            "empty": "No sign-in activity yet.",
+            "events": {
+                "login": "Signed in",
+                "logout": "Signed out",
+                "login.failed": "Failed sign-in attempt",
+                "password.reset": "Password reset",
+                "2fa.enabled": "Two-factor turned on",
+                "2fa.disabled": "Two-factor turned off",
+                "2fa.failed": "Wrong two-factor code",
+                "2fa.recovery_codes": "Recovery codes regenerated",
+                "session.revoked": "Session signed out",
+                "impersonation.started": "Viewed as another user",
+                "impersonation.stopped": "Stopped viewing as another user"
+            }
+        }
+    },
+    "preferences": {
+        "pageTitle": "Preferences",
+        "title": "Display preferences",
+        "description": "How Mawred looks and formats dates and numbers for you.",
+        "language": "Language",
+        "digits": {
+            "label": "Digits",
+            "latn": "Western (0123)",
+            "arab": "Arabic-Indic (٠١٢٣)"
+        },
+        "hijri": {
+            "label": "Show Hijri dates",
+            "description": "Adds the Hijri (Umm al-Qura) date under Gregorian dates."
+        },
+        "timezone": {
+            "label": "Time zone",
+            "placeholder": "Use my branch's time zone",
+            "description": "Times are shown in this zone. Leave empty to follow your branch."
+        },
+        "appearance": {
+            "label": "Appearance",
+            "light": "Light",
+            "dark": "Dark",
+            "system": "Match device"
+        },
+        "save": "Save preferences"
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "pageTitle": "Set up Mawred",
+    "railLabel": "Setup steps",
+    "stepOf": "Step {current} of {total}",
+    "allSteps": "All steps",
+    "steps": {
+        "welcome": "Welcome",
+        "company": "Company profile",
+        "languages": "Languages",
+        "branch": "First branch",
+        "policies": "Policy set",
+        "admin": "Admin account",
+        "email": "Email",
+        "whatsapp": "WhatsApp",
+        "cognito": "Cognito Forms",
+        "review": "Review & finish"
+    },
+    "status": { "completed": "Done", "skipped": "Skipped", "pending": "To do", "current": "Current step", "required": "Required" },
+    "welcome": {
+        "title": "Welcome to Mawred",
+        "description": "Let's get your workspace ready. Each step saves as you go, and you can skip the optional ones and come back from Settings.",
+        "start": "Let's begin"
+    },
+    "company": {
+        "title": "Company profile",
+        "description": "Your company's name and logo appear next to the Mawred mark on sign-in, emails, documents and the careers site.",
+        "nameEn": "Company name (English)",
+        "nameAr": "Company name (Arabic)",
+        "legalName": "Legal name",
+        "legalNameHint": "As it appears on contracts and certificates.",
+        "logo": "Logo",
+        "logoHint": "PNG, JPG or WebP, up to 2 MB.",
+        "logoDrop": "Drop your logo here, or choose a file",
+        "logoChoose": "Choose file",
+        "logoRemove": "Remove logo",
+        "accent": "Accent colour",
+        "accentHint": "Used only in co-branded areas. The app itself keeps Mawred's colours.",
+        "preview": "Preview",
+        "previewSignIn": "Sign-in screen",
+        "save": "Save and continue"
+    },
+    "languages": {
+        "title": "Languages",
+        "description": "Mawred is available in English and Arabic. Everyone can switch at any time; these are the defaults for new users.",
+        "defaultLocale": "Default language",
+        "defaultDigits": "Default digits",
+        "hijri": "Show Hijri dates by default",
+        "hijriHint": "Adds the Hijri (Umm al-Qura) date under Gregorian dates.",
+        "save": "Save and continue"
+    },
+    "later": {
+        "title": "Available in a later release",
+        "description": "{step} arrives with {module}. Skip it for now; it will appear in Settings when it's ready.",
+        "modules": {
+            "branch": "the organisation structure",
+            "policies": "the policy engine",
+            "email": "notifications",
+            "whatsapp": "integrations",
+            "cognito": "integrations"
+        }
+    },
+    "admin": {
+        "title": "Admin account",
+        "description": "You're the first Super Admin. Super Admins must use two-factor authentication.",
+        "name": "Name",
+        "email": "Email",
+        "twoFactorOn": "Two-factor authentication is on.",
+        "twoFactorOff": "Turn on two-factor authentication to continue.",
+        "goToSecurity": "Open security settings"
+    },
+    "review": {
+        "title": "Review & finish",
+        "description": "Here's where things stand. Skipped steps can be finished later from Settings.",
+        "edit": "Edit",
+        "finish": "Finish setup",
+        "missing": "Complete the required steps first: {steps}."
+    },
+    "done": {
+        "title": "You're all set",
+        "description": "Mawred is ready for your team. Invite people and set up the rest whenever you're ready.",
+        "go": "Go to Mawred"
+    },
+    "pending": {
+        "pageTitle": "Being set up",
+        "signOut": "Sign out"
+    }
+}

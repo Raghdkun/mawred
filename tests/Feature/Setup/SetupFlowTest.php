@@ -88,7 +88,7 @@ it('refuses to skip required steps or finish before they are done', function ():
 
     $this->post(route('setup.steps.complete', 'company'));
     $this->get(route('setup.show'));
-    $this->post(route('setup.finish'))->assertRedirect(route('home'));
+    $this->post(route('setup.finish'))->assertRedirect(route('setup.show', ['step' => 'review']));
 
     expect(resolve(SetupState::class)->isComplete())->toBeTrue();
     $this->get(route('dashboard'))->assertOk();

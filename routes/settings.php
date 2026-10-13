@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\Settings\PreferencesController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use Illuminate\Auth\Middleware\RequirePassword;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use Inertia\Response;
 
 Route::middleware(['auth'])->group(function (): void {
     // GET-only redirect: Route::redirect() also registers QUERY, which Wayfinder 0.1 can't type.
@@ -25,7 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         ->middleware('throttle:6,1')
         ->name('user-password.update');
 
-    Route::get('settings/appearance', fn (): Response => Inertia::render('settings/appearance'))->name('appearance.edit');
+    Route::delete('settings/sessions/{session}', [SecurityController::class, 'revokeSession'])->name('sessions.destroy');
+
+    Route::get('settings/preferences', [PreferencesController::class, 'edit'])->name('preferences.edit');
+    Route::patch('settings/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
 });
 
 Route::get('.well-known/passkey-endpoints', fn () => response()->json([
