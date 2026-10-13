@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\People\Actions;
 
 use App\Domain\People\Data\PlacementInputData;
+use App\Domain\People\Enums\HistoryEvent;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeAssignment;
+use App\Domain\People\Support\History;
 use App\Domain\People\Support\Placements;
 use App\Domain\People\Support\ReportingLines;
 use App\Support\Actors\Actor;
@@ -43,7 +45,7 @@ final readonly class ChangePlacement
             throw new DomainRuleViolation('people.before_hire', __('Changes cannot start before the hire date.'), ['effectiveFrom' => [__('Changes cannot start before the hire date.')]]);
         }
 
-        return $this->db->transaction(function () use ($actor, $employee, $placement, $from, $reason): EmployeeAssignment {
+        return $this->db->transaction(function () use ($actor, $employee, $input, $placement, $from, $reason): EmployeeAssignment {
             $primaries = $employee->assignments()->where('is_primary', true)->lockForUpdate()->get();
 
             if ($primaries->contains(fn (EmployeeAssignment $a): bool => $a->effective_from->toDateString() > $from)) {
@@ -51,6 +53,18 @@ final readonly class ChangePlacement
             }
 
             $open = $primaries->first(fn (EmployeeAssignment $a): bool => $a->coversDate($from));
+
+            History::record($actor, $employee, HistoryEvent::PlacementChanged, $from, [
+                'from' => $open === null ? null : $this->publicPlacement($open),
+                'to' => array_filter([
+                    'branch' => $input->branchId,
+                    'department' => $input->departmentId,
+                    'position' => $input->positionId,
+                    'manager' => $input->managerId,
+                    'employment_type' => $input->employmentTypeId,
+                    'grade' => $input->gradeId,
+                ], fn (?string $v): bool => $v !== null),
+            ], $reason);
 
             if ($open !== null) {
                 if ($open->effective_from->toDateString() === $from) {
@@ -77,5 +91,22 @@ final readonly class ChangePlacement
 
             return $assignment;
         });
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function publicPlacement(EmployeeAssignment $assignment): array
+    {
+        $assignment->loadMissing(['branch:id,ulid', 'department:id,ulid', 'position:id,ulid', 'manager:id,ulid', 'employmentType:id,ulid', 'grade:id,ulid']);
+
+        return array_filter([
+            'branch' => $assignment->branch?->ulid,
+            'department' => $assignment->department?->ulid,
+            'position' => $assignment->position?->ulid,
+            'manager' => $assignment->manager?->ulid,
+            'employment_type' => $assignment->employmentType?->ulid,
+            'grade' => $assignment->grade?->ulid,
+        ], fn (?string $v): bool => $v !== null);
     }
 }

@@ -7,10 +7,12 @@ namespace App\Domain\People\Actions;
 use App\Domain\Organization\Models\Branch;
 use App\Domain\People\Data\HireEmployeeData;
 use App\Domain\People\Enums\EmployeeStatus;
+use App\Domain\People\Enums\HistoryEvent;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeAssignment;
 use App\Domain\People\Support\EmployeeContact;
 use App\Domain\People\Support\EmployeeNumbers;
+use App\Domain\People\Support\History;
 use App\Domain\People\Support\Placements;
 use App\Domain\People\Support\ReportingLines;
 use App\Support\Actors\Actor;
@@ -69,8 +71,23 @@ final readonly class HireEmployee
                 'created_by' => $actor->user?->id,
             ]);
 
+            History::record($actor, $employee, HistoryEvent::Hired, $data->hireDate, $this->changes($data));
+
             return $this->sync->handle($employee);
         });
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    private function changes(HireEmployeeData $data): array
+    {
+        return array_filter([
+            'branch' => $data->placement->branchId,
+            'department' => $data->placement->departmentId,
+            'position' => $data->placement->positionId,
+            'manager' => $data->placement->managerId,
+        ], fn (?string $v): bool => $v !== null);
     }
 
     private function clean(?string $value): ?string

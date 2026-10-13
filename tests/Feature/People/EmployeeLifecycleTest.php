@@ -155,7 +155,7 @@ it('terminates on the last working day', function (): void {
     $this->travelTo('2026-10-01 09:00:00');
     $employee = hireInto(Branch::factory()->create());
 
-    resolve(TerminateEmployee::class)->handle($employee, '2026-10-10', 'Resigned');
+    resolve(TerminateEmployee::class)->handle(Actor::system('test'), $employee, '2026-10-10', 'Resigned');
     expect($employee->fresh())->status->toBe(EmployeeStatus::Active)->termination_date->toDateString()->toBe('2026-10-10');
 
     $this->travelTo('2026-10-11 12:00:00');

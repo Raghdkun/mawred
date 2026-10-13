@@ -195,6 +195,38 @@ final class Employee extends Model implements MasksAuditedAttributes
     }
 
     /**
+     * @return HasMany<EmployeeCustomValue, $this>
+     */
+    public function customValues(): HasMany
+    {
+        return $this->hasMany(EmployeeCustomValue::class);
+    }
+
+    /**
+     * @return HasMany<EmployeeDocument, $this>
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(EmployeeDocument::class);
+    }
+
+    /**
+     * @return HasMany<EmploymentHistoryEntry, $this>
+     */
+    public function history(): HasMany
+    {
+        return $this->hasMany(EmploymentHistoryEntry::class);
+    }
+
+    /**
+     * @return HasMany<AssetAssignment, $this>
+     */
+    public function assets(): HasMany
+    {
+        return $this->hasMany(AssetAssignment::class);
+    }
+
+    /**
      * @return HasMany<self, $this>
      */
     public function directReports(): HasMany
