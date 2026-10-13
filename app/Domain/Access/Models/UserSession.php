@@ -11,28 +11,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * A signed-in browser/device, for "Active sessions" (brief §6). The raw session id is never
- * stored, only its SHA-256.
+ * A signed-in browser/device, for "Active sessions" (brief §6). The session stores this row's
+ * ULID, which survives session-id regeneration; revoking the row signs that browser out on its
+ * next request.
  *
  * @property int $id
  * @property string $ulid
  * @property int $user_id
- * @property string $session_hash
  * @property string|null $ip
  * @property string|null $user_agent
  * @property Carbon $last_seen_at
  * @property Carbon|null $revoked_at
  * @property Carbon|null $created_at
  */
-#[Fillable(['user_id', 'session_hash', 'ip', 'user_agent', 'last_seen_at', 'revoked_at'])]
+#[Fillable(['user_id', 'ip', 'user_agent', 'last_seen_at', 'revoked_at'])]
 final class UserSession extends Model
 {
-    use HasPublicUlid;
+    public const string SESSION_KEY = 'mawred.user_session';
 
-    public static function hashId(string $sessionId): string
-    {
-        return hash('sha256', $sessionId);
-    }
+    use HasPublicUlid;
 
     /**
      * @return BelongsTo<User, $this>

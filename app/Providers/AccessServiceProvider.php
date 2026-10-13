@@ -6,10 +6,12 @@ namespace App\Providers;
 
 use App\Domain\Access\Contracts\OrgScopePredicates;
 use App\Domain\Access\Models\User;
+use App\Domain\Access\Policies\UserPolicy;
 use App\Domain\Access\Support\AccessEpoch;
 use App\Domain\Access\Support\NullOrgScopePredicates;
 use App\Domain\Access\Support\PermissionCatalog;
 use App\Domain\Access\Support\ScopeResolver;
+use App\Listeners\Auth\RecordAuthenticationEvents;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -41,6 +43,9 @@ final class AccessServiceProvider extends ServiceProvider
 
             return $this->app->make(ScopeResolver::class)->can($user, $ability) ?: null;
         });
+
+        Gate::policy(User::class, UserPolicy::class);
+        Event::subscribe(RecordAuthenticationEvents::class);
 
         Event::listen(
             [RoleAttachedEvent::class, RoleDetachedEvent::class, PermissionAttachedEvent::class, PermissionDetachedEvent::class],

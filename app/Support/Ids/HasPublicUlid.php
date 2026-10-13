@@ -5,31 +5,35 @@ declare(strict_types=1);
 namespace App\Support\Ids;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
  * Public identifier for business records (ADR-0003).
  *
- * The bigint `id` stays internal for joins and FKs; the `ulid` column is the route key and the
- * only identifier that is ever serialised to clients.
+ * The bigint `id` stays the primary key for joins and FKs; the `ulid` column is assigned on
+ * insert (by Eloquent itself, not an event listener, so it also works with Event::fake), is the
+ * route key, and is the only identifier ever serialised to clients. Malformed ULIDs in routes
+ * resolve to 404 without touching the database.
  *
  * @mixin Model
  */
 trait HasPublicUlid
 {
-    public static function bootHasPublicUlid(): void
-    {
-        static::creating(function (Model $model): void {
-            if (blank($model->getAttribute('ulid'))) {
-                $model->setAttribute('ulid', Str::lower((string) Str::ulid()));
-            }
-        });
-    }
+    use HasUlids;
 
     public function initializeHasPublicUlid(): void
     {
         $this->mergeHidden([$this->getKeyName()]);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function uniqueIds(): array
+    {
+        return ['ulid'];
     }
 
     public function getRouteKeyName(): string

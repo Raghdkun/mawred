@@ -66,7 +66,6 @@ return new class extends Migration
             $table->id();
             $table->char('ulid', 26)->unique();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->char('session_hash', 64)->unique();
             $table->ipAddress('ip')->nullable();
             $table->text('user_agent')->nullable();
             $table->timestampTz('last_seen_at');
