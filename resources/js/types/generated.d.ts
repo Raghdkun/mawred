@@ -197,6 +197,119 @@ namespace Enums {
 export type CatalogKind = 'employment-types' | 'grades' | 'cost-centers';
 }
 }
+namespace People {
+namespace Data {
+export type CustomFieldDefinitionInputData = {
+key: string,
+label: {
+en: string,
+ar?: string | null,
+},
+type: string,
+help: {
+en?: string | null,
+ar?: string | null,
+} | null,
+options: {
+value: string,
+label: {
+en: string,
+ar?: string | null,
+},
+}[] | null,
+section: string,
+isRequired: boolean,
+isSensitive: boolean,
+isActive: boolean,
+sortOrder: number,
+};
+export type DocumentTypeInputData = {
+code: string,
+name: {
+en: string,
+ar?: string | null,
+},
+requiresExpiry: boolean,
+reminderDays: number[],
+isActive: boolean,
+};
+export type EmployeeDocumentInputData = {
+documentTypeId: string,
+number: string | null,
+issuedOn: string | null,
+expiresOn: string | null,
+notes: string | null,
+};
+export type EmployeeProfileInputData = {
+nameEn: string,
+nameAr: string | null,
+preferredName: string | null,
+workEmail: string | null,
+workPhone: string | null,
+gender: string | null,
+nationality: string | null,
+maritalStatus: string | null,
+hireDate: string | null,
+probationEndsOn: string | null,
+};
+export type HireEmployeeData = {
+nameEn: string,
+hireDate: string,
+placement: App.Domain.People.Data.PlacementInputData,
+nameAr: string | null,
+preferredName: string | null,
+employeeNumber: string | null,
+workEmail: string | null,
+workPhone: string | null,
+gender: string | null,
+nationality: string | null,
+probationEndsOn: string | null,
+};
+export type PlacementInputData = {
+branchId: string,
+departmentId: string | null,
+positionId: string | null,
+managerId: string | null,
+employmentTypeId: string | null,
+gradeId: string | null,
+};
+export type SensitiveDetailsInputData = {
+nationalId: {
+number: string | null,
+} | undefined,
+passport: {
+number: string | null,
+country?: string | null,
+expiresOn?: string | null,
+} | undefined,
+residency: {
+number: string | null,
+expiresOn?: string | null,
+} | undefined,
+bank: {
+bankName?: string | null,
+iban?: string | null,
+accountName?: string | null,
+} | undefined,
+personalContact: {
+email?: string | null,
+phone?: string | null,
+address?: string | null,
+emergencyName?: string | null,
+emergencyPhone?: string | null,
+emergencyRelation?: string | null,
+} | undefined,
+dateOfBirth: undefined | string | null,
+};
+}
+namespace Enums {
+export type CustomFieldType = 'text' | 'textarea' | 'number' | 'date' | 'select' | 'multiselect' | 'boolean' | 'email' | 'phone' | 'url';
+export type EmployeeStatus = 'pending' | 'active' | 'suspended' | 'terminated';
+export type Gender = 'female' | 'male';
+export type HistoryEvent = 'hired' | 'placement_changed' | 'salary_changed' | 'status_changed' | 'terminated';
+export type MaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';
+}
+}
 namespace Setup {
 namespace Enums {
 export type SetupStep = 'welcome' | 'company' | 'languages' | 'branch' | 'policies' | 'admin' | 'email' | 'whatsapp' | 'cognito' | 'review';

@@ -21,5 +21,6 @@ require __DIR__.'/settings.php';
 require __DIR__.'/setup.php';
 require __DIR__.'/access.php';
 require __DIR__.'/organization.php';
+require __DIR__.'/people.php';
 require __DIR__.'/audit.php';
 require __DIR__.'/notifications.php';

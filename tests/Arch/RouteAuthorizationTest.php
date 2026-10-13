@@ -16,7 +16,7 @@ uses(TestCase::class);
 */
 const PUBLIC_ROUTE_NAMES = [
     'login', 'login.store', 'logout', 'password.*', 'two-factor.login*', 'passkey.*', 'well-known.*',
-    'setup.claim.*', 'locale.update', 'storage.*', 'verification.verify',
+    'setup.claim.*', 'invitations.*', 'locale.update', 'storage.*', 'verification.verify',
 ];
 
 /** Package-owned endpoints with their own gates (Horizon, Pulse, Scramble, Sanctum, health…). */
