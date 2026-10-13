@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Org-relative scope predicates (direct reports, team tree, department, branch). They need the
- * People and Organization domains, so the real implementation is bound in Phase 1; until then the
- * null implementation matches nothing, so no data can leak through an org-relative scope.
+ * People and Organization domains, so Access only owns the contract; PeopleServiceProvider binds
+ * EmployeeScopePredicates.
  */
 interface OrgScopePredicates
 {

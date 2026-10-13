@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Domain\Access\Contracts\OrgScopePredicates;
 use App\Domain\Access\Models\User;
 use App\Domain\Access\Policies\UserPolicy;
 use App\Domain\Access\Support\AccessEpoch;
-use App\Domain\Access\Support\NullOrgScopePredicates;
 use App\Domain\Access\Support\PermissionCatalog;
 use App\Domain\Access\Support\ScopeResolver;
 use App\Listeners\Auth\RecordAuthenticationEvents;
@@ -28,8 +26,7 @@ final class AccessServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Phase 1 rebinds this to the real org predicates (People + Organization).
-        $this->app->bind(OrgScopePredicates::class, NullOrgScopePredicates::class);
+        // OrgScopePredicates is bound by PeopleServiceProvider (needs People + Organization).
         $this->app->scoped(ScopeResolver::class);
         $this->app->singleton(AccessEpoch::class);
     }
