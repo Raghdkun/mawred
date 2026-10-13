@@ -8,9 +8,9 @@ namespace App\Domain\Access\Support;
  * Every permission in Mawred, as `module.action` (brief §6). The matrix UI, seeders and policies
  * all read from here, so a permission that is not listed cannot exist.
  *
- * Scoped modules hold records that belong to people (requests, leave, attendance…): their grants
- * carry a data scope. Unscoped modules are configuration (forms, workflows, integrations…): a
- * grant is simply on or off and is stored with the `all` scope.
+ * Scoped modules hold records that belong to people (people, requests, leave…): their grants
+ * carry a data scope. Unscoped modules are configuration or reference data (organization, forms,
+ * workflows…): a grant is simply on or off and is stored with the `all` scope.
  */
 final class PermissionCatalog
 {
@@ -21,7 +21,7 @@ final class PermissionCatalog
      */
     public const array MODULES = [
         'setup' => ['actions' => ['view', 'configure'], 'scoped' => false],
-        'organization' => ['actions' => ['view', 'create', 'update', 'delete', 'export', 'configure'], 'scoped' => true],
+        'organization' => ['actions' => ['view', 'create', 'update', 'delete', 'export', 'configure'], 'scoped' => false],
         'people' => ['actions' => ['view', 'create', 'update', 'delete', 'approve', 'export', 'configure'], 'scoped' => true],
         'access' => ['actions' => ['view', 'create', 'update', 'delete', 'configure'], 'scoped' => false],
         'policies' => ['actions' => ['view', 'create', 'update', 'delete', 'export', 'configure'], 'scoped' => false],

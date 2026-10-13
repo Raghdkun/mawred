@@ -15,3 +15,4 @@ docs
 composer.lock
 pnpm-lock.yaml
 .github
+resources/js/types/typescript-transformer-manifest.json

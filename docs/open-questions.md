@@ -43,6 +43,10 @@ All questions below were answered by the product owner. Items still waiting on a
 | D35 | Scope until Phase 1 | Org-relative scopes (team, department, branch) **fail closed** (`NullOrgScopePredicates`) until Phase 1 binds real org predicates. Own and All work now. | ADR-0005 |
 | D36 | Audit export | Audit-log export (screen 43) moves to Phase 8 with the queued export pipeline, because heavy exports are always queued. | Roadmap |
 
+| D37 | Employee names | **Bilingual full name**: `name_en` (required), `name_ar` (optional), `preferred_name` (optional). Lists show the viewer's language with fallback; search matches both. | People, PDFs, search |
+| D38 | Employee number | **Auto with configurable prefix** (`EMP-000123`, setting `people.number_prefix`), unique company-wide; HR may override (e.g. when importing existing numbers). | People, import |
+| D39 | Import matching | **Upsert by employee number**, falling back to work email when the number is blank. The dry run lists every create and update. | Import |
+
 ## Still open (non-blocking)
 - **GitHub Actions can't start on this account** (every run is `startup_failure`, even a one-step workflow). Likely billing or a spending limit for private repos. Owner to check Settings → Billing → Actions.
 - Production domain name (needed by Phase 6 careers and Phase 9 deploy).

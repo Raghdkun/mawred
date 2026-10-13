@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web\Setup;
 
 use App\Domain\Access\Models\User;
+use App\Domain\Organization\Actions\SaveBranch;
+use App\Domain\Organization\Data\BranchData;
+use App\Domain\Organization\Data\BranchInputData;
+use App\Domain\Organization\Models\Branch;
 use App\Domain\Setup\Actions\CompleteSetupStep;
 use App\Domain\Setup\Actions\FinishSetup;
 use App\Domain\Setup\Actions\SaveCompanyProfile;
@@ -42,6 +46,7 @@ final class SetupWizardController extends Controller
         }
 
         $current = SetupStep::tryFrom((string) $step) ?? $state->current();
+        $firstBranch = $this->firstBranch();
 
         return Inertia::render('setup/wizard', [
             'current' => $current->value,
@@ -55,6 +60,7 @@ final class SetupWizardController extends Controller
                 'defaultDigits' => $settings->get('locales.default_digits', 'latn'),
                 'hijriByDefault' => (bool) $settings->get('locales.hijri_default', false),
             ],
+            'branch' => $firstBranch instanceof Branch ? BranchData::fromBranch($firstBranch) : null,
             'admin' => [
                 'name' => $user->name,
                 'email' => $user->email,
@@ -113,6 +119,20 @@ final class SetupWizardController extends Controller
         return to_route('setup.show', ['step' => $state->current()->value]);
     }
 
+    /**
+     * Step 4: the first branch. Saving again edits that branch rather than adding another.
+     */
+    public function saveBranch(BranchInputData $data, #[CurrentUser] User $user, SaveBranch $save, CompleteSetupStep $complete, SetupState $state): RedirectResponse
+    {
+        Gate::authorize('setup.configure');
+        Gate::authorize('organization.create');
+
+        $save->handle($data, $this->firstBranch());
+        $complete->handle(Actor::user($user), SetupStep::Branch);
+
+        return to_route('setup.show', ['step' => $state->current()->value]);
+    }
+
     public function complete(SetupStep $step, #[CurrentUser] User $user, CompleteSetupStep $complete, SetupState $state): RedirectResponse
     {
         Gate::authorize('setup.configure');
@@ -138,5 +158,10 @@ final class SetupWizardController extends Controller
         $finish->handle(Actor::user($user));
 
         return to_route('setup.show', ['step' => SetupStep::Review->value]);
+    }
+
+    private function firstBranch(): ?Branch
+    {
+        return Branch::query()->with('costCenter:id,ulid')->oldest('id')->first();
     }
 }

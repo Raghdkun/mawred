@@ -113,6 +113,12 @@ final class ScopeResolver
      */
     private function constrain(Builder $query, User $user, Grant $grant, SubjectBinding $subject): void
     {
+        if ($subject->isReference) {
+            $query->whereRaw('1 = 0');
+
+            return;
+        }
+
         if ($grant->scope === Scope::Own) {
             if ($subject->userColumn !== null) {
                 $query->where($subject->userColumn, $user->id);

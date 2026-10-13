@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\Access\UserSearchController;
+use App\Http\Controllers\Api\V1\Organization\BranchSearchController;
+use App\Http\Controllers\Api\V1\Organization\DepartmentSearchController;
+use App\Http\Controllers\Api\V1\Organization\PositionSearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +17,8 @@ Route::prefix('v1')
     ->middleware(['auth:sanctum', 'idempotent'])
     ->group(function (): void {
         Route::get('users', UserSearchController::class)->name('users.index');
+
+        Route::get('branches', BranchSearchController::class)->name('branches.index');
+        Route::get('departments', DepartmentSearchController::class)->name('departments.index');
+        Route::get('positions', PositionSearchController::class)->name('positions.index');
     });
