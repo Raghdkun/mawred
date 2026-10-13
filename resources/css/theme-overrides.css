@@ -1,0 +1,84 @@
+/*
+ * Local additions to design/tokens/mawred-tokens.css (which is imported untouched).
+ * Interaction-state colours below come from the design-system canvas
+ * (design/canvas-source/DSActions.dc.html, DSNavigation.dc.html) and are not part of tokens.css.
+ */
+
+@theme {
+    /* Press ripple (Motion spec: 450 ms, ease-soft, scale .25 → 1, opacity .35 → 0). */
+    --animate-press-ripple: mw-press-ripple 450ms var(--ease-soft) forwards;
+
+    @keyframes mw-press-ripple {
+        from {
+            transform: translate(-50%, -50%) scale(0.25);
+            opacity: 0.35;
+        }
+        to {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0;
+        }
+    }
+
+    /* Self-hosted variable Readex Pro (@fontsource-variable, unicode-range subsets: arabic + latin). */
+    --font-sans:
+        'Readex Pro Variable', 'Readex Pro', 'Segoe UI', 'Noto Sans Arabic', system-ui, sans-serif;
+}
+
+:root {
+    --primary-hover: #3d65af;
+    --primary-active: #3859a0;
+    --secondary-hover: #d9e6f8;
+    --destructive-hover: #a93827;
+    --input-hover: #98a4b8;
+    --disabled: #edf1f7;
+    --disabled-foreground: #98a4b8;
+    --selected: #e6effb;
+    --error-border: #f5bdb5;
+    --notification-dot: #e0705f;
+    --water: #5b88d6;
+}
+
+.dark {
+    --primary-hover: #93b4e8;
+    --primary-active: #a6c3ee;
+    --secondary-hover: #22345a;
+    --destructive-hover: #f4a094;
+    --input-hover: #4a5e86;
+    --disabled: #1b2a45;
+    --disabled-foreground: #5e6a82;
+    --selected: #22345a;
+    --error-border: #66333a;
+    --notification-dot: #e0705f;
+    --water: #7fa6e3;
+}
+
+@theme inline {
+    --color-primary-hover: var(--primary-hover);
+    --color-primary-active: var(--primary-active);
+    --color-secondary-hover: var(--secondary-hover);
+    --color-destructive-hover: var(--destructive-hover);
+    --color-input-hover: var(--input-hover);
+    --color-disabled: var(--disabled);
+    --color-disabled-foreground: var(--disabled-foreground);
+    --color-selected: var(--selected);
+    --color-error-border: var(--error-border);
+    --color-notification-dot: var(--notification-dot);
+    --color-water: var(--water);
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    /* Arabic: no letter-spacing or uppercase anywhere (handoff global RTL rules). */
+    :lang(ar) * {
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+    }
+
+    [dir='ltr'] bdi,
+    .ltr-isolate {
+        unicode-bidi: isolate;
+    }
+}

@@ -1,0 +1,52 @@
+{
+    "appName": "مورد",
+    "actions": {
+        "save": "حفظ",
+        "saveChanges": "حفظ التغييرات",
+        "cancel": "إلغاء",
+        "back": "رجوع",
+        "next": "التالي",
+        "continue": "متابعة",
+        "skip": "تخطٍّ الآن",
+        "close": "إغلاق",
+        "confirm": "تأكيد",
+        "delete": "حذف",
+        "edit": "تعديل",
+        "retry": "حاول مجددًا",
+        "search": "بحث",
+        "clear": "مسح",
+        "goHome": "الذهاب إلى الرئيسية",
+        "copy": "نسخ",
+        "copied": "تم النسخ",
+        "loadMore": "تحميل المزيد",
+        "viewAll": "عرض الكل"
+    },
+    "states": {
+        "loading": "جارٍ التحميل…",
+        "empty": { "title": "لا يوجد شيء بعد", "description": "عندما يتوفر محتوى، سيظهر هنا." },
+        "no-results": { "title": "لا توجد نتائج", "description": "جرّب بحثًا مختلفًا أو امسح عوامل التصفية." },
+        "error": { "title": "حدث خطأ ما", "description": "تعذّر تحميل المحتوى. حاول مجددًا بعد قليل." },
+        "offline": { "title": "أنت غير متصل", "description": "تحقق من اتصالك. سنعيد الاتصال تلقائيًا." },
+        "denied": { "title": "لا تملك صلاحية الوصول", "description": "اطلب من المسؤول إن كنت بحاجة إلى هذه الصفحة." },
+        "not-found": { "title": "الصفحة غير موجودة", "description": "قد يكون الرابط معطّلًا أو نُقلت الصفحة." }
+    },
+    "status": {
+        "draft": "مسودة",
+        "pending": "قيد الانتظار",
+        "in-review": "قيد المراجعة",
+        "approved": "مقبول",
+        "rejected": "مرفوض",
+        "cancelled": "ملغى",
+        "escalated": "مُصعَّد",
+        "returned": "مُعاد للتعديل"
+    },
+    "health": {
+        "healthy": "سليم",
+        "degraded": "متراجع",
+        "disconnected": "غير متصل",
+        "not-configured": "غير مهيّأ"
+    },
+    "language": { "en": "English", "ar": "العربية" },
+    "required": "إلزامي",
+    "optional": "اختياري"
+}

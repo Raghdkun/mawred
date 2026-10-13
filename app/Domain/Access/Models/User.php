@@ -57,6 +57,9 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
      * @var array<string, mixed>
      */
     protected $attributes = [
+        'phone_e164' => null,
+        'timezone' => null,
+        'last_login_at' => null,
         'locale' => 'en',
         'digits' => 'latn',
         'show_hijri' => false,

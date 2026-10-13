@@ -1,0 +1,18 @@
+{
+    "pageTitle": "Home",
+    "greeting": {
+        "morning": "Good morning, {name}",
+        "afternoon": "Good afternoon, {name}",
+        "evening": "Good evening, {name}"
+    },
+    "agenda": {
+        "title": "Your agenda",
+        "emptyTitle": "Nothing scheduled",
+        "emptyDescription": "Shifts, meetings, requests and approvals will appear here as your organisation turns them on."
+    },
+    "twoFactor": {
+        "title": "Protect your account",
+        "description": "Turn on two-factor authentication in Security settings."
+    },
+    "shortcuts": "Shortcuts"
+}

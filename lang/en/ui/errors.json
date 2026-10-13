@@ -1,0 +1,10 @@
+{
+    "403": { "title": "You don't have access", "description": "Your role doesn't include this page. Ask an administrator if you need it." },
+    "404": { "title": "Page not found", "description": "The link may be broken or the page may have moved." },
+    "419": { "title": "Your session expired", "description": "Refresh the page and try again." },
+    "429": { "title": "Too many requests", "description": "Please wait a moment before trying again." },
+    "500": { "title": "Something went wrong", "description": "We've been notified. Please try again in a moment." },
+    "503": { "title": "Back shortly", "description": "Mawred is being updated. Please try again in a few minutes." },
+    "setupPending": { "title": "Mawred is being set up", "description": "Your administrator is finishing the setup. You'll be able to sign in to everything shortly." },
+    "requestId": "Reference: {id}"
+}

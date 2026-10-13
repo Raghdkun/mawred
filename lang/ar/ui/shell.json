@@ -1,0 +1,44 @@
+{
+    "skipToContent": "تخطَّ إلى المحتوى",
+    "companyLogo": "شعار الشركة",
+    "poweredBy": "بدعم من",
+    "mawred": "مورد",
+    "nav": {
+        "main": "التنقل الرئيسي",
+        "workspace": "مساحة العمل",
+        "admin": "الإدارة",
+        "home": "الرئيسية",
+        "setup": "الإعداد",
+        "access": "الأدوار والصلاحيات",
+        "audit": "سجل التدقيق",
+        "notifications": "الوارد",
+        "me": "حسابي"
+    },
+    "searchPlaceholder": "ابحث أو انتقل إلى…",
+    "switchLanguage": "تغيير اللغة إلى {language}",
+    "notifications": "{count, plural, =0 {الإشعارات} one {الإشعارات، إشعار غير مقروء} two {الإشعارات، إشعاران غير مقروءين} few {الإشعارات، # إشعارات غير مقروءة} many {الإشعارات، # إشعارًا غير مقروء} other {الإشعارات، # إشعار غير مقروء}}",
+    "profile": "حسابك",
+    "menu": {
+        "profile": "الملف الشخصي",
+        "security": "الأمان",
+        "preferences": "التفضيلات",
+        "appearance": "المظهر",
+        "light": "فاتح",
+        "dark": "داكن",
+        "system": "مطابقة الجهاز",
+        "signOut": "تسجيل الخروج"
+    },
+    "palette": {
+        "title": "لوحة الأوامر",
+        "description": "ابحث في الصفحات والإجراءات",
+        "empty": "لا توجد نتائج",
+        "pages": "الصفحات",
+        "actions": "إجراءات",
+        "switchLanguage": "تغيير اللغة",
+        "toggleTheme": "تبديل الوضع الداكن"
+    },
+    "impersonation": {
+        "notice": "أنت تعرض مورد بصفة {target}. مسجّل الدخول باسم {impersonator}.",
+        "stop": "إنهاء العرض بصفة مستخدم آخر"
+    }
+}

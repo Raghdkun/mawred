@@ -1,45 +1,69 @@
 import { createInertiaApp } from '@inertiajs/react';
-import { Toaster } from '@/components/ui/sonner';
+import { configureEcho } from '@laravel/echo-react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { I18nextProvider } from 'react-i18next';
+import { LocalizedToaster } from '@/components/mw/localized-toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
-import AppLayout from '@/layouts/app-layout';
+import { i18n, namespacesForPage, prepareLocale } from '@/i18n';
+import AppShellLayout from '@/layouts/app-shell-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import { configureEcho } from '@laravel/echo-react';
+import SetupLayout from '@/layouts/setup-layout';
 
-configureEcho({
-    broadcaster: 'reverb',
+configureEcho({ broadcaster: 'reverb' });
+
+const queryClient = new QueryClient({
+    defaultOptions: { queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false } },
 });
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const pages = import.meta.glob('./pages/**/*.tsx');
 
 void createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
+    title: (title) => (title ? `${title} · ${i18n.t('common:appName')}` : i18n.t('common:appName')),
+    resolve: async (name, page) => {
+        // Translations for the page are loaded before it renders, so keys never flash (ADR-0011).
+        await prepareLocale(page?.props.locale, namespacesForPage(name));
+
+        const loader = pages[`./pages/${name}.tsx`];
+
+        if (!loader) {
+            throw new Error(`Page not found: ${name}`);
+        }
+
+        return loader() as never;
+    },
     layout: (name) => {
         switch (true) {
-            case name === 'welcome':
-                return null;
             case name.startsWith('auth/'):
+            case name === 'setup/claim':
                 return AuthLayout;
+            case name.startsWith('setup/'):
+            case name.startsWith('errors/'):
+                return SetupLayout;
             case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
+                return [AppShellLayout, SettingsLayout];
             default:
-                return AppLayout;
+                return AppShellLayout;
         }
     },
     strictMode: true,
     withApp(app) {
         return (
-            <TooltipProvider delayDuration={0}>
-                {app}
-                <Toaster />
-            </TooltipProvider>
+            <I18nextProvider i18n={i18n}>
+                <QueryClientProvider client={queryClient}>
+                    <TooltipProvider delayDuration={300}>
+                        {app}
+                        <LocalizedToaster />
+                    </TooltipProvider>
+                </QueryClientProvider>
+            </I18nextProvider>
         );
     },
     progress: {
-        color: '#4B5563',
+        color: '#5B88D6',
+        delay: 300,
     },
 });
 
-// This will set light / dark mode on load...
 initializeTheme();

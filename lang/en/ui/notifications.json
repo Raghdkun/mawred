@@ -1,0 +1,9 @@
+{
+    "pageTitle": "Inbox",
+    "title": "Inbox",
+    "description": "Updates on your requests, approvals and account.",
+    "markAllRead": "Mark all as read",
+    "unread": "Unread",
+    "filters": { "label": "Filter notifications", "all": "All", "unread": "Unread" },
+    "empty": { "title": "You're all caught up", "description": "New notifications will show up here." }
+}

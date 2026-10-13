@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Form } from '@inertiajs/react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { Check, Copy, ScanLine } from 'lucide-react';
@@ -58,6 +59,7 @@ function TwoFactorSetupStep({
     onNextStep: () => void;
     errors: string[];
 }) {
+    const { t } = useTranslation('settings');
     const { resolvedAppearance } = useAppearance();
     const [copiedText, copy] = useClipboard();
     const IconComponent = copiedText === manualSetupKey ? Check : Copy;
@@ -100,7 +102,7 @@ function TwoFactorSetupStep({
                     <div className="relative flex w-full items-center justify-center">
                         <div className="absolute inset-0 top-1/2 h-px w-full bg-border" />
                         <span className="relative bg-card px-2 py-1">
-                            or, enter the code manually
+                            {t('security.setup.manual')}
                         </span>
                     </div>
 
@@ -116,13 +118,17 @@ function TwoFactorSetupStep({
                                         type="text"
                                         readOnly
                                         value={manualSetupKey}
-                                        className="h-full w-full bg-background p-3 text-foreground outline-none"
+                                        dir="ltr"
+                                        aria-label={t('security.setup.manual')}
+                                        className="h-full w-full bg-background p-3 font-mono text-foreground outline-none"
                                     />
                                     <button
+                                        type="button"
                                         onClick={() => copy(manualSetupKey)}
+                                        aria-label={t('security.setup.copyKey')}
                                         className="border-s border-border px-3 hover:bg-muted"
                                     >
-                                        <IconComponent className="w-4" />
+                                        <IconComponent aria-hidden className="w-4" />
                                     </button>
                                 </>
                             )}
@@ -141,6 +147,7 @@ function TwoFactorVerificationStep({
     onClose: () => void;
     onBack: () => void;
 }) {
+    const { t } = useTranslation('settings');
     const [code, setCode] = useState<string>('');
     const pinInputContainerRef = useRef<HTMLDivElement>(null);
 
@@ -169,7 +176,6 @@ function TwoFactorVerificationStep({
                                 onChange={setCode}
                                 disabled={processing}
                                 pattern={REGEXP_ONLY_DIGITS}
-                                autoFocus
                             >
                                 <InputOTPGroup>
                                     {Array.from({ length: OTP_MAX_LENGTH }, (_, index) => (
@@ -188,14 +194,14 @@ function TwoFactorVerificationStep({
                                 onClick={onBack}
                                 disabled={processing}
                             >
-                                Back
+                                {t('security.setup.back')}
                             </Button>
                             <Button
                                 type="submit"
                                 className="flex-1"
                                 disabled={processing || code.length < OTP_MAX_LENGTH}
                             >
-                                Confirm
+                                {t('security.setup.confirm')}
                             </Button>
                         </div>
                     </div>
@@ -228,6 +234,7 @@ export default function TwoFactorSetupModal({
     fetchSetupData,
     errors,
 }: Props) {
+    const { t } = useTranslation('settings');
     const [showVerificationStep, setShowVerificationStep] = useState<boolean>(false);
 
     const modalConfig = useMemo<{
@@ -237,28 +244,26 @@ export default function TwoFactorSetupModal({
     }>(() => {
         if (twoFactorEnabled) {
             return {
-                title: 'Two-factor authentication enabled',
-                description:
-                    'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-                buttonText: 'Close',
+                title: t('security.setup.enabledTitle'),
+                description: t('security.setup.enabledDescription'),
+                buttonText: t('security.setup.close'),
             };
         }
 
         if (showVerificationStep) {
             return {
-                title: 'Verify authentication code',
-                description: 'Enter the 6-digit code from your authenticator app',
-                buttonText: 'Continue',
+                title: t('security.setup.verifyTitle'),
+                description: t('security.setup.verifyDescription'),
+                buttonText: t('security.setup.continue'),
             };
         }
 
         return {
-            title: 'Enable two-factor authentication',
-            description:
-                'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
-            buttonText: 'Continue',
+            title: t('security.setup.enableTitle'),
+            description: t('security.setup.enableDescription'),
+            buttonText: t('security.setup.continue'),
         };
-    }, [twoFactorEnabled, showVerificationStep]);
+    }, [twoFactorEnabled, showVerificationStep, t]);
 
     const resetModalState = useCallback(() => {
         if (twoFactorEnabled) {
