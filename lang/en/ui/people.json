@@ -321,6 +321,10 @@
             "reminders": "Remind before expiry (days)",
             "remindersHint": "e.g. 60, 30, 7. A last reminder is sent the day after it expires.",
             "remindersAt": "Reminders {days} days before"
+        },
+        "numbering": {
+            "prefix": "Employee number prefix",
+            "preview": "New employees get numbers like {example}."
         }
     }
 }

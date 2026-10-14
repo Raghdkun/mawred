@@ -94,9 +94,6 @@ export function DirectoryTable({
             type="button"
             onClick={() => onSort(key)}
             className="inline-flex items-center gap-1 font-medium hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-            aria-sort={
-                sort === key ? (direction === 'asc' ? 'ascending' : 'descending') : undefined
-            }
         >
             {label}
             {sort === key ? (
@@ -238,6 +235,12 @@ export function DirectoryTable({
         [t, locale, sort, direction, selectable, prefs.dense],
     );
 
+    const ariaSort = (column: string): 'ascending' | 'descending' | undefined => {
+        const key = { person: 'name', hireDate: 'hire_date' }[column];
+
+        return key && key === sort ? (direction === 'asc' ? 'ascending' : 'descending') : undefined;
+    };
+
     const table = useTable({
         features,
         columns,
@@ -298,6 +301,7 @@ export function DirectoryTable({
                                     <th
                                         key={header.id}
                                         scope="col"
+                                        aria-sort={ariaSort(header.column.id)}
                                         className={cn(
                                             'px-3 py-2.5 text-start font-medium',
                                             header.column.id === 'select' && 'w-10',

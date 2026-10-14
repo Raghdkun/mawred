@@ -4,16 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Web\People;
 
+use App\Domain\Access\Models\User;
 use App\Domain\People\Actions\DeleteCustomFieldDefinition;
 use App\Domain\People\Actions\SaveCustomFieldDefinition;
 use App\Domain\People\Actions\SaveDocumentType;
+use App\Domain\People\Actions\SaveNumberingSettings;
 use App\Domain\People\Data\CustomFieldDefinitionInputData;
 use App\Domain\People\Data\DocumentTypeInputData;
 use App\Domain\People\Enums\CustomFieldType;
 use App\Domain\People\Models\CustomFieldDefinition;
 use App\Domain\People\Models\DocumentType;
+use App\Domain\People\Support\EmployeeNumbers;
+use App\Domain\Setup\Support\Settings;
 use App\Http\Controllers\Controller;
+use App\Support\Actors\Actor;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,7 +30,7 @@ use Inertia\Response;
  */
 final class PeopleSettingsController extends Controller
 {
-    public function fields(): Response
+    public function fields(Settings $settings): Response
     {
         Gate::authorize('people.configure');
 
@@ -43,7 +50,18 @@ final class PeopleSettingsController extends Controller
                     'sortOrder' => $field->sort_order,
                 ]),
             'types' => array_map(fn (CustomFieldType $type): string => $type->value, CustomFieldType::cases()),
+            'numberPrefix' => $settings->get('people.number_prefix', EmployeeNumbers::DEFAULT_PREFIX),
         ]);
+    }
+
+    public function updateNumbering(Request $request, SaveNumberingSettings $save, #[CurrentUser] User $user): RedirectResponse
+    {
+        Gate::authorize('people.configure');
+        $request->validate(['prefix' => ['required', 'string', 'max:10']]);
+
+        $save->handle(Actor::user($user), $request->string('prefix')->toString());
+
+        return $this->saved();
     }
 
     public function storeField(CustomFieldDefinitionInputData $data, SaveCustomFieldDefinition $save): RedirectResponse

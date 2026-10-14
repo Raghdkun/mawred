@@ -42,9 +42,11 @@ type CustomField = {
 export default function CustomFieldsSettings({
     fields,
     types,
+    numberPrefix,
 }: {
     fields: CustomField[];
     types: string[];
+    numberPrefix: string;
 }) {
     const { t } = useTranslation('people');
     const { locale } = useLocale();
@@ -64,6 +66,7 @@ export default function CustomFieldsSettings({
                 }
             />
             <PeopleSettingsTabs />
+            <NumberingCard prefix={numberPrefix} />
             {fields.length === 0 ? (
                 <PageState
                     kind="empty"
@@ -394,5 +397,48 @@ function FieldDialog({
                 ))}
             </form>
         </ResponsiveDialog>
+    );
+}
+
+/** Employee number prefix (D38): new hires get <prefix><6 digits>; existing numbers stay. */
+function NumberingCard({ prefix }: { prefix: string }) {
+    const { t } = useTranslation('people');
+    const form = useForm({ prefix });
+    const submit = (event: FormEvent) => {
+        event.preventDefault();
+        form.put(people.settings.numbering.url(), { preserveScroll: true });
+    };
+
+    return (
+        <form
+            onSubmit={submit}
+            className="mb-6 flex flex-wrap items-end gap-3 rounded-lg bg-card p-4 shadow-sm"
+        >
+            <Field
+                id="number-prefix"
+                label={t('settings.numbering.prefix')}
+                error={form.errors.prefix}
+                hint={t('settings.numbering.preview', {
+                    example: `${form.data.prefix.toUpperCase()}000123`,
+                })}
+            >
+                <Input
+                    id="number-prefix"
+                    dir="ltr"
+                    className="w-40"
+                    maxLength={10}
+                    value={form.data.prefix}
+                    onChange={(event) => form.setData('prefix', event.target.value.toUpperCase())}
+                />
+            </Field>
+            <Button
+                type="submit"
+                variant="outline"
+                loading={form.processing}
+                disabled={!form.isDirty}
+            >
+                {t('common:actions.save')}
+            </Button>
+        </form>
     );
 }

@@ -4,7 +4,7 @@ An internal HR, hiring and workflow platform for one legal entity with unlimited
 
 Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install` after cloning): @AGENTS.md
 
-**Read first**: [docs/architecture.md](docs/architecture.md) · [docs/adr/](docs/adr/README.md) · [docs/roadmap.md](docs/roadmap.md) · [docs/stack-versions.md](docs/stack-versions.md) · [docs/open-questions.md](docs/open-questions.md) (decision log D1–D27)
+**Read first**: [docs/architecture.md](docs/architecture.md) · [docs/adr/](docs/adr/README.md) · [docs/roadmap.md](docs/roadmap.md) · [docs/stack-versions.md](docs/stack-versions.md) · [docs/open-questions.md](docs/open-questions.md) (decision log D1–D45)
 
 ## Ground rules
 - **Plan before code** for any non-trivial change. Ask before any decision the brief or ADRs leave ambiguous. Record new decisions as ADRs.

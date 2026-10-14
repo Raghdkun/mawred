@@ -110,3 +110,14 @@ it('renders the import wizard and setup branch step', function (): void {
     $admin = peopleAdmin();
     $this->actingAs($admin)->get(route('people.imports.create'))->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->component('people/imports/create'));
 });
+
+it('changes the employee number prefix for new hires', function (): void {
+    $this->actingAs(peopleAdmin());
+
+    $this->put(route('people.settings.numbering'), ['prefix' => 'bad prefix!'])->assertSessionHasErrors('prefix');
+    $this->put(route('people.settings.numbering'), ['prefix' => 'ryd-'])->assertSessionHasNoErrors();
+
+    $this->post(route('people.store'), ['nameEn' => 'New Person', 'hireDate' => '2025-01-01', 'placement' => ['branchId' => $this->riyadh->ulid]]);
+
+    expect(Employee::query()->where('name_en', 'New Person')->sole()->employee_number)->toStartWith('RYD-');
+});

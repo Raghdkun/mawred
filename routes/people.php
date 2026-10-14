@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->prefix('people')->name('people.')->grou
     Route::get('imports/{import}/errors', [ImportsController::class, 'errors'])->name('imports.errors');
 
     Route::get('settings/fields', [PeopleSettingsController::class, 'fields'])->name('settings.fields');
+    Route::put('settings/numbering', [PeopleSettingsController::class, 'updateNumbering'])->name('settings.numbering');
     Route::post('settings/fields', [PeopleSettingsController::class, 'storeField'])->name('settings.fields.store');
     Route::put('settings/fields/{field}', [PeopleSettingsController::class, 'updateField'])->name('settings.fields.update');
     Route::delete('settings/fields/{field}', [PeopleSettingsController::class, 'destroyField'])->name('settings.fields.destroy');
