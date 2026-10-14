@@ -26,7 +26,7 @@ it('lists only the employees in the viewer scope, without sensitive fields', fun
         ->assertJsonMissingPath('data.0.national_id');
 
     $this->getJson("/api/v1/employees/{$colleague->ulid}")->assertOk()->assertJsonPath('data.employee_number', $colleague->employee_number);
-    $this->getJson("/api/v1/employees/{$stranger->ulid}")->assertForbidden()->assertJsonPath('error.code', 'forbidden');
+    $this->getJson("/api/v1/employees/{$stranger->ulid}")->assertNotFound()->assertJsonPath('error.code', 'not_found');
 });
 
 it('refuses people.view-less callers', function (): void {

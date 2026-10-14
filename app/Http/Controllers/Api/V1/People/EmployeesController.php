@@ -57,7 +57,8 @@ final class EmployeesController extends Controller
 
     public function show(Employee $employee): EmployeeResource
     {
-        Gate::authorize('view', $employee);
+        // Out-of-scope records answer 404, so the API never confirms they exist.
+        abort_unless(Gate::allows('view', $employee), 404);
 
         $employee->load(['currentBranch', 'currentDepartment', 'currentPosition', 'currentManager']);
 

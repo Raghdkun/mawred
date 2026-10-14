@@ -29,6 +29,14 @@ final class DocumentExpiringNotification extends Notification implements ShouldQ
     ) {}
 
     /**
+     * @return array<string, string>
+     */
+    public function viaQueues(): array
+    {
+        return ['database' => 'notifications'];
+    }
+
+    /**
      * @return list<string>
      */
     public function via(object $notifiable): array

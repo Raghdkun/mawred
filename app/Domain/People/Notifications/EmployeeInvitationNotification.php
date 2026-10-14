@@ -26,6 +26,14 @@ final class EmployeeInvitationNotification extends Notification implements Shoul
     ) {}
 
     /**
+     * @return array<string, string>
+     */
+    public function viaQueues(): array
+    {
+        return ['mail' => 'notifications'];
+    }
+
+    /**
      * @return list<string>
      */
     public function via(object $notifiable): array
