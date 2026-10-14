@@ -29,7 +29,7 @@ export default function Home() {
     const { locale } = useLocale();
     const { can } = useAccess();
     const now = new Date();
-    const firstName = auth?.user.name.split(' ')[0] ?? '';
+    const firstName = auth?.user.displayName.split(' ')[0] ?? '';
 
     const shortcuts = navigation(setup.complete)
         .flatMap((group) => group.items)

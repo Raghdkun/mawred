@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import {
     AdminStep,
+    BranchStep,
     CompanyStep,
     LanguagesStep,
     LaterStep,
@@ -22,6 +23,7 @@ type Props = {
     company: { name: { en: string; ar: string }; legalName: string | null; accent: string | null };
     languages: { defaultLocale: string; defaultDigits: string; hijriByDefault: boolean };
     admin: { name: string; email: string; twoFactorEnabled: boolean };
+    branch: App.Domain.Organization.Data.BranchData | null;
 };
 
 /** Setup wizard (handoff 2): rail 300 px + form 640 px + live preview; compact bar on smaller screens. */
@@ -32,6 +34,7 @@ export default function SetupWizard({
     company,
     languages,
     admin,
+    branch,
 }: Props) {
     const { t } = useTranslation('setup');
     const { company: shared } = usePage().props;
@@ -50,6 +53,8 @@ export default function SetupWizard({
                 return <CompanyStep company={company} logoUrl={shared.logoUrl} />;
             case 'languages':
                 return <LanguagesStep languages={languages} />;
+            case 'branch':
+                return <BranchStep branch={branch} />;
             case 'admin':
                 return <AdminStep admin={admin} />;
             case 'review':

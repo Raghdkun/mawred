@@ -27,3 +27,9 @@ Permissions take the form `module.action` and combine with a data scope: own, di
 ## Consequences
 - + One choke point for data visibility, and it can be tested exhaustively.
 - − Custom tables next to spatie's need care in role cloning/deletion Actions. Package helpers like `givePermissionTo` can't set a scope, so a wrapper Action is mandatory.
+
+## Implementation notes (Phase 1)
+- `EmployeeScopePredicates` (People) implements the `OrgScopePredicates` contract: direct reports via `current_manager_id`, team tree via the `employee_reporting_paths` closure table, department via an ltree subtree, branch via `current_branch_id`, plus secondary placements with `is_current` (D41).
+- `organization.*` became unscoped reference data (D40). `SubjectBinding::reference()` lets reference-data queries extend `ScopedQuery` and fail closed on any narrower grant.
+- A scope-leak dataset (`tests/Feature/People/EmployeeScopeTest.php`) checks exact visibility for all six scopes, anchors, accounts without an employee record and ended secondary placements. Out-of-scope profiles answer 404 on web and API.
+

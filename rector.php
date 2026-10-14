@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
 
@@ -17,6 +18,8 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         __DIR__.'/bootstrap/cache',
+        // Infers Pest\Mixins\Expectation for `fn () => expect(...)`, but Pest returns Pest\Expectation.
+        AddArrowFunctionReturnTypeRector::class => [__DIR__.'/tests'],
     ])
     ->withPhpSets(php84: true)
     ->withPreparedSets(

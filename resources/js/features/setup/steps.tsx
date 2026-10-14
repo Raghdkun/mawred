@@ -2,6 +2,7 @@ import { Link, router, useForm } from '@inertiajs/react';
 import { ImageUp, ShieldCheck, ShieldAlert, Trash2 } from 'lucide-react';
 import { type DragEvent, type FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BranchForm } from '@/features/organization/branch-form';
 import { Illustration } from '@/components/mw/illustration';
 import { MawredLogo } from '@/components/mw/mawred-logo';
 import InputError from '@/components/input-error';
@@ -312,6 +313,35 @@ export function LanguagesStep({ languages }: { languages: Languages }) {
                 {t('languages.save')}
             </Button>
         </form>
+    );
+}
+
+/** Step 4: the first branch, with its work week and check-in area (handoff 2: map + radius slider). */
+export function BranchStep({ branch }: { branch: App.Domain.Organization.Data.BranchData | null }) {
+    const { t } = useTranslation('setup');
+
+    return (
+        <div className="flex max-w-[720px] flex-col gap-6">
+            <StepHeading title={t('branch.title')} description={t('branch.description')} />
+            <BranchForm
+                branch={branch}
+                action={setup.steps.branch.url()}
+                method="post"
+                costCenters={[]}
+                submitLabel={t('branch.save')}
+                secondaryAction={
+                    branch ? null : (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => router.post(setup.steps.skip.url('branch'))}
+                        >
+                            {t('common:actions.skip')}
+                        </Button>
+                    )
+                }
+            />
+        </div>
     );
 }
 

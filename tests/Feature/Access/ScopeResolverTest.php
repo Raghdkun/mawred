@@ -5,12 +5,16 @@ declare(strict_types=1);
 use App\Domain\Access\Actions\SyncRoleGrants;
 use App\Domain\Access\Enums\FieldAccess;
 use App\Domain\Access\Enums\Scope;
+use App\Domain\Access\Models\Permission;
 use App\Domain\Access\Models\Role;
 use App\Domain\Access\Models\User;
+use App\Domain\Access\Support\AccessEpoch;
 use App\Domain\Access\Support\ScopeResolver;
 use App\Domain\Access\Support\SubjectBinding;
 use App\Domain\Audit\Models\Activity;
 use App\Domain\Audit\Queries\AuditLogQuery;
+use App\Domain\Organization\Models\Branch;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 beforeEach(fn () => seedAccess());
@@ -138,4 +142,22 @@ it('opens operational dashboards only to system.view holders', function (): void
     expect(Gate::forUser($admin)->allows('viewPulse'))->toBeTrue()
         ->and(Gate::forUser($employee)->allows('viewPulse'))->toBeFalse()
         ->and(Gate::forUser($employee)->allows('viewHorizon'))->toBe(app()->isLocal());
+});
+
+it('stores reference-data grants unscoped and fails closed on a narrower stray scope', function (): void {
+    $officer = userWithRoles('hr_officer');
+    $branch = Branch::factory()->create();
+    $role = Role::findByName('hr_officer');
+
+    expect(freshResolver()->for($officer)->widestScope('organization.view'))->toBe(Scope::All);
+
+    // A row written outside SyncRoleGrants (e.g. by hand) must not widen into "everything".
+    $permissionId = Permission::findByName('organization.view')->id;
+    DB::table('role_permission_scopes')
+        ->where('role_id', $role->id)->where('permission_id', $permissionId)->update(['scope' => 'branch']);
+    resolve(AccessEpoch::class)->bump();
+
+    $visible = freshResolver()->apply(Branch::query(), $officer, 'organization.view', SubjectBinding::reference());
+
+    expect($visible->whereKey($branch->id)->exists())->toBeFalse();
 });

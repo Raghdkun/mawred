@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { type CellValue } from '@/features/access/scopes';
 import { useLocale } from '@/hooks/use-locale';
 import accessUsers from '@/routes/access/users';
+import { fieldLabel } from '@/features/access/field-label';
 
 type Props = {
     user: App.Domain.Access.Data.UserAccountData;
@@ -15,6 +16,7 @@ type Props = {
     homeLayout: string;
     matrix: Record<string, Record<string, string>>;
     fields: Record<string, 'read' | 'write' | null>;
+    fieldLabels: Record<string, Record<string, string>>;
     samples: { auditEntries: number | null };
 };
 
@@ -26,6 +28,7 @@ export default function UserPreview({
     homeLayout,
     matrix,
     fields,
+    fieldLabels,
     samples,
 }: Props) {
     const { t } = useTranslation('access');
@@ -108,7 +111,7 @@ export default function UserPreview({
                             {Object.entries(fields).map(([field, access]) => (
                                 <div key={field} className="contents">
                                     <dt className="text-text-secondary">
-                                        {t(`fields.names.${field}`, { defaultValue: field })}
+                                        {fieldLabel(field, fieldLabels, locale, t)}
                                     </dt>
                                     <dd
                                         className={access ? 'font-medium' : 'text-muted-foreground'}

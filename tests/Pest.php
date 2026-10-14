@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Domain\Access\Actions\SeedDefaultRoles;
 use App\Domain\Access\Models\User;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\BrowserTestCase;
 use Tests\TestCase;
@@ -22,6 +23,11 @@ use Tests\TestCase;
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->in('Feature');
+
+// Volume and speed checks run like a real worker: no wrapping transaction.
+pest()->extend(TestCase::class)
+    ->use(DatabaseTruncation::class)
+    ->in('Performance');
 
 pest()->extend(BrowserTestCase::class)
     ->use(RefreshDatabase::class)

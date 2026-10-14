@@ -41,7 +41,7 @@ export function ProfileMenu() {
                 >
                     <Avatar className="size-8">
                         <AvatarFallback className="bg-secondary text-caption font-semibold text-secondary-foreground">
-                            {getInitials(auth.user.name)}
+                            {getInitials(auth.user.displayName)}
                         </AvatarFallback>
                     </Avatar>
                 </Button>
@@ -49,7 +49,7 @@ export function ProfileMenu() {
             <DropdownMenuContent align="end" className="w-64">
                 <DropdownMenuLabel className="flex flex-col gap-0.5 font-normal">
                     <span className="truncate text-sm font-medium text-foreground">
-                        {auth.user.name}
+                        <bdi>{auth.user.displayName}</bdi>
                     </span>
                     <bdi className="truncate text-caption text-muted-foreground">
                         {auth.user.email}

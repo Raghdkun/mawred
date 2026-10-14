@@ -35,7 +35,9 @@
 - Scope-leak harness exists with a sample endpoint.
 - The shell and the auth screens pass axe and the visual checks in all 12 variants.
 
-## Phase 1 — Organization & People (L)
+## Phase 1 — Organization & People (L) ✅ built, pending CI on GitHub (Actions account issue) and owner review
+> Demo: [docs/demos/phase-1.md](demos/phase-1.md). Decisions: D37–D45. Exit criteria met locally: 5,000-employee lists answer in < 10 ms with 4–6 queries for every scope shape; scope-leak tests cover all six scopes; a 10,000-row import validates in ~6 s and commits in ~3 min (`composer test:performance`).
+
 - Branches (tz, weekend, working hours, geofence map picker), departments (ltree, unlimited depth), positions, employment types, grades, cost centers. Setup wizard step 4.
 - Employees with effective-dated assignments, managers (direct, department head, branch manager), reporting closure table, lazy org chart.
 - Custom fields (typed, permissioned), sensitive fields (encryption + blind index), documents with expiry reminders, employment history, assets.

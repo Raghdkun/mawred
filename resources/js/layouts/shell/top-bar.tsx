@@ -20,6 +20,8 @@ export function TopBar({ onOpenPalette }: { onOpenPalette: () => void }) {
             <button
                 type="button"
                 onClick={onOpenPalette}
+                aria-label={t('searchPlaceholder')}
+                aria-keyshortcuts="Meta+K Control+K"
                 className="hidden h-10 w-full max-w-sm items-center gap-2 rounded-md border border-input bg-card px-3 text-start text-sm text-muted-foreground transition-colors duration-150 ease-soft hover:border-input-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none md:flex"
             >
                 <Search aria-hidden className="size-4" />

@@ -99,6 +99,12 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    /*
+    | HMAC key for blind indexes on encrypted columns (ADR-0007). Separate from APP_KEY so a leaked
+    | database plus APP_KEY rotation never exposes lookups, and vice versa.
+    */
+    'blind_index_key' => env('BLIND_INDEX_KEY'),
+
     'key' => env('APP_KEY'),
 
     'previous_keys' => [

@@ -15,7 +15,13 @@
         "cognito": "Cognito Forms",
         "review": "Review & finish"
     },
-    "status": { "completed": "Done", "skipped": "Skipped", "pending": "To do", "current": "Current step", "required": "Required" },
+    "status": {
+        "completed": "Done",
+        "skipped": "Skipped",
+        "pending": "To do",
+        "current": "Current step",
+        "required": "Required"
+    },
     "welcome": {
         "title": "Welcome to Mawred",
         "description": "Let's get your workspace ready. Each step saves as you go, and you can skip the optional ones and come back from Settings.",
@@ -83,5 +89,10 @@
     "pending": {
         "pageTitle": "Being set up",
         "signOut": "Sign out"
+    },
+    "branch": {
+        "title": "Your first branch",
+        "description": "Where people work: its time zone, weekend and working hours drive leave, schedules and attendance. Add more branches later from Organization.",
+        "save": "Save and continue"
     }
 }

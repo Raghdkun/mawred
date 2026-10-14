@@ -18,6 +18,7 @@ use App\Domain\Access\Enums\Scope;
 use App\Domain\Access\Models\Role;
 use App\Domain\Access\Support\DefaultRoles;
 use App\Domain\Access\Support\PermissionCatalog;
+use App\Domain\Access\Support\SensitiveFieldRegistry;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Access\RoleDetailsRequest;
 use Illuminate\Http\RedirectResponse;
@@ -51,7 +52,7 @@ final class RolesController extends Controller
         ]);
     }
 
-    public function show(Role $role): Response
+    public function show(Role $role, SensitiveFieldRegistry $sensitiveFields): Response
     {
         Gate::authorize('access.view');
 
@@ -86,7 +87,8 @@ final class RolesController extends Controller
                 fn (Scope $scope): string => $scope->value,
                 DefaultRoles::definitions()[$role->name]['grants'] ?? [],
             ) : null,
-            'sensitiveFields' => PermissionCatalog::SENSITIVE_FIELDS,
+            'sensitiveFields' => $sensitiveFields->keys(),
+            'fieldLabels' => (object) $sensitiveFields->labels(),
             'fields' => (object) $fields,
             'can' => [
                 'update' => Gate::allows('access.update') && ! $role->is_super_admin,
@@ -128,7 +130,7 @@ final class RolesController extends Controller
         return back();
     }
 
-    public function updateFields(Request $request, Role $role, SyncFieldPermissions $sync): RedirectResponse
+    public function updateFields(Request $request, Role $role, SyncFieldPermissions $sync, SensitiveFieldRegistry $sensitiveFields): RedirectResponse
     {
         Gate::authorize('access.update');
 
@@ -139,7 +141,7 @@ final class RolesController extends Controller
 
         $requested = $request->array('fields');
         $fields = [];
-        foreach (PermissionCatalog::SENSITIVE_FIELDS as $key) {
+        foreach ($sensitiveFields->keys() as $key) {
             $access = is_string($requested[$key] ?? null) ? FieldAccess::tryFrom($requested[$key]) : null;
 
             if ($access instanceof FieldAccess) {

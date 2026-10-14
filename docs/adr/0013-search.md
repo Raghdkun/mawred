@@ -11,3 +11,9 @@
 
 ## Alternatives
 Meilisearch or Typesense via Scout: better relevance, but it adds a service, a data copy and a **second place where scope must be enforced**. Rejected for v1. It can be added later behind the `GlobalSearch` interface if relevance needs it.
+
+## Implementation notes (Phase 1)
+- `App\Support\Search\GlobalSearch` with per-domain `SearchProvider`s (employees, branches, departments); a provider runs only when the viewer has its ability, and each one goes through its `ScopedQuery`.
+- Matching uses the normalised `search_text` (trigram index) and ranks by `similarity()`. Local phone formats match E.164 numbers; national IDs match only exactly through the blind index, and only for viewers with field access.
+- `tsvector` full-text search is not needed yet at this data size; it can join behind the same interface when requests and candidates arrive.
+

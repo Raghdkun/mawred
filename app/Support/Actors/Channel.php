@@ -15,4 +15,5 @@ enum Channel: string
     case WhatsApp = 'whatsapp';
     case Cognito = 'cognito';
     case System = 'system';
+    case Import = 'import';
 }

@@ -13,6 +13,7 @@ use App\Domain\Access\Models\User;
 use App\Domain\Access\Queries\UserDirectoryQuery;
 use App\Domain\Access\Support\PermissionCatalog;
 use App\Domain\Access\Support\ScopeResolver;
+use App\Domain\Access\Support\SensitiveFieldRegistry;
 use App\Domain\Audit\Queries\AuditLogQuery;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
@@ -68,7 +69,7 @@ final class UsersController extends Controller
      * "View as user": a read-only preview of what someone can do and see (screen 38). It runs
      * the ScopeResolver as that user; it never switches sessions.
      */
-    public function preview(User $user, ScopeResolver $resolver, AuditLogQuery $audit): Response
+    public function preview(User $user, ScopeResolver $resolver, AuditLogQuery $audit, SensitiveFieldRegistry $sensitiveFields): Response
     {
         Gate::authorize('access.view');
 
@@ -86,7 +87,7 @@ final class UsersController extends Controller
         }
 
         $fields = [];
-        foreach (PermissionCatalog::SENSITIVE_FIELDS as $field) {
+        foreach ($sensitiveFields->keys() as $field) {
             $fields[$field] = $access->fieldAccess($field)?->value;
         }
 
@@ -97,6 +98,7 @@ final class UsersController extends Controller
             'homeLayout' => $access->homeLayout->value,
             'matrix' => (object) $matrix,
             'fields' => $fields,
+            'fieldLabels' => (object) $sensitiveFields->labels(),
             'samples' => [
                 'auditEntries' => $access->can('audit.view') ? $audit->visibleTo($user)->count() : null,
             ],

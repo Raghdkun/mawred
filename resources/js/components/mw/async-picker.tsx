@@ -115,10 +115,7 @@ export function AsyncPicker<T>({
                                         <span className="flex min-w-0 flex-col">
                                             <span className="truncate">{option.label}</span>
                                             {option.description ? (
-                                                <bdi
-                                                    dir="ltr"
-                                                    className="truncate text-caption text-muted-foreground"
-                                                >
+                                                <bdi className="truncate text-caption text-muted-foreground">
                                                     {option.description}
                                                 </bdi>
                                             ) : null}

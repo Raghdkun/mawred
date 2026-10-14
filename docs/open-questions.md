@@ -40,8 +40,18 @@ All questions below were answered by the product owner. Items still waiting on a
 | D33 | Maps | **MapLibre GL + OpenFreeMap tiles** (no key). Nominatim (debounced, attributed) for address search, plus manual lat/lng entry. Map controls stay LTR. | Setup step 4, screen 39 |
 
 | D34 | JS lint version | **ESLint 9.39** instead of 10 (D17 amended): `eslint-plugin-react` and `jsx-a11y` don't support ESLint 10 yet. Revisit when they do. | Tooling |
-| D35 | Scope until Phase 1 | Org-relative scopes (team, department, branch) **fail closed** (`NullOrgScopePredicates`) until Phase 1 binds real org predicates. Own and All work now. | ADR-0005 |
+| D35 | Scope until Phase 1 | Org-relative scopes (team, department, branch) failed closed in Phase 0. **Done in Phase 1:** `EmployeeScopePredicates` (closure table, department subtree, branch, anchors, secondary placements) replaced the null binding. `organization.*` is unscoped reference data. | ADR-0005 |
 | D36 | Audit export | Audit-log export (screen 43) moves to Phase 8 with the queued export pipeline, because heavy exports are always queued. | Roadmap |
+
+| D37 | Employee names | **Bilingual full name**: `name_en` (required), `name_ar` (optional), `preferred_name` (optional). Lists show the viewer's language with fallback; search matches both. | People, PDFs, search |
+| D38 | Employee number | **Auto with configurable prefix** (`EMP-000123`, setting `people.number_prefix`), unique company-wide; HR may override (e.g. when importing existing numbers). | People, import |
+| D39 | Import matching | **Upsert by employee number**, falling back to work email when the number is blank. The dry run lists every create and update. | Import |
+| D40 | Organization access | `organization.*` is **unscoped reference data** (on/off, stored as `all`), like forms and workflows. Scopes apply to the people data itself. A narrower stray grant fails closed (`SubjectBinding::reference()`). | Access, Organization |
+| D41 | Org scope semantics | Department scope covers the department's whole **subtree**; department and branch scopes count **secondary placements in force** (D25); every org scope includes the viewer's own record. No employee record and no anchors means nothing org-relative (D6). | Access, People |
+| D42 | API casing | `/api/v1` JSON uses **snake_case** keys (matches Laravel paginator meta). Phase 1 employee endpoints are read-only (directory, profile basics, org chart); creating people over the API comes with Hiring/Integrations. | API |
+| D43 | Saved views | Directory saved views and table column/density choices are kept **per browser** for now (query strings only, so scope still applies). Shared, server-side views can follow if teams ask. | People UI |
+| D44 | Document reminders | Expiry reminders are **in-app** in Phase 1 (employee, manager, in-scope HR, once per threshold). Email joins in Phase 3 and WhatsApp in Phase 4. | People, Notifications |
+| D45 | Name sorting | The directory sorts by the name in the **UI language**; in Arabic, people without an Arabic name sort by their English name (stored `name_ar_sort`). | People |
 
 ## Still open (non-blocking)
 - **GitHub Actions can't start on this account** (every run is `startup_failure`, even a one-step workflow). Likely billing or a spending limit for private repos. Owner to check Settings → Billing → Actions.

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Access\Models\User;
+use App\Domain\Organization\Models\Branch;
 use App\Domain\Setup\Actions\IssueOwnerSetupLink;
 use App\Domain\Setup\Enums\SetupStep;
 use App\Domain\Setup\Enums\StepStatus;
@@ -98,4 +99,24 @@ it('forbids the wizard to non-admins', function (): void {
     seedAccess();
 
     $this->actingAs(userWithRoles('employee'))->get(route('setup.show'))->assertForbidden();
+});
+
+it('saves the first branch in step 4 and edits it on a second save', function (): void {
+    seedAccess();
+    $root = confirmTwoFactor(userWithRoles('super_admin'));
+    $payload = [
+        'code' => 'ruh', 'name' => ['en' => 'Riyadh', 'ar' => 'الرياض'], 'countryCode' => 'SA', 'timezone' => 'Asia/Riyadh',
+        'defaultCurrency' => 'SAR', 'phoneRegion' => 'SA', 'weekendDays' => [5, 6], 'workStartsAt' => '08:00', 'workEndsAt' => '17:00',
+        'geofence' => ['lat' => 24.71, 'lng' => 46.67, 'radiusM' => 200],
+    ];
+
+    $this->actingAs($root)->post(route('setup.steps.branch'), [...$payload, 'timezone' => 'Nowhere'])->assertSessionHasErrors('timezone');
+    $this->post(route('setup.steps.branch'), $payload)->assertRedirect();
+    $this->post(route('setup.steps.branch'), [...$payload, 'code' => 'ruh-hq'])->assertRedirect();
+
+    expect(Branch::query()->sole()->code)->toBe('RUH-HQ')
+        ->and(resolve(SetupState::class)->status(SetupStep::Branch))->toBe(StepStatus::Completed);
+
+    $this->get(route('setup.show', 'branch'))
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->where('branch.code', 'RUH-HQ')->where('branch.geofence.radiusM', 200));
 });
