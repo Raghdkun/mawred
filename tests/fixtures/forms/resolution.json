@@ -1,0 +1,198 @@
+{
+  "description": "Form resolution parity (FormResolution.php / resolve.ts)",
+  "context": {
+    "requester": {
+      "gender": "female"
+    },
+    "ctx": {
+      "today": "2026-10-15",
+      "calendar": {
+        "weekend": [
+          5,
+          6
+        ],
+        "holidays": []
+      }
+    }
+  },
+  "fields": [
+    {
+      "key": "kind",
+      "type": "radio",
+      "label": {
+        "en": "kind"
+      },
+      "options": [
+        {
+          "value": "a",
+          "label": {
+            "en": "A"
+          }
+        },
+        {
+          "value": "b",
+          "label": {
+            "en": "B"
+          }
+        }
+      ]
+    },
+    {
+      "key": "b_only",
+      "type": "text",
+      "label": {
+        "en": "b_only"
+      },
+      "visible": {
+        "op": "eq",
+        "args": [
+          {
+            "ref": "field.kind"
+          },
+          "b"
+        ]
+      }
+    },
+    {
+      "key": "needs_b_only",
+      "type": "text",
+      "label": {
+        "en": "needs_b_only"
+      },
+      "visible": {
+        "op": "not",
+        "args": [
+          {
+            "op": "empty",
+            "args": [
+              {
+                "ref": "field.b_only"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "days",
+      "type": "number",
+      "label": {
+        "en": "days"
+      }
+    },
+    {
+      "key": "hours",
+      "type": "calculated",
+      "label": {
+        "en": "hours"
+      },
+      "calc": {
+        "op": "mul",
+        "args": [
+          {
+            "ref": "field.days"
+          },
+          8
+        ]
+      }
+    },
+    {
+      "key": "long",
+      "type": "note",
+      "label": {
+        "en": "long"
+      },
+      "visible": {
+        "op": "gt",
+        "args": [
+          {
+            "ref": "field.hours"
+          },
+          40
+        ]
+      }
+    },
+    {
+      "key": "maternity",
+      "type": "text",
+      "label": {
+        "en": "maternity"
+      },
+      "visible": {
+        "op": "eq",
+        "args": [
+          {
+            "ref": "requester.gender"
+          },
+          "female"
+        ]
+      }
+    }
+  ],
+  "cases": [
+    {
+      "name": "chain hides when the parent hides",
+      "input": {
+        "kind": "a",
+        "b_only": "x",
+        "needs_b_only": "y",
+        "days": 2
+      },
+      "expected": {
+        "values": {
+          "kind": "a",
+          "b_only": null,
+          "needs_b_only": null,
+          "days": 2,
+          "maternity": null,
+          "hours": 16
+        },
+        "hidden": [
+          "b_only",
+          "needs_b_only",
+          "long"
+        ]
+      }
+    },
+    {
+      "name": "chain shows when the parent shows",
+      "input": {
+        "kind": "b",
+        "b_only": "x",
+        "days": 6
+      },
+      "expected": {
+        "values": {
+          "kind": "b",
+          "b_only": "x",
+          "needs_b_only": null,
+          "days": 6,
+          "maternity": null,
+          "hours": 48
+        },
+        "hidden": []
+      }
+    },
+    {
+      "name": "calculated values ignore client input",
+      "input": {
+        "kind": "b",
+        "hours": 999
+      },
+      "expected": {
+        "values": {
+          "kind": "b",
+          "b_only": null,
+          "needs_b_only": null,
+          "days": null,
+          "maternity": null,
+          "hours": null
+        },
+        "hidden": [
+          "needs_b_only",
+          "long"
+        ]
+      }
+    }
+  ]
+}

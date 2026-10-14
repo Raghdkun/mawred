@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Forms\Support\FormResolution;
 use App\Support\Rules\RuleError;
 use App\Support\Rules\Rules;
 
@@ -51,4 +52,14 @@ it('refuses rules nested too deeply', function (): void {
     }
 
     expect(fn () => Rules::evaluate($rule, []))->toThrow(RuleError::class, 'too deeply');
+});
+
+it('resolves forms like the client does', function (): void {
+    /** @var array{context: array<string, mixed>, fields: list<array<string, mixed>>, cases: list<array{name: string, input: array<string, mixed>, expected: array{values: array<string, mixed>, hidden: list<string>}}>} $fixture */
+    $fixture = json_decode((string) file_get_contents(dirname(__DIR__, 2).'/fixtures/forms/resolution.json'), true, flags: JSON_THROW_ON_ERROR);
+    $fields = array_column($fixture['fields'], null, 'key');
+
+    foreach ($fixture['cases'] as $case) {
+        expect(FormResolution::resolve($fields, $case['input'], $fixture['context']))->toEqual($case['expected'], $case['name']);
+    }
 });

@@ -53,6 +53,12 @@ final class FormSubmission extends Model
         return $this->belongsTo(FormVersion::class, 'form_version_id');
     }
 
+    /** The version this submission was made against (always present; FK-enforced). */
+    public function pinnedVersion(): FormVersion
+    {
+        return $this->version ?? FormVersion::query()->findOrFail($this->form_version_id);
+    }
+
     /**
      * @return BelongsTo<User, $this>
      */

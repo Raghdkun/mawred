@@ -79,6 +79,22 @@ requestId: string | null,
 }
 namespace Forms {
 namespace Data {
+export type FormData = {
+id: string,
+code: string,
+name: Record<string, string>,
+description: Record<string, string>,
+category: string | null,
+status: string,
+publishedNumber: number | null,
+publishedAt: string | null,
+isPublic: boolean,
+publicSlug: string | null,
+publicUrl: string | null,
+successMessage: Record<string, string>,
+closesAt: string | null,
+submissionsCount: number,
+};
 export type FormSettingsData = {
 code: string,
 name: {
@@ -97,6 +113,14 @@ en?: string | null,
 ar?: string | null,
 },
 closesAt: string | null,
+};
+export type SubmissionData = {
+id: string,
+createdAt: string,
+source: string,
+version: number,
+submittedBy: string | null,
+answers: Record<string, any> | null,
 };
 }
 namespace Enums {

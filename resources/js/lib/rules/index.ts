@@ -319,11 +319,23 @@ function isEmpty(value: unknown): boolean {
     return (
         value === null ||
         value === undefined ||
-        (typeof value === 'string' &&
-            value.replace(/^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g, '') === '') ||
+        (typeof value === 'string' && phpTrim(value) === '') ||
         (Array.isArray(value) && value.length === 0) ||
         (isObject(value) && Object.keys(value).length === 0)
     );
+}
+
+/** PHP's trim() set (space, \t, \n, \r, \0, \v), so blank strings match on both sides. */
+const PHP_TRIM = new Set([' ', '\t', '\n', '\r', String.fromCharCode(0), String.fromCharCode(11)]);
+
+function phpTrim(value: string): string {
+    let start = 0;
+    let end = value.length;
+
+    while (start < end && PHP_TRIM.has(value[start] ?? '')) start++;
+    while (end > start && PHP_TRIM.has(value[end - 1] ?? '')) end--;
+
+    return value.slice(start, end);
 }
 
 function arithmetic(values: unknown[], apply: (a: number, b: number) => number): number | null {

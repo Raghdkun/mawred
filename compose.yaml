@@ -7,6 +7,8 @@ services:
   pgsql:
     build: ./docker/postgres
     image: mawred/pgsql-dev:18
+    # Partitioned tables (ADR-0018) mean a fresh test schema drops hundreds of tables at once.
+    command: ["postgres", "-c", "max_locks_per_transaction=256"]
     environment:
       POSTGRES_DB: mawred
       POSTGRES_USER: mawred

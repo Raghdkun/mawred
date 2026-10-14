@@ -1,6 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { resolveForm } from '@/features/forms/resolve';
+import { type FormField } from '@/features/forms/schema';
 import { evaluate, type RuleContext } from '@/lib/rules';
 
 /** The same fixtures run in Pest (tests/Unit/Support/RulesParityTest.php); CI fails on drift. */
@@ -34,3 +36,27 @@ for (const file of readdirSync(dir).filter((name) => name.endsWith('.json'))) {
         }
     });
 }
+
+type ResolutionFixture = {
+    context: RuleContext;
+    fields: FormField[];
+    cases: Array<{
+        name: string;
+        input: Record<string, unknown>;
+        expected: { values: Record<string, unknown>; hidden: string[] };
+    }>;
+};
+
+const resolution = JSON.parse(
+    readFileSync(join(process.cwd(), 'tests/fixtures/forms/resolution.json'), 'utf8'),
+) as ResolutionFixture;
+
+describe('form resolution parity', () => {
+    for (const testCase of resolution.cases) {
+        it(testCase.name, () => {
+            expect(resolveForm(resolution.fields, testCase.input, resolution.context)).toEqual(
+                testCase.expected,
+            );
+        });
+    }
+});

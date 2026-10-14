@@ -22,6 +22,13 @@ return [
         'port' => (int) env('CLAMAV_PORT', 3310),
     ],
 
+    // Public form proof-of-work (D10): PBKDF2 cost and the counter range the browser searches.
+    'altcha' => [
+        'cost' => env('ALTCHA_COST', 5000),
+        'counter_min' => env('ALTCHA_COUNTER_MIN', 5000),
+        'counter_max' => env('ALTCHA_COUNTER_MAX', 10000),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],

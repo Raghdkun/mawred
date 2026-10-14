@@ -1,0 +1,58 @@
+import {
+    AlignLeft,
+    Banknote,
+    Building2,
+    Calculator,
+    Calendar,
+    CalendarRange,
+    CheckSquare,
+    CircleDot,
+    Clock,
+    FileUp,
+    Hash,
+    List,
+    ListChecks,
+    type LucideIcon,
+    Mail,
+    Network,
+    Phone,
+    Plane,
+    StickyNote,
+    ToggleLeft,
+    Type,
+    UserRound,
+} from 'lucide-react';
+import { type FieldType } from '../schema';
+
+export const FIELD_ICONS: Record<FieldType, LucideIcon> = {
+    text: Type,
+    textarea: AlignLeft,
+    number: Hash,
+    money: Banknote,
+    email: Mail,
+    phone: Phone,
+    date: Calendar,
+    date_range: CalendarRange,
+    time: Clock,
+    select: List,
+    multiselect: ListChecks,
+    radio: CircleDot,
+    checkboxes: CheckSquare,
+    boolean: ToggleLeft,
+    file: FileUp,
+    employee: UserRound,
+    department: Network,
+    branch: Building2,
+    leave_type: Plane,
+    calculated: Calculator,
+    note: StickyNote,
+};
+
+/** Palette groups, in display order. */
+export const PALETTE: Array<{ group: string; types: FieldType[] }> = [
+    { group: 'basic', types: ['text', 'textarea', 'number', 'money', 'email', 'phone'] },
+    { group: 'dates', types: ['date', 'date_range', 'time'] },
+    { group: 'choices', types: ['select', 'multiselect', 'radio', 'checkboxes', 'boolean'] },
+    { group: 'directory', types: ['employee', 'department', 'branch', 'leave_type'] },
+    { group: 'other', types: ['file', 'calculated', 'note'] },
+];

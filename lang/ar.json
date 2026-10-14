@@ -465,5 +465,13 @@
     "This file was rejected by the virus scanner.": "رفض فاحص الفيروسات هذا الملف.",
     "There are no changes to publish.": "لا توجد تغييرات للنشر.",
     "Add at least one field before publishing.": "أضف حقلًا واحدًا على الأقل قبل النشر.",
-    "This link is already used by another form.": "هذا الرابط مستخدم في نموذج آخر."
+    "This link is already used by another form.": "هذا الرابط مستخدم في نموذج آخر.",
+    "Draft saved.": "حُفظت المسودة.",
+    "Version :number published.": "نُشر الإصدار :number.",
+    "Unpublished changes discarded.": "تم تجاهل التغييرات غير المنشورة.",
+    "Test submission recorded.": "سُجّل الرد التجريبي.",
+    "Form settings saved.": "حُفظت إعدادات النموذج.",
+    "Form archived.": "أُرشف النموذج.",
+    "Please take a moment to check your answers, then send again.": "خذ لحظة لمراجعة إجاباتك، ثم أعد الإرسال.",
+    "Please complete the verification and try again.": "أكمل التحقق ثم حاول مجددًا."
 }
