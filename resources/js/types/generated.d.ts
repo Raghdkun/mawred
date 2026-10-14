@@ -498,6 +498,27 @@ hijriBased: boolean,
 fromYear: number | null,
 toYear: number | null,
 };
+export type ImpactChangeData = {
+key: string,
+before: Record<string, any>,
+after: Record<string, any>,
+beforeLevel: string,
+afterLevel: string,
+};
+export type ImpactPreviewData = {
+date: string,
+keys: string[],
+checked: number,
+affected: number,
+rows: App.Domain.Policies.Data.ImpactRowData[],
+};
+export type ImpactRowData = {
+employeeId: string,
+employeeNumber: string,
+nameEn: string,
+nameAr: string | null,
+changes: App.Domain.Policies.Data.ImpactChangeData[],
+};
 export type LeaveTypeInputData = {
 code: string,
 name: {

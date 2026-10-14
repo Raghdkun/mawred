@@ -54,6 +54,88 @@ final class PolicySnapshot
     }
 
     /**
+     * A copy with some of a set's values replaced from the snapshot date (null removes a key), for
+     * "what if" previews. Nothing is saved.
+     *
+     * @param  array<string, array<string, mixed>|null>  $values
+     */
+    public function withValues(PolicySet $set, array $values): self
+    {
+        $copy = $this->withSet($set);
+
+        foreach ($values as $key => $value) {
+            if ($value === null) {
+                unset($copy->values[$set->id][$key]);
+            } else {
+                $copy->values[$set->id][$key] = new PolicyValue(['policy_set_id' => $set->id, 'key' => $key, 'value' => $value, 'effective_from' => $this->date]);
+            }
+        }
+
+        return $copy;
+    }
+
+    /**
+     * A copy where a set is assigned to a target from the snapshot date (null set = unassigned).
+     */
+    public function withAssignment(PolicyLevel $level, ?int $targetId, ?PolicySet $set): self
+    {
+        $copy = $set instanceof PolicySet ? $this->withSet($set) : clone $this;
+        $target = $level->needsTarget() ? (int) $targetId : 0;
+
+        if ($set instanceof PolicySet) {
+            $copy->assignments[$level->value][$target] = new PolicyAssignment([
+                'policy_set_id' => $set->id, 'level' => $level, 'target_id' => $level->needsTarget() ? $targetId : null, 'effective_from' => $this->date,
+            ]);
+        } else {
+            unset($copy->assignments[$level->value][$target]);
+        }
+
+        return $copy;
+    }
+
+    /**
+     * Where a set is assigned in this snapshot.
+     *
+     * @return list<array{level: PolicyLevel, target: int|null}>
+     */
+    public function targetsOf(PolicySet $set): array
+    {
+        $targets = [];
+
+        foreach ($this->assignments as $assignments) {
+            foreach ($assignments as $assignment) {
+                if ($assignment->policy_set_id === $set->id) {
+                    $targets[] = ['level' => $assignment->level, 'target' => $assignment->target_id];
+                }
+            }
+        }
+
+        return $targets;
+    }
+
+    private function withSet(PolicySet $set): self
+    {
+        $copy = clone $this;
+
+        if (! isset($copy->sets[$set->id])) {
+            $copy->sets[$set->id] = $set;
+            $copy->values[$set->id] = [];
+
+            $values = PolicyValue::query()
+                ->where('policy_set_id', $set->id)
+                ->where('effective_from', '<=', $this->date)
+                ->where(fn (Builder $q) => $q->whereNull('effective_to')->orWhere('effective_to', '>=', $this->date))
+                ->get();
+
+            foreach ($values as $value) {
+                $copy->values[$set->id][$value->key] = $value;
+            }
+        }
+
+        return $copy;
+    }
+
+    /**
      * Assignments that apply to a placement, most specific first.
      *
      * @return list<array{level: PolicyLevel, assignment: PolicyAssignment, target: int|null}>

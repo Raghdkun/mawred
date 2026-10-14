@@ -75,9 +75,9 @@ final class PolicyResolver
         return $key->hydrate($this->get($employee, $date, $keyId)->value);
     }
 
-    public function resolve(Placement $placement, string $date, PolicyKey $key): ResolvedValueData
+    public function resolve(Placement $placement, string $date, PolicyKey $key, ?PolicySnapshot $snapshot = null): ResolvedValueData
     {
-        $snapshot = $this->snapshot($date);
+        $snapshot ??= $this->snapshot($date);
         $links = [];
         $branchDefaultAdded = false;
 
@@ -178,7 +178,7 @@ final class PolicyResolver
         ), $placements);
     }
 
-    private function key(string $id): PolicyKey
+    public function key(string $id): PolicyKey
     {
         return $this->keys->find($id) ?? throw new InvalidArgumentException("Unknown policy key [{$id}].");
     }
