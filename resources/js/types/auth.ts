@@ -2,6 +2,8 @@
 export type User = {
     id: string; // ULID (ADR-0003)
     name: string;
+    /** The linked employee's name in the current language, else the account name. */
+    displayName: string;
     email: string;
     emailVerified: boolean;
     twoFactorEnabled: boolean;

@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use App\Domain\Access\Models\User;
 use App\Domain\Access\Support\ScopeResolver;
+use App\Domain\People\Models\Employee;
 use App\Domain\Setup\Support\Settings;
 use App\Domain\Setup\Support\SetupState;
 use Illuminate\Http\Request;
@@ -58,11 +59,14 @@ final class HandleInertiaRequests extends Middleware
     private function authPayload(User $user): array
     {
         $access = $this->access->for($user);
+        // People with an employee record are greeted by their name in the current language.
+        $employee = Employee::query()->where('user_id', $user->id)->first(['id', 'name_en', 'name_ar', 'preferred_name']);
 
         return [
             'user' => [
                 'id' => $user->ulid,
                 'name' => $user->name,
+                'displayName' => $employee?->displayName() ?? $user->name,
                 'email' => $user->email,
                 'emailVerified' => $user->email_verified_at !== null,
                 'twoFactorEnabled' => $user->two_factor_confirmed_at !== null,

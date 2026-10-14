@@ -40,7 +40,7 @@ All questions below were answered by the product owner. Items still waiting on a
 | D33 | Maps | **MapLibre GL + OpenFreeMap tiles** (no key). Nominatim (debounced, attributed) for address search, plus manual lat/lng entry. Map controls stay LTR. | Setup step 4, screen 39 |
 
 | D34 | JS lint version | **ESLint 9.39** instead of 10 (D17 amended): `eslint-plugin-react` and `jsx-a11y` don't support ESLint 10 yet. Revisit when they do. | Tooling |
-| D35 | Scope until Phase 1 | Org-relative scopes (team, department, branch) **fail closed** (`NullOrgScopePredicates`) until Phase 1 binds real org predicates. Own and All work now. | ADR-0005 |
+| D35 | Scope until Phase 1 | Org-relative scopes (team, department, branch) failed closed in Phase 0. **Done in Phase 1:** `EmployeeScopePredicates` (closure table, department subtree, branch, anchors, secondary placements) replaced the null binding. `organization.*` is unscoped reference data. | ADR-0005 |
 | D36 | Audit export | Audit-log export (screen 43) moves to Phase 8 with the queued export pipeline, because heavy exports are always queued. | Roadmap |
 
 | D37 | Employee names | **Bilingual full name**: `name_en` (required), `name_ar` (optional), `preferred_name` (optional). Lists show the viewer's language with fallback; search matches both. | People, PDFs, search |

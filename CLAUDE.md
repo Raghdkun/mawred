@@ -72,6 +72,7 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - **Tests**:
   - `composer test`: Pest Unit + Feature + Arch, in parallel, on Postgres.
   - `composer test:browser`: Pest browser tests (Playwright, EN + AR, axe). Run `pnpm build` first.
+  - `composer test:performance`: volume and speed checks (10k-row import, 5,000-employee lists < 300 ms). Slow; uses DatabaseTruncation, so never run it alongside other suites.
   - `pnpm test`: Vitest.
 - **Quality**:
   - `composer lint` (Rector, then Pint) / `composer lint:check`
@@ -81,7 +82,7 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
   - `php artisan typescript:transform` (Data → `resources/js/types/generated.d.ts`; CI fails if stale)
   - `php artisan wayfinder:generate --with-form`
   - `pnpm icons` (module icons from `design/icons`)
-- **Seeders**: `Database\Seeders\Production\ProductionSeeder` (roles and permissions; idempotent). Demo and Performance seeders arrive in Phase 1.
+- **Seeders**: `Database\Seeders\Production\ProductionSeeder` (roles, permissions, employment types, document types; idempotent). `Demo\DemoSeeder` (3 branches, ~115 people, one sign-in per role sharing `DEMO_PASSWORD` from `.env`). `Performance\PerformanceSeeder` (`PERF_BRANCHES`/`PERF_EMPLOYEES`, default 50/5,000).
 - **Production image**: `docker build -f docker/app/Dockerfile -t mawred/app .`. The same image runs app, horizon, scheduler and reverb (`compose.prod.yaml`).
 
 ## Gotchas learned in Phase 0
@@ -92,6 +93,12 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Cached objects need `config/cache.php` `serializable_classes`; only value objects listed there may be cached.
 - Wayfinder 0.1 can't type `Route::redirect` (QUERY verb); use a GET closure that returns `to_route()`.
 - Rector's Laravel set rewrites code (Carbon → `Date` facade, anonymous classes → attributes); re-read files before editing them.
+
+## Gotchas learned in Phase 1
+- Pest's HTTP test client does not URL-encode Arabic query strings: use `rawurlencode()` or the request silently matches nothing.
+- `RefreshDatabase` wraps each test in one transaction; thousands of nested `DB::transaction` savepoints exhaust Postgres' lock table. Volume tests live in `tests/Performance` (DatabaseTruncation).
+- Server strings go through `__()` and need an entry in `lang/ar.json`; `ServerTranslationsTest` fails otherwise.
+- `field_permissions` has a composite key (role_id, field_key): write with `upsert`, never Eloquent `save`, which keys on role_id alone.
 
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
