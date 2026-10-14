@@ -7,6 +7,7 @@ namespace App\Domain\Policies\Models;
 use App\Domain\Audit\Concerns\Auditable;
 use App\Domain\Policies\Enums\HolidayType;
 use App\Domain\Policies\Enums\ObservedRule;
+use App\Domain\Policies\Support\HolidayRuleSpec;
 use App\Support\Ids\HasPublicUlid;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
@@ -56,6 +57,29 @@ final class HolidayRule extends Model
     public function calendar(): BelongsTo
     {
         return $this->belongsTo(HolidayCalendar::class, 'holiday_calendar_id');
+    }
+
+    public function toSpec(): HolidayRuleSpec
+    {
+        /** @var array<string, string> $name */
+        $name = $this->getTranslations('name');
+
+        return new HolidayRuleSpec(
+            id: $this->ulid,
+            calendarId: $this->holiday_calendar_id,
+            name: $name,
+            type: $this->type,
+            month: $this->month,
+            day: $this->day,
+            weekday: $this->weekday,
+            nth: $this->nth,
+            date: $this->date?->toDateString(),
+            durationDays: $this->duration_days,
+            observed: $this->observed,
+            hijriBased: $this->hijri_based,
+            fromYear: $this->from_year,
+            toYear: $this->to_year,
+        );
     }
 
     /**

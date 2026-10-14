@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Policies\Support\BranchHolidays;
 use App\Domain\Policies\Support\PolicyEpoch;
 use App\Domain\Policies\Support\PolicyKeys;
 use App\Domain\Policies\Support\PolicyResolver;
@@ -19,5 +20,6 @@ final class PoliciesServiceProvider extends ServiceProvider
         $this->app->singleton(PolicyEpoch::class);
         $this->app->scoped(PolicyKeys::class);
         $this->app->scoped(PolicyResolver::class);
+        $this->app->scoped(BranchHolidays::class);
     }
 }

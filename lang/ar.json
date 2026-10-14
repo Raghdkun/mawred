@@ -412,5 +412,10 @@
     "This assignment has already ended.": "انتهى هذا التعيين بالفعل.",
     "This file is not a Mawred policy preset.": "هذا الملف ليس قالب سياسات من مَورِد.",
     "This set is still assigned. End its assignments first.": "هذه المجموعة ما زالت مُسندة. أنهِ إسناداتها أولًا.",
-    "Unknown policy key.": "مفتاح سياسة غير معروف."
+    "Unknown policy key.": "مفتاح سياسة غير معروف.",
+    "That day does not exist in that month.": "هذا اليوم غير موجود في ذلك الشهر.",
+    "Unknown holiday preset.": "قالب عطلات غير معروف.",
+    "The file needs at least the columns date and name_en.": "يحتاج الملف على الأقل إلى العمودين date و name_en.",
+    "Import up to :count dates at a time.": "استورد حتى :count تاريخ في المرة الواحدة.",
+    "Some rows need attention. Nothing was imported.": "بعض الصفوف تحتاج إلى مراجعة. لم يُستورد أي شيء."
 }

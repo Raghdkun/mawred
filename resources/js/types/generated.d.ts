@@ -471,6 +471,33 @@ value: Record<string, any>,
 effectiveFrom: string | null,
 wins: boolean,
 };
+export type HolidayCalendarInputData = {
+code: string,
+name: {
+en: string,
+ar?: string | null,
+},
+countryCode: string | null,
+isActive: boolean,
+branchIds: string[],
+};
+export type HolidayRuleInputData = {
+name: {
+en: string,
+ar?: string | null,
+},
+type: App.Domain.Policies.Enums.HolidayType,
+month: number | null,
+day: number | null,
+weekday: number | null,
+nth: number | null,
+date: string | null,
+durationDays: number,
+observed: App.Domain.Policies.Enums.ObservedRule,
+hijriBased: boolean,
+fromYear: number | null,
+toYear: number | null,
+};
 export type LeaveTypeInputData = {
 code: string,
 name: {
