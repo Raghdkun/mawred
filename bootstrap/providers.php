@@ -8,6 +8,7 @@ use App\Providers\HorizonServiceProvider;
 use App\Providers\PeopleServiceProvider;
 use App\Providers\PoliciesServiceProvider;
 use App\Providers\TypeScriptTransformerServiceProvider;
+use App\Providers\WorkflowsServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -15,6 +16,7 @@ return [
     PeopleServiceProvider::class,
     PoliciesServiceProvider::class,
     FormsServiceProvider::class,
+    WorkflowsServiceProvider::class,
     FortifyServiceProvider::class,
     HorizonServiceProvider::class,
     TypeScriptTransformerServiceProvider::class,
