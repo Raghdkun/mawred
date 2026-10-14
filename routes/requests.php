@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Public\ActionLinkController;
 use App\Http\Controllers\Web\Requests\ApprovalsController;
+use App\Http\Controllers\Web\Requests\DelegationsController;
 use App\Http\Controllers\Web\Requests\MyRequestsController;
 use App\Http\Controllers\Web\Requests\RequestCenterController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::post('requests/{employeeRequest}/comments', [MyRequestsController::class, 'comment'])->name('requests.comments');
 
     Route::get('approvals', [ApprovalsController::class, 'index'])->name('approvals.index');
+    Route::get('approvals/delegations', [DelegationsController::class, 'index'])->name('delegations.index');
+    Route::post('approvals/delegations', [DelegationsController::class, 'store'])->name('delegations.store');
+    Route::delete('approvals/delegations/{delegation}', [DelegationsController::class, 'destroy'])->name('delegations.destroy');
     Route::post('approvals/bulk', [ApprovalsController::class, 'bulk'])->name('approvals.bulk');
     Route::post('approvals/{task}/decision', [ApprovalsController::class, 'decide'])->name('approvals.decide');
     Route::post('approvals/{task}/delegate', [ApprovalsController::class, 'delegate'])->name('approvals.delegate');

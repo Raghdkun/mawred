@@ -82,3 +82,26 @@
         unicode-bidi: isolate;
     }
 }
+
+/* Workflow builder canvas (React Flow, handoff 15): map the library's colours onto Mawred tokens. */
+.react-flow {
+    --xy-background-color: var(--background);
+    --xy-background-pattern-dots-color: var(--border);
+    --xy-edge-stroke: var(--muted-foreground);
+    --xy-edge-stroke-selected: var(--primary);
+    --xy-connectionline-stroke: var(--primary);
+    --xy-edge-label-background-color: var(--card);
+    --xy-edge-label-color: var(--muted-foreground);
+    --xy-handle-background-color: var(--card);
+    --xy-handle-border-color: var(--primary);
+    --xy-minimap-background-color: var(--card);
+    --xy-minimap-mask-background-color: color-mix(in oklab, var(--background) 70%, transparent);
+    --xy-controls-button-background-color: var(--card);
+    --xy-controls-button-background-color-hover: var(--muted);
+    --xy-controls-button-color: var(--foreground);
+    --xy-controls-button-color-hover: var(--foreground);
+    --xy-controls-button-border-color: var(--border);
+    --xy-selection-background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+    --xy-selection-border: 1px dashed var(--primary);
+    --xy-attribution-background-color: transparent;
+}

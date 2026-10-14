@@ -1,5 +1,5 @@
 import { Head, Link, router, usePoll } from '@inertiajs/react';
-import { ChevronLeft, Forward } from 'lucide-react';
+import { ChevronLeft, Forward, Plane } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,7 @@ import { formatDate, formatNumber } from '@/lib/format';
 import { localized } from '@/lib/localized';
 import { cn } from '@/lib/utils';
 import approvals from '@/routes/approvals';
+import delegations from '@/routes/delegations';
 import requests from '@/routes/requests';
 import { type RequestDetail } from '../requests/show';
 
@@ -68,6 +69,14 @@ export default function ApprovalsInbox({ tasks, selected, detail }: Props) {
                         : undefined
                 }
                 className={cn(explicit && 'hidden lg:flex')}
+                actions={
+                    <Button variant="ghost" asChild>
+                        <Link href={delegations.index.url()}>
+                            <Plane aria-hidden className="rtl:-scale-x-100" />
+                            {t('away.link')}
+                        </Link>
+                    </Button>
+                }
             />
 
             {tasks.length === 0 ? (
@@ -306,12 +315,12 @@ function ApprovalCard({ task, detail }: { task: Task; detail: RequestDetail | nu
                         </h2>
                         {task.request ? (
                             <p className="text-small text-text-secondary">
-                                {t('inbox.from', {
-                                    name: task.request.requester,
-                                    date: formatDate(task.request.submittedAt, locale, {
+                                {t('inbox.fromLabel')} <bdi>{task.request.requester}</bdi> ·{' '}
+                                <bdi>
+                                    {formatDate(task.request.submittedAt, locale, {
                                         dateStyle: 'medium',
-                                    }),
-                                })}
+                                    })}
+                                </bdi>
                             </p>
                         ) : null}
                     </div>
@@ -368,6 +377,7 @@ function ApprovalCard({ task, detail }: { task: Task; detail: RequestDetail | nu
                         {task.decisions.map((decision) => (
                             <Button
                                 key={decision}
+                                data-decision={decision}
                                 variant={
                                     decision === 'approved' || decision === 'done'
                                         ? 'default'

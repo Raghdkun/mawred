@@ -29,6 +29,7 @@ const PAGE_NAMESPACES: Record<string, string[]> = {
     public: ['forms', 'requests'],
     requests: ['requests', 'forms'],
     approvals: ['requests', 'forms'],
+    workflows: ['workflows', 'forms', 'requests'],
     audit: ['audit'],
     notifications: ['notifications'],
     dashboard: ['home'],

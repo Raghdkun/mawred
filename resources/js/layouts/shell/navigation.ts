@@ -9,6 +9,7 @@ import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
 import notifications from '@/routes/notifications';
 import requests from '@/routes/requests';
+import workflowRoutes from '@/routes/workflows';
 import profile from '@/routes/profile';
 import setup from '@/routes/setup';
 import { Building2, House, type LucideIcon, Plus, UserRound } from 'lucide-react';
@@ -109,6 +110,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: 'forms',
                     permission: 'forms.view',
                     match: ['/forms'],
+                },
+                {
+                    key: 'workflows',
+                    label: 'nav.workflows',
+                    href: workflowRoutes.index(),
+                    icon: 'workflows',
+                    permission: 'workflows.view',
+                    match: ['/workflows'],
                 },
                 {
                     key: 'policies',

@@ -544,5 +544,14 @@
     "This test message arrived, so notifications and approval emails will too.": "وصلت هذه الرسالة التجريبية، إذن ستصل الإشعارات ورسائل الموافقة أيضًا.",
     "Save the email settings first.": "احفظ إعدادات البريد أولًا.",
     "The test email could not be sent: :reason": "تعذّر إرسال الرسالة التجريبية: :reason",
-    "Test email sent to :email.": "أُرسلت رسالة تجريبية إلى :email."
+    "Test email sent to :email.": "أُرسلت رسالة تجريبية إلى :email.",
+    "Publish this workflow once before discarding changes.": "انشر مسار العمل مرة واحدة قبل تجاهل التغييرات.",
+    "This workflow has already finished.": "انتهى مسار العمل هذا بالفعل.",
+    "Choose someone else.": "اختر شخصًا آخر.",
+    "They are delegating to you for some of these dates.": "هذا الشخص يفوّض إليك في بعض هذه التواريخ.",
+    "Version :number is live. Running requests keep the version they started on.": "الإصدار :number فعّال الآن. تبقى الطلبات الجارية على الإصدار الذي بدأت به.",
+    "Retrying the step.": "تُعاد محاولة الخطوة.",
+    "Step skipped.": "تم تخطي الخطوة.",
+    "Workflow cancelled.": "أُلغي مسار العمل.",
+    "New approvals will go to :name on those dates.": "ستذهب الموافقات الجديدة إلى :name في تلك التواريخ."
 }

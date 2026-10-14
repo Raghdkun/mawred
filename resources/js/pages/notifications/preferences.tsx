@@ -102,7 +102,7 @@ export default function NotificationPreferences({ matrix, quietHours, digest, ti
                                             <span className="block font-medium text-foreground">
                                                 {t(`preferences.categories.${row.category}.name`)}
                                             </span>
-                                            <span className="block text-caption text-muted-foreground">
+                                            <span className="hidden text-caption text-muted-foreground sm:block">
                                                 {t(`preferences.categories.${row.category}.help`)}
                                             </span>
                                         </th>

@@ -135,7 +135,6 @@
         "select": "Select {number}",
         "delegatedFrom": "From {name}",
         "commentNeeded": "Add a comment so the requester knows why.",
-        "from": "From {name} · {date}",
         "step": "Step",
         "comment": "Comment",
         "commentPlaceholder": "Optional for approval; needed to reject or send back",
@@ -145,7 +144,8 @@
             "returned": "Send back",
             "done": "Mark done"
         },
-        "delegate": "Delegate"
+        "delegate": "Delegate",
+        "fromLabel": "From"
     },
     "delegate": {
         "title": "Delegate this approval",
@@ -174,5 +174,21 @@
             "approved": "Confirm approval",
             "rejected": "Confirm rejection"
         }
+    },
+    "away": {
+        "pageTitle": "While I'm away",
+        "title": "While I'm away",
+        "description": "New approvals go to a colleague on these dates. Anything already in your inbox stays with you.",
+        "new": "Hand over my approvals",
+        "from": "From",
+        "until": "Until",
+        "reason": "Note (optional)",
+        "save": "Save",
+        "current": "Current and upcoming",
+        "none": "You're not handing anything over.",
+        "active": "Active",
+        "upcoming": "Upcoming",
+        "end": "End now",
+        "link": "Away?"
     }
 }

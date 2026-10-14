@@ -817,6 +817,19 @@ export type StepStatus = 'pending' | 'completed' | 'skipped';
 }
 }
 namespace Workflows {
+namespace Data {
+export type WorkflowDefinitionData = {
+id: string,
+code: string,
+name: Record<string, string>,
+description: Record<string, string>,
+category: string | null,
+publishedVersion: number | null,
+hasDraft: boolean,
+openInstances: number,
+requestTypes: Record<string, string>[],
+};
+}
 namespace Enums {
 export type Decision = 'approved' | 'rejected' | 'returned' | 'done';
 export type DecisionChannel = 'web' | 'api' | 'email' | 'whatsapp' | 'system';
