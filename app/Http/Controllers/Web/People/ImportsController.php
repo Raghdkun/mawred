@@ -10,10 +10,13 @@ use App\Domain\People\Actions\SaveImportMapping;
 use App\Domain\People\Actions\StartEmployeeImport;
 use App\Domain\People\Actions\StartImportCommit;
 use App\Domain\People\Data\ImportData;
+use App\Domain\People\Enums\ImportRowStatus;
 use App\Domain\People\Models\Import;
+use App\Domain\People\Models\ImportRow;
 use App\Domain\People\Support\Imports\EmployeeImportFields;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
+use App\Support\Spreadsheets\SpreadsheetReader;
 use App\Support\Spreadsheets\SpreadsheetWriter;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
@@ -59,13 +62,13 @@ final class ImportsController extends Controller
     {
         $this->authorizeImport($import, $user);
 
-        $labels = [];
-        foreach (EmployeeImportFields::all() as $field => $aliases) {
-            $labels[$field] = str_starts_with($field, 'custom.') ? ($aliases[1] ?? $aliases[0] ?? $field) : $field;
-        }
+        $titles = EmployeeImportFields::titles(app()->getLocale());
+        $labels = array_combine(array_keys(EmployeeImportFields::all()), $titles);
 
         return Inertia::render('people/imports/show', [
             'import' => ImportData::fromImport($import),
+            'samples' => $this->samples($import),
+            'rowErrors' => $import->invalid_rows + $import->failed_rows > 0 ? $this->rowErrors($import) : [],
             'fields' => $labels,
             'requiredForCreate' => EmployeeImportFields::REQUIRED_FOR_CREATE,
         ]);
@@ -122,6 +125,50 @@ final class ImportsController extends Controller
         SpreadsheetWriter::write($path, EmployeeImportFields::titles(app()->getLocale()), []);
 
         return response()->download($path, 'mawred-employee-import.xlsx')->deleteFileAfterSend();
+    }
+
+    /**
+     * The first three data rows, so the mapping step can show what each column holds.
+     *
+     * @return list<list<string|null>>
+     */
+    private function samples(Import $import): array
+    {
+        $source = $import->getFirstMedia('source');
+
+        if (! $source instanceof Media || ! is_file($source->getPath())) {
+            return [];
+        }
+
+        $rows = [];
+
+        foreach (SpreadsheetReader::rows($source->getPath(), $source->extension) as $number => $cells) {
+            if ($number > 1 && array_filter($cells, fn (?string $c): bool => $c !== null) !== []) {
+                $rows[] = $cells;
+            }
+
+            if (count($rows) === 3 || $number > 50) {
+                break;
+            }
+        }
+
+        return $rows;
+    }
+
+    /**
+     * The first 50 rows that need fixing (the full list is in the downloadable report).
+     *
+     * @return list<array{row: int, errors: array<string, list<string>>}>
+     */
+    private function rowErrors(Import $import): array
+    {
+        return array_values($import->rows()
+            ->whereIn('status', [ImportRowStatus::Invalid, ImportRowStatus::Failed])
+            ->orderBy('row_number')
+            ->limit(50)
+            ->get(['row_number', 'errors'])
+            ->map(fn (ImportRow $row): array => ['row' => $row->row_number, 'errors' => $row->errors ?? []])
+            ->all());
     }
 
     private function authorizeImport(Import $import, User $user): void

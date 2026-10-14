@@ -13,12 +13,14 @@ final class PositionData extends Data
 {
     /**
      * @param  array<string, string>  $title
+     * @param  array<string, string>|null  $departmentName
      */
     public function __construct(
         public string $id,
         public string $code,
         public array $title,
         public ?string $departmentId,
+        public ?array $departmentName,
         public ?string $gradeId,
         public bool $isActive,
     ) {}
@@ -27,12 +29,15 @@ final class PositionData extends Data
     {
         /** @var array<string, string> $title */
         $title = $position->getTranslations('title');
+        /** @var array<string, string>|null $departmentName */
+        $departmentName = $position->department?->getTranslations('name');
 
         return new self(
             id: $position->ulid,
             code: $position->code,
             title: $title,
             departmentId: $position->department?->ulid,
+            departmentName: $departmentName,
             gradeId: $position->grade?->ulid,
             isActive: $position->is_active,
         );

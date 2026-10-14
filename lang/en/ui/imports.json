@@ -1,0 +1,77 @@
+{
+    "pageTitle": "Import people",
+    "title": "Import people",
+    "description": "Add or update many employees at once from Excel or CSV.",
+    "steps": {
+        "label": "Import steps",
+        "upload": "Upload",
+        "map": "Map columns",
+        "validate": "Check",
+        "confirm": "Import"
+    },
+    "desktopOnly": {
+        "title": "Continue on a computer",
+        "body": "Imports need a larger screen to map columns and review errors."
+    },
+    "upload": {
+        "drop": "Drop a spreadsheet here, or choose a file",
+        "hint": "XLSX or CSV, up to 20 MB and 20,000 rows. The first row must hold the column names.",
+        "template": "Download the template",
+        "submit": "Upload and continue"
+    },
+    "recent": "Your recent imports",
+    "statuses": {
+        "uploaded": "Needs mapping",
+        "validating": "Checking",
+        "validated": "Ready to import",
+        "committing": "Importing",
+        "completed": "Done",
+        "failed": "Stopped",
+        "cancelled": "Cancelled"
+    },
+    "map": {
+        "help": "Match each column to a Mawred field. Rows update people by employee number, else by work email; everyone else is added. Empty cells leave existing values unchanged.",
+        "column": "Column in your file",
+        "sample": "Sample values",
+        "field": "Mawred field",
+        "fieldFor": "Field for column {column}",
+        "ignore": "Don't import",
+        "unnamed": "Column {number}",
+        "missing": "New employees also need: {fields}. Rows without them can only update existing people.",
+        "validate": "Check the file",
+        "again": "Change mapping"
+    },
+    "progress": {
+        "label": "Progress",
+        "validating": "Checking every row…",
+        "importing": "Importing…",
+        "rows": "{done} of {total} rows"
+    },
+    "summary": {
+        "total": "Rows",
+        "create": "New employees",
+        "update": "Updates",
+        "invalid": "Need fixing"
+    },
+    "confirm": {
+        "submit": "{count, plural, one {Import # row} other {Import # rows}}"
+    },
+    "errors": {
+        "title": "Rows that need fixing",
+        "download": "Download error report",
+        "row": "Row",
+        "problem": "Problem"
+    },
+    "done": {
+        "title": "Import finished",
+        "summary": "{created} added, {updated} updated, {failed} not imported.",
+        "another": "Import another file",
+        "directory": "Go to the directory"
+    },
+    "failed": {
+        "title": "The import stopped",
+        "resume": "Continue importing"
+    },
+    "cancel": "Cancel import",
+    "cancelled": "This import was cancelled."
+}

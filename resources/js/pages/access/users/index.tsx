@@ -171,7 +171,7 @@ export default function UsersIndex({ users, roles, filters, can }: Props) {
                                     </span>
                                     <bdi
                                         dir="ltr"
-                                        className="truncate text-caption text-muted-foreground"
+                                        className="max-w-full self-start truncate text-caption text-muted-foreground"
                                     >
                                         {user.email}
                                     </bdi>

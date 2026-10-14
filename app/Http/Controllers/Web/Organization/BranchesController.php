@@ -27,36 +27,17 @@ final class BranchesController extends Controller
 {
     public function index(Request $request, BranchDirectoryQuery $query, #[CurrentUser] User $viewer): Response
     {
-        Gate::authorize('organization.view');
-
-        $request->validate(['search' => ['nullable', 'string', 'max:100'], 'status' => ['nullable', 'in:active,all']]);
-
-        $branches = $query->search($request->string('search')->toString())
-            ->activeOnly($request->input('status', 'active') === 'active')
-            ->visibleTo($viewer)
-            ->paginate(25)
-            ->withQueryString()
-            ->through(fn (Branch $branch): BranchData => BranchData::fromBranch($branch));
-
-        return Inertia::render('organization/branches/index', [
-            'branches' => $branches,
-            'filters' => ['search' => $request->input('search'), 'status' => $request->input('status', 'active')],
-            'options' => OrganizationOptions::costCenters(),
-            'can' => $this->abilities(),
-        ]);
+        return $this->render($request, $query, $viewer, null);
     }
 
-    public function show(Branch $branch): Response
+    /**
+     * The same screen with one branch open: list + detail on desktop, detail only on phones.
+     */
+    public function show(Request $request, Branch $branch, BranchDirectoryQuery $query, #[CurrentUser] User $viewer): Response
     {
-        Gate::authorize('organization.view');
-
         $branch->load('costCenter:id,ulid');
 
-        return Inertia::render('organization/branches/show', [
-            'branch' => BranchData::fromBranch($branch),
-            'options' => OrganizationOptions::costCenters(),
-            'can' => $this->abilities(),
-        ]);
+        return $this->render($request, $query, $viewer, $branch);
     }
 
     public function store(BranchInputData $data, SaveBranch $save): RedirectResponse
@@ -102,5 +83,27 @@ final class BranchesController extends Controller
             'update' => Gate::allows('organization.update'),
             'delete' => Gate::allows('organization.delete'),
         ];
+    }
+
+    private function render(Request $request, BranchDirectoryQuery $query, User $viewer, ?Branch $selected): Response
+    {
+        Gate::authorize('organization.view');
+
+        $request->validate(['search' => ['nullable', 'string', 'max:100'], 'status' => ['nullable', 'in:active,all']]);
+
+        $branches = $query->search($request->string('search')->toString())
+            ->activeOnly($request->input('status', 'active') === 'active')
+            ->visibleTo($viewer)
+            ->paginate(25)
+            ->withQueryString()
+            ->through(fn (Branch $branch): BranchData => BranchData::fromBranch($branch));
+
+        return Inertia::render('organization/branches/index', [
+            'branches' => $branches,
+            'selected' => $selected instanceof Branch ? BranchData::fromBranch($selected) : null,
+            'filters' => ['search' => $request->input('search'), 'status' => $request->input('status', 'active')],
+            'options' => OrganizationOptions::costCenters(),
+            'can' => $this->abilities(),
+        ]);
     }
 }

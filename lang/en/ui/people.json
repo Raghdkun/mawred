@@ -1,0 +1,326 @@
+{
+    "statuses": {
+        "pending": "Starting soon",
+        "active": "Active",
+        "suspended": "Suspended",
+        "terminated": "Left"
+    },
+    "genders": {
+        "female": "Female",
+        "male": "Male"
+    },
+    "marital": {
+        "single": "Single",
+        "married": "Married",
+        "divorced": "Divorced",
+        "widowed": "Widowed"
+    },
+    "fields": {
+        "branch": "Branch",
+        "department": "Department",
+        "position": "Position",
+        "manager": "Manager",
+        "employmentType": "Employment type",
+        "grade": "Grade",
+        "employeeNumber": "Employee number",
+        "nameEn": "Name in English",
+        "nameAr": "Name in Arabic",
+        "preferredName": "Preferred name",
+        "workEmail": "Work email",
+        "workPhone": "Work phone",
+        "gender": "Gender",
+        "nationality": "Nationality",
+        "maritalStatus": "Marital status",
+        "hireDate": "Hire date",
+        "probationEndsOn": "Probation ends",
+        "lastDay": "Last working day",
+        "terminationReason": "Reason for leaving",
+        "status": "Status"
+    },
+    "hints": {
+        "auto": "Generated automatically",
+        "employeeNumber": "Leave empty to use the next number.",
+        "phone": "Local or international format.",
+        "countryCode": "Two-letter country code, e.g. SA."
+    },
+    "filters": {
+        "status": {
+            "current": "Current employees",
+            "active": "Active",
+            "pending": "Starting soon",
+            "suspended": "Suspended",
+            "terminated": "Left",
+            "all": "Everyone"
+        }
+    },
+    "columns": {
+        "person": "Name",
+        "position": "Position",
+        "department": "Department",
+        "branch": "Branch",
+        "manager": "Manager",
+        "status": "Status",
+        "hireDate": "Hire date",
+        "contact": "Contact"
+    },
+    "directory": {
+        "pageTitle": "People",
+        "title": "People",
+        "description": "Everyone you can see, with their placement and reporting line.",
+        "add": "Add employee",
+        "import": "Import",
+        "search": "Search by name, number, email or phone",
+        "views": "Directory views",
+        "tabs": {
+            "table": "Table",
+            "grid": "Grid",
+            "org": "Org chart"
+        },
+        "empty": "No employees yet",
+        "emptyHelp": "Add people one by one or import a spreadsheet.",
+        "noResults": "No one matches",
+        "noResultsHelp": "Try another name or clear the filters.",
+        "columns": "Columns",
+        "compact": "Compact",
+        "comfortable": "Comfortable",
+        "selectAll": "Select everyone on this page",
+        "select": "Select {name}",
+        "bulk": "Bulk actions",
+        "selected": "{count, plural, one {# selected} other {# selected}}",
+        "inviteSelected": "Invite to Mawred"
+    },
+    "org": {
+        "label": "Org chart",
+        "failed": "The org chart couldn't load.",
+        "expand": "Show {name}'s team",
+        "collapse": "Hide {name}'s team",
+        "reports": "{count, plural, one {# report} other {# reports}}"
+    },
+    "views": {
+        "title": "Views",
+        "saved": "Saved views",
+        "none": "No saved views yet.",
+        "saveCurrent": "Save current view…",
+        "name": "View name",
+        "delete": "Delete view {name}"
+    },
+    "pickers": {
+        "branch": "Search branches…",
+        "department": "Search departments…",
+        "position": "Search positions…",
+        "employee": "Search people…"
+    },
+    "add": {
+        "title": "Add employee",
+        "description": "The essentials now; everything else can be added on their profile.",
+        "submit": "Add employee"
+    },
+    "sections": {
+        "placement": "Placement",
+        "contact": "Contact",
+        "employment": "Employment",
+        "account": "Mawred account",
+        "personal": "Personal details",
+        "sensitive": "Restricted details",
+        "directReports": "{count, plural, one {Direct report} other {Direct reports (#)}}",
+        "custom": {
+            "personal": "More personal details",
+            "job": "More job details"
+        }
+    },
+    "account": {
+        "linked": "Signs in as",
+        "invited": "Invited ({email}). The link expires on {date}.",
+        "none": "No account yet."
+    },
+    "profile": {
+        "back": "All people",
+        "actions": "More actions",
+        "invite": "Invite to Mawred",
+        "resendInvite": "Send a new invitation",
+        "cancelInvite": "Cancel invitation",
+        "terminate": "Record leaving",
+        "editTitle": "Edit personal details",
+        "tabs": {
+            "label": "Profile sections",
+            "overview": "Overview",
+            "job": "Job",
+            "personal": "Personal",
+            "documents": "Documents",
+            "history": "History"
+        }
+    },
+    "terminate": {
+        "title": "Record that {name} is leaving",
+        "description": "Their placements end on the last working day and their status changes the day after.",
+        "lastDay": "Last working day",
+        "reason": "Reason",
+        "submit": "Record leaving"
+    },
+    "job": {
+        "placements": "Placements",
+        "change": "Change placement",
+        "changeHelp": "Transfers, promotions and manager changes start on a date; the previous placement ends the day before.",
+        "addSecondary": "Add secondary placement",
+        "secondaryHelp": "Also works in another branch or department, for rosters and visibility.",
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "current": "Current",
+        "open": "now",
+        "reportsTo": "reports to {name}",
+        "endSecondary": "End this placement today",
+        "effectiveFrom": "Starts on",
+        "effectiveTo": "Ends on",
+        "reason": "Reason"
+    },
+    "assets": {
+        "title": "Assets",
+        "handOver": "Hand over an asset",
+        "none": "No assets handed over.",
+        "name": "Asset",
+        "tag": "Asset tag",
+        "category": "Category",
+        "serial": "Serial number",
+        "assignedOn": "Handed over on",
+        "dueBackOn": "Due back on",
+        "returnedOn": "Returned {date}",
+        "markReturned": "Mark returned today",
+        "out": "With employee"
+    },
+    "sensitive": {
+        "help": "Only roles with access see these. Every view is recorded.",
+        "editHelp": "Changes are encrypted and recorded in the audit log.",
+        "expires": "expires {date}",
+        "emergency": "Emergency contact: {name}",
+        "groups": {
+            "nationalId": "National ID",
+            "passport": "Passport",
+            "residency": "Residency permit",
+            "bank": "Bank details",
+            "personalContact": "Personal contact",
+            "dateOfBirth": "Date of birth"
+        },
+        "fields": {
+            "number": "Number",
+            "country": "Issuing country",
+            "expiresOn": "Expires on",
+            "bankName": "Bank",
+            "iban": "IBAN",
+            "accountName": "Account name",
+            "phone": "Personal phone",
+            "email": "Personal email",
+            "address": "Home address",
+            "emergencyName": "Emergency contact",
+            "emergencyPhone": "Emergency phone",
+            "emergencyRelation": "Relationship",
+            "value": "Date of birth"
+        }
+    },
+    "custom": {
+        "editTitle": "Edit details"
+    },
+    "documents": {
+        "title": "Documents",
+        "add": "Add document",
+        "edit": "Edit document",
+        "empty": "No documents yet",
+        "type": "Document type",
+        "number": "Document number",
+        "issuedOn": "Issued on",
+        "expiresOnLabel": "Expires on",
+        "file": "File",
+        "replaceFile": "Replace file",
+        "fileHint": "PDF or image, up to 10 MB.",
+        "notes": "Notes",
+        "expired": "Expired {date}",
+        "expiresIn": "{count, plural, =0 {Expires today} one {Expires in # day} other {Expires in # days}}",
+        "expiresOn": "Expires {date}"
+    },
+    "history": {
+        "title": "History",
+        "empty": "Nothing recorded yet.",
+        "recordSalary": "Record salary change",
+        "salaryHelp": "Salary is kept as encrypted history; only roles with access see it.",
+        "amount": "Monthly salary",
+        "currency": "Currency",
+        "effectiveOn": "Effective from",
+        "note": "Note",
+        "events": {
+            "hired": "Hired",
+            "placement_changed": "Placement changed",
+            "salary_changed": "Salary changed",
+            "status_changed": "Status changed",
+            "terminated": "Left the company"
+        },
+        "kinds": {
+            "branch": "Branch",
+            "department": "Department",
+            "position": "Position",
+            "manager": "Manager",
+            "employment_type": "Employment type",
+            "grade": "Grade"
+        }
+    },
+    "settings": {
+        "title": "People settings",
+        "description": "The extra fields and document types every employee record uses.",
+        "tabs": {
+            "label": "People settings sections",
+            "fields": "Custom fields",
+            "documentTypes": "Document types"
+        },
+        "fields": {
+            "title": "Custom fields",
+            "new": "New field",
+            "edit": "Edit field",
+            "empty": "No custom fields yet",
+            "emptyHelp": "Add the details your company tracks that Mawred doesn't have built in.",
+            "sensitive": "Sensitive",
+            "label": "Label",
+            "key": "Key",
+            "keyHint": "Lowercase letters, digits and _. Used in imports.",
+            "keyFixed": "The key can't change once created.",
+            "type": "Type",
+            "section": "Shown in",
+            "options": "Options",
+            "optionValue": "Value",
+            "optionEn": "Label in English",
+            "optionAr": "Label in Arabic",
+            "addOption": "Add option",
+            "isRequired": "Required",
+            "isRequiredHelp": "New employees must have a value.",
+            "isSensitive": "Sensitive",
+            "isSensitiveHelp": "Encrypted, hidden unless a role is granted access in Roles & permissions. Fixed once created.",
+            "isActive": "Active",
+            "isActiveHelp": "Inactive fields are hidden but values are kept.",
+            "sections": {
+                "personal": "Personal",
+                "job": "Job"
+            },
+            "types": {
+                "text": "Short text",
+                "textarea": "Long text",
+                "number": "Number",
+                "date": "Date",
+                "select": "Choice",
+                "multiselect": "Multiple choice",
+                "boolean": "Yes / no",
+                "email": "Email",
+                "phone": "Phone",
+                "url": "Web address"
+            }
+        },
+        "documentTypes": {
+            "title": "Document types",
+            "new": "New document type",
+            "edit": "Edit document type",
+            "empty": "No document types yet",
+            "code": "Code",
+            "name": "Name",
+            "requiresExpiry": "Has an expiry date",
+            "reminders": "Remind before expiry (days)",
+            "remindersHint": "e.g. 60, 30, 7. A last reminder is sent the day after it expires.",
+            "remindersAt": "Reminders {days} days before"
+        }
+    }
+}

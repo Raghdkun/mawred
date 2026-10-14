@@ -56,7 +56,7 @@ final class PositionDirectoryQuery extends ScopedQuery
     protected function baseQuery(): Builder
     {
         return Position::query()
-            ->with(['department:id,ulid', 'grade:id,ulid'])
+            ->with(['department:id,ulid,name', 'grade:id,ulid'])
             ->when($this->search, fn (Builder $query, string $term) => $query->where('search_text', 'like', SearchText::likePattern($term)))
             ->when($this->activeOnly, fn (Builder $query) => $query->where('is_active', true))
             ->when($this->department, fn (Builder $query, Department $department) => $query->where('department_id', $department->id))

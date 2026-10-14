@@ -64,7 +64,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $current_grade_id
  */
 #[UseFactory(EmployeeFactory::class)]
-#[Guarded(['id', 'ulid', 'search_text', 'national_id_bidx', 'passport_bidx', 'residency_bidx'])]
+#[Guarded(['id', 'ulid', 'search_text', 'name_ar_sort', 'national_id_bidx', 'passport_bidx', 'residency_bidx'])]
 final class Employee extends Model implements MasksAuditedAttributes
 {
     use Auditable;
@@ -261,7 +261,7 @@ final class Employee extends Model implements MasksAuditedAttributes
      */
     protected function auditExcept(): array
     {
-        return ['search_text', 'national_id_bidx', 'passport_bidx', 'residency_bidx'];
+        return ['search_text', 'name_ar_sort', 'national_id_bidx', 'passport_bidx', 'residency_bidx'];
     }
 
     /**

@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * People directory (screen 7), people pickers and exports. Visibility follows the viewer's
  * `people.view` scope. Indexes: employees (status, name_en), (current_branch_id, status),
- * (current_department_id, status), current_manager_id, and the search_text trigram index.
+ * (current_department_id, status), (status, name_ar_sort), current_manager_id, and the search_text
+ * trigram index.
  *
  * @extends ScopedQuery<Employee>
  */
@@ -44,6 +45,8 @@ final class EmployeeDirectoryQuery extends ScopedQuery
     private string $sort = 'name';
 
     private bool $descending = false;
+
+    private string $nameLocale = 'en';
 
     public function search(?string $term): self
     {
@@ -115,6 +118,14 @@ final class EmployeeDirectoryQuery extends ScopedQuery
         return $this;
     }
 
+    /** Sort names in this language (Arabic falls back to the English name). */
+    public function namesIn(string $locale): self
+    {
+        $this->nameLocale = $locale;
+
+        return $this;
+    }
+
     protected function permission(): string
     {
         return 'people.view';
@@ -129,9 +140,9 @@ final class EmployeeDirectoryQuery extends ScopedQuery
     {
         $direction = $this->descending ? 'desc' : 'asc';
         $column = match ($this->sort) {
-            'number' => 'employee_number',
-            'hire_date' => 'hire_date',
-            default => 'name_en',
+            'number' => 'employees.employee_number',
+            'hire_date' => 'employees.hire_date',
+            default => $this->nameLocale === 'ar' ? 'employees.name_ar_sort' : 'employees.name_en',
         };
 
         return Employee::query()
@@ -152,7 +163,7 @@ final class EmployeeDirectoryQuery extends ScopedQuery
             ->when($this->employmentTypeIds !== [], fn (Builder $query) => $query->whereIn('employees.current_employment_type_id', $this->employmentTypeIds))
             ->when($this->managerId, fn (Builder $query, int $managerId) => $query->where('employees.current_manager_id', $managerId))
             ->when($this->statuses !== [], fn (Builder $query) => $query->whereIn('employees.status', array_map(fn (EmployeeStatus $s): string => $s->value, $this->statuses)))
-            ->orderBy("employees.{$column}", $direction)
+            ->orderBy($column, $direction)
             ->orderBy('employees.id', $direction);
     }
 }

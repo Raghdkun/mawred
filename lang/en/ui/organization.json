@@ -1,0 +1,131 @@
+{
+    "title": "Organization",
+    "description": "Branches, departments, positions and the lists HR uses to describe jobs.",
+    "pagination": "Showing {from}–{to} of {total}",
+    "tabs": {
+        "label": "Organization sections",
+        "branches": "Branches",
+        "departments": "Departments",
+        "positions": "Positions",
+        "catalogs": "Types & grades"
+    },
+    "filters": {
+        "status": "Status",
+        "department": "Department"
+    },
+    "fields": {
+        "code": "Code",
+        "name": "Name",
+        "title": "Job title",
+        "costCenter": "Cost centre",
+        "country": "Country",
+        "timezone": "Time zone",
+        "currency": "Default currency",
+        "city": "City",
+        "weekend": "Weekend days",
+        "startsAt": "Work starts",
+        "endsAt": "Work ends",
+        "hours": "Working hours",
+        "radius": "Radius",
+        "active": "Active",
+        "parent": "Parent department",
+        "department": "Department",
+        "grade": "Grade",
+        "rank": "Rank"
+    },
+    "hints": {
+        "code": "Short and unique, e.g. RUH-01.",
+        "active": "Inactive items stay in history but can't be picked for new placements.",
+        "positionDepartment": "Leave empty if the job exists in any department.",
+        "rank": "Higher ranks are more senior."
+    },
+    "sections": {
+        "region": "Location and money",
+        "workWeek": "Work week",
+        "geofence": "Check-in area"
+    },
+    "geofence": {
+        "help": "Click the map to drop the pin, drag it to adjust, then set the radius. Attendance check-ins outside the area are flagged.",
+        "metres": "{count, plural, one {# metre} other {# metres}}",
+        "clear": "Remove area",
+        "none": "No check-in area set.",
+        "mapLabel": "Map: click to place the branch check-in point",
+        "mapReadOnly": "Map of the branch check-in area",
+        "mapUnavailable": "The map couldn't load. You can set the area later."
+    },
+    "branches": {
+        "pageTitle": "Branches",
+        "new": "New branch",
+        "create": "Create branch",
+        "edit": "Edit branch",
+        "search": "Search branches",
+        "listLabel": "Branches",
+        "detailLabel": "Branch details",
+        "pick": "Choose a branch to see its details.",
+        "empty": "No branches yet",
+        "emptyHelp": "Add your first branch to place people and set working weeks.",
+        "noResults": "No branches match",
+        "hasGeofence": "Has a check-in area",
+        "back": "All branches",
+        "noWeekend": "No weekend days",
+        "archiveTitle": "Archive {name}?",
+        "archiveHelp": "It disappears from pickers but stays in history. You can't archive a branch people still work in."
+    },
+    "departments": {
+        "pageTitle": "Departments",
+        "new": "New department",
+        "edit": "Edit department",
+        "search": "Filter departments",
+        "dragHelp": "Drag a department onto another to move it.",
+        "dropTop": "Drop here to make it a top-level department",
+        "treeLabel": "Department tree",
+        "empty": "No departments yet",
+        "emptyHelp": "Departments can nest as deep as your company needs.",
+        "noResults": "No departments match",
+        "expand": "Expand",
+        "collapse": "Collapse",
+        "moveTo": "Move to…",
+        "addChild": "Add sub-department",
+        "moveTitle": "Move {name}",
+        "move": "Move",
+        "topLevel": "Top level (no parent)"
+    },
+    "positions": {
+        "pageTitle": "Positions",
+        "new": "New position",
+        "edit": "Edit position",
+        "search": "Search positions",
+        "empty": "No positions yet",
+        "emptyHelp": "Positions describe jobs; people are placed into them.",
+        "noResults": "No positions match",
+        "anyDepartment": "Any department"
+    },
+    "catalogs": {
+        "label": "Lists",
+        "rankValue": "Rank {rank}",
+        "employment-types": {
+            "title": "Employment types",
+            "new": "New employment type",
+            "edit": "Edit employment type",
+            "empty": "No employment types yet"
+        },
+        "grades": {
+            "title": "Grades",
+            "new": "New grade",
+            "edit": "Edit grade",
+            "empty": "No grades yet"
+        },
+        "cost-centers": {
+            "title": "Cost centres",
+            "new": "New cost centre",
+            "edit": "Edit cost centre",
+            "empty": "No cost centres yet"
+        }
+    },
+    "pickers": {
+        "branch": "Search branches…",
+        "department": "Search departments…",
+        "position": "Search positions…",
+        "employee": "Search people…"
+    }
+}

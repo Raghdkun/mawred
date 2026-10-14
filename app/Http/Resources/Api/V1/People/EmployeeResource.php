@@ -37,6 +37,7 @@ final class EmployeeResource extends JsonResource
             'branch' => $this->ref($employee->currentBranch),
             'department' => $this->ref($employee->currentDepartment),
             'position' => $this->ref($employee->currentPosition),
+            'direct_reports_count' => $this->when(isset($employee->direct_reports_count), fn (): mixed => $employee->getAttribute('direct_reports_count')),
             'manager' => $employee->currentManager === null ? null : [
                 'id' => $employee->currentManager->ulid,
                 'name' => ['en' => $employee->currentManager->name_en, 'ar' => $employee->currentManager->name_ar],

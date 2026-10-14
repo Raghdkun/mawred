@@ -102,3 +102,17 @@ it('stops showing a secondary placement once it ends', function (): void {
 
     expect(visibleWith($this, Scope::Branch))->not->toContain('secondary');
 });
+
+it('sorts names in the UI language and pages with a cursor', function (): void {
+    $this->people['mgr']->forceFill(['name_ar' => 'ياسر'])->save();
+    $this->people['report1']->forceFill(['name_en' => 'Zed', 'name_ar' => 'أحمد'])->save();
+    $admin = userWithRoles('hr_admin');
+
+    $arabic = resolve(EmployeeDirectoryQuery::class)->namesIn('ar')->visibleTo($admin)->get()->pluck('ulid')->all();
+    $english = resolve(EmployeeDirectoryQuery::class)->namesIn('en')->visibleTo($admin)->get()->pluck('ulid')->all();
+    $page = resolve(EmployeeDirectoryQuery::class)->namesIn('ar')->visibleTo($admin)->cursorPaginate(3);
+
+    expect(array_search($this->people['report1']->ulid, $arabic, true))->toBeLessThan(array_search($this->people['mgr']->ulid, $arabic, true))
+        ->and(array_search($this->people['report1']->ulid, $english, true))->toBeGreaterThan(array_search($this->people['mgr']->ulid, $english, true))
+        ->and($page->nextCursor())->not->toBeNull();
+});

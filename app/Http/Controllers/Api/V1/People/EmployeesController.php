@@ -13,6 +13,7 @@ use App\Domain\People\Queries\EmployeeDirectoryQuery;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\People\EmployeeResource;
 use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
@@ -33,6 +34,9 @@ final class EmployeesController extends Controller
             'department' => ['nullable', 'string', 'exists:departments,ulid'],
             'status' => ['nullable', Rule::enum(EmployeeStatus::class)],
             'sort' => ['nullable', Rule::in(EmployeeDirectoryQuery::SORTS)],
+            'manager' => ['nullable', 'string', 'exists:employees,ulid'],
+            'roots' => ['nullable', 'boolean'],
+            'with_reports_count' => ['nullable', 'boolean'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
 
@@ -48,8 +52,22 @@ final class EmployeesController extends Controller
             $query->withStatuses([EmployeeStatus::from($request->string('status')->toString())]);
         }
 
-        $page = $query->visibleTo($viewer)
-            ->cursorPaginate($request->integer('per_page', 25))
+        $manager = $request->filled('manager') ? Employee::query()->where('ulid', $request->string('manager')->toString())->value('id') : null;
+        $query->reportingTo(is_numeric($manager) ? (int) $manager : null);
+
+        $builder = $query->visibleTo($viewer);
+        $visibleIds = resolve(EmployeeDirectoryQuery::class)->visibleTo($viewer)->reorder()->select('employees.id')->toBase();
+
+        if ($request->boolean('roots')) {
+            // The top of what the viewer can see: people whose manager is absent or out of scope.
+            $builder->where(fn (Builder $q) => $q->whereNull('employees.current_manager_id')->orWhereNotIn('employees.current_manager_id', $visibleIds));
+        }
+
+        if ($request->boolean('with_reports_count')) {
+            $builder->withCount(['directReports as direct_reports_count' => fn (Builder $q) => $q->whereIn('id', clone $visibleIds)]);
+        }
+
+        $page = $builder->cursorPaginate($request->integer('per_page', 25))
             ->withQueryString();
 
         return EmployeeResource::collection($page);

@@ -12,7 +12,11 @@
         "access": "Roles & permissions",
         "audit": "Audit log",
         "notifications": "Inbox",
-        "me": "Me"
+        "me": "Me",
+        "people": "People",
+        "organization": "Organization",
+        "imports": "Import people",
+        "peopleSettings": "People settings"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

@@ -17,6 +17,7 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 | openspout/openspout | 5.x | PHP 8.4 |
 | sentry/sentry-laravel | 4.29 | |
 | propaganistas/laravel-phone | 6.x | E.164 normalisation (libphonenumber lite); L13 + PHP 8.4. Branch `phone_region` is the default region |
+| maplibre-gl | 6.14 | Geofence maps (D33) with OpenFreeMap tiles. Loaded on demand (own ~1 MB chunk); its ES-module worker is bundled with `?worker&url` and set via `setWorkerUrl`. Arabic shaping built in |
 | laravel-lang/common (dev) | 6.x | Publishes framework Arabic (`lang/ar/*.php`, `lang/ar.json`); app strings are added to `lang/ar.json` and guarded by a test |
 | pestphp/pest | ⚠ **5.x is current** (4.7 is the last v4) | **Decided: Pest 5** + PHPUnit 13 (D16) |
 | larastan/larastan | 3.x (PHPStan 2, level 10 max) | |

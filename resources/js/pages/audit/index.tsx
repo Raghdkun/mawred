@@ -38,7 +38,7 @@ function ValueCell({ value }: { value: unknown }) {
               : String(value);
 
     return (
-        <bdi dir="ltr" className="font-mono text-caption break-all">
+        <bdi dir="ltr" className="max-w-full self-start font-mono text-caption break-all">
             {text}
         </bdi>
     );
@@ -66,7 +66,10 @@ function Diff({ entry }: { entry: Entry }) {
                         {keys.map((key) => (
                             <tr key={key} className="align-top">
                                 <th scope="row" className="py-1 pe-3 text-start font-medium">
-                                    <bdi dir="ltr" className="font-mono text-caption">
+                                    <bdi
+                                        dir="ltr"
+                                        className="max-w-full self-start font-mono text-caption"
+                                    >
                                         {key}
                                     </bdi>
                                 </th>

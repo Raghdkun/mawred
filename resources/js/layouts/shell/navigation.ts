@@ -2,10 +2,12 @@ import { type RouteDefinition } from '@/wayfinder';
 import { dashboard } from '@/routes';
 import accessRoles from '@/routes/access/roles';
 import audit from '@/routes/audit';
+import organizationBranches from '@/routes/organization/branches';
+import people from '@/routes/people';
 import notifications from '@/routes/notifications';
 import profile from '@/routes/profile';
 import setup from '@/routes/setup';
-import { Bell, House, type LucideIcon, UserRound } from 'lucide-react';
+import { Bell, Building2, House, type LucideIcon, UserRound } from 'lucide-react';
 import { type ModuleIconName } from '@/components/mw/module-icons.generated';
 
 export type NavItem = {
@@ -19,6 +21,8 @@ export type NavItem = {
     permission?: string;
     /** URL prefixes that mark the item active. */
     match: string[];
+    /** Prefixes inside `match` that belong to another item. */
+    exclude?: string[];
 };
 
 export type NavGroup = { key: 'workspace' | 'admin'; label: string; items: NavItem[] };
@@ -40,6 +44,15 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: House,
                     match: ['/dashboard'],
                 },
+                {
+                    key: 'people',
+                    label: 'nav.people',
+                    href: people.index(),
+                    icon: 'people',
+                    permission: 'people.view',
+                    match: ['/people'],
+                    exclude: ['/people/settings'],
+                },
             ],
         },
         {
@@ -58,6 +71,22 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                           },
                       ]
                     : []),
+                {
+                    key: 'organization',
+                    label: 'nav.organization',
+                    href: organizationBranches.index(),
+                    icon: Building2,
+                    permission: 'organization.view',
+                    match: ['/organization'],
+                },
+                {
+                    key: 'people-settings',
+                    label: 'nav.peopleSettings',
+                    href: people.settings.fields(),
+                    icon: 'people',
+                    permission: 'people.configure',
+                    match: ['/people/settings'],
+                },
                 {
                     key: 'access',
                     label: 'nav.access',
@@ -99,7 +128,8 @@ export function hrefOf(href: NavItem['href']): string {
 }
 
 export function isActive(item: NavItem, currentPath: string): boolean {
-    return item.match.some(
-        (prefix) => currentPath === prefix || currentPath.startsWith(`${prefix}/`),
-    );
+    const under = (prefix: string) =>
+        currentPath === prefix || currentPath.startsWith(`${prefix}/`);
+
+    return item.match.some(under) && !(item.exclude ?? []).some(under);
 }

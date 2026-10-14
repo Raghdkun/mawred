@@ -179,6 +179,7 @@ id: string,
 code: string,
 title: Record<string, string>,
 departmentId: string | null,
+departmentName: Record<string, string> | null,
 gradeId: string | null,
 isActive: boolean,
 };
