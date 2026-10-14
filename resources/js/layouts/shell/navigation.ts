@@ -7,6 +7,7 @@ import forms from '@/routes/forms';
 import people from '@/routes/people';
 import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
+import notifications from '@/routes/notifications';
 import requests from '@/routes/requests';
 import profile from '@/routes/profile';
 import setup from '@/routes/setup';
@@ -116,6 +117,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: 'policies',
                     permission: 'policies.view',
                     match: ['/policies'],
+                },
+                {
+                    key: 'notification-templates',
+                    label: 'nav.notificationTemplates',
+                    href: notifications.templates.index(),
+                    icon: 'channel',
+                    permission: 'notifications.configure',
+                    match: ['/notifications/templates'],
                 },
                 {
                     key: 'people-settings',

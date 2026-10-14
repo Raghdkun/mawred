@@ -133,3 +133,43 @@ it('uses an admin template override, rendered safely', function (): void {
 
     expect($this->managerUser->notifications()->sole()->data['title'])->toBe("Please review {$request->number} <b>now</b>");
 });
+
+it('saves preferences from the settings screen, ignoring locked channels', function (): void {
+    $this->requesterUser->forceFill(['two_factor_secret' => encrypt('s'), 'two_factor_confirmed_at' => now()])->save();
+
+    $this->actingAs($this->requesterUser)->get(route('notifications.preferences'))->assertOk()
+        ->assertInertia(fn ($page) => $page->component('notifications/preferences')->where('matrix.0.channels.in_app.locked', true));
+
+    $this->actingAs($this->requesterUser)->put(route('notifications.preferences.update'), [
+        'channels' => ['requests' => ['email' => false], 'approvals' => ['in_app' => false]],
+        'quietHoursStart' => '22:00',
+        'quietHoursEnd' => '07:00',
+        'digest' => true,
+    ])->assertRedirect();
+
+    expect(NotificationPreference::query()->where('user_id', $this->requesterUser->id)->pluck('enabled', 'category')->all())->toBe(['requests' => false])
+        ->and($this->requesterUser->fresh())->digest_enabled->toBeTrue()->quiet_hours_start->toStartWith('22:00');
+
+    $this->actingAs($this->requesterUser)->put(route('notifications.preferences.update'), ['channels' => [], 'quietHoursStart' => '22:00', 'quietHoursEnd' => null, 'digest' => false])
+        ->assertSessionHasErrors('quietHoursEnd');
+});
+
+it('lets admins edit and reset template wording, with only allowed variables', function (): void {
+    $admin = userWithRoles('hr_admin');
+    $admin->forceFill(['two_factor_secret' => encrypt('s'), 'two_factor_confirmed_at' => now()])->save();
+    $url = route('notifications.templates.update', ['approvals.task_assigned', 'in_app']);
+    $text = fn (string $subject): array => ['locales' => ['en' => ['subject' => $subject, 'body' => '{{ requester }}'], 'ar' => ['subject' => 'مراجعة {{ request_number }}', 'body' => '{{ requester }}']]];
+
+    $this->actingAs($this->requesterUser)->get(route('notifications.templates.index'))->assertForbidden();
+    $this->actingAs($admin)->get(route('notifications.templates.index', ['event' => 'approvals.task_assigned']))->assertOk()
+        ->assertInertia(fn ($page) => $page->component('notifications/templates')->where('channels.0.channel', 'in_app')->where('channels.0.customised', false));
+
+    $this->actingAs($admin)->put($url, $text('Review {{ salary }}'))->assertSessionHasErrors('en.subject');
+    $this->actingAs($admin)->put($url, $text('Review {{ request_number }}'))->assertRedirect();
+
+    sendTrip($this);
+    expect($this->managerUser->notifications()->sole()->data['title'])->toStartWith('Review REQ-');
+
+    $this->actingAs($admin)->delete(route('notifications.templates.destroy', ['approvals.task_assigned', 'in_app']))->assertRedirect();
+    expect(NotificationTemplate::query()->count())->toBe(0);
+});

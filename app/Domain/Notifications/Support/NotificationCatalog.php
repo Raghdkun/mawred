@@ -31,7 +31,7 @@ final class NotificationCatalog
                         'ar' => ['subject' => 'مطلوب موافقتك: {{ request_type }}', 'body' => '{{ requester }} · {{ request_number }}'],
                     ],
                     'email' => [
-                        'en' => ['subject' => 'Approval needed: {{ request_type }} ({{ request_number }})', 'body' => "Hello {{ name }},\n\n{{ requester }} sent a {{ request_type }} request ({{ request_number }}) that needs your decision."],
+                        'en' => ['subject' => 'Approval needed: {{ request_type }} ({{ request_number }})', 'body' => "Hello {{ name }},\n\n{{ requester }} sent a request that needs your decision: {{ request_type }} ({{ request_number }})."],
                         'ar' => ['subject' => 'مطلوب موافقتك: {{ request_type }} ({{ request_number }})', 'body' => "مرحبًا {{ name }}،\n\nأرسل {{ requester }} طلب {{ request_type }} ({{ request_number }}) وهو بانتظار قرارك."],
                     ],
                 ],
@@ -73,7 +73,7 @@ final class NotificationCatalog
                         'ar' => ['subject' => 'فُوّض إليك: {{ request_type }}', 'body' => '{{ requester }} · {{ request_number }}'],
                     ],
                     'email' => [
-                        'en' => ['subject' => 'Delegated to you: {{ request_type }} ({{ request_number }})', 'body' => "Hello {{ name }},\n\nA {{ request_type }} request ({{ request_number }}) from {{ requester }} was delegated to you."],
+                        'en' => ['subject' => 'Delegated to you: {{ request_type }} ({{ request_number }})', 'body' => "Hello {{ name }},\n\nA request from {{ requester }} was delegated to you: {{ request_type }} ({{ request_number }})."],
                         'ar' => ['subject' => 'فُوّض إليك: {{ request_type }} ({{ request_number }})', 'body' => "مرحبًا {{ name }}،\n\nفُوّض إليك طلب {{ request_type }} ({{ request_number }}) من {{ requester }}."],
                     ],
                 ],

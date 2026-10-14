@@ -1,4 +1,4 @@
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage, usePoll } from '@inertiajs/react';
 import { ChevronLeft, CornerUpLeft, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -62,6 +62,10 @@ export default function ShowRequest(props: Props) {
     const submitted = (flash as { submitted?: boolean } | undefined)?.submitted === true;
     const returned = [...props.timeline].reverse().find((entry) => entry.event === 'task.returned');
     const typeName = localized(request.typeName, locale);
+    const open = request.status === 'in_review';
+
+    // Live progress (handoff 12): refresh the timeline while the request is moving.
+    usePoll(15000, { only: ['request', 'timeline', 'tasks', 'comments', 'can'] }, { autoStart: open });
 
     return (
         <>

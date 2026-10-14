@@ -24,7 +24,8 @@
         "newRequest": "New",
         "openCount": "{count, plural, one {# waiting} other {# waiting}}",
         "requestTypes": "Request types",
-        "workflows": "Workflows"
+        "workflows": "Workflows",
+        "notificationTemplates": "Notification templates"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

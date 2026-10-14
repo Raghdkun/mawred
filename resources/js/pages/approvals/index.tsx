@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePoll } from '@inertiajs/react';
 import { ChevronLeft, Forward } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
@@ -43,6 +43,9 @@ export default function ApprovalsInbox({ tasks, selected, detail }: Props) {
     const [checked, setChecked] = useState<string[]>([]);
     const approvable = tasks.filter((task) => task.kind === 'approval');
     const allChecked = approvable.length > 0 && checked.length === approvable.length;
+
+    // New tasks arrive without a reload; the selected detail is left alone.
+    usePoll(30000, { only: ['tasks'] });
 
     const bulkApprove = () =>
         router.post(

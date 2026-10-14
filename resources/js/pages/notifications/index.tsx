@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { CheckCheck } from 'lucide-react';
+import { CheckCheck, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/mw/page-header';
 import { PageState } from '@/components/mw/page-state';
@@ -12,7 +12,7 @@ import notifications from '@/routes/notifications';
 
 type Item = App.Domain.Notifications.Data.NotificationItemData;
 
-/** Notification center (handoff 44). Per-category channel preferences arrive with Phase 3. */
+/** Notification center (handoff 44); preferences live on their own page. */
 export default function NotificationsIndex({
     notifications: page,
     filter,
@@ -30,20 +30,27 @@ export default function NotificationsIndex({
                 title={t('title')}
                 description={t('description')}
                 actions={
-                    page.data.some((item) => !item.read) ? (
-                        <Button
-                            variant="outline"
-                            onClick={() =>
-                                router.post(
-                                    notifications.readAll.url(),
-                                    {},
-                                    { preserveScroll: true },
-                                )
-                            }
-                        >
-                            <CheckCheck aria-hidden /> {t('markAllRead')}
+                    <>
+                        {page.data.some((item) => !item.read) ? (
+                            <Button
+                                variant="outline"
+                                onClick={() =>
+                                    router.post(
+                                        notifications.readAll.url(),
+                                        {},
+                                        { preserveScroll: true },
+                                    )
+                                }
+                            >
+                                <CheckCheck aria-hidden /> {t('markAllRead')}
+                            </Button>
+                        ) : null}
+                        <Button variant="ghost" asChild>
+                            <Link href={notifications.preferences.url()}>
+                                <Settings2 aria-hidden /> {t('preferences.link')}
+                            </Link>
                         </Button>
-                    ) : null
+                    </>
                 }
             />
             <UnderlineTabs

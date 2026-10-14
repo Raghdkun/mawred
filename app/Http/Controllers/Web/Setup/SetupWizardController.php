@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web\Setup;
 
 use App\Domain\Access\Models\User;
+use App\Domain\Integrations\Actions\SaveEmailSettings;
+use App\Domain\Integrations\Actions\SendTestEmail;
+use App\Domain\Integrations\Data\EmailSettingsData;
+use App\Domain\Integrations\Models\IntegrationConnection;
+use App\Domain\Integrations\Support\RuntimeMailer;
 use App\Domain\Organization\Actions\SaveBranch;
 use App\Domain\Organization\Data\BranchData;
 use App\Domain\Organization\Data\BranchInputData;
@@ -74,6 +79,7 @@ final class SetupWizardController extends Controller
                 'twoFactorEnabled' => $user->two_factor_confirmed_at !== null,
             ],
             'policies' => $this->policySummary(),
+            'email' => $this->emailSummary(),
             'complete' => $state->isComplete(),
             'steps' => array_map(fn (SetupStep $s): array => [
                 'key' => $s->value,
@@ -160,6 +166,30 @@ final class SetupWizardController extends Controller
         return to_route('setup.show', ['step' => $state->current()->value]);
     }
 
+    /**
+     * Step 7: the outgoing email connection (ADR-0015). Saving completes the step; a test send is
+     * optional but its result shows on the step.
+     */
+    public function saveEmail(EmailSettingsData $data, #[CurrentUser] User $user, SaveEmailSettings $save, CompleteSetupStep $complete, SetupState $state): RedirectResponse
+    {
+        Gate::authorize('setup.configure');
+
+        $save->handle(Actor::user($user), $data);
+        $complete->handle(Actor::user($user), SetupStep::Email);
+
+        return to_route('setup.show', ['step' => $state->current()->value]);
+    }
+
+    public function testEmail(#[CurrentUser] User $user, SendTestEmail $send): RedirectResponse
+    {
+        Gate::authorize('setup.configure');
+
+        $send->handle($user);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Test email sent to :email.', ['email' => $user->email])]);
+
+        return to_route('setup.show', ['step' => SetupStep::Email->value]);
+    }
+
     public function complete(SetupStep $step, #[CurrentUser] User $user, CompleteSetupStep $complete, SetupState $state): RedirectResponse
     {
         Gate::authorize('setup.configure');
@@ -206,6 +236,28 @@ final class SetupWizardController extends Controller
                 'installed' => in_array($key, $installed, true),
             ], array_keys(HolidayPresets::all()), array_values(HolidayPresets::all())),
         ];
+    }
+
+    /**
+     * The saved email connection without its password (ADR-0015: never echoed back).
+     *
+     * @return array<string, mixed>|null
+     */
+    private function emailSummary(): ?array
+    {
+        $connection = RuntimeMailer::connection();
+
+        return $connection instanceof IntegrationConnection ? [
+            'host' => $connection->config['host'] ?? '',
+            'port' => $connection->config['port'] ?? 587,
+            'security' => $connection->config['security'] ?? 'starttls',
+            'username' => $connection->config['username'] ?? null,
+            'fromAddress' => $connection->config['from_address'] ?? '',
+            'fromName' => $connection->config['from_name'] ?? '',
+            'hasPassword' => ($connection->credentials['password'] ?? '') !== '',
+            'status' => $connection->status,
+            'lastError' => $connection->last_error,
+        ] : null;
     }
 
     private function firstBranch(): ?Branch
