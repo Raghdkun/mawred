@@ -58,7 +58,7 @@ function grace(object $test, string $date = '2026-10-15'): ResolvedValueData
 }
 
 it('falls back to the neutral default, then the branch for the work week', function (): void {
-    expect(grace($this))->level->toBe('global')->value->toBe(['lateMinutes' => 15, 'earlyLeaveMinutes' => 0]);
+    expect(grace($this))->level->toBe('global')->value->toBe(['lateMinutes' => 15, 'earlyLeaveMinutes' => 0, 'countFrom' => 'scheduled']);
 
     $weekend = resolve(PolicyResolver::class)->get($this->employee, '2026-10-15', 'work.weekend');
     expect($weekend->level)->toBe('branch_default')->and($weekend->value['days'])->toBe([5, 6]);

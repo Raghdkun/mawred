@@ -529,6 +529,7 @@ mode: string,
 export type GraceValue = {
 lateMinutes: number,
 earlyLeaveMinutes: number,
+countFrom: string,
 };
 export type HourlyPermissionValue = {
 minutesPerMonth: number,
@@ -583,6 +584,7 @@ breakMinutes: number,
 }
 }
 namespace Enums {
+export type DayKind = 'workday' | 'weekend' | 'holiday';
 export type HolidayType = 'fixed' | 'nth_weekday' | 'one_off';
 export type ObservedRule = 'none' | 'nearest_weekday' | 'next_working_day' | 'previous_working_day';
 export type PolicyLevel = 'global' | 'branch' | 'department' | 'position' | 'grade' | 'employment_type' | 'employee';
