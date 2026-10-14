@@ -466,4 +466,20 @@ export type StepStatus = 'pending' | 'completed' | 'skipped';
 }
 }
 }
+namespace Support {
+namespace Actors {
+export type ActorType = 'user' | 'system' | 'integration' | 'token';
+export type Channel = 'web' | 'api' | 'email_link' | 'whatsapp' | 'cognito' | 'system' | 'import';
+}
+namespace Search {
+export type SearchHitData = {
+type: string,
+id: string,
+title: string,
+subtitle: string | null,
+url: string,
+status: string | null,
+};
+}
+}
 }

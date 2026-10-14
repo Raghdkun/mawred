@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Organization\BranchSearchController;
 use App\Http\Controllers\Api\V1\Organization\DepartmentSearchController;
 use App\Http\Controllers\Api\V1\Organization\PositionSearchController;
 use App\Http\Controllers\Api\V1\People\EmployeesController;
+use App\Http\Controllers\Api\V1\Search\GlobalSearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,7 @@ Route::prefix('v1')
     ->name('api.v1.')
     ->middleware(['auth:sanctum', 'idempotent'])
     ->group(function (): void {
+        Route::get('search', GlobalSearchController::class)->middleware('throttle:120,1')->name('search');
         Route::get('users', UserSearchController::class)->name('users.index');
 
         Route::get('branches', BranchSearchController::class)->name('branches.index');

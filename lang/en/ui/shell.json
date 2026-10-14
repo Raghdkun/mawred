@@ -30,12 +30,25 @@
     },
     "palette": {
         "title": "Command palette",
-        "description": "Search pages and actions",
+        "description": "Search people, places, pages and actions",
         "empty": "No results",
         "pages": "Pages",
         "actions": "Actions",
         "switchLanguage": "Switch language",
-        "toggleTheme": "Toggle dark mode"
+        "toggleTheme": "Toggle dark mode",
+        "searching": "Searching…",
+        "searchFailed": "Search isn't available right now.",
+        "groups": {
+            "employees": "People",
+            "branches": "Branches",
+            "departments": "Departments"
+        },
+        "status": {
+            "pending": "Starting soon",
+            "suspended": "Suspended",
+            "terminated": "Left",
+            "inactive": "Inactive"
+        }
     },
     "impersonation": {
         "notice": "You're viewing Mawred as {target}. Signed in as {impersonator}.",

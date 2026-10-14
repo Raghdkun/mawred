@@ -30,12 +30,25 @@
     },
     "palette": {
         "title": "لوحة الأوامر",
-        "description": "ابحث في الصفحات والإجراءات",
+        "description": "ابحث عن الأشخاص والأماكن والصفحات والإجراءات",
         "empty": "لا توجد نتائج",
         "pages": "الصفحات",
         "actions": "إجراءات",
         "switchLanguage": "تغيير اللغة",
-        "toggleTheme": "تبديل الوضع الداكن"
+        "toggleTheme": "تبديل الوضع الداكن",
+        "searching": "جارٍ البحث…",
+        "searchFailed": "البحث غير متاح حاليًا.",
+        "groups": {
+            "employees": "الأشخاص",
+            "branches": "الفروع",
+            "departments": "الأقسام"
+        },
+        "status": {
+            "pending": "يبدأ قريبًا",
+            "suspended": "موقوف",
+            "terminated": "غادر",
+            "inactive": "غير نشط"
+        }
     },
     "impersonation": {
         "notice": "أنت تعرض مورد بصفة {target}. مسجّل الدخول باسم {impersonator}.",

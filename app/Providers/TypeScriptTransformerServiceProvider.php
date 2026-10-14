@@ -22,7 +22,7 @@ final class TypeScriptTransformerServiceProvider extends BaseTypeScriptTransform
         $config
             ->transformer(AttributedClassTransformer::class)
             ->transformer(EnumTransformer::class)
-            ->transformDirectories(app_path('Domain'))
+            ->transformDirectories(app_path('Domain'), app_path('Support'))
             ->outputDirectory(resource_path('js/types'))
             ->writer(new GlobalNamespaceWriter('generated.d.ts'))
             ->formatter(PrettierFormatter::class);
