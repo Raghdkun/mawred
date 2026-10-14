@@ -124,6 +124,11 @@
         "test:browser": [
             "@php artisan config:clear --ansi",
             "@php artisan test --testsuite=Browser"
+        ],
+        "test:performance": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan config:clear --ansi",
+            "@php artisan test --testsuite=Performance"
         ]
     },
     "extra": {

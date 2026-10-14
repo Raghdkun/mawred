@@ -366,6 +366,25 @@ currency: string,
 note: string | null,
 recordedAt: string,
 };
+export type ImportData = {
+id: string,
+status: string,
+fileName: string,
+headers: (string| null)[],
+mapping: Record<string | number, string>,
+totalRows: number,
+validRows: number,
+invalidRows: number,
+toCreate: number,
+toUpdate: number,
+processedRows: number,
+createdRows: number,
+updatedRows: number,
+failedRows: number,
+failure: string | null,
+hasErrorReport: boolean,
+createdAt: string,
+};
 export type PersonRefData = {
 id: string,
 nameEn: string,
@@ -435,6 +454,8 @@ export type CustomFieldType = 'text' | 'textarea' | 'number' | 'date' | 'select'
 export type EmployeeStatus = 'pending' | 'active' | 'suspended' | 'terminated';
 export type Gender = 'female' | 'male';
 export type HistoryEvent = 'hired' | 'placement_changed' | 'salary_changed' | 'status_changed' | 'terminated';
+export type ImportRowStatus = 'valid' | 'invalid' | 'done' | 'failed';
+export type ImportStatus = 'uploaded' | 'validating' | 'validated' | 'committing' | 'completed' | 'failed' | 'cancelled';
 export type MaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';
 }
 }

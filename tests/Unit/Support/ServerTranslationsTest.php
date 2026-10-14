@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Domain\People\Support\Imports\EmployeeImportFields;
+
 /*
 | Every user-facing server string (toasts, rule violations, notifications, validation hints) is
 | written in English in code and must have an Arabic entry in lang/ar.json (D3: EN + AR).
@@ -33,4 +35,10 @@ it('has an Arabic translation for every server string', function (): void {
 
     expect($found)->toBeGreaterThan(50)
         ->and(array_values(array_unique($missing)))->toBe([]);
+});
+
+it('translates every import template column', function (): void {
+    $arabic = json_decode((string) file_get_contents(dirname(__DIR__, 3).'/lang/ar.json'), true, flags: JSON_THROW_ON_ERROR);
+
+    expect(array_values(array_diff(EmployeeImportFields::LABELS, array_keys($arabic))))->toBe([]);
 });
