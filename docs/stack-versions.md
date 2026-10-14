@@ -6,6 +6,7 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 | Package | Version | Notes |
 |---|---|---|
 | laravel/framework | 13.x (13.36) | PHP 8.3–8.5. Upgrade local PHP 8.4.1 to the latest 8.4.x |
+| altcha-org/altcha | 2.3 | Public form captcha (D10, D53): proof-of-work challenge and verification, HMAC key from the vault |
 | Starter kit (react) | main | Inertia **v3**, React 19.2 + Compiler, Vite **8**, Tailwind 4.3, Fortify (2FA + passkeys), Wayfinder 0.1, SSR on |
 | inertiajs/inertia-laravel | 3.x | `Inertia::lazy` removed → `optional()` |
 | laravel/sanctum / horizon / reverb / pennant / pulse / boost | 4.3 / 5.50 / 1.12 / 1.26 / 1.8 / 2.10 | all support L13. ⚠ Reverb pins guzzlehttp/psr7 ^2.6, so Guzzle stays on 7.x |
@@ -44,6 +45,8 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 | radix-ui (unified) | 1.8 | new shadcn components import from `radix-ui`; ⚠ the CLI wrote `import { cn } from "cn"`, so check generated files |
 | Lint | **ESLint 9.39 + Prettier**, replacing the kit's vite-plus (D17). ⚠ Not ESLint 10: `eslint-plugin-react` and `eslint-plugin-jsx-a11y` don't support it yet | `eslint-plugin-better-tailwindcss` (logical-properties rule) works with both |
 | @fontsource-variable/readex-pro | 5.3 | OFL-1.1, arabic + latin subsets, wght 160–700 |
+| @dnd-kit/core / sortable / utilities | 6.3 / 10.0 / 3.2 | Form builder reordering (D52). Peer `react >=16.8`, works with React 19 |
+| altcha (web component) | 3.3 | Public form captcha widget (D10, D53) |
 
 ## Infra
 PostgreSQL 18, Redis 8, Gotenberg 8.37, FrankenPHP 1.13, Caddy 2, WAHA (GOWS engine, pinned tag), ClamAV, GlitchTip. WhatsApp Graph API v25/v26. Captcha: altcha-org/altcha (PHP) + altcha web component.

@@ -16,6 +16,12 @@ return [
     |
     */
 
+    // Upload scanning (D20, ADR-0008). Unset = no scanning; set = every upload is scanned, fail closed.
+    'clamav' => [
+        'host' => env('CLAMAV_HOST'),
+        'port' => (int) env('CLAMAV_PORT', 3310),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],

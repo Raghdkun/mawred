@@ -77,6 +77,34 @@ requestId: string | null,
 };
 }
 }
+namespace Forms {
+namespace Data {
+export type FormSettingsData = {
+code: string,
+name: {
+en: string,
+ar?: string | null,
+},
+description: {
+en?: string | null,
+ar?: string | null,
+},
+category: string | null,
+isPublic: boolean,
+publicSlug: string | null,
+successMessage: {
+en?: string | null,
+ar?: string | null,
+},
+closesAt: string | null,
+};
+}
+namespace Enums {
+export type FieldType = 'text' | 'textarea' | 'number' | 'money' | 'email' | 'phone' | 'date' | 'date_range' | 'time' | 'select' | 'multiselect' | 'radio' | 'checkboxes' | 'boolean' | 'file' | 'employee' | 'department' | 'branch' | 'leave_type' | 'calculated' | 'note';
+export type SubmissionSource = 'internal' | 'public' | 'test';
+export type VersionStatus = 'draft' | 'published' | 'archived';
+}
+}
 namespace Notifications {
 namespace Data {
 export type NotificationItemData = {

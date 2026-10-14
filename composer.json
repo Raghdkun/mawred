@@ -10,6 +10,7 @@
     "license": "proprietary",
     "require": {
         "php": "^8.3",
+        "altcha-org/altcha": "^2.3",
         "dedoc/scramble": "^0.13.47",
         "gotenberg/gotenberg-php": "^2.25",
         "inertiajs/inertia-laravel": "^3.0",

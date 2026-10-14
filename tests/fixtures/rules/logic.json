@@ -1,0 +1,206 @@
+{
+  "description": "mawred.rule/v1 parity: logic",
+  "context": {
+    "field": {
+      "amount": 250,
+      "amountText": "250",
+      "days": 3,
+      "reason": "Family trip",
+      "type": "annual",
+      "empty": "",
+      "blank": "   ",
+      "tags": [
+        "urgent",
+        "travel"
+      ],
+      "none": null,
+      "range": {
+        "from": "2026-03-18",
+        "to": "2026-03-24"
+      },
+      "lines": [
+        10,
+        20.5,
+        "x"
+      ],
+      "agree": true
+    },
+    "requester": {
+      "branch": "01RUH",
+      "gender": "female",
+      "grade": "G5"
+    },
+    "ctx": {
+      "today": "2026-10-15",
+      "calendar": {
+        "weekend": [
+          5,
+          6
+        ],
+        "holidays": [
+          "2026-03-22"
+        ]
+      },
+      "balances": {
+        "ANNUAL": 12.5
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "literal number",
+      "rule": 5,
+      "expected": 5
+    },
+    {
+      "name": "literal null",
+      "rule": null,
+      "expected": null
+    },
+    {
+      "name": "literal list",
+      "rule": {
+        "value": [
+          1,
+          2
+        ]
+      },
+      "expected": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "all true",
+      "rule": {
+        "op": "all",
+        "args": [
+          true,
+          1,
+          "x"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "all short-circuits",
+      "rule": {
+        "op": "all",
+        "args": [
+          false,
+          {
+            "op": "nope",
+            "args": [
+              1
+            ]
+          }
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "any",
+      "rule": {
+        "op": "any",
+        "args": [
+          false,
+          0,
+          "",
+          {
+            "ref": "field.agree"
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "any none",
+      "rule": {
+        "op": "any",
+        "args": [
+          false,
+          null
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "not empty list",
+      "rule": {
+        "op": "not",
+        "args": [
+          {
+            "value": []
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "not empty object",
+      "rule": {
+        "op": "not",
+        "args": [
+          {
+            "value": {}
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "if true",
+      "rule": {
+        "op": "if",
+        "args": [
+          {
+            "ref": "field.agree"
+          },
+          "yes",
+          {
+            "op": "nope",
+            "args": [
+              1
+            ]
+          }
+        ]
+      },
+      "expected": "yes"
+    },
+    {
+      "name": "if false",
+      "rule": {
+        "op": "if",
+        "args": [
+          {
+            "ref": "field.none"
+          },
+          1,
+          2
+        ]
+      },
+      "expected": 2
+    },
+    {
+      "name": "ref missing",
+      "rule": {
+        "ref": "field.missing.deep"
+      },
+      "expected": null
+    },
+    {
+      "name": "ref nested",
+      "rule": {
+        "ref": "field.range.from"
+      },
+      "expected": "2026-03-18"
+    },
+    {
+      "name": "ref index",
+      "rule": {
+        "ref": "field.tags.1"
+      },
+      "expected": "travel"
+    }
+  ]
+}
