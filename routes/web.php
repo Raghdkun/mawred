@@ -24,5 +24,6 @@ require __DIR__.'/organization.php';
 require __DIR__.'/people.php';
 require __DIR__.'/policies.php';
 require __DIR__.'/forms.php';
+require __DIR__.'/requests.php';
 require __DIR__.'/audit.php';
 require __DIR__.'/notifications.php';

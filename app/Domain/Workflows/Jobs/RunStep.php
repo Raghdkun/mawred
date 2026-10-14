@@ -24,7 +24,11 @@ final class RunStep implements ShouldBeUniqueUntilProcessing, ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public readonly int $stepId) {}
+    public function __construct(public readonly int $stepId)
+    {
+        // A step created in a transaction must not run before that transaction commits.
+        $this->afterCommit();
+    }
 
     public function uniqueId(): string
     {

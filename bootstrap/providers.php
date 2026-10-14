@@ -5,8 +5,10 @@ use App\Providers\AppServiceProvider;
 use App\Providers\FormsServiceProvider;
 use App\Providers\FortifyServiceProvider;
 use App\Providers\HorizonServiceProvider;
+use App\Providers\NotificationsServiceProvider;
 use App\Providers\PeopleServiceProvider;
 use App\Providers\PoliciesServiceProvider;
+use App\Providers\RequestsServiceProvider;
 use App\Providers\TypeScriptTransformerServiceProvider;
 use App\Providers\WorkflowsServiceProvider;
 
@@ -17,6 +19,8 @@ return [
     PoliciesServiceProvider::class,
     FormsServiceProvider::class,
     WorkflowsServiceProvider::class,
+    RequestsServiceProvider::class,
+    NotificationsServiceProvider::class,
     FortifyServiceProvider::class,
     HorizonServiceProvider::class,
     TypeScriptTransformerServiceProvider::class,

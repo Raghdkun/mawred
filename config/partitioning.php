@@ -15,5 +15,9 @@ return [
             'column' => 'created_at',
             'retention_months' => env('AUDIT_RETENTION_MONTHS') !== null ? (int) env('AUDIT_RETENTION_MONTHS') : null,
         ],
+        'notification_deliveries' => [
+            'column' => 'created_at',
+            'retention_months' => 12,
+        ],
     ],
 ];
