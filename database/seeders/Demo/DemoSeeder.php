@@ -33,6 +33,17 @@ use App\Domain\People\Data\PlacementInputData;
 use App\Domain\People\Data\SensitiveDetailsInputData;
 use App\Domain\People\Models\DocumentType;
 use App\Domain\People\Models\Employee;
+use App\Domain\Policies\Actions\AssignPolicySet;
+use App\Domain\Policies\Actions\InstallHolidayPreset;
+use App\Domain\Policies\Actions\SaveHolidayCalendar;
+use App\Domain\Policies\Actions\SaveHolidayRule;
+use App\Domain\Policies\Actions\SavePolicySet;
+use App\Domain\Policies\Actions\SeedPolicyDefaults;
+use App\Domain\Policies\Actions\SetPolicyValues;
+use App\Domain\Policies\Data\HolidayCalendarInputData;
+use App\Domain\Policies\Data\HolidayRuleInputData;
+use App\Domain\Policies\Enums\PolicyLevel;
+use App\Domain\Policies\Support\HolidayPresets;
 use App\Support\Actors\Actor;
 use App\Support\Money\Money;
 use Carbon\CarbonImmutable;
@@ -102,6 +113,7 @@ final class DemoSeeder extends Seeder
         $this->positions();
         $this->customFields();
         $this->people();
+        $this->policies();
         $this->accounts($password);
 
         $this->command->info(sprintf('Demo company ready: %d people. Sign in as %s with DEMO_PASSWORD.', Employee::query()->count(), implode(', ', self::ACCOUNTS)));
@@ -139,6 +151,35 @@ final class DemoSeeder extends Seeder
                 'workStartsAt' => $start, 'workEndsAt' => $end, 'geofence' => $geofence,
                 'address' => ['city' => $city], 'costCenterId' => $this->ids[$costCenter],
             ]))->ulid;
+        }
+    }
+
+    /**
+     * Phase 2 demo: Riyadh gets its own lateness and overtime rules on top of the neutral default,
+     * New York observes the US federal calendar, and Riyadh a sample Saudi calendar (the Eid dates
+     * are illustrative; real ones are imported each year after moon sighting).
+     */
+    private function policies(): void
+    {
+        $set = resolve(SavePolicySet::class)->handle($this->actor, ['en' => 'Riyadh HQ rules', 'ar' => 'قواعد المقر الرئيسي'], ['en' => 'Demo overrides for the Riyadh head office.', 'ar' => 'قيم تجريبية للمقر الرئيسي في الرياض.']);
+        resolve(SetPolicyValues::class)->handle($this->actor, $set, [
+            'attendance.grace' => ['lateMinutes' => 10, 'earlyLeaveMinutes' => 5],
+            'overtime.rules' => ['weekday' => 1.5, 'weekend' => 2.0, 'holiday' => 2.0, 'night' => 2.0],
+        ], SeedPolicyDefaults::SINCE, 'Demo data');
+        resolve(AssignPolicySet::class)->handle($this->actor, $set, PolicyLevel::Branch, Branch::query()->where('ulid', $this->ids['RUH-HQ'])->firstOrFail()->id, SeedPolicyDefaults::SINCE, 'Demo data');
+
+        resolve(InstallHolidayPreset::class)->handle($this->actor, HolidayPresets::US_FEDERAL, [$this->ids['NYC']]);
+
+        $saudi = resolve(SaveHolidayCalendar::class)->handle($this->actor, new HolidayCalendarInputData('SA_DEMO', ['en' => 'Saudi holidays (sample)', 'ar' => 'العطلات السعودية (نموذج)'], 'SA', true, [$this->ids['RUH-HQ']]));
+        $rules = resolve(SaveHolidayRule::class);
+
+        foreach ([
+            ['name' => ['en' => 'Founding Day', 'ar' => 'يوم التأسيس'], 'type' => 'fixed', 'month' => 2, 'day' => 22, 'fromYear' => 2022],
+            ['name' => ['en' => 'Saudi National Day', 'ar' => 'اليوم الوطني'], 'type' => 'fixed', 'month' => 9, 'day' => 23],
+            ['name' => ['en' => 'Eid al-Fitr', 'ar' => 'عيد الفطر'], 'type' => 'one_off', 'date' => '2026-03-20', 'durationDays' => 4, 'hijriBased' => true],
+            ['name' => ['en' => 'Eid al-Adha', 'ar' => 'عيد الأضحى'], 'type' => 'one_off', 'date' => '2026-05-26', 'durationDays' => 4, 'hijriBased' => true],
+        ] as $rule) {
+            $rules->handle($saudi, HolidayRuleInputData::from($rule));
         }
     }
 

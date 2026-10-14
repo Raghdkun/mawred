@@ -8,6 +8,7 @@ import { HistoryTab } from '@/features/people/profile/history-tab';
 import { JobTab } from '@/features/people/profile/job-tab';
 import { OverviewTab } from '@/features/people/profile/overview-tab';
 import { PersonalTab } from '@/features/people/profile/personal-tab';
+import { PoliciesTab } from '@/features/people/profile/policies-tab';
 import { ProfileHeader } from '@/features/people/profile/profile-header';
 import { type ProfileProps } from '@/features/people/profile/types';
 import { useLocale } from '@/hooks/use-locale';
@@ -16,10 +17,10 @@ import { cn } from '@/lib/utils';
 import people from '@/routes/people';
 
 /**
- * Leave, Attendance, Training and Effective policies tabs join with their modules (Phases 2–6);
- * nothing links to an unbuilt tab.
+ * Leave, Attendance and Training tabs join with their modules (Phases 5–6); nothing links to an
+ * unbuilt tab. Effective policies shows to people who can read policies.
  */
-const TABS = ['overview', 'job', 'personal', 'documents', 'history'] as const;
+const TABS = ['overview', 'job', 'personal', 'documents', 'history', 'policies'] as const;
 type Tab = (typeof TABS)[number];
 
 /** Employee profile (handoff 8): header + tabs; tabs scroll horizontally on phones. */
@@ -61,7 +62,7 @@ export default function PeopleShow(props: ProfileProps) {
                 className="-mx-4 mb-6 overflow-x-auto px-4 md:mx-0 md:px-0"
             >
                 <div className="flex min-w-max gap-1 border-b border-border">
-                    {TABS.map((key) => (
+                    {TABS.filter((key) => key !== 'policies' || props.can.policies).map((key) => (
                         <button
                             key={key}
                             type="button"
@@ -93,6 +94,7 @@ export default function PeopleShow(props: ProfileProps) {
                 {tab === 'personal' ? <PersonalTab {...props} /> : null}
                 {tab === 'documents' ? <DocumentsTab {...props} /> : null}
                 {tab === 'history' ? <HistoryTab {...props} /> : null}
+                {tab === 'policies' && props.can.policies ? <PoliciesTab {...props} /> : null}
             </div>
         </>
     );

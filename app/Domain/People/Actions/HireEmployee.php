@@ -15,8 +15,11 @@ use App\Domain\People\Support\EmployeeNumbers;
 use App\Domain\People\Support\History;
 use App\Domain\People\Support\Placements;
 use App\Domain\People\Support\ReportingLines;
+use App\Domain\Policies\Data\Values\ProbationValue;
+use App\Domain\Policies\Support\PolicyResolver;
 use App\Support\Actors\Actor;
 use App\Support\Errors\DomainRuleViolation;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\ConnectionInterface;
 
 /**
@@ -29,6 +32,7 @@ final readonly class HireEmployee
         private EmployeeNumbers $numbers,
         private ReportingLines $lines,
         private SyncEmployeePlacement $sync,
+        private PolicyResolver $policies,
     ) {}
 
     public function handle(Actor $actor, HireEmployeeData $data): Employee
@@ -72,8 +76,18 @@ final readonly class HireEmployee
             ]);
 
             History::record($actor, $employee, HistoryEvent::Hired, $data->hireDate, $this->changes($data));
+            $employee = $this->sync->handle($employee);
 
-            return $this->sync->handle($employee);
+            if ($employee->probation_ends_on === null) {
+                // Default probation comes from policy (employment.probation) at the hire date.
+                $probation = $this->policies->value($employee, $data->hireDate, 'employment.probation');
+
+                if ($probation instanceof ProbationValue && $probation->probationDays > 0) {
+                    $employee->forceFill(['probation_ends_on' => CarbonImmutable::parse($data->hireDate)->addDays($probation->probationDays - 1)->toDateString()])->save();
+                }
+            }
+
+            return $employee;
         });
     }
 

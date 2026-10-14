@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->prefix('setup')->name('setup.')->group(
     Route::post('steps/company', [SetupWizardController::class, 'saveCompany'])->name('steps.company');
     Route::post('steps/languages', [SetupWizardController::class, 'saveLanguages'])->name('steps.languages');
     Route::post('steps/branch', [SetupWizardController::class, 'saveBranch'])->name('steps.branch');
+    Route::post('steps/policies', [SetupWizardController::class, 'savePolicies'])->name('steps.policies');
     Route::post('steps/{step}/complete', [SetupWizardController::class, 'complete'])->name('steps.complete');
     Route::post('steps/{step}/skip', [SetupWizardController::class, 'skip'])->name('steps.skip');
     Route::post('finish', [SetupWizardController::class, 'finish'])->name('finish');

@@ -16,7 +16,8 @@
         "people": "People",
         "organization": "Organization",
         "imports": "Import people",
-        "peopleSettings": "People settings"
+        "peopleSettings": "People settings",
+        "policies": "Policies"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

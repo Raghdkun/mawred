@@ -4,6 +4,7 @@ import accessRoles from '@/routes/access/roles';
 import audit from '@/routes/audit';
 import organizationBranches from '@/routes/organization/branches';
 import people from '@/routes/people';
+import policies from '@/routes/policies';
 import notifications from '@/routes/notifications';
 import profile from '@/routes/profile';
 import setup from '@/routes/setup';
@@ -78,6 +79,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: Building2,
                     permission: 'organization.view',
                     match: ['/organization'],
+                },
+                {
+                    key: 'policies',
+                    label: 'nav.policies',
+                    href: policies.index(),
+                    icon: 'policies',
+                    permission: 'policies.view',
+                    match: ['/policies'],
                 },
                 {
                     key: 'people-settings',

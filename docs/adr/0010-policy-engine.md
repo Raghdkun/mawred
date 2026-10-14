@@ -1,6 +1,6 @@
 # ADR-0010: Policy engine — typed keys, layered partial sets, effective dating, ledgers
 
-- Status: Proposed
+- Status: Accepted (Phase 2)
 - Date: 2026-10-13
 
 ## Decision
@@ -16,3 +16,11 @@
 ## Consequences
 - + Explainable values (provenance), history never rewritten, safe "what-if" previews.
 - − More rows, and calculators must stay pure (enforced by tests that run them twice and compare).
+
+## Implementation notes (Phase 2)
+- Keys live in `app/Domain/Policies/Keys`; `PolicyKeys` is the registry and the only validator (`PolicyKeys::validate`). Leave rules are a key family, `leave.type.<CODE>`, one per active leave type (D48). Ids differ slightly from the examples above (`attendance.grace`, `overtime.rules`, `work.weekend`, …).
+- The precedence chain adds two links the ADR didn't name: the **branch record** for the work week and hours, just before Global (D46), and the **key default** last. Every resolved value carries its chain (`ResolvedValueData`), which the explainer draws.
+- `PolicySnapshot` holds every assignment and value in force on a date and is memoised per policy epoch; `withValues` / `withAssignment` give copy-on-write "what if" snapshots for `PolicyImpact`, which resolves the affected employees in memory (a few queries for any count). No Redis cache per employee yet: the per-date snapshot made it unnecessary at the performance seed's size.
+- Calculators (`Support/Calculators`) are pure and tested twice-run: `AccrualCalculator`, `OvertimeCalculator`, `LatenessCalculator`, `HolidayCalculator` (over `HolidayRuleSpec` values) and `WorkingDays`. Their semantics are D50.
+- Holidays: calendars are shared and assigned to branches (D47); shifts use the branch's weekend, and a day shared by two calendars counts once (`BranchHolidays`).
+- Ledgers, recalculation runs and balance deltas in the preview remain Phase 5.

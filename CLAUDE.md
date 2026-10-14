@@ -4,7 +4,7 @@ An internal HR, hiring and workflow platform for one legal entity with unlimited
 
 Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install` after cloning): @AGENTS.md
 
-**Read first**: [docs/architecture.md](docs/architecture.md) · [docs/adr/](docs/adr/README.md) · [docs/roadmap.md](docs/roadmap.md) · [docs/stack-versions.md](docs/stack-versions.md) · [docs/open-questions.md](docs/open-questions.md) (decision log D1–D45)
+**Read first**: [docs/architecture.md](docs/architecture.md) · [docs/adr/](docs/adr/README.md) · [docs/roadmap.md](docs/roadmap.md) · [docs/stack-versions.md](docs/stack-versions.md) · [docs/open-questions.md](docs/open-questions.md) (decision log D1–D50)
 
 ## Ground rules
 - **Plan before code** for any non-trivial change. Ask before any decision the brief or ADRs leave ambiguous. Record new decisions as ADRs.
@@ -99,6 +99,12 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - `RefreshDatabase` wraps each test in one transaction; thousands of nested `DB::transaction` savepoints exhaust Postgres' lock table. Volume tests live in `tests/Performance` (DatabaseTruncation).
 - Server strings go through `__()` and need an entry in `lang/ar.json`; `ServerTranslationsTest` fails otherwise.
 - `field_permissions` has a composite key (role_id, field_key): write with `upsert`, never Eloquent `save`, which keys on role_id alone.
+
+## Gotchas learned in Phase 2
+- A new UI namespace (`lang/*/ui/<ns>.json`) must be mapped to its page prefix in `resources/js/i18n/index.ts` (`PAGE_NAMESPACES`), or pages render raw keys. Pages that borrow a feature (profile tab, setup step) need it too.
+- Policy values change only through `SetPolicyValues` / `AssignPolicySet` (they close the open row and bump `PolicyEpoch`); read them with `PolicyResolver`, never from `policy_values` directly.
+- Calculators stay pure: no models, clock or container. Feed them value objects (`HolidayRuleSpec`, value Data), so they run in the Unit suite.
+- Number inputs with a unit adornment must not force `dir="ltr"`: the end padding then lands on the wrong side in Arabic.
 
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.

@@ -16,7 +16,8 @@
         "people": "الموظفون",
         "organization": "الهيكل التنظيمي",
         "imports": "استيراد الموظفين",
-        "peopleSettings": "إعدادات الموظفين"
+        "peopleSettings": "إعدادات الموظفين",
+        "policies": "السياسات"
     },
     "searchPlaceholder": "ابحث أو انتقل إلى…",
     "switchLanguage": "تغيير اللغة إلى {language}",

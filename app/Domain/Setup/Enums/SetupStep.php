@@ -30,7 +30,6 @@ enum SetupStep: string
     public function availableInPhase(): int
     {
         return match ($this) {
-            self::Policies => 2,
             self::Email => 3,
             self::WhatsApp, self::Cognito => 4,
             default => 0,

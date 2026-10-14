@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Organization\BranchSearchController;
 use App\Http\Controllers\Api\V1\Organization\DepartmentSearchController;
 use App\Http\Controllers\Api\V1\Organization\PositionSearchController;
 use App\Http\Controllers\Api\V1\People\EmployeesController;
+use App\Http\Controllers\Api\V1\Policies\EmployeePoliciesController;
 use App\Http\Controllers\Api\V1\Search\GlobalSearchController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +28,5 @@ Route::prefix('v1')
 
         Route::get('employees', [EmployeesController::class, 'index'])->name('employees.index');
         Route::get('employees/{employee}', [EmployeesController::class, 'show'])->name('employees.show');
+        Route::get('employees/{employee}/policies', [EmployeePoliciesController::class, 'index'])->name('employees.policies');
     });

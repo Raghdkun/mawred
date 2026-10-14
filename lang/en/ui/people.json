@@ -147,7 +147,8 @@
             "job": "Job",
             "personal": "Personal",
             "documents": "Documents",
-            "history": "History"
+            "history": "History",
+            "policies": "Effective policies"
         }
     },
     "terminate": {

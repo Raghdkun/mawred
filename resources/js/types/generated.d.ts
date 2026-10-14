@@ -460,6 +460,246 @@ export type ImportStatus = 'uploaded' | 'validating' | 'validated' | 'committing
 export type MaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';
 }
 }
+namespace Policies {
+namespace Data {
+export type ChainLinkData = {
+level: string,
+setId: string | null,
+setName: Record<string, string> | null,
+target: string | null,
+value: Record<string, any>,
+effectiveFrom: string | null,
+wins: boolean,
+};
+export type HolidayCalendarData = {
+id: string,
+code: string,
+name: Record<string, string>,
+countryCode: string | null,
+presetKey: string | null,
+isActive: boolean,
+branches: {
+id: string,
+name: Record<string, string>,
+}[],
+rules: App.Domain.Policies.Data.HolidayRuleData[],
+};
+export type HolidayCalendarInputData = {
+code: string,
+name: {
+en: string,
+ar?: string | null,
+},
+countryCode: string | null,
+isActive: boolean,
+branchIds: string[],
+};
+export type HolidayDayData = {
+ruleId: string,
+name: Record<string, string>,
+date: string,
+observedOn: string,
+hijriBased: boolean,
+day: number,
+days: number,
+};
+export type HolidayRuleData = {
+id: string,
+name: Record<string, string>,
+type: string,
+month: number | null,
+day: number | null,
+weekday: number | null,
+nth: number | null,
+date: string | null,
+durationDays: number,
+observed: string,
+hijriBased: boolean,
+fromYear: number | null,
+toYear: number | null,
+};
+export type HolidayRuleInputData = {
+name: {
+en: string,
+ar?: string | null,
+},
+type: App.Domain.Policies.Enums.HolidayType,
+month: number | null,
+day: number | null,
+weekday: number | null,
+nth: number | null,
+date: string | null,
+durationDays: number,
+observed: App.Domain.Policies.Enums.ObservedRule,
+hijriBased: boolean,
+fromYear: number | null,
+toYear: number | null,
+};
+export type ImpactChangeData = {
+key: string,
+before: Record<string, any>,
+after: Record<string, any>,
+beforeLevel: string,
+afterLevel: string,
+};
+export type ImpactPreviewData = {
+date: string,
+keys: string[],
+checked: number,
+affected: number,
+rows: App.Domain.Policies.Data.ImpactRowData[],
+};
+export type ImpactRowData = {
+employeeId: string,
+employeeNumber: string,
+nameEn: string,
+nameAr: string | null,
+changes: App.Domain.Policies.Data.ImpactChangeData[],
+};
+export type LeaveTypeData = {
+id: string,
+code: string,
+name: Record<string, string>,
+unit: string,
+isPaid: boolean,
+allowsHalfDays: boolean,
+eligibleGender: string | null,
+requiresAttachment: boolean,
+sortOrder: number,
+isActive: boolean,
+};
+export type LeaveTypeInputData = {
+code: string,
+name: {
+en: string,
+ar?: string | null,
+},
+unit: string,
+isPaid: boolean,
+allowsHalfDays: boolean,
+eligibleGender: string | null,
+requiresAttachment: boolean,
+sortOrder: number,
+isActive: boolean,
+};
+export type PolicyAssignmentData = {
+id: string,
+level: string,
+targetId: string | null,
+targetName: string | null,
+setId: string,
+setName: Record<string, string>,
+effectiveFrom: string,
+effectiveTo: string | null,
+reason: string | null,
+};
+export type PolicyKeyData = {
+id: string,
+section: string,
+editor: string,
+default: Record<string, any>,
+branchFallback: boolean,
+affects: string[],
+leaveType: App.Domain.Policies.Data.LeaveTypeData | null,
+};
+export type PolicySetData = {
+id: string,
+name: Record<string, string>,
+description: Record<string, string>,
+presetKey: string | null,
+presetVersion: string | null,
+keysCount: number,
+lastChangeOn: string | null,
+assignments: App.Domain.Policies.Data.PolicyAssignmentData[],
+};
+export type PolicySetValueData = {
+key: string,
+value: Record<string, any> | null,
+effectiveFrom: string | null,
+scheduled: {
+value: Record<string, any> | null,
+effectiveFrom: string,
+}[],
+};
+export type ResolvedValueData = {
+key: string,
+section: string,
+value: Record<string, any>,
+level: string,
+setId: string | null,
+setName: Record<string, string> | null,
+effectiveFrom: string | null,
+chain: App.Domain.Policies.Data.ChainLinkData[],
+};
+namespace Values {
+export type GeofenceModeValue = {
+mode: string,
+};
+export type GraceValue = {
+lateMinutes: number,
+earlyLeaveMinutes: number,
+countFrom: string,
+};
+export type HourlyPermissionValue = {
+minutesPerMonth: number,
+maxMinutesPerRequest: number,
+};
+export type LeaveRuleValue = {
+entitlement: number,
+accrual: string,
+proRata: string,
+rounding: string,
+maxBalance: number | null,
+carryOverMax: number | null,
+carryOverExpiresMonths: number | null,
+eligibleAfterDays: number,
+tenureSteps: {
+afterYears: number,
+entitlement: number,
+}[],
+};
+export type OvertimeValue = {
+enabled: boolean,
+dailyThresholdMinutes: number,
+weekday: number,
+weekend: number,
+holiday: number,
+night: number,
+nightStartsAt: string,
+nightEndsAt: string,
+roundingMinutes: number,
+monthlyCapMinutes: number | null,
+requiresApproval: boolean,
+};
+export type ProbationValue = {
+probationDays: number,
+extensionDays: number,
+employeeNoticeDays: number,
+employerNoticeDays: number,
+};
+export type RestValue = {
+minRestHours: number,
+maxConsecutiveDays: number,
+maxWeeklyHours: number,
+};
+export type WeekendValue = {
+days: number[],
+};
+export type WorkHoursValue = {
+startsAt: string,
+endsAt: string,
+breakMinutes: number,
+};
+}
+}
+namespace Enums {
+export type DayKind = 'workday' | 'weekend' | 'holiday';
+export type HolidayType = 'fixed' | 'nth_weekday' | 'one_off';
+export type ObservedRule = 'none' | 'nearest_weekday' | 'next_working_day' | 'previous_working_day';
+export type PolicyLevel = 'global' | 'branch' | 'department' | 'position' | 'grade' | 'employment_type' | 'employee';
+export type PolicySection = 'leave' | 'work_week' | 'overtime' | 'attendance' | 'rest' | 'employment';
+}
+}
 namespace Setup {
 namespace Enums {
 export type SetupStep = 'welcome' | 'company' | 'languages' | 'branch' | 'policies' | 'admin' | 'email' | 'whatsapp' | 'cognito' | 'review';

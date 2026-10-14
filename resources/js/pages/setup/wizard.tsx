@@ -7,6 +7,8 @@ import {
     CompanyStep,
     LanguagesStep,
     LaterStep,
+    PoliciesStep,
+    type PolicySummary,
     ReviewStep,
     stepIsLater,
     WelcomeStep,
@@ -24,6 +26,7 @@ type Props = {
     languages: { defaultLocale: string; defaultDigits: string; hijriByDefault: boolean };
     admin: { name: string; email: string; twoFactorEnabled: boolean };
     branch: App.Domain.Organization.Data.BranchData | null;
+    policies: PolicySummary;
 };
 
 /** Setup wizard (handoff 2): rail 300 px + form 640 px + live preview; compact bar on smaller screens. */
@@ -35,6 +38,7 @@ export default function SetupWizard({
     languages,
     admin,
     branch,
+    policies,
 }: Props) {
     const { t } = useTranslation('setup');
     const { company: shared } = usePage().props;
@@ -55,6 +59,8 @@ export default function SetupWizard({
                 return <LanguagesStep languages={languages} />;
             case 'branch':
                 return <BranchStep branch={branch} />;
+            case 'policies':
+                return <PoliciesStep policies={policies} />;
             case 'admin':
                 return <AdminStep admin={admin} />;
             case 'review':
