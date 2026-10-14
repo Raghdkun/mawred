@@ -6,6 +6,7 @@ namespace App\Domain\Policies\Keys;
 
 use App\Domain\Organization\Models\Branch;
 use App\Domain\Policies\Enums\PolicySection;
+use Illuminate\Support\Str;
 use Spatie\LaravelData\Data;
 
 /**
@@ -34,6 +35,18 @@ abstract class PolicyKey
     public function affects(): array
     {
         return [];
+    }
+
+    /** Which editor the UI draws, from the value class (GraceValue → `grace`). */
+    public function editor(): string
+    {
+        return Str::snake(Str::beforeLast(class_basename($this->valueClass()), 'Value'));
+    }
+
+    /** Whether the branch record supplies the value when no set defines it (D46). */
+    public function hasBranchFallback(): bool
+    {
+        return false;
     }
 
     /** A value taken from the branch record when no policy set defines the key (D46). */

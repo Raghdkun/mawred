@@ -18,7 +18,7 @@ use Illuminate\Contracts\Database\Query\Builder;
 final readonly class ExportPolicyPreset
 {
     /**
-     * @return array<string, mixed>
+     * @return array{format: string, version: string, key: string|null, name: array<mixed>, description: array<mixed>, exportedAt: string, leaveTypes: array<int, array<string, mixed>>, values: array<string, array<string, mixed>>}
      */
     public function handle(PolicySet $set, string $date): array
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Policies\Actions;
 
-use App\Domain\Policies\Keys\PolicyKey;
 use App\Domain\Policies\Models\PolicySet;
 use App\Domain\Policies\Models\PolicyValue;
 use App\Domain\Policies\Support\PolicyEpoch;
@@ -13,7 +12,6 @@ use App\Support\Actors\Actor;
 use App\Support\Errors\DomainRuleViolation;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Validation\ValidationException;
 
 /**
  * Changes keys in a set from a date (ADR-0010): the row in force is closed the day before and a
@@ -29,7 +27,7 @@ final readonly class SetPolicyValues
     ) {}
 
     /**
-     * @param  array<string, array<string, mixed>|null>  $changes  key id => value (null = remove)
+     * @param  array<string, mixed>  $changes  key id => value (null = remove)
      */
     public function handle(Actor $actor, PolicySet $set, array $changes, string $effectiveFrom, ?string $reason = null): void
     {
@@ -39,36 +37,7 @@ final readonly class SetPolicyValues
             throw new DomainRuleViolation('policies.backdate_reason', __('Changes that start in the past need a reason.'), ['reason' => [__('Changes that start in the past need a reason.')]]);
         }
 
-        $validated = [];
-        $errors = [];
-
-        foreach ($changes as $id => $value) {
-            $key = $this->keys->find($id);
-
-            if (! $key instanceof PolicyKey) {
-                $errors["values.{$id}"] = [__('Unknown policy key.')];
-
-                continue;
-            }
-
-            if ($value === null) {
-                $validated[$id] = null;
-
-                continue;
-            }
-
-            try {
-                $validated[$id] = $key->serialize($key->validate($value));
-            } catch (ValidationException $e) {
-                foreach ($e->errors() as $field => $messages) {
-                    $errors["values.{$id}.{$field}"] = array_values(array_filter((array) $messages, is_string(...)));
-                }
-            }
-        }
-
-        if ($errors !== []) {
-            throw new DomainRuleViolation('policies.values_invalid', __('Some values need attention.'), $errors);
-        }
+        $validated = $this->keys->validate($changes);
 
         $this->db->transaction(function () use ($actor, $set, $validated, $effectiveFrom, $reason): void {
             foreach ($validated as $id => $value) {

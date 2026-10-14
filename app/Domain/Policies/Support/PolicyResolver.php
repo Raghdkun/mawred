@@ -6,9 +6,6 @@ namespace App\Domain\Policies\Support;
 
 use App\Domain\Organization\Models\Branch;
 use App\Domain\Organization\Models\Department;
-use App\Domain\Organization\Models\EmploymentType;
-use App\Domain\Organization\Models\Grade;
-use App\Domain\Organization\Models\Position;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeAssignment;
 use App\Domain\Policies\Data\ChainLinkData;
@@ -35,10 +32,11 @@ final class PolicyResolver
     /** @var array<int, Branch|null> */
     private array $branches = [];
 
-    /** @var array<string, string|null> */
-    private array $targetNames = [];
-
-    public function __construct(private readonly PolicyKeys $keys, private readonly PolicyEpoch $epoch) {}
+    public function __construct(
+        private readonly PolicyKeys $keys,
+        private readonly PolicyEpoch $epoch,
+        private readonly PolicyTargets $targets,
+    ) {}
 
     public function snapshot(string $date): PolicySnapshot
     {
@@ -224,27 +222,6 @@ final class PolicyResolver
 
     private function targetName(PolicyLevel $level, ?int $id): ?string
     {
-        if ($id === null) {
-            return null;
-        }
-
-        $cacheKey = $level->value.':'.$id.':'.app()->getLocale();
-
-        if (array_key_exists($cacheKey, $this->targetNames)) {
-            return $this->targetNames[$cacheKey];
-        }
-
-        $locale = app()->getLocale();
-        $name = match ($level) {
-            PolicyLevel::Branch => Branch::withTrashed()->find($id)?->getTranslation('name', $locale),
-            PolicyLevel::Department => Department::withTrashed()->find($id)?->getTranslation('name', $locale),
-            PolicyLevel::Position => Position::withTrashed()->find($id)?->getTranslation('title', $locale),
-            PolicyLevel::Grade => Grade::withTrashed()->find($id)?->getTranslation('name', $locale),
-            PolicyLevel::EmploymentType => EmploymentType::withTrashed()->find($id)?->getTranslation('name', $locale),
-            PolicyLevel::Employee => Employee::withTrashed()->find($id)?->displayName($locale),
-            PolicyLevel::Global => null,
-        };
-
-        return $this->targetNames[$cacheKey] = is_string($name) ? $name : null;
+        return $this->targets->name($level, $id);
     }
 }

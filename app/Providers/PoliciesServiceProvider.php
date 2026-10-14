@@ -8,6 +8,7 @@ use App\Domain\Policies\Support\BranchHolidays;
 use App\Domain\Policies\Support\PolicyEpoch;
 use App\Domain\Policies\Support\PolicyKeys;
 use App\Domain\Policies\Support\PolicyResolver;
+use App\Domain\Policies\Support\PolicyTargets;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -21,5 +22,6 @@ final class PoliciesServiceProvider extends ServiceProvider
         $this->app->scoped(PolicyKeys::class);
         $this->app->scoped(PolicyResolver::class);
         $this->app->scoped(BranchHolidays::class);
+        $this->app->scoped(PolicyTargets::class);
     }
 }

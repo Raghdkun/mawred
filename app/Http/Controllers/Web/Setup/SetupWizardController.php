@@ -9,6 +9,12 @@ use App\Domain\Organization\Actions\SaveBranch;
 use App\Domain\Organization\Data\BranchData;
 use App\Domain\Organization\Data\BranchInputData;
 use App\Domain\Organization\Models\Branch;
+use App\Domain\Policies\Actions\ExportPolicyPreset;
+use App\Domain\Policies\Actions\InstallHolidayPreset;
+use App\Domain\Policies\Models\HolidayCalendar;
+use App\Domain\Policies\Models\PolicySet;
+use App\Domain\Policies\Support\HolidayPresets;
+use App\Domain\Policies\Support\PolicyPresets;
 use App\Domain\Setup\Actions\CompleteSetupStep;
 use App\Domain\Setup\Actions\FinishSetup;
 use App\Domain\Setup\Actions\SaveCompanyProfile;
@@ -21,6 +27,7 @@ use App\Domain\Setup\Support\SetupState;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\SetLocale;
 use App\Support\Actors\Actor;
+use Carbon\CarbonImmutable;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -66,6 +73,7 @@ final class SetupWizardController extends Controller
                 'email' => $user->email,
                 'twoFactorEnabled' => $user->two_factor_confirmed_at !== null,
             ],
+            'policies' => $this->policySummary(),
             'complete' => $state->isComplete(),
             'steps' => array_map(fn (SetupStep $s): array => [
                 'key' => $s->value,
@@ -133,6 +141,25 @@ final class SetupWizardController extends Controller
         return to_route('setup.show', ['step' => $state->current()->value]);
     }
 
+    /**
+     * Step 5: the neutral default policies are already in force; HR reviews them here and can add a
+     * ready-made holiday calendar for the first branch.
+     */
+    public function savePolicies(Request $request, #[CurrentUser] User $user, InstallHolidayPreset $install, CompleteSetupStep $complete, SetupState $state): RedirectResponse
+    {
+        Gate::authorize('setup.configure');
+        $request->validate(['holidayPreset' => ['nullable', Rule::in(array_keys(HolidayPresets::all()))]]);
+
+        if ($request->filled('holidayPreset')) {
+            $branch = $this->firstBranch();
+            $install->handle(Actor::user($user), $request->string('holidayPreset')->toString(), $branch instanceof Branch ? [$branch->ulid] : []);
+        }
+
+        $complete->handle(Actor::user($user), SetupStep::Policies);
+
+        return to_route('setup.show', ['step' => $state->current()->value]);
+    }
+
     public function complete(SetupStep $step, #[CurrentUser] User $user, CompleteSetupStep $complete, SetupState $state): RedirectResponse
     {
         Gate::authorize('setup.configure');
@@ -158,6 +185,27 @@ final class SetupWizardController extends Controller
         $finish->handle(Actor::user($user));
 
         return to_route('setup.show', ['step' => SetupStep::Review->value]);
+    }
+
+    /**
+     * @return array{values: array<string, mixed>, holidayPresets: list<array{key: string, name: array{en: string, ar: string}, installed: bool}>}
+     */
+    private function policySummary(): array
+    {
+        $neutral = PolicySet::query()->where('preset_key', PolicyPresets::NEUTRAL_KEY)->first();
+        $values = $neutral instanceof PolicySet
+            ? resolve(ExportPolicyPreset::class)->handle($neutral, CarbonImmutable::now('UTC')->toDateString())['values']
+            : [];
+        $installed = HolidayCalendar::query()->whereNotNull('preset_key')->pluck('preset_key')->all();
+
+        return [
+            'values' => array_intersect_key($values, array_flip(['leave.type.ANNUAL', 'overtime.rules', 'attendance.grace', 'employment.probation'])),
+            'holidayPresets' => array_map(fn (string $key, array $preset): array => [
+                'key' => $key,
+                'name' => $preset['name'],
+                'installed' => in_array($key, $installed, true),
+            ], array_keys(HolidayPresets::all()), array_values(HolidayPresets::all())),
+        ];
     }
 
     private function firstBranch(): ?Branch

@@ -471,6 +471,19 @@ value: Record<string, any>,
 effectiveFrom: string | null,
 wins: boolean,
 };
+export type HolidayCalendarData = {
+id: string,
+code: string,
+name: Record<string, string>,
+countryCode: string | null,
+presetKey: string | null,
+isActive: boolean,
+branches: {
+id: string,
+name: Record<string, string>,
+}[],
+rules: App.Domain.Policies.Data.HolidayRuleData[],
+};
 export type HolidayCalendarInputData = {
 code: string,
 name: {
@@ -480,6 +493,30 @@ ar?: string | null,
 countryCode: string | null,
 isActive: boolean,
 branchIds: string[],
+};
+export type HolidayDayData = {
+ruleId: string,
+name: Record<string, string>,
+date: string,
+observedOn: string,
+hijriBased: boolean,
+day: number,
+days: number,
+};
+export type HolidayRuleData = {
+id: string,
+name: Record<string, string>,
+type: string,
+month: number | null,
+day: number | null,
+weekday: number | null,
+nth: number | null,
+date: string | null,
+durationDays: number,
+observed: string,
+hijriBased: boolean,
+fromYear: number | null,
+toYear: number | null,
 };
 export type HolidayRuleInputData = {
 name: {
@@ -519,6 +556,18 @@ nameEn: string,
 nameAr: string | null,
 changes: App.Domain.Policies.Data.ImpactChangeData[],
 };
+export type LeaveTypeData = {
+id: string,
+code: string,
+name: Record<string, string>,
+unit: string,
+isPaid: boolean,
+allowsHalfDays: boolean,
+eligibleGender: string | null,
+requiresAttachment: boolean,
+sortOrder: number,
+isActive: boolean,
+};
 export type LeaveTypeInputData = {
 code: string,
 name: {
@@ -532,6 +581,45 @@ eligibleGender: string | null,
 requiresAttachment: boolean,
 sortOrder: number,
 isActive: boolean,
+};
+export type PolicyAssignmentData = {
+id: string,
+level: string,
+targetId: string | null,
+targetName: string | null,
+setId: string,
+setName: Record<string, string>,
+effectiveFrom: string,
+effectiveTo: string | null,
+reason: string | null,
+};
+export type PolicyKeyData = {
+id: string,
+section: string,
+editor: string,
+default: Record<string, any>,
+branchFallback: boolean,
+affects: string[],
+leaveType: App.Domain.Policies.Data.LeaveTypeData | null,
+};
+export type PolicySetData = {
+id: string,
+name: Record<string, string>,
+description: Record<string, string>,
+presetKey: string | null,
+presetVersion: string | null,
+keysCount: number,
+lastChangeOn: string | null,
+assignments: App.Domain.Policies.Data.PolicyAssignmentData[],
+};
+export type PolicySetValueData = {
+key: string,
+value: Record<string, any> | null,
+effectiveFrom: string | null,
+scheduled: {
+value: Record<string, any> | null,
+effectiveFrom: string,
+}[],
 };
 export type ResolvedValueData = {
 key: string,

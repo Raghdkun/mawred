@@ -36,6 +36,11 @@ final class WorkHoursKey extends PolicyKey
         return ['scheduling', 'attendance', 'overtime'];
     }
 
+    public function hasBranchFallback(): bool
+    {
+        return true;
+    }
+
     public function branchFallback(Branch $branch): WorkHoursValue
     {
         return new WorkHoursValue(substr($branch->work_starts_at, 0, 5), substr($branch->work_ends_at, 0, 5), 60);

@@ -36,6 +36,11 @@ final class WeekendKey extends PolicyKey
         return ['leave', 'scheduling', 'attendance'];
     }
 
+    public function hasBranchFallback(): bool
+    {
+        return true;
+    }
+
     public function branchFallback(Branch $branch): WeekendValue
     {
         return new WeekendValue(array_map(intval(...), $branch->weekend_days));

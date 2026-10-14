@@ -417,5 +417,19 @@
     "Unknown holiday preset.": "قالب عطلات غير معروف.",
     "The file needs at least the columns date and name_en.": "يحتاج الملف على الأقل إلى العمودين date و name_en.",
     "Import up to :count dates at a time.": "استورد حتى :count تاريخ في المرة الواحدة.",
-    "Some rows need attention. Nothing was imported.": "بعض الصفوف تحتاج إلى مراجعة. لم يُستورد أي شيء."
+    "Some rows need attention. Nothing was imported.": "بعض الصفوف تحتاج إلى مراجعة. لم يُستورد أي شيء.",
+    "Leave type saved.": "حُفظ نوع الإجازة.",
+    "Leave type archived.": "أُرشف نوع الإجازة.",
+    "Holiday calendar saved.": "حُفظ تقويم العطلات.",
+    "Holiday calendar archived.": "أُرشف تقويم العطلات.",
+    "Holiday saved.": "حُفظت العطلة.",
+    "Holiday removed.": "أُزيلت العطلة.",
+    "Imported :imported holidays, skipped :skipped already there.": "استُوردت :imported عطلة، وتُخطّيت :skipped موجودة مسبقًا.",
+    "Choose a policy set.": "اختر مجموعة سياسات.",
+    "Policy set assigned.": "أُسندت مجموعة السياسات.",
+    "Assignment ended.": "انتهى الإسناد.",
+    "Policy set saved.": "حُفظت مجموعة السياسات.",
+    "Policy values saved.": "حُفظت قيم السياسات.",
+    "Policy set archived.": "أُرشفت مجموعة السياسات.",
+    "Preset imported.": "استُورد القالب."
 }

@@ -27,7 +27,7 @@ final readonly class ImportPolicyPreset
     ) {}
 
     /**
-     * @param  array<string, mixed>  $preset
+     * @param  array<mixed>  $preset  decoded from an uploaded file, so its shape is checked here
      */
     public function handle(Actor $actor, array $preset, string $effectiveFrom): PolicySet
     {
