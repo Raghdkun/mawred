@@ -794,6 +794,8 @@ overdue: boolean,
 delegatedFrom: string | null,
 decisions: string[],
 request: App.Domain.Requests.Data.RequestRowData | null,
+about: string | null,
+instructions: string | null,
 };
 export type TimelineEntryData = {
 event: string,

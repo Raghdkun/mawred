@@ -251,6 +251,7 @@ function TaskCard({
                             : localized(task.step, locale)}
                     </Link>
                     <span className="truncate text-caption text-muted-foreground">
+                        {task.request ? null : task.about}
                         {task.request?.requester}
                         {task.request ? (
                             <>
@@ -322,6 +323,10 @@ function ApprovalCard({ task, detail }: { task: Task; detail: RequestDetail | nu
                                     })}
                                 </bdi>
                             </p>
+                        ) : task.about ? (
+                            <p className="text-small text-text-secondary">
+                                <bdi>{task.about}</bdi>
+                            </p>
                         ) : null}
                     </div>
                     <div className="flex items-center gap-2">
@@ -343,6 +348,12 @@ function ApprovalCard({ task, detail }: { task: Task; detail: RequestDetail | nu
                             [t('inbox.step'), localized(task.step, locale) || '—'],
                         ]}
                     />
+                ) : null}
+
+                {task.instructions ? (
+                    <p className="mb-4 rounded-md bg-muted p-3 text-small whitespace-pre-line text-foreground">
+                        {task.instructions}
+                    </p>
                 ) : null}
 
                 {detail ? (

@@ -25,5 +25,7 @@ final class TaskData extends Data
         public ?string $delegatedFrom,
         public array $decisions,
         public ?RequestRowData $request,
+        public ?string $about = null,
+        public ?string $instructions = null,
     ) {}
 }

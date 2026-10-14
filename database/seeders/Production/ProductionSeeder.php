@@ -9,21 +9,23 @@ use App\Domain\Organization\Actions\SeedOrganizationDefaults;
 use App\Domain\People\Actions\SeedPeopleDefaults;
 use App\Domain\Policies\Actions\SeedPolicyDefaults;
 use App\Domain\Requests\Actions\SeedRequestTypes;
+use App\Domain\Workflows\Actions\SeedChecklists;
 use Illuminate\Database\Seeder;
 
 /**
  * Production seed (brief §21): roles and permissions, default employment types, document types,
  * leave types, the Neutral default policy set and the seeded request types with their forms and
- * workflows (D55, D56). Idempotent.
+ * workflows (D55, D56), and the onboarding/offboarding checklists. Idempotent.
  */
 final class ProductionSeeder extends Seeder
 {
-    public function run(SeedDefaultRoles $roles, SeedOrganizationDefaults $organization, SeedPeopleDefaults $people, SeedPolicyDefaults $policies, SeedRequestTypes $requestTypes): void
+    public function run(SeedDefaultRoles $roles, SeedOrganizationDefaults $organization, SeedPeopleDefaults $people, SeedPolicyDefaults $policies, SeedRequestTypes $requestTypes, SeedChecklists $checklists): void
     {
         $roles->handle();
         $organization->handle();
         $people->handle();
         $policies->handle();
         $requestTypes->handle();
+        $checklists->handle();
     }
 }

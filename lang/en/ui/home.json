@@ -14,5 +14,24 @@
         "title": "Protect your account",
         "description": "Turn on two-factor authentication in Security settings."
     },
-    "shortcuts": "Shortcuts"
+    "shortcuts": "Shortcuts",
+    "quick": {
+        "title": "Quick requests",
+        "all": "All request types"
+    },
+    "myRequests": {
+        "title": "My requests",
+        "all": "See all",
+        "empty": "Nothing in progress. Requests you send show up here."
+    },
+    "approvals": {
+        "title": "Waiting for your approval",
+        "all": "Open inbox",
+        "empty": "You're all caught up.",
+        "kpis": {
+            "open": "Waiting",
+            "overdue": "Overdue",
+            "decided": "Decided this week"
+        }
+    }
 }

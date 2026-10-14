@@ -553,5 +553,7 @@
     "Retrying the step.": "تُعاد محاولة الخطوة.",
     "Step skipped.": "تم تخطي الخطوة.",
     "Workflow cancelled.": "أُلغي مسار العمل.",
-    "New approvals will go to :name on those dates.": "ستذهب الموافقات الجديدة إلى :name في تلك التواريخ."
+    "New approvals will go to :name on those dates.": "ستذهب الموافقات الجديدة إلى :name في تلك التواريخ.",
+    "That code is already used.": "هذا الرمز مستخدم بالفعل.",
+    "Request type saved.": "حُفظ نوع الطلب."
 }

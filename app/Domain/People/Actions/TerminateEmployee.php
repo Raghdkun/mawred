@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\People\Actions;
 
 use App\Domain\People\Enums\HistoryEvent;
+use App\Domain\People\Events\EmployeeTerminated;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Support\History;
 use App\Support\Actors\Actor;
@@ -35,6 +36,7 @@ final readonly class TerminateEmployee
 
             $employee->forceFill(['termination_date' => $lastDay, 'termination_reason' => trim($reason)])->save();
             History::record($actor, $employee, HistoryEvent::Terminated, $lastDay, [], trim($reason));
+            event(new EmployeeTerminated($employee, $actor));
 
             return $this->sync->handle($employee->refresh());
         });

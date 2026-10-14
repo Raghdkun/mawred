@@ -3,10 +3,13 @@
 declare(strict_types=1);
 
 use App\Domain\Organization\Models\Branch;
+use App\Domain\People\Actions\HireEmployee;
+use App\Domain\People\Data\HireEmployeeData;
 use App\Domain\People\Models\Employee;
 use App\Domain\Requests\Actions\SeedRequestTypes;
 use App\Domain\Requests\Actions\SubmitRequest;
 use App\Domain\Requests\Models\RequestType;
+use App\Domain\Workflows\Actions\SeedChecklists;
 use App\Domain\Workflows\Engine\RecordUpdate;
 use App\Domain\Workflows\Engine\RecordUpdates;
 use App\Domain\Workflows\Engine\StepContext;
@@ -20,6 +23,7 @@ use App\Domain\Workflows\Models\WorkflowStep;
 use App\Domain\Workflows\Models\WorkflowTask;
 use App\Domain\Workflows\Models\WorkflowVersion;
 use App\Support\Actors\Actor;
+use App\Support\Actors\Channel;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Testing\AssertableInertia;
 
@@ -156,4 +160,28 @@ it('routes new approvals to a delegate while the approver is away', function ():
     $this->actingAs($peer)->delete(route('delegations.destroy', Delegation::query()->sole()))->assertNotFound();
     $this->actingAs($managerUser)->delete(route('delegations.destroy', Delegation::query()->sole()))->assertRedirect();
     expect(Delegation::query()->count())->toBe(0);
+});
+
+it('starts the onboarding checklist for a hire made by hand, but not for imports', function (): void {
+    resolve(SeedChecklists::class)->handle();
+    $branch = Branch::factory()->riyadh()->create();
+    $managerUser = userWithRoles('employee');
+    $manager = Employee::factory()->placedIn($branch)->create(['user_id' => $managerUser->id]);
+    $hire = fn (Channel $channel): Employee => resolve(HireEmployee::class)->handle(
+        Actor::user($this->admin, $channel),
+        HireEmployeeData::from(['nameEn' => 'New Person', 'hireDate' => now()->toDateString(), 'placement' => ['branchId' => $branch->ulid, 'managerId' => $manager->ulid]]),
+    );
+
+    $hire(Channel::Import);
+    expect(WorkflowInstance::query()->count())->toBe(0);
+
+    $newcomer = $hire(Channel::Web);
+    $instance = WorkflowInstance::query()->sole();
+
+    expect($instance->subject_id)->toBe($newcomer->id)
+        ->and(WorkflowTask::query()->where('workflow_instance_id', $instance->id)->count())->toBe(3)
+        ->and(WorkflowTask::query()->where('workflow_instance_id', $instance->id)->where('assignee_user_id', $managerUser->id)->exists())->toBeTrue();
+
+    $this->actingAs($managerUser)->get(route('approvals.index'))
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('selected.about', 'New Person')->where('selected.decisions', ['done']));
 });

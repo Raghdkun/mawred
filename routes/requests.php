@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\Requests\ApprovalsController;
 use App\Http\Controllers\Web\Requests\DelegationsController;
 use App\Http\Controllers\Web\Requests\MyRequestsController;
 use App\Http\Controllers\Web\Requests\RequestCenterController;
+use App\Http\Controllers\Web\Requests\RequestTypesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 | scoped HR, or anyone with a task on it); out-of-scope records answer 404.
 */
 Route::middleware(['auth', 'verified'])->group(function (): void {
+    Route::get('request-types', [RequestTypesController::class, 'index'])->name('request-types.index');
+    Route::post('request-types', [RequestTypesController::class, 'store'])->name('request-types.store');
+    Route::put('request-types/{type}', [RequestTypesController::class, 'update'])->name('request-types.update');
+
     Route::get('requests', [MyRequestsController::class, 'index'])->name('requests.index');
     Route::get('requests/new', [RequestCenterController::class, 'index'])->name('requests.center');
     Route::get('requests/new/{type}', [RequestCenterController::class, 'create'])->name('requests.create');

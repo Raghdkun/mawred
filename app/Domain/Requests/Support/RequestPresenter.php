@@ -113,6 +113,8 @@ final class RequestPresenter
             delegatedFrom: $task->delegated_from_user_id === null ? null : $this->name($task->delegated_from_user_id),
             decisions: $task->assignee_user_id === $viewer->id && $task->status === TaskStatus::Open ? $decisions : [],
             request: $request instanceof EmployeeRequest ? RequestRowData::fromRequest($request) : null,
+            about: $instance->subject_type === Employee::class && $instance->subject_id !== null ? Employee::withTrashed()->find($instance->subject_id)?->displayName(app()->getLocale()) : null,
+            instructions: ($this->labels($config['instructions'] ?? null)[app()->getLocale()] ?? null) ?: ($this->labels($config['instructions'] ?? null)['en'] ?? null),
         );
     }
 

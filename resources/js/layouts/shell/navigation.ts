@@ -8,6 +8,7 @@ import people from '@/routes/people';
 import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
 import notifications from '@/routes/notifications';
+import requestTypes from '@/routes/request-types';
 import requests from '@/routes/requests';
 import workflowRoutes from '@/routes/workflows';
 import profile from '@/routes/profile';
@@ -110,6 +111,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: 'forms',
                     permission: 'forms.view',
                     match: ['/forms'],
+                },
+                {
+                    key: 'request-types',
+                    label: 'nav.requestTypes',
+                    href: requestTypes.index(),
+                    icon: 'requests',
+                    permission: 'requests.configure',
+                    match: ['/request-types'],
                 },
                 {
                     key: 'workflows',

@@ -155,3 +155,31 @@ it('lets the requester withdraw over HTTP, but nobody else', function (): void {
 
     expect($request->fresh()?->status)->toBe(RequestStatus::Cancelled);
 });
+
+it('lets HR admins add and edit request types', function (): void {
+    $admin = userWithRoles('hr_admin');
+    $admin->forceFill(['two_factor_secret' => encrypt('s'), 'two_factor_confirmed_at' => now()])->save();
+    $trip = RequestType::query()->where('code', 'BUSINESS_TRIP')->with(['form', 'workflow'])->sole();
+    $input = ['code' => 'visa_letter', 'name' => ['en' => 'Visa letter', 'ar' => 'خطاب تأشيرة'], 'description' => ['en' => null, 'ar' => null], 'category' => 'documents', 'icon' => 'certificates',
+        'isSensitive' => false, 'isActive' => true, 'sortOrder' => 200, 'formId' => $trip->form?->ulid, 'workflowId' => $trip->workflow?->ulid];
+
+    $this->actingAs($this->requesterUser)->get(route('request-types.index'))->assertForbidden();
+    $this->actingAs($admin)->get(route('request-types.index'))->assertOk()->assertInertia(fn (AssertableInertia $page) => $page->has('types', 15)->has('workflows', 15));
+
+    $this->actingAs($admin)->post(route('request-types.store'), $input)->assertRedirect();
+    $this->actingAs($admin)->post(route('request-types.store'), $input)->assertSessionHasErrors('code');
+
+    $visa = RequestType::query()->where('code', 'VISA_LETTER')->sole();
+    $this->actingAs($admin)->put(route('request-types.update', $visa), [...$input, 'code' => 'ignored', 'isActive' => false])->assertRedirect();
+
+    expect($visa->fresh())->code->toBe('VISA_LETTER')->is_active->toBeFalse();
+});
+
+it('shows my requests, quick requests and the approvals queue on home', function (): void {
+    httpSend($this);
+
+    $this->actingAs($this->requesterUser)->get(route('dashboard'))->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page->component('home/index')->where('layout', 'employee')->has('myRequests', 1)->has('quickTypes', 6)->where('approvals', null));
+    $this->actingAs($this->managerUser)->get(route('dashboard'))->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('approvals.open', 1)->has('approvals.tasks', 1));
+});

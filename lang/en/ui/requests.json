@@ -190,5 +190,32 @@
         "upcoming": "Upcoming",
         "end": "End now",
         "link": "Away?"
+    },
+    "types": {
+        "pageTitle": "Request types",
+        "title": "Request types",
+        "description": "What people can ask for, and the form and workflow behind each one.",
+        "new": "New request type",
+        "empty": "No request types yet",
+        "inactive": "Off",
+        "later": "Arrives in phase {phase}",
+        "notReady": "Form or workflow not published",
+        "live": "Live",
+        "private": "Private",
+        "form": "Form",
+        "workflow": "Workflow",
+        "edit": "Edit {name}",
+        "unpublished": "not published",
+        "code": "Code",
+        "name": "Name",
+        "descriptionEn": "Description (English)",
+        "descriptionAr": "Description (Arabic)",
+        "category": "Category",
+        "icon": "Icon",
+        "isActive": "Available to people",
+        "isActiveHelp": "Turn off to hide it from the request center without deleting anything.",
+        "isSensitive": "Private request",
+        "isSensitiveHelp": "Only the requester, approvers and HR can open it; email approval links need sign-in.",
+        "save": "Save"
     }
 }
