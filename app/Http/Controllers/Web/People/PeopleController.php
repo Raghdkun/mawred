@@ -149,6 +149,7 @@ final class PeopleController extends Controller
                 'update' => $canUpdate,
                 'terminate' => $canUpdate && $employee->status !== EmployeeStatus::Terminated,
                 'invite' => $canUpdate && $employee->user_id === null,
+                'policies' => Gate::allows('policies.view'),
                 'salary' => [
                     'read' => $canSeeSalary,
                     'write' => $canUpdate && $resolver->fieldAccess($viewer, 'employee.salary')?->value === 'write',

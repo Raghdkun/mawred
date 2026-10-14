@@ -1,6 +1,7 @@
+import type { FormDataConvertible } from '@inertiajs/core';
 import { Link, router, useForm } from '@inertiajs/react';
 import { ImageUp, ShieldCheck, ShieldAlert, Trash2 } from 'lucide-react';
-import { type DragEvent, type FormEvent, useEffect, useRef, useState } from 'react';
+import { type DragEvent, type FormEvent, Fragment, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BranchForm } from '@/features/organization/branch-form';
 import { Illustration } from '@/components/mw/illustration';
@@ -11,6 +12,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { summarize } from '@/features/policies/values';
+import { useLocale } from '@/hooks/use-locale';
+import { localized } from '@/lib/localized';
 import { cn } from '@/lib/utils';
 import security from '@/routes/security';
 import setup from '@/routes/setup';
@@ -341,6 +346,82 @@ export function BranchStep({ branch }: { branch: App.Domain.Organization.Data.Br
                     )
                 }
             />
+        </div>
+    );
+}
+
+export type PolicySummary = {
+    values: Record<string, Record<string, FormDataConvertible>>;
+    holidayPresets: Array<{ key: string; name: Record<string, string>; installed: boolean }>;
+};
+
+const SUMMARY_KEYS = [
+    ['leave.type.ANNUAL', 'leave_rule', 'annual'],
+    ['overtime.rules', 'overtime', 'overtime'],
+    ['attendance.grace', 'grace', 'grace'],
+    ['employment.probation', 'probation', 'probation'],
+] as const;
+
+/** Step 5: the neutral default rules are already in force; review them and optionally add holidays. */
+export function PoliciesStep({ policies }: { policies: PolicySummary }) {
+    const { t } = useTranslation('policies');
+    const { locale } = useLocale();
+    const available = policies.holidayPresets.filter((preset) => !preset.installed);
+    const form = useForm<{ holidayPreset: string | null }>({ holidayPreset: null });
+
+    return (
+        <div className="flex max-w-[640px] flex-col gap-6">
+            <StepHeading title={t('setup.title')} description={t('setup.description')} />
+            <section aria-labelledby="policy-review" className="rounded-lg bg-card p-5 shadow-sm">
+                <h3 id="policy-review" className="mb-3 text-body font-semibold">
+                    {t('setup.review')}
+                </h3>
+                <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 gap-y-2 text-sm">
+                    {SUMMARY_KEYS.map(([key, editor, label]) => (
+                        <Fragment key={key}>
+                            <dt className="text-muted-foreground">{t(`setup.${label}`)}</dt>
+                            <dd className="font-medium">
+                                {summarize(editor, policies.values[key] ?? null, t, locale)}
+                            </dd>
+                        </Fragment>
+                    ))}
+                </dl>
+            </section>
+            {available.length > 0 ? (
+                <div className="flex flex-col gap-1.5">
+                    <span id="holiday-preset-label" className="text-sm font-medium">
+                        {t('setup.holidays')}
+                    </span>
+                    <ToggleGroup
+                        type="single"
+                        variant="outline"
+                        aria-labelledby="holiday-preset-label"
+                        value={form.data.holidayPreset ?? 'none'}
+                        onValueChange={(value) =>
+                            value && form.setData('holidayPreset', value === 'none' ? null : value)
+                        }
+                        className="flex-wrap justify-start"
+                    >
+                        <ToggleGroupItem value="none" className="px-3">
+                            {t('setup.noHolidays')}
+                        </ToggleGroupItem>
+                        {available.map((preset) => (
+                            <ToggleGroupItem key={preset.key} value={preset.key} className="px-3">
+                                {localized(preset.name, locale)}
+                            </ToggleGroupItem>
+                        ))}
+                    </ToggleGroup>
+                </div>
+            ) : null}
+            <p className="text-small text-text-secondary">{t('setup.later')}</p>
+            <Button
+                size="lg"
+                className="self-start"
+                loading={form.processing}
+                onClick={() => form.post(setup.steps.policies.url())}
+            >
+                {t('setup.continue')}
+            </Button>
         </div>
     );
 }

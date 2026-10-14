@@ -10,10 +10,12 @@ use App\Domain\Organization\Support\OrganizationOptions;
 use App\Domain\Policies\Actions\AssignPolicySet;
 use App\Domain\Policies\Actions\EndPolicyAssignment;
 use App\Domain\Policies\Data\PolicyAssignmentData;
+use App\Domain\Policies\Data\PolicyKeyData;
 use App\Domain\Policies\Enums\PolicyLevel;
 use App\Domain\Policies\Models\PolicyAssignment;
 use App\Domain\Policies\Models\PolicySet;
 use App\Domain\Policies\Support\PolicyImpact;
+use App\Domain\Policies\Support\PolicyKeys;
 use App\Domain\Policies\Support\PolicyTargets;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
@@ -34,7 +36,7 @@ use Inertia\Response;
  */
 final class PolicyAssignmentsController extends Controller
 {
-    public function index(PolicyTargets $targets): Response
+    public function index(PolicyTargets $targets, PolicyKeys $keys): Response
     {
         Gate::authorize('policies.view');
 
@@ -49,6 +51,7 @@ final class PolicyAssignmentsController extends Controller
             'today' => $today,
             // General to specific; the UI draws grade and employment type in one card (D30).
             'levels' => array_map(fn (PolicyLevel $level): string => $level->value, PolicyLevel::cases()),
+            'keys' => array_values(array_map(PolicyKeyData::fromKey(...), $keys->all())),
             'assignments' => array_values($assignments->map(fn (PolicyAssignment $a): PolicyAssignmentData => PolicyAssignmentData::fromAssignment($a, $targets))->all()),
             'sets' => PolicySet::query()->orderByRaw("name->>'en'")->get()->map(fn (PolicySet $set): array => ['id' => $set->ulid, 'name' => $set->getTranslations('name')]),
             'options' => [

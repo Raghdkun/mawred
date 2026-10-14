@@ -27,6 +27,7 @@ export type ProfileProps = {
         update: boolean;
         terminate: boolean;
         invite: boolean;
+        policies: boolean;
         salary: { read: boolean; write: boolean };
     };
 };

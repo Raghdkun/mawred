@@ -46,7 +46,8 @@
 - Demo seeder (org + ~120 people), performance seeder (50 branches / 5,000 employees).
 - **Exit**: employee list < 300 ms on the performance seed; scope-leak tests across all six scopes; import of 10k rows passes in CI-sized form.
 
-## Phase 2 — Policy engine (M–L)
+## Phase 2 — Policy engine (M–L) ✅ built, pending CI on GitHub (Actions account issue) and owner review
+> Demo: [docs/demos/phase-2.md](demos/phase-2.md). Decisions: D46 (branch work week is the default), D47 (shared holiday calendars), D48 (leave type catalogue now), D49 (neutral default values), D50 (calculator semantics). Balance deltas in the impact preview arrive with leave ledgers in Phase 5.
 - Key registry, policy sets, layered assignments, effective dating, resolver + explainer UI.
 - Holiday calendars (`fixed`, `nth_weekday`, `one_off`, observed-date shifting, CSV, Hijri display only). Presets: import/export, the neutral default, and the US Federal holiday preset (D12). Setup wizard step 5.
 - Calculators (accrual, overtime, attendance metrics) as pure functions, plus the recalculation and impact-preview framework (wired to the ledgers in Phase 5).

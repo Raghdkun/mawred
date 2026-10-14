@@ -147,7 +147,8 @@
             "job": "الوظيفة",
             "personal": "شخصي",
             "documents": "المستندات",
-            "history": "السجل"
+            "history": "السجل",
+            "policies": "السياسات السارية"
         }
     },
     "terminate": {

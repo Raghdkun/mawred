@@ -19,11 +19,12 @@ const BASE_NAMESPACES = ['common', 'shell', 'errors'];
 /** Page-name prefix → extra namespace, e.g. `setup/wizard` → `setup`. */
 const PAGE_NAMESPACES: Record<string, string[]> = {
     auth: ['auth'],
-    setup: ['setup', 'auth', 'settings', 'organization'],
+    setup: ['setup', 'auth', 'settings', 'organization', 'policies'],
     settings: ['settings', 'auth'],
     access: ['access'],
     organization: ['organization'],
-    people: ['people', 'organization', 'imports'],
+    people: ['people', 'organization', 'imports', 'policies'],
+    policies: ['policies', 'organization'],
     audit: ['audit'],
     notifications: ['notifications'],
     dashboard: ['home'],

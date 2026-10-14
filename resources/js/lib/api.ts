@@ -70,3 +70,51 @@ export type CursorPage<T> = {
     data: T[];
     meta: { next_cursor: string | null; prev_cursor: string | null; per_page: number };
 };
+
+/**
+ * JSON POST to one of the app's own web routes (e.g. a change preview), with the same CSRF
+ * cookie. Laravel 422s (`{ message, errors }`) and the API envelope both become an ApiError.
+ */
+export async function postJson<T>(url: string, body: unknown): Promise<T> {
+    const headers = new Headers({
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept-Language': document.documentElement.lang || 'en',
+    });
+
+    const token = xsrfToken();
+    if (token) {
+        headers.set('X-XSRF-TOKEN', token);
+    }
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+        credentials: 'same-origin',
+    });
+
+    if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as {
+            message?: string;
+            errors?: Record<string, string[]>;
+            error?: {
+                code?: string;
+                message?: string;
+                details?: Record<string, string[]>;
+                trace_id?: string;
+            };
+        } | null;
+
+        throw new ApiError(
+            response.status,
+            payload?.error?.code ?? (response.status === 422 ? 'validation_failed' : 'http_error'),
+            payload?.error?.message ?? payload?.message ?? response.statusText,
+            payload?.error?.details ?? payload?.errors ?? {},
+            payload?.error?.trace_id ?? null,
+        );
+    }
+
+    return (await response.json()) as T;
+}
