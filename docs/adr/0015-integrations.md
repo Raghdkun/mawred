@@ -4,6 +4,7 @@
 - Date: 2026-10-13
 
 ## Credential vault
+- Phase 3b ships the `integration_connections` table, encrypted credentials and the runtime `mawred` mailer for setup step 7 (email). Phase 4 adds the other connection types, health checks, the hub and `mawred:reencrypt`.
 - `integration_connections (ulid, type, name, config jsonb, credentials text encrypted:array, status, last_success_at, last_failure_at, last_error, health_checked_at)`.
 - Data objects return masked credentials (`••••last4`). Updates replace fields and never echo values back.
 - Every change and rotation is audited (who, what key, but never the value).

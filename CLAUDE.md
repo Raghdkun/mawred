@@ -115,6 +115,14 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Fresh test schemas drop hundreds of partition tables at once: Postgres needs `max_locks_per_transaction=256` (compose.yaml and CI).
 - react-hook-form: read live values with `useWatch`, not `form.watch()` (the React Compiler lint rejects it).
 
+## Gotchas learned in Phase 3b
+- Workflow follow-ups (next steps, sub-workflow children, parent wake-ups) dispatch **after** the instance lock is released; with the sync queue anything dispatched inside the lock deadlocks.
+- `current()`, `decide()` and other short helper names in Pest files are global: they collide with PHP builtins or other test files. Prefix them.
+- `Mail::later()` on the fake drops the delay; set `->delay()` on the mailable and `queue()` it so tests can assert it.
+- The runtime `mawred` mailer is built from the vault on first use of the mail manager; tests turn it off with `MAIL_RUNTIME_CONFIG=false`. Type against `MailManager` only after an `instanceof` check (`Mail::fake()` swaps in `MailFake`).
+- Text clicks in Pest browser tests match the first element containing the text ("Approve" also matches "Approvals"); target buttons with a `data-*` attribute.
+- Domain `Queries\*` must extend `ScopedQuery` (arch test); deliberately unscoped lookups belong in `Support`.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.
