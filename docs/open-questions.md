@@ -52,6 +52,10 @@ All questions below were answered by the product owner. Items still waiting on a
 | D43 | Saved views | Directory saved views and table column/density choices are kept **per browser** for now (query strings only, so scope still applies). Shared, server-side views can follow if teams ask. | People UI |
 | D44 | Document reminders | Expiry reminders are **in-app** in Phase 1 (employee, manager, in-scope HR, once per threshold). Email joins in Phase 3 and WhatsApp in Phase 4. | People, Notifications |
 | D45 | Name sorting | The directory sorts by the name in the **UI language**; in Arabic, people without an Arabic name sort by their English name (stored `name_ar_sort`). | People |
+| D46 | Work week source | **Branch = default, policy overrides.** Branch weekend and hours seed the value; a policy set can override them per department, position, grade, employment type or employee. The resolver falls back to the branch record. | Policies, Scheduling, Attendance |
+| D47 | Holiday calendars | **Shared calendars assigned to branches** (many-to-many): e.g. one "Saudi public holidays" calendar for 30 branches, plus optional branch-only calendars for extra days. | Policies, Leave, Attendance |
+| D48 | Leave types | **Catalogue ships in Phase 2** (name, unit days/hours, paid, eligibility) so per-type accrual, carry-over and expiry rules are configurable now; requests and balances use it in Phase 5. | Policies, Leave |
+| D49 | Default preset | The shipped "Neutral default" preset holds **conservative generic values** (e.g. 21 annual days accrued monthly, 1.5× weekday / 2× weekend and holiday overtime, 15-minute grace, 90-day probation), labelled for HR review and tied to no country's law. | Policies |
 
 ## Still open (non-blocking)
 - **GitHub Actions can't start on this account** (every run is `startup_failure`, even a one-step workflow). Likely billing or a spending limit for private repos. Owner to check Settings → Billing → Actions.

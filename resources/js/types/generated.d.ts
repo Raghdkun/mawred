@@ -460,6 +460,108 @@ export type ImportStatus = 'uploaded' | 'validating' | 'validated' | 'committing
 export type MaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';
 }
 }
+namespace Policies {
+namespace Data {
+export type ChainLinkData = {
+level: string,
+setId: string | null,
+setName: Record<string, string> | null,
+target: string | null,
+value: Record<string, any>,
+effectiveFrom: string | null,
+wins: boolean,
+};
+export type LeaveTypeInputData = {
+code: string,
+name: {
+en: string,
+ar?: string | null,
+},
+unit: string,
+isPaid: boolean,
+allowsHalfDays: boolean,
+eligibleGender: string | null,
+requiresAttachment: boolean,
+sortOrder: number,
+isActive: boolean,
+};
+export type ResolvedValueData = {
+key: string,
+section: string,
+value: Record<string, any>,
+level: string,
+setId: string | null,
+setName: Record<string, string> | null,
+effectiveFrom: string | null,
+chain: App.Domain.Policies.Data.ChainLinkData[],
+};
+namespace Values {
+export type GeofenceModeValue = {
+mode: string,
+};
+export type GraceValue = {
+lateMinutes: number,
+earlyLeaveMinutes: number,
+};
+export type HourlyPermissionValue = {
+minutesPerMonth: number,
+maxMinutesPerRequest: number,
+};
+export type LeaveRuleValue = {
+entitlement: number,
+accrual: string,
+proRata: string,
+rounding: string,
+maxBalance: number | null,
+carryOverMax: number | null,
+carryOverExpiresMonths: number | null,
+eligibleAfterDays: number,
+tenureSteps: {
+afterYears: number,
+entitlement: number,
+}[],
+};
+export type OvertimeValue = {
+enabled: boolean,
+dailyThresholdMinutes: number,
+weekday: number,
+weekend: number,
+holiday: number,
+night: number,
+nightStartsAt: string,
+nightEndsAt: string,
+roundingMinutes: number,
+monthlyCapMinutes: number | null,
+requiresApproval: boolean,
+};
+export type ProbationValue = {
+probationDays: number,
+extensionDays: number,
+employeeNoticeDays: number,
+employerNoticeDays: number,
+};
+export type RestValue = {
+minRestHours: number,
+maxConsecutiveDays: number,
+maxWeeklyHours: number,
+};
+export type WeekendValue = {
+days: number[],
+};
+export type WorkHoursValue = {
+startsAt: string,
+endsAt: string,
+breakMinutes: number,
+};
+}
+}
+namespace Enums {
+export type HolidayType = 'fixed' | 'nth_weekday' | 'one_off';
+export type ObservedRule = 'none' | 'nearest_weekday' | 'next_working_day' | 'previous_working_day';
+export type PolicyLevel = 'global' | 'branch' | 'department' | 'position' | 'grade' | 'employment_type' | 'employee';
+export type PolicySection = 'leave' | 'work_week' | 'overtime' | 'attendance' | 'rest' | 'employment';
+}
+}
 namespace Setup {
 namespace Enums {
 export type SetupStep = 'welcome' | 'company' | 'languages' | 'branch' | 'policies' | 'admin' | 'email' | 'whatsapp' | 'cognito' | 'review';
