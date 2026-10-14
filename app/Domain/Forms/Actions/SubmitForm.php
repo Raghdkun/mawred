@@ -16,6 +16,7 @@ use App\Domain\Forms\Support\FormContext;
 use App\Domain\Forms\Support\FormRulesBuilder;
 use App\Domain\People\Models\Employee;
 use App\Support\Actors\Actor;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\ConnectionInterface;
 
 /**
@@ -33,8 +34,9 @@ final readonly class SubmitForm
 
     /**
      * @param  array<string, mixed>  $input
+     * @param  FormSubmission|null  $replaces  a submission being corrected: its files may be kept
      */
-    public function handle(Actor $actor, Form $form, FormVersion $version, array $input, SubmissionSource $source, ?string $sessionHash = null, ?string $ip = null): FormSubmission
+    public function handle(Actor $actor, Form $form, FormVersion $version, array $input, SubmissionSource $source, ?string $sessionHash = null, ?string $ip = null, ?FormSubmission $replaces = null): FormSubmission
     {
         $user = $actor->user;
         $employee = $user instanceof User ? Employee::query()->where('user_id', $user->id)->first() : null;
@@ -42,15 +44,16 @@ final readonly class SubmitForm
         /** @var list<int> $claimed */
         $claimed = [];
 
-        $files = function (string $key, array $tokens, array $field) use ($form, $user, $sessionHash, &$claimed): array|string {
+        $files = function (string $key, array $tokens, array $field) use ($form, $user, $sessionHash, $replaces, &$claimed): array|string {
             $max = FieldSpec::int(FieldSpec::validation($field), 'maxFiles', 1);
             $uploads = FormUpload::query()
                 ->where('form_id', $form->id)
                 ->where('field_key', $key)
                 ->whereIn('ulid', $tokens)
-                ->whereNull('form_submission_id')
-                ->where('expires_at', '>', now())
-                ->when($user instanceof User, fn ($q) => $q->where('user_id', $user?->id), fn ($q) => $q->whereNull('user_id')->where('session_hash', $sessionHash))
+                ->where(fn (Builder $q) => $q
+                    ->where(fn (Builder $fresh) => $fresh->whereNull('form_submission_id')->where('expires_at', '>', now())
+                        ->when($user instanceof User, fn ($q) => $q->where('user_id', $user?->id), fn ($q) => $q->whereNull('user_id')->where('session_hash', $sessionHash)))
+                    ->when($replaces instanceof FormSubmission, fn ($kept) => $kept->orWhere('form_submission_id', $replaces?->id)))
                 ->get();
 
             if ($uploads->count() !== count(array_unique(array_filter($tokens, is_string(...)))) || count($tokens) > $max) {

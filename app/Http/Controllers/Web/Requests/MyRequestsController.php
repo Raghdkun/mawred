@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web\Requests;
 
 use App\Domain\Access\Models\User;
+use App\Domain\Forms\Models\FormUpload;
 use App\Domain\Forms\Support\FormContext;
 use App\Domain\Requests\Actions\AddRequestComment;
 use App\Domain\Requests\Actions\ResubmitRequest;
@@ -20,9 +21,11 @@ use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * My requests + detail (handoff 12), and the requests HR can see (`requests.view`, scoped).
@@ -62,6 +65,17 @@ final class MyRequestsController extends Controller
             ...$presenter->detail($employeeRequest, $user),
             'context' => $employeeRequest->requester_user_id === $user->id ? $context->for($user) : null,
         ]);
+    }
+
+    /** A file attached to the request's current answers (an audited read). */
+    public function download(EmployeeRequest $employeeRequest, FormUpload $upload, #[CurrentUser] User $user): StreamedResponse
+    {
+        abort_unless(Gate::allows('view', $employeeRequest) && $upload->form_submission_id === $employeeRequest->form_submission_id, 404);
+
+        activity('requests')->causedBy($user)->performedOn($employeeRequest)->event('file.downloaded')
+            ->withProperties(['file' => $upload->ulid])->log('Request file downloaded');
+
+        return Storage::disk(FormUpload::DISK)->download($upload->path, $upload->original_name, ['Content-Type' => $upload->mime]);
     }
 
     public function resubmit(Request $request, EmployeeRequest $employeeRequest, ResubmitRequest $resubmit, #[CurrentUser] User $user): RedirectResponse

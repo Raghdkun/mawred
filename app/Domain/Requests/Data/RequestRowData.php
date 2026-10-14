@@ -18,6 +18,7 @@ final class RequestRowData extends Data
     public function __construct(
         public string $id,
         public string $number,
+        public string $typeId,
         public string $typeCode,
         public array $typeName,
         public ?string $typeIcon,
@@ -39,6 +40,7 @@ final class RequestRowData extends Data
         return new self(
             id: $request->ulid,
             number: $request->number,
+            typeId: $type->ulid,
             typeCode: $type->code,
             typeName: $typeName,
             typeIcon: $type->icon,

@@ -18,7 +18,13 @@
         "imports": "استيراد الموظفين",
         "peopleSettings": "إعدادات الموظفين",
         "policies": "السياسات",
-        "forms": "النماذج"
+        "forms": "النماذج",
+        "requests": "الطلبات",
+        "approvals": "الموافقات",
+        "newRequest": "جديد",
+        "openCount": "{count, plural, zero {لا شيء بانتظارك} one {واحد بانتظارك} two {اثنان بانتظارك} few {# بانتظارك} many {# بانتظارك} other {# بانتظارك}}",
+        "requestTypes": "أنواع الطلبات",
+        "workflows": "مسارات العمل"
     },
     "searchPlaceholder": "ابحث أو انتقل إلى…",
     "switchLanguage": "تغيير اللغة إلى {language}",

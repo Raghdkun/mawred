@@ -38,7 +38,7 @@ final readonly class ResubmitRequest
             $previous = $request->submission()->firstOrFail();
             $version = $previous->pinnedVersion();
             $form = Form::withTrashed()->findOrFail($version->form_id);
-            $submission = $this->submitForm->handle($actor, $form, $version, $values, SubmissionSource::Internal);
+            $submission = $this->submitForm->handle($actor, $form, $version, $values, SubmissionSource::Internal, replaces: $previous);
 
             $request->forceFill(['form_submission_id' => $submission->id, 'status' => RequestStatus::InReview])->save();
             $this->engine->resubmit($instance, $submission->data, $actor->user);

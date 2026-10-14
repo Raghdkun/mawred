@@ -49,9 +49,9 @@ final class ActionLinkController extends Controller
                 'requester' => $subject->requester?->displayName(app()->getLocale()),
                 'submittedAt' => $subject->submitted_at->toIso8601String(),
             ] : null,
-            // Sensitive answers are only shown after sign-in (D24).
-            'schema' => $subject instanceof EmployeeRequest && ! $subject->requestType()->is_sensitive ? $version?->schema : null,
-            'answers' => $subject instanceof EmployeeRequest && ! $subject->requestType()->is_sensitive ? $subject->submission()->first()?->data : null,
+            // Sensitive types only get this far with the assignee signed in (D24).
+            'schema' => $version?->schema,
+            'answers' => $subject?->submission()->first()?->data,
             'display' => $subject instanceof EmployeeRequest && $version !== null ? AnswerLabels::for($version->schema, $subject->submission()->firstOrFail()->data, app()->getLocale()) : [],
         ]);
     }

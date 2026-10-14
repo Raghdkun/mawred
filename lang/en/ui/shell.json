@@ -18,7 +18,13 @@
         "imports": "Import people",
         "peopleSettings": "People settings",
         "policies": "Policies",
-        "forms": "Forms"
+        "forms": "Forms",
+        "requests": "Requests",
+        "approvals": "Approvals",
+        "newRequest": "New",
+        "openCount": "{count, plural, one {# waiting} other {# waiting}}",
+        "requestTypes": "Request types",
+        "workflows": "Workflows"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

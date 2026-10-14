@@ -22,6 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('requests/{employeeRequest}', [MyRequestsController::class, 'show'])->name('requests.show');
     Route::post('requests/{employeeRequest}/resubmit', [MyRequestsController::class, 'resubmit'])->name('requests.resubmit');
     Route::post('requests/{employeeRequest}/withdraw', [MyRequestsController::class, 'withdraw'])->name('requests.withdraw');
+    Route::get('requests/{employeeRequest}/files/{upload}', [MyRequestsController::class, 'download'])->name('requests.files');
     Route::post('requests/{employeeRequest}/comments', [MyRequestsController::class, 'comment'])->name('requests.comments');
 
     Route::get('approvals', [ApprovalsController::class, 'index'])->name('approvals.index');

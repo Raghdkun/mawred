@@ -760,6 +760,7 @@ namespace Data {
 export type RequestRowData = {
 id: string,
 number: string,
+typeId: string,
 typeCode: string,
 typeName: Record<string, string>,
 typeIcon: string | null,

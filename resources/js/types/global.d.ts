@@ -17,6 +17,7 @@ export type SharedProps = {
     company: { name: Partial<Record<'en' | 'ar', string>> | null; logoUrl: string | null };
     setup: { complete: boolean };
     notifications: { unread: number } | null;
+    approvals: { open: number } | null;
     sidebarOpen: boolean;
 };
 

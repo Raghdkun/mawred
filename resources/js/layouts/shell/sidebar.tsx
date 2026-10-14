@@ -6,7 +6,8 @@ import { useAccess } from '@/hooks/use-access';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useLocale } from '@/hooks/use-locale';
 import { cn } from '@/lib/utils';
-import { hrefOf, isActive, navigation } from './navigation';
+import { NavBadge, useNavBadgeCount } from './nav-badge';
+import { hrefOf, isActive, navigation, type NavItem } from './navigation';
 import { NavIcon } from './nav-icon';
 
 /**
@@ -78,10 +79,18 @@ export function Sidebar() {
                                                 'bg-sidebar-accent font-medium text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
                                         )}
                                     >
-                                        <NavIcon icon={item.icon} />
-                                        <span className="sr-only xl:not-sr-only xl:truncate">
+                                        <span className="relative flex">
+                                            <NavIcon icon={item.icon} />
+                                            <NavBadge
+                                                item={item}
+                                                className="absolute -end-2.5 -top-2 h-4 min-w-4 px-1 text-[10px] xl:hidden"
+                                            />
+                                        </span>
+                                        <span className="sr-only xl:not-sr-only xl:flex-1 xl:truncate">
                                             {t(item.label)}
                                         </span>
+                                        <NavBadge item={item} className="hidden xl:flex" />
+                                        <BadgeLabel item={item} />
                                     </Link>
                                 );
 
@@ -111,4 +120,11 @@ export function Sidebar() {
             </div>
         </aside>
     );
+}
+
+function BadgeLabel({ item }: { item: NavItem }) {
+    const { t } = useTranslation('shell');
+    const count = useNavBadgeCount(item);
+
+    return count > 0 ? <span className="sr-only">{t('nav.openCount', { count })}</span> : null;
 }
