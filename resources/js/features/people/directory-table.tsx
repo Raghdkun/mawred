@@ -43,6 +43,13 @@ const OPTIONAL = [
 ] as const;
 const PREFS = 'mawred.people.table';
 
+/** Tablet shows fewer columns (handoff 7); they come back on wider screens. */
+const RESPONSIVE: Record<string, string> = {
+    department: 'hidden lg:table-cell',
+    manager: 'hidden lg:table-cell',
+    contact: 'hidden xl:table-cell',
+};
+
 type Prefs = { visibility: ColumnVisibilityState; dense: boolean };
 
 function readPrefs(): Prefs {
@@ -305,6 +312,7 @@ export function DirectoryTable({
                                         className={cn(
                                             'px-3 py-2.5 text-start font-medium',
                                             header.column.id === 'select' && 'w-10',
+                                            RESPONSIVE[header.column.id],
                                         )}
                                     >
                                         {header.isPlaceholder ? null : (
@@ -331,6 +339,7 @@ export function DirectoryTable({
                                         className={cn(
                                             'px-3 align-middle text-text-secondary',
                                             prefs.dense ? 'py-1.5' : 'py-3',
+                                            RESPONSIVE[cell.column.id],
                                         )}
                                     >
                                         <table.FlexRender cell={cell} />
