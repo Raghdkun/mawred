@@ -8,6 +8,7 @@ use App\Domain\Organization\Models\Branch;
 use App\Domain\People\Data\HireEmployeeData;
 use App\Domain\People\Enums\EmployeeStatus;
 use App\Domain\People\Enums\HistoryEvent;
+use App\Domain\People\Events\EmployeeHired;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeAssignment;
 use App\Domain\People\Support\EmployeeContact;
@@ -86,6 +87,8 @@ final readonly class HireEmployee
                     $employee->forceFill(['probation_ends_on' => CarbonImmutable::parse($data->hireDate)->addDays($probation->probationDays - 1)->toDateString()])->save();
                 }
             }
+
+            event(new EmployeeHired($employee, $actor));
 
             return $employee;
         });

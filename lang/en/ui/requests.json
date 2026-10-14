@@ -1,0 +1,221 @@
+{
+    "center": {
+        "pageTitle": "New request",
+        "title": "New request",
+        "description": "Choose what you need. Each request goes to the right people for approval.",
+        "search": "Search request types",
+        "categories": "Categories",
+        "empty": "No request types yet",
+        "emptyHelp": "HR hasn’t published any request types. Check back soon.",
+        "noResults": "No request types match your search.",
+        "sensitive": "Private — only approvers see it",
+        "needsApproval": "Needs approval"
+    },
+    "categories": {
+        "all": "All",
+        "leave": "Leave",
+        "time": "Time",
+        "finance": "Finance",
+        "documents": "Documents",
+        "people": "My details",
+        "assets": "Assets",
+        "training": "Training"
+    },
+    "create": {
+        "back": "All request types",
+        "formLabel": "Request form",
+        "submit": "Send request",
+        "nextTitle": "What happens next",
+        "nextBody": "Your request goes to your approvers in order. You’ll be notified at each step, and you can follow it in My requests.",
+        "sensitive": "This request is private. Only you, your approvers and HR can open it."
+    },
+    "index": {
+        "pageTitle": "My requests",
+        "title": "Requests",
+        "description": "Follow what you’ve asked for and see where each request stands.",
+        "new": "New request",
+        "tabs": "Request lists",
+        "tab": {
+            "mine": "Mine",
+            "all": "All requests"
+        },
+        "search": "Search by number or name",
+        "status": "Status",
+        "anyStatus": "Any status",
+        "noResults": "No requests match these filters.",
+        "empty": "No requests yet",
+        "emptyHelp": "When you send a request, you can follow it here."
+    },
+    "status": {
+        "in_review": "In review",
+        "returned": "Returned",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+    },
+    "show": {
+        "back": "Requests",
+        "submittedTitle": "Request sent",
+        "submittedBody": "{number} is on its way to your approvers. We’ll let you know when it moves.",
+        "subtitle": "{number} · sent {date}",
+        "withdraw": "Withdraw",
+        "returnedTitle": "{name} sent this back for changes",
+        "correct": "Make changes",
+        "correctTitle": "Correct your request",
+        "resend": "Send again",
+        "answers": "Details",
+        "sensitive": "Private request",
+        "requester": "Requested by",
+        "number": "Request number",
+        "timeline": "Progress",
+        "waitingOn": "Waiting on: {step}",
+        "aStep": "a step",
+        "withdrawTitle": "Withdraw this request?",
+        "withdrawHelp": "Approvers will no longer see it. You can send a new request later.",
+        "withdrawReason": "Reason (optional)",
+        "comments": "Comments",
+        "noComments": "No comments yet.",
+        "addComment": "Add comment",
+        "commentPlaceholder": "Write a comment for the requester and approvers"
+    },
+    "timeline": {
+        "empty": "Nothing has happened yet.",
+        "system": "Mawred",
+        "events": {
+            "started": "{actor} sent the request",
+            "resubmitted": "{actor} sent it again with changes",
+            "cancelled": "{actor} withdrew the request",
+            "completed": "Request {outcome}",
+            "task": {
+                "assigned": "Waiting for {subject}",
+                "approved": "{actor} approved",
+                "rejected": "{actor} rejected",
+                "returned": "{actor} sent it back for changes",
+                "done": "{actor} marked it done",
+                "delegated": "Handed to {subject}",
+                "escalated": "Escalated to {subject}",
+                "overdue": "Past its deadline",
+                "reminded": "Reminder sent"
+            },
+            "step": {
+                "retried": "Retried automatically"
+            }
+        },
+        "outcomes": {
+            "approved": "approved",
+            "rejected": "rejected",
+            "cancelled": "cancelled",
+            "completed": "completed"
+        },
+        "via": {
+            "email": "from email",
+            "whatsapp": "from WhatsApp",
+            "api": "from the app",
+            "system": "automatically"
+        }
+    },
+    "sla": {
+        "due": "Due {when}",
+        "overdue": "Overdue · {when}"
+    },
+    "inbox": {
+        "pageTitle": "Approvals",
+        "title": "Approvals",
+        "count": "{count, plural, one {{formatted} waiting for you} other {{formatted} waiting for you}}",
+        "empty": "You’re all caught up",
+        "emptyHelp": "Requests that need your decision will appear here.",
+        "list": "Waiting for you",
+        "detail": "Selected request",
+        "selectAll": "Select all",
+        "selected": "{count, plural, one {{formatted} selected} other {{formatted} selected}}",
+        "approveSelected": "{count, plural, one {Approve {formatted}} other {Approve {formatted}}}",
+        "back": "Approvals",
+        "swipeApprove": "Approve",
+        "select": "Select {number}",
+        "delegatedFrom": "From {name}",
+        "commentNeeded": "Add a comment so the requester knows why.",
+        "step": "Step",
+        "comment": "Comment",
+        "commentPlaceholder": "Optional for approval; needed to reject or send back",
+        "decisions": {
+            "approved": "Approve",
+            "rejected": "Reject",
+            "returned": "Send back",
+            "done": "Mark done"
+        },
+        "delegate": "Delegate",
+        "fromLabel": "From"
+    },
+    "delegate": {
+        "title": "Delegate this approval",
+        "help": "They’ll decide in your place. You’ll still see it in the request’s progress.",
+        "pick": "Choose who to delegate to.",
+        "to": "Delegate to",
+        "search": "Search colleagues",
+        "note": "Note (optional)",
+        "submit": "Delegate"
+    },
+    "link": {
+        "expiredTitle": "This link no longer works",
+        "expiredHelp": "It was already used, it expired, or the request was decided another way. Open Mawred to see it.",
+        "done": {
+            "approved": "Approved",
+            "rejected": "Rejected"
+        },
+        "doneHelp": "Thanks. The requester will be notified.",
+        "title": {
+            "approved": "Approve this request?",
+            "rejected": "Reject this request?"
+        },
+        "commentOptional": "Comment (optional)",
+        "commentRequired": "Why are you rejecting it?",
+        "confirm": {
+            "approved": "Confirm approval",
+            "rejected": "Confirm rejection"
+        }
+    },
+    "away": {
+        "pageTitle": "While I'm away",
+        "title": "While I'm away",
+        "description": "New approvals go to a colleague on these dates. Anything already in your inbox stays with you.",
+        "new": "Hand over my approvals",
+        "from": "From",
+        "until": "Until",
+        "reason": "Note (optional)",
+        "save": "Save",
+        "current": "Current and upcoming",
+        "none": "You're not handing anything over.",
+        "active": "Active",
+        "upcoming": "Upcoming",
+        "end": "End now",
+        "link": "Away?"
+    },
+    "types": {
+        "pageTitle": "Request types",
+        "title": "Request types",
+        "description": "What people can ask for, and the form and workflow behind each one.",
+        "new": "New request type",
+        "empty": "No request types yet",
+        "inactive": "Off",
+        "later": "Arrives in phase {phase}",
+        "notReady": "Form or workflow not published",
+        "live": "Live",
+        "private": "Private",
+        "form": "Form",
+        "workflow": "Workflow",
+        "edit": "Edit {name}",
+        "unpublished": "not published",
+        "code": "Code",
+        "name": "Name",
+        "descriptionEn": "Description (English)",
+        "descriptionAr": "Description (Arabic)",
+        "category": "Category",
+        "icon": "Icon",
+        "isActive": "Available to people",
+        "isActiveHelp": "Turn off to hide it from the request center without deleting anything.",
+        "isSensitive": "Private request",
+        "isSensitiveHelp": "Only the requester, approvers and HR can open it; email approval links need sign-in.",
+        "save": "Save"
+    }
+}

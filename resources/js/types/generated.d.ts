@@ -141,6 +141,9 @@ read: boolean,
 createdAt: string,
 };
 }
+namespace Enums {
+export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'security';
+}
 }
 namespace Organization {
 namespace Data {
@@ -752,10 +755,92 @@ export type PolicyLevel = 'global' | 'branch' | 'department' | 'position' | 'gra
 export type PolicySection = 'leave' | 'work_week' | 'overtime' | 'attendance' | 'rest' | 'employment';
 }
 }
+namespace Requests {
+namespace Data {
+export type RequestRowData = {
+id: string,
+number: string,
+typeId: string,
+typeCode: string,
+typeName: Record<string, string>,
+typeIcon: string | null,
+status: string,
+submittedAt: string,
+decidedAt: string | null,
+requester: string,
+};
+export type RequestTypeData = {
+id: string,
+code: string,
+name: Record<string, string>,
+description: Record<string, string>,
+category: string,
+icon: string | null,
+isSensitive: boolean,
+isActive: boolean,
+available: boolean,
+availableInPhase: number,
+formId: string | null,
+workflowId: string | null,
+ready: boolean,
+};
+export type TaskData = {
+id: string,
+kind: string,
+step: Record<string, string>,
+assignedAt: string,
+dueAt: string | null,
+overdue: boolean,
+delegatedFrom: string | null,
+decisions: string[],
+request: App.Domain.Requests.Data.RequestRowData | null,
+about: string | null,
+instructions: string | null,
+};
+export type TimelineEntryData = {
+event: string,
+at: string,
+actor: string | null,
+subject: string | null,
+comment: string | null,
+via: string | null,
+data: Record<string, any>,
+};
+}
+namespace Enums {
+export type RequestCategory = 'leave' | 'time' | 'finance' | 'documents' | 'people' | 'assets' | 'training';
+export type RequestStatus = 'in_review' | 'returned' | 'approved' | 'rejected' | 'completed' | 'cancelled';
+}
+}
 namespace Setup {
 namespace Enums {
 export type SetupStep = 'welcome' | 'company' | 'languages' | 'branch' | 'policies' | 'admin' | 'email' | 'whatsapp' | 'cognito' | 'review';
 export type StepStatus = 'pending' | 'completed' | 'skipped';
+}
+}
+namespace Workflows {
+namespace Data {
+export type WorkflowDefinitionData = {
+id: string,
+code: string,
+name: Record<string, string>,
+description: Record<string, string>,
+category: string | null,
+publishedVersion: number | null,
+hasDraft: boolean,
+openInstances: number,
+requestTypes: Record<string, string>[],
+};
+}
+namespace Enums {
+export type Decision = 'approved' | 'rejected' | 'returned' | 'done';
+export type DecisionChannel = 'web' | 'api' | 'email' | 'whatsapp' | 'system';
+export type InstanceStatus = 'running' | 'returned' | 'attention' | 'completed' | 'cancelled';
+export type Outcome = 'approved' | 'rejected' | 'completed' | 'cancelled';
+export type StepStatus = 'pending' | 'running' | 'waiting' | 'completed' | 'failed' | 'skipped' | 'cancelled';
+export type TaskKind = 'approval' | 'task';
+export type TaskStatus = 'open' | 'done' | 'cancelled';
+export type VersionStatus = 'draft' | 'published' | 'archived';
 }
 }
 }

@@ -94,5 +94,28 @@
         "title": "Your first branch",
         "description": "Where people work: its time zone, weekend and working hours drive leave, schedules and attendance. Add more branches later from Organization.",
         "save": "Save and continue"
+    },
+    "email": {
+        "title": "Email",
+        "description": "Mawred sends approvals, reminders and invitations by email. Use any SMTP service your company already has.",
+        "host": "SMTP server",
+        "port": "Port",
+        "security": "Connection security",
+        "securities": {
+            "starttls": "STARTTLS (usually port 587)",
+            "ssl": "SSL/TLS (usually port 465)"
+        },
+        "username": "Username",
+        "password": "Password",
+        "passwordSaved": "Saved — leave empty to keep it",
+        "fromAddress": "Send from address",
+        "fromName": "Sender name",
+        "status": {
+            "healthy": "Test email delivered. Email is working.",
+            "disconnected": "The last test failed.",
+            "unverified": "Saved. Send a test email to check it works."
+        },
+        "save": "Save and continue",
+        "test": "Send a test email"
     }
 }

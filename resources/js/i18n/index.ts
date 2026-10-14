@@ -26,11 +26,14 @@ const PAGE_NAMESPACES: Record<string, string[]> = {
     people: ['people', 'organization', 'imports', 'policies'],
     policies: ['policies', 'organization'],
     forms: ['forms', 'organization'],
-    public: ['forms'],
+    public: ['forms', 'requests'],
+    requests: ['requests', 'forms'],
+    approvals: ['requests', 'forms'],
+    workflows: ['workflows', 'forms', 'requests'],
     audit: ['audit'],
     notifications: ['notifications'],
-    dashboard: ['home'],
-    home: ['home'],
+    dashboard: ['home', 'requests'],
+    home: ['home', 'requests'],
     errors: [],
 };
 

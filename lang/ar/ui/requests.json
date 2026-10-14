@@ -1,0 +1,221 @@
+{
+    "center": {
+        "pageTitle": "طلب جديد",
+        "title": "طلب جديد",
+        "description": "اختر ما تحتاجه، وسيصل كل طلب إلى المعنيين بالموافقة عليه.",
+        "search": "ابحث في أنواع الطلبات",
+        "categories": "الفئات",
+        "empty": "لا توجد أنواع طلبات بعد",
+        "emptyHelp": "لم تنشر الموارد البشرية أي نوع طلب بعد. عُد لاحقًا.",
+        "noResults": "لا توجد أنواع طلبات تطابق بحثك.",
+        "sensitive": "خاص — لا يراه إلا المعتمدون",
+        "needsApproval": "يحتاج إلى موافقة"
+    },
+    "categories": {
+        "all": "الكل",
+        "leave": "الإجازات",
+        "time": "الوقت",
+        "finance": "المالية",
+        "documents": "المستندات",
+        "people": "بياناتي",
+        "assets": "العُهد",
+        "training": "التدريب"
+    },
+    "create": {
+        "back": "كل أنواع الطلبات",
+        "formLabel": "نموذج الطلب",
+        "submit": "أرسل الطلب",
+        "nextTitle": "ماذا يحدث بعد ذلك",
+        "nextBody": "يصل طلبك إلى المعتمدين بالترتيب، وتصلك إشعارات في كل خطوة، ويمكنك متابعته من «طلباتي».",
+        "sensitive": "هذا الطلب خاص. لا يفتحه إلا أنت والمعتمدون والموارد البشرية."
+    },
+    "index": {
+        "pageTitle": "طلباتي",
+        "title": "الطلبات",
+        "description": "تابع ما طلبته واعرف أين وصل كل طلب.",
+        "new": "طلب جديد",
+        "tabs": "قوائم الطلبات",
+        "tab": {
+            "mine": "طلباتي",
+            "all": "كل الطلبات"
+        },
+        "search": "ابحث بالرقم أو الاسم",
+        "status": "الحالة",
+        "anyStatus": "أي حالة",
+        "noResults": "لا توجد طلبات تطابق عوامل التصفية.",
+        "empty": "لا توجد طلبات بعد",
+        "emptyHelp": "عندما ترسل طلبًا يمكنك متابعته من هنا."
+    },
+    "status": {
+        "in_review": "قيد المراجعة",
+        "returned": "مُعاد للتعديل",
+        "approved": "مقبول",
+        "rejected": "مرفوض",
+        "completed": "مكتمل",
+        "cancelled": "ملغى"
+    },
+    "show": {
+        "back": "الطلبات",
+        "submittedTitle": "أُرسل الطلب",
+        "submittedBody": "الطلب {number} في طريقه إلى المعتمدين، وسنخبرك عند كل تقدم.",
+        "subtitle": "{number} · أُرسل {date}",
+        "withdraw": "سحب الطلب",
+        "returnedTitle": "أعاد {name} هذا الطلب لإجراء تعديلات",
+        "correct": "عدّل الطلب",
+        "correctTitle": "صحّح طلبك",
+        "resend": "أرسله مجددًا",
+        "answers": "التفاصيل",
+        "sensitive": "طلب خاص",
+        "requester": "مقدّم الطلب",
+        "number": "رقم الطلب",
+        "timeline": "سير الطلب",
+        "waitingOn": "بانتظار: {step}",
+        "aStep": "خطوة",
+        "withdrawTitle": "هل تريد سحب هذا الطلب؟",
+        "withdrawHelp": "لن يراه المعتمدون بعد الآن، ويمكنك إرسال طلب جديد لاحقًا.",
+        "withdrawReason": "السبب (اختياري)",
+        "comments": "التعليقات",
+        "noComments": "لا توجد تعليقات بعد.",
+        "addComment": "أضف تعليقًا",
+        "commentPlaceholder": "اكتب تعليقًا لمقدّم الطلب والمعتمدين"
+    },
+    "timeline": {
+        "empty": "لم يحدث شيء بعد.",
+        "system": "مَورِد",
+        "events": {
+            "started": "أرسل {actor} الطلب",
+            "resubmitted": "أعاد {actor} إرساله مع التعديلات",
+            "cancelled": "سحب {actor} الطلب",
+            "completed": "الطلب {outcome}",
+            "task": {
+                "assigned": "بانتظار {subject}",
+                "approved": "وافق {actor}",
+                "rejected": "رفض {actor}",
+                "returned": "أعاده {actor} لإجراء تعديلات",
+                "done": "أنجزه {actor}",
+                "delegated": "فُوّض إلى {subject}",
+                "escalated": "صُعّد إلى {subject}",
+                "overdue": "تجاوز موعده",
+                "reminded": "أُرسل تذكير"
+            },
+            "step": {
+                "retried": "أُعيدت المحاولة تلقائيًا"
+            }
+        },
+        "outcomes": {
+            "approved": "تمت الموافقة عليه",
+            "rejected": "مرفوض",
+            "cancelled": "ملغى",
+            "completed": "مكتمل"
+        },
+        "via": {
+            "email": "من البريد",
+            "whatsapp": "من واتساب",
+            "api": "من التطبيق",
+            "system": "تلقائيًا"
+        }
+    },
+    "sla": {
+        "due": "الموعد {when}",
+        "overdue": "متأخر · {when}"
+    },
+    "inbox": {
+        "pageTitle": "الموافقات",
+        "title": "الموافقات",
+        "count": "{count, plural, zero {لا شيء بانتظارك} one {طلب واحد بانتظارك} two {طلبان بانتظارك} few {{formatted} طلبات بانتظارك} many {{formatted} طلبًا بانتظارك} other {{formatted} طلب بانتظارك}}",
+        "empty": "لا شيء بانتظارك",
+        "emptyHelp": "ستظهر هنا الطلبات التي تحتاج إلى قرارك.",
+        "list": "بانتظارك",
+        "detail": "الطلب المحدد",
+        "selectAll": "تحديد الكل",
+        "selected": "{count, plural, zero {لم يُحدد شيء} one {محدد واحد} two {محددان} few {{formatted} محددة} many {{formatted} محددًا} other {{formatted} محدد}}",
+        "approveSelected": "{count, plural, zero {موافقة} one {موافقة على طلب واحد} two {موافقة على طلبين} few {موافقة على {formatted} طلبات} many {موافقة على {formatted} طلبًا} other {موافقة على {formatted} طلب}}",
+        "back": "الموافقات",
+        "swipeApprove": "موافقة",
+        "select": "تحديد {number}",
+        "delegatedFrom": "من {name}",
+        "commentNeeded": "أضف تعليقًا ليعرف مقدّم الطلب السبب.",
+        "step": "الخطوة",
+        "comment": "تعليق",
+        "commentPlaceholder": "اختياري عند الموافقة، ومطلوب عند الرفض أو الإعادة",
+        "decisions": {
+            "approved": "موافقة",
+            "rejected": "رفض",
+            "returned": "إعادة للتعديل",
+            "done": "تم الإنجاز"
+        },
+        "delegate": "تفويض",
+        "fromLabel": "من"
+    },
+    "delegate": {
+        "title": "فوّض هذه الموافقة",
+        "help": "سيتخذ القرار بدلًا منك، وستظل تراه في سير الطلب.",
+        "pick": "اختر من تفوّضه.",
+        "to": "التفويض إلى",
+        "search": "ابحث عن زميل",
+        "note": "ملاحظة (اختياري)",
+        "submit": "فوّض"
+    },
+    "link": {
+        "expiredTitle": "هذا الرابط لم يعد صالحًا",
+        "expiredHelp": "ربما استُخدم أو انتهت صلاحيته أو بُتّ في الطلب بطريقة أخرى. افتح مَورِد لرؤيته.",
+        "done": {
+            "approved": "تمت الموافقة",
+            "rejected": "تم الرفض"
+        },
+        "doneHelp": "شكرًا لك. سيُبلَّغ مقدّم الطلب.",
+        "title": {
+            "approved": "الموافقة على هذا الطلب؟",
+            "rejected": "رفض هذا الطلب؟"
+        },
+        "commentOptional": "تعليق (اختياري)",
+        "commentRequired": "لماذا ترفضه؟",
+        "confirm": {
+            "approved": "تأكيد الموافقة",
+            "rejected": "تأكيد الرفض"
+        }
+    },
+    "away": {
+        "pageTitle": "أثناء غيابي",
+        "title": "أثناء غيابي",
+        "description": "تذهب الموافقات الجديدة إلى زميل في هذه التواريخ، ويبقى ما في صندوقك معك.",
+        "new": "سلّم موافقاتي",
+        "from": "من",
+        "until": "حتى",
+        "reason": "ملاحظة (اختياري)",
+        "save": "احفظ",
+        "current": "الحالية والقادمة",
+        "none": "لا تسلّم شيئًا حاليًا.",
+        "active": "فعّال",
+        "upcoming": "قادم",
+        "end": "أنهِه الآن",
+        "link": "غائب؟"
+    },
+    "types": {
+        "pageTitle": "أنواع الطلبات",
+        "title": "أنواع الطلبات",
+        "description": "ما يمكن للموظفين طلبه، والنموذج ومسار العمل لكل نوع.",
+        "new": "نوع طلب جديد",
+        "empty": "لا توجد أنواع طلبات بعد",
+        "inactive": "متوقف",
+        "later": "يصل في المرحلة {phase}",
+        "notReady": "النموذج أو مسار العمل غير منشور",
+        "live": "فعّال",
+        "private": "خاص",
+        "form": "النموذج",
+        "workflow": "مسار العمل",
+        "edit": "تعديل {name}",
+        "unpublished": "غير منشور",
+        "code": "الرمز",
+        "name": "الاسم",
+        "descriptionEn": "الوصف (بالإنجليزية)",
+        "descriptionAr": "الوصف (بالعربية)",
+        "category": "الفئة",
+        "icon": "الأيقونة",
+        "isActive": "متاح للموظفين",
+        "isActiveHelp": "أوقفه لإخفائه من مركز الطلبات دون حذف أي شيء.",
+        "isSensitive": "طلب خاص",
+        "isSensitiveHelp": "لا يفتحه إلا مقدّم الطلب والمعتمدون والموارد البشرية، وروابط الموافقة بالبريد تتطلب تسجيل الدخول.",
+        "save": "احفظ"
+    }
+}

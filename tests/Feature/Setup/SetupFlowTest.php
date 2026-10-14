@@ -3,12 +3,17 @@
 declare(strict_types=1);
 
 use App\Domain\Access\Models\User;
+use App\Domain\Integrations\Mail\TestEmail;
+use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\Organization\Models\Branch;
 use App\Domain\Setup\Actions\IssueOwnerSetupLink;
 use App\Domain\Setup\Enums\SetupStep;
 use App\Domain\Setup\Enums\StepStatus;
 use App\Domain\Setup\Support\SetupState;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Testing\AssertableInertia;
+use Spatie\Activitylog\Models\Activity;
 
 beforeEach(fn () => $this->markSetupIncomplete());
 
@@ -119,4 +124,30 @@ it('saves the first branch in step 4 and edits it on a second save', function ()
 
     $this->get(route('setup.show', 'branch'))
         ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->where('branch.code', 'RUH-HQ')->where('branch.geofence.radiusM', 200));
+});
+
+it('stores the email connection in the vault without echoing the password, and sends a test email', function (): void {
+    seedAccess();
+    Mail::fake();
+    $root = confirmTwoFactor(userWithRoles('super_admin'));
+    $settings = ['host' => 'smtp.example.com', 'port' => 587, 'security' => 'starttls', 'username' => 'mailer', 'password' => 'smtp-secret-1', 'fromAddress' => 'HR@Example.com', 'fromName' => 'Najd HR'];
+
+    $this->actingAs($root)->post(route('setup.steps.email'), $settings)->assertRedirect();
+
+    $connection = IntegrationConnection::query()->sole();
+    expect($connection->credentials)->toBe(['password' => 'smtp-secret-1'])
+        ->and(DB::table('integration_connections')->value('credentials'))->not->toContain('smtp-secret-1')
+        ->and(resolve(SetupState::class)->status(SetupStep::Email))->toBe(StepStatus::Completed)
+        ->and(json_encode(Activity::query()->get()->toArray()))->not->toContain('smtp-secret-1');
+
+    // An empty password keeps the saved one; the page never receives it.
+    $this->actingAs($root)->post(route('setup.steps.email'), [...$settings, 'password' => null])->assertRedirect();
+    expect($connection->fresh()?->credentials)->toBe(['password' => 'smtp-secret-1']);
+
+    $this->actingAs($root)->get(route('setup.show', ['step' => 'email']))->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->where('email.hasPassword', true)->where('email.fromAddress', 'hr@example.com')->missing('email.password'));
+
+    $this->actingAs($root)->post(route('setup.steps.email.test'))->assertRedirect();
+    Mail::assertSent(TestEmail::class, fn ($mail): bool => $mail->hasTo($root->email));
+    expect($connection->fresh()?->status)->toBe('healthy');
 });

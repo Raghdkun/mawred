@@ -30,6 +30,8 @@ type Props = {
     /** Rendered above the submit button (e.g. the ALTCHA widget on public forms). */
     footer?: ReactNode;
     disabled?: boolean;
+    /** Answers to start from (e.g. a returned request being corrected). */
+    initialValues?: Record<string, unknown>;
 };
 
 /**
@@ -47,6 +49,7 @@ export function FormRenderer({
     submitLabel,
     footer,
     disabled,
+    initialValues,
 }: Props) {
     const { t } = useTranslation('forms');
     const locale = useFormLocale();
@@ -56,7 +59,7 @@ export function FormRenderer({
         [schema, context, t],
     );
     const form = useForm<Record<string, unknown>>({
-        defaultValues: defaultValues(schema, context),
+        defaultValues: { ...defaultValues(schema, context), ...pickInputs(initialValues, fields) },
         resolver,
         mode: 'onTouched',
     });
@@ -306,5 +309,24 @@ function FieldBlock({
             ) : null}
             {children(ids)}
         </div>
+    );
+}
+
+/** Only answers to fields that take input, so stale keys from an older version are dropped. */
+function pickInputs(
+    values: Record<string, unknown> | undefined,
+    fields: ReturnType<typeof allFields>,
+): Record<string, unknown> {
+    if (!values) return {};
+
+    return Object.fromEntries(
+        fields
+            .filter(
+                (field) =>
+                    acceptsInput(field.type) &&
+                    values[field.key] !== undefined &&
+                    values[field.key] !== null,
+            )
+            .map((field) => [field.key, values[field.key]]),
     );
 }

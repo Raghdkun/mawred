@@ -12,14 +12,14 @@ Format: Context → Decision → Consequences → Alternatives. Status: Proposed
 | [0006](0006-audit.md) | Audit trail | Proposed |
 | [0007](0007-sensitive-data.md) | Sensitive field encryption + blind index | Proposed |
 | [0008](0008-form-schema.md) | Mawred Form Schema + shared rules language | Accepted |
-| [0009](0009-workflow-engine.md) | In-house workflow engine | Proposed |
+| [0009](0009-workflow-engine.md) | In-house workflow engine | Accepted |
 | [0010](0010-policy-engine.md) | Policy engine (typed keys, layered sets, effective dating, ledgers) | Accepted |
 | [0011](0011-i18n-rtl.md) | react-i18next; RTL via logical properties | Proposed |
 | [0012](0012-api-design.md) | REST API v1 conventions | Proposed |
 | [0013](0013-search.md) | Global search on PostgreSQL, scope-enforced | Proposed |
 | [0014](0014-pdf-gotenberg.md) | PDF via Gotenberg | Proposed |
 | [0015](0015-integrations.md) | Integrations: credential vault, drivers, routing | Proposed |
-| [0016](0016-notifications-templates.md) | Notifications + logic-less templates | Proposed |
+| [0016](0016-notifications-templates.md) | Notifications + logic-less templates | Accepted |
 | [0017](0017-runtime-and-proxy.md) | FrankenPHP (classic) + Caddy edge | Proposed |
 | [0018](0018-partitioning.md) | Monthly partitioning | Proposed |
 | [0019](0019-deployment.md) | Single-VPS Compose deploy, zero-downtime | Proposed |

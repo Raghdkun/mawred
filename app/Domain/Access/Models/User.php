@@ -32,6 +32,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $timezone
  * @property string $digits
  * @property bool $show_hijri
+ * @property string|null $quiet_hours_start
+ * @property string|null $quiet_hours_end
+ * @property bool $digest_enabled
  * @property string $status
  * @property Carbon|null $last_login_at
  * @property Carbon|null $email_verified_at
@@ -64,6 +67,9 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         'digits' => 'latn',
         'show_hijri' => false,
         'status' => 'active',
+        'quiet_hours_start' => null,
+        'quiet_hours_end' => null,
+        'digest_enabled' => false,
     ];
 
     /**
@@ -89,6 +95,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'two_factor_confirmed_at' => 'datetime',
             'last_login_at' => 'datetime',
             'show_hijri' => 'boolean',
+            'digest_enabled' => 'boolean',
         ];
     }
 }

@@ -4,6 +4,97 @@
     "description": "Updates on your requests, approvals and account.",
     "markAllRead": "Mark all as read",
     "unread": "Unread",
-    "filters": { "label": "Filter notifications", "all": "All", "unread": "Unread" },
-    "empty": { "title": "You're all caught up", "description": "New notifications will show up here." }
+    "filters": {
+        "label": "Filter notifications",
+        "all": "All",
+        "unread": "Unread"
+    },
+    "empty": {
+        "title": "You're all caught up",
+        "description": "New notifications will show up here."
+    },
+    "preferences": {
+        "link": "Settings",
+        "pageTitle": "Notification settings",
+        "title": "Notification settings",
+        "description": "Choose how Mawred reaches you.",
+        "channelsTitle": "Where you hear about things",
+        "category": "Category",
+        "channels": {
+            "in_app": "In the app",
+            "email": "Email"
+        },
+        "categories": {
+            "approvals": {
+                "name": "Approvals",
+                "help": "Requests waiting for your decision, reminders and escalations."
+            },
+            "requests": {
+                "name": "My requests",
+                "help": "Decisions and changes on what you asked for."
+            },
+            "documents": {
+                "name": "Documents",
+                "help": "Expiring documents and new files."
+            },
+            "security": {
+                "name": "Security",
+                "help": "Sign-ins and account changes."
+            }
+        },
+        "locked": "Locked switches stay on: you always need to know about these.",
+        "quietTitle": "Quiet hours",
+        "quietHelp": "Non-urgent email waits until quiet hours end. Times are in {timezone}.",
+        "from": "From",
+        "to": "To",
+        "clearQuiet": "Turn off quiet hours",
+        "digestTitle": "Daily digest",
+        "digest": "Send one email a day instead",
+        "digestHelp": "Non-urgent updates are gathered into a morning email. Approvals still arrive right away.",
+        "save": "Save settings"
+    },
+    "templates": {
+        "pageTitle": "Notification templates",
+        "title": "Notification templates",
+        "description": "The wording of every message Mawred sends, in English and Arabic.",
+        "events": "Notifications",
+        "customised": "Edited",
+        "channel": "Channel",
+        "whatsappLater": "WhatsApp templates arrive with the WhatsApp integration.",
+        "variables": "Insert:",
+        "language": "Language",
+        "subject": "Subject",
+        "title_": "Title",
+        "body": "Message",
+        "preview": "Preview",
+        "previewLanguage": "Preview language",
+        "save": "Save wording",
+        "reset": "Use the default wording",
+        "eventNames": {
+            "approvals": {
+                "task_assigned": "Approval needed",
+                "task_reminder": "Approval reminder",
+                "task_escalated": "Approval escalated",
+                "task_delegated": "Approval delegated"
+            },
+            "requests": {
+                "approved": "Request approved",
+                "rejected": "Request not approved",
+                "completed": "Request completed",
+                "returned": "Request sent back"
+            }
+        },
+        "languages": {
+            "en": "English",
+            "ar": "العربية"
+        },
+        "short": {
+            "en": "EN",
+            "ar": "ع"
+        },
+        "approveSample": {
+            "en": "Approve",
+            "ar": "موافقة"
+        }
+    }
 }

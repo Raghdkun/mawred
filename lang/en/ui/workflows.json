@@ -1,0 +1,212 @@
+{
+    "index": {
+        "pageTitle": "Workflows",
+        "title": "Workflows",
+        "description": "How each request moves: who approves, in what order, and what happens after.",
+        "new": "New workflow",
+        "newHelp": "Start with a blank Start → End and build from there.",
+        "code": "Code",
+        "name": "Name",
+        "create": "Create and open",
+        "empty": "No workflows yet",
+        "live": "Version {number} live",
+        "notPublished": "Not published",
+        "changes": "Unpublished changes",
+        "running": "{count, plural, =0 {Nothing running} one {{formatted} running} other {{formatted} running}}",
+        "stuck": "Needs attention"
+    },
+    "builder": {
+        "pageTitle": "{name} · Workflow",
+        "draft": "Draft — changes save automatically",
+        "published": "Version {number} is live",
+        "new": "Not published yet",
+        "saving": "Saving…",
+        "saved": "Saved",
+        "unsaved": "Unsaved changes",
+        "problems": "{count, plural, one {{formatted} problem} other {{formatted} problems}}",
+        "simulate": "Test run",
+        "discard": "Discard changes",
+        "publish": "Publish",
+        "desktopOnly": "Editing workflows needs a wider screen. You can look around here.",
+        "palette": "Steps",
+        "addStep": "Add a step",
+        "canvas": "Workflow canvas",
+        "panel": "Step settings",
+        "checks": "Checks",
+        "noProblems": "Everything connects. Ready to publish.",
+        "howTo": "Click a step to add it, or drag it onto the canvas. Connect steps by dragging from an output to the next step.",
+        "versions": "Versions",
+        "version": "Version {number}",
+        "versionStatus": {
+            "draft": "draft",
+            "published": "live",
+            "archived": "previous"
+        },
+        "hasProblems": "This step has problems"
+    },
+    "nodes": {
+        "start": {
+            "name": "Start",
+            "hint": "Where the request begins",
+            "help": "Every workflow has one start."
+        },
+        "approval": {
+            "name": "Approval",
+            "hint": "Someone approves or rejects",
+            "help": "Asks one or more people to approve. Rejection ends on the rejected path; they can also send it back for changes."
+        },
+        "task": {
+            "name": "Task",
+            "hint": "Someone does a to-do",
+            "help": "A to-do with instructions, marked done when finished."
+        },
+        "condition": {
+            "name": "Condition",
+            "hint": "Go one way or another",
+            "help": "Checks the answers, the requester or earlier decisions, then follows Yes or No."
+        },
+        "split": {
+            "name": "Parallel",
+            "hint": "Run branches together",
+            "help": "Starts every connected branch at the same time. Bring them back with Join."
+        },
+        "join": {
+            "name": "Join",
+            "hint": "Wait for all branches",
+            "help": "Continues once every branch from the matching Parallel has finished."
+        },
+        "notify": {
+            "name": "Notify",
+            "hint": "Send a message",
+            "help": "Sends an in-app or email message. WhatsApp arrives with the WhatsApp integration."
+        },
+        "delay": {
+            "name": "Wait",
+            "hint": "Pause for a while",
+            "help": "Waits for a number of hours before continuing."
+        },
+        "update_record": {
+            "name": "Update record",
+            "hint": "Apply the change",
+            "help": "Writes the approved change to the person's record."
+        },
+        "webhook": {
+            "name": "Webhook",
+            "hint": "Call another system",
+            "help": "Posts the request to an outside system, signed, with retries."
+        },
+        "subworkflow": {
+            "name": "Sub-workflow",
+            "hint": "Run another workflow",
+            "help": "Runs another published workflow and continues on its outcome."
+        },
+        "end": {
+            "name": "End",
+            "hint": "Finish here",
+            "help": "Ends the workflow with an outcome."
+        }
+    },
+    "handles": {
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "done": "Done",
+        "true": "Yes",
+        "false": "No",
+        "completed": "Completed"
+    },
+    "outcomes": {
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "completed": "Completed"
+    },
+    "assignees": {
+        "manager": "Requester's manager",
+        "manager_level": "Manager, levels up",
+        "department_head": "Department head",
+        "branch_manager": "Branch manager",
+        "role": "Anyone with a role",
+        "round_robin": "A role, taking turns",
+        "user": "A specific person",
+        "field": "Person named in the form",
+        "requester": "The requester",
+        "assignee_manager": "The approver's manager"
+    },
+    "channels": {
+        "in_app": "In the app",
+        "email": "Email",
+        "whatsapp": "WhatsApp (with the integration)"
+    },
+    "settings": {
+        "languages": {
+            "en": "English",
+            "ar": "Arabic"
+        },
+        "label": "Step name",
+        "assignee": "Who",
+        "assigneeType": "Goes to",
+        "choose": "Choose…",
+        "role": "Role",
+        "scoped": "Only people whose scope covers the requester",
+        "level": "Levels up",
+        "field": "Form field",
+        "noEmployeeFields": "The form has no person field.",
+        "person": "Person",
+        "searchPeople": "Search people",
+        "instructions": "Instructions",
+        "mode": "When several people get it",
+        "modes": {
+            "any": "The first decision counts",
+            "all": "Everyone must approve"
+        },
+        "allowReturn": "Allow sending back for changes",
+        "sla": "Deadline",
+        "dueHours": "Due after (hours)",
+        "reminderHours": "Remind after (hours)",
+        "escalateTo": "If overdue, escalate to",
+        "condition": "Continue on Yes when…",
+        "conditionHelp": "Anything the rows can't express can be written as a rule.",
+        "channel": "Channel",
+        "recipients": "Recipients",
+        "subject": "Subject",
+        "message": "Message",
+        "messageVariables": "You can use",
+        "waitHours": "Wait (hours)",
+        "update": "What to update",
+        "later": "later release",
+        "endpoint": "Endpoint",
+        "noWebhooks": "No webhook endpoints yet.",
+        "workflow": "Workflow",
+        "outcome": "Outcome",
+        "delete": "Delete step"
+    },
+    "simulator": {
+        "title": "Test run",
+        "help": "Runs the canvas as it is now, with the answers and decisions below. Nothing is saved or sent.",
+        "close": "Close test run",
+        "answers": "Sample answers",
+        "noForm": "This workflow isn't linked to a request type, so there are no answers to fill in.",
+        "decisions": "Decisions",
+        "run": "Run",
+        "failed": "The test run couldn't start. Try again.",
+        "outcome": "Outcome: {outcome}",
+        "assignees": "Assigned to {names}",
+        "stopped": {
+            "attention": "Stopped: nobody could be assigned or a step failed. Check the assignees.",
+            "waiting": "Still waiting on a step (for example a timer)."
+        }
+    },
+    "stuck": {
+        "pageTitle": "Needs attention",
+        "title": "Needs attention",
+        "description": "Workflows stopped on a step that failed every retry. Retry, skip the step, or cancel.",
+        "empty": "Nothing is stuck",
+        "emptyHelp": "Steps that fail all their retries show up here.",
+        "attempts": "{count, plural, one {{formatted} attempt} other {{formatted} attempts}}",
+        "retry": "Retry",
+        "skip": "Skip step",
+        "cancel": "Cancel workflow",
+        "cancelTitle": "Cancel this workflow?",
+        "cancelHelp": "Open approvals are withdrawn and the requester is told.",
+        "reason": "Reason"
+    }
+}

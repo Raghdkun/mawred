@@ -6,10 +6,14 @@ import organizationBranches from '@/routes/organization/branches';
 import forms from '@/routes/forms';
 import people from '@/routes/people';
 import policies from '@/routes/policies';
+import approvals from '@/routes/approvals';
 import notifications from '@/routes/notifications';
+import requestTypes from '@/routes/request-types';
+import requests from '@/routes/requests';
+import workflowRoutes from '@/routes/workflows';
 import profile from '@/routes/profile';
 import setup from '@/routes/setup';
-import { Bell, Building2, House, type LucideIcon, UserRound } from 'lucide-react';
+import { Building2, House, type LucideIcon, Plus, UserRound } from 'lucide-react';
 import { type ModuleIconName } from '@/components/mw/module-icons.generated';
 
 export type NavItem = {
@@ -25,6 +29,10 @@ export type NavItem = {
     match: string[];
     /** Prefixes inside `match` that belong to another item. */
     exclude?: string[];
+    /** A shared-prop counter shown beside the item. */
+    badge?: 'approvals';
+    /** The raised centre action of the bottom tab bar. */
+    primary?: boolean;
 };
 
 export type NavGroup = { key: 'workspace' | 'admin'; label: string; items: NavItem[] };
@@ -45,6 +53,21 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     href: dashboard(),
                     icon: House,
                     match: ['/dashboard'],
+                },
+                {
+                    key: 'requests',
+                    label: 'nav.requests',
+                    href: requests.index(),
+                    icon: 'requests',
+                    match: ['/requests'],
+                },
+                {
+                    key: 'approvals',
+                    label: 'nav.approvals',
+                    href: approvals.index(),
+                    icon: 'approvals',
+                    match: ['/approvals'],
+                    badge: 'approvals',
                 },
                 {
                     key: 'people',
@@ -90,12 +113,36 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     match: ['/forms'],
                 },
                 {
+                    key: 'request-types',
+                    label: 'nav.requestTypes',
+                    href: requestTypes.index(),
+                    icon: 'requests',
+                    permission: 'requests.configure',
+                    match: ['/request-types'],
+                },
+                {
+                    key: 'workflows',
+                    label: 'nav.workflows',
+                    href: workflowRoutes.index(),
+                    icon: 'workflows',
+                    permission: 'workflows.view',
+                    match: ['/workflows'],
+                },
+                {
                     key: 'policies',
                     label: 'nav.policies',
                     href: policies.index(),
                     icon: 'policies',
                     permission: 'policies.view',
                     match: ['/policies'],
+                },
+                {
+                    key: 'notification-templates',
+                    label: 'nav.notificationTemplates',
+                    href: notifications.templates.index(),
+                    icon: 'channel',
+                    permission: 'notifications.configure',
+                    match: ['/notifications/templates'],
                 },
                 {
                     key: 'people-settings',
@@ -126,16 +173,36 @@ export function navigation(setupComplete: boolean): NavGroup[] {
     ];
 }
 
-/** Bottom tab bar on phones (handoff: Home, Requests, New, Schedule, Me). Modules join as they ship. */
+/**
+ * Bottom tab bar on phones (handoff: Home, Requests, New, Schedule, Me). Approvals hold the
+ * Schedule slot until Phase 5; notifications stay on the top bar bell.
+ */
 export function mobileTabs(): NavItem[] {
     return [
         { key: 'home', label: 'nav.home', href: dashboard(), icon: House, match: ['/dashboard'] },
         {
-            key: 'notifications',
-            label: 'nav.notifications',
-            href: notifications.index(),
-            icon: Bell,
-            match: ['/notifications'],
+            key: 'requests',
+            label: 'nav.requests',
+            href: requests.index(),
+            icon: 'requests',
+            match: ['/requests'],
+            exclude: ['/requests/new'],
+        },
+        {
+            key: 'new',
+            label: 'nav.newRequest',
+            href: requests.center(),
+            icon: Plus,
+            match: ['/requests/new'],
+            primary: true,
+        },
+        {
+            key: 'approvals',
+            label: 'nav.approvals',
+            href: approvals.index(),
+            icon: 'approvals',
+            match: ['/approvals'],
+            badge: 'approvals',
         },
         { key: 'me', label: 'nav.me', href: profile.edit(), icon: UserRound, match: ['/settings'] },
     ];

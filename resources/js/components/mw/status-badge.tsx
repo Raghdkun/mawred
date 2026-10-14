@@ -23,7 +23,16 @@ const STYLES: Record<WorkflowStatus, string> = {
     returned: 'bg-status-returned-bg text-status-returned-fg border-status-returned-border',
 };
 
-export function StatusBadge({ status, className }: { status: WorkflowStatus; className?: string }) {
+export function StatusBadge({
+    status,
+    label,
+    className,
+}: {
+    status: WorkflowStatus;
+    /** Overrides the default label (e.g. "Completed" in the approved colours). */
+    label?: string;
+    className?: string;
+}) {
     const { t } = useTranslation('common');
 
     return (
@@ -35,7 +44,7 @@ export function StatusBadge({ status, className }: { status: WorkflowStatus; cla
             )}
         >
             <span aria-hidden className="size-1.5 rounded-full bg-current" />
-            {t(`status.${status}`)}
+            {label ?? t(`status.${status}`)}
         </span>
     );
 }

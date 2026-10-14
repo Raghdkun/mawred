@@ -112,6 +112,12 @@ return [
     |
     */
 
+    /*
+    | Mawred builds the default mailer from the email connection in the vault (setup step 7,
+    | ADR-0015) when one is configured. Tests turn this off.
+    */
+    'runtime_config' => (bool) env('MAIL_RUNTIME_CONFIG', true),
+
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),

@@ -9,6 +9,8 @@ use App\Domain\Access\Support\ScopeResolver;
 use App\Domain\People\Models\Employee;
 use App\Domain\Setup\Support\Settings;
 use App\Domain\Setup\Support\SetupState;
+use App\Domain\Workflows\Enums\TaskStatus;
+use App\Domain\Workflows\Models\WorkflowTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
@@ -49,6 +51,7 @@ final class HandleInertiaRequests extends Middleware
             'company' => $this->companyPayload(...),
             'setup' => fn (): array => ['complete' => $this->setup->isComplete()],
             'notifications' => fn (): ?array => $user instanceof User ? ['unread' => $user->unreadNotifications()->count()] : null,
+            'approvals' => fn (): ?array => $user instanceof User ? ['open' => WorkflowTask::query()->where('assignee_user_id', $user->id)->where('status', TaskStatus::Open->value)->count()] : null,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

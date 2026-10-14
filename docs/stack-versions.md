@@ -47,6 +47,7 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 | @fontsource-variable/readex-pro | 5.3 | OFL-1.1, arabic + latin subsets, wght 160–700 |
 | @dnd-kit/core / sortable / utilities | 6.3 / 10.0 / 3.2 | Form builder reordering (D52). Peer `react >=16.8`, works with React 19 |
 | altcha (web component) | 3.3 | Public form captcha widget (D10, D53) |
+| @xyflow/react | 12.12 | Workflow builder canvas (D52, handoff 15). Peer `react >=17`, works with React 19; 13.0 is still `next` |
 
 ## Infra
 PostgreSQL 18, Redis 8, Gotenberg 8.37, FrankenPHP 1.13, Caddy 2, WAHA (GOWS engine, pinned tag), ClamAV, GlitchTip. WhatsApp Graph API v25/v26. Captcha: altcha-org/altcha (PHP) + altcha web component.
