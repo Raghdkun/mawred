@@ -53,7 +53,8 @@
 - Calculators (accrual, overtime, attendance metrics) as pure functions, plus the recalculation and impact-preview framework (wired to the ledgers in Phase 5).
 - **Exit**: precedence and effective-dating test matrix; explainer shows provenance; preset round-trip.
 
-## Phase 3 — Forms, workflows & requests (XL, may split 3a/3b)
+## Phase 3 — Forms, workflows & requests (XL, may split 3a/3b) — 3a ✅ built (pending CI and owner review), 3b next
+> 3a demo: [docs/demos/phase-3a.md](demos/phase-3a.md). Decisions: D51 (core field types), D52 (dnd-kit, React Flow, ALTCHA), D53 (general public forms), D54 (forms implementation choices).
 - **3a**: MFS v1 + rules engine with parity fixtures; form builder (all field types, logic, multi-page, EN/AR + phone preview); renderer; public-form hardening.
 - **3b**:
   - Workflow engine: all node handlers, assignee resolvers, delegation, SLA, reminders, dead-letter view, timeline, simulator; React Flow canvas.

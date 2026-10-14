@@ -11,7 +11,7 @@ Format: Context → Decision → Consequences → Alternatives. Status: Proposed
 | [0005](0005-authorization-and-scopes.md) | RBAC + data scopes + field permissions (ScopeResolver) | Proposed |
 | [0006](0006-audit.md) | Audit trail | Proposed |
 | [0007](0007-sensitive-data.md) | Sensitive field encryption + blind index | Proposed |
-| [0008](0008-form-schema.md) | Mawred Form Schema + shared rules language | Proposed |
+| [0008](0008-form-schema.md) | Mawred Form Schema + shared rules language | Accepted |
 | [0009](0009-workflow-engine.md) | In-house workflow engine | Proposed |
 | [0010](0010-policy-engine.md) | Policy engine (typed keys, layered sets, effective dating, ledgers) | Accepted |
 | [0011](0011-i18n-rtl.md) | react-i18next; RTL via logical properties | Proposed |

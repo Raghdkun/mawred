@@ -60,6 +60,7 @@ All questions below were answered by the product owner. Items still waiting on a
 | D51 | Form field types | **Core set only in MFS v1**: text, long text, number, money, email, phone, date, date range, time, dropdown, multi-select, radio, checkboxes, yes/no, file, employee/department/branch/leave-type pickers, calculated, heading/note. Repeating groups, signature and rating can join later as new typed field types. | ADR-0008, Forms |
 | D52 | Builder and canvas libraries | **@dnd-kit** for drag-to-reorder in the form builder (keyboard sensor for a11y), **@xyflow/react** for the workflow canvas (added in 3b), **altcha** (PHP + web component) for public forms. | Forms, Workflows |
 | D53 | Public forms | **Any published form can get a public link** (surveys, external enquiries) with ALTCHA, honeypot, minimum fill time and rate limits; submissions land in a submissions list. Careers (Phase 6) reuses the same route group. | ADR-0008, Forms |
+| D54 | Forms implementation | Chosen in 3a, open to review: **submission answers encrypted at rest** and opening them audited; **ALTCHA key derived from APP_KEY** until the vault (Phase 4); the ALTCHA widget **starts on focus**; uploads expire after 24 h unless submitted. | ADR-0008, Forms |
 
 ## Still open (non-blocking)
 - **GitHub Actions can't start on this account** (every run is `startup_failure`, even a one-step workflow). Likely billing or a spending limit for private repos. Owner to check Settings → Billing → Actions.

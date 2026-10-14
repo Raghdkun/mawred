@@ -118,15 +118,18 @@ export function Palette({ builder, isPublic }: { builder: Builder; isPublic: boo
 
     return (
         <nav aria-label={t('builder.palette')} className="flex flex-col gap-4">
-            {PALETTE.map(({ group, types }) => (
-                <section key={group} className="flex flex-col gap-1.5">
-                    <h3 className="text-caption font-semibold tracking-wide text-muted-foreground uppercase">
-                        {t(`builder.paletteGroups.${group}`)}
-                    </h3>
-                    <ul className="grid grid-cols-1 gap-1">
-                        {types
-                            .filter((type) => !(isPublic && isPicker(type)))
-                            .map((type) => (
+            {PALETTE.map(({ group, types }) => ({
+                group,
+                types: types.filter((type) => !(isPublic && isPicker(type))),
+            }))
+                .filter(({ types }) => types.length > 0)
+                .map(({ group, types }) => (
+                    <section key={group} className="flex flex-col gap-1.5">
+                        <h3 className="text-caption font-semibold tracking-wide text-muted-foreground uppercase">
+                            {t(`builder.paletteGroups.${group}`)}
+                        </h3>
+                        <ul className="grid grid-cols-1 gap-1">
+                            {types.map((type) => (
                                 <PaletteItem
                                     key={type}
                                     type={type}
@@ -140,9 +143,9 @@ export function Palette({ builder, isPublic }: { builder: Builder; isPublic: boo
                                     }
                                 />
                             ))}
-                    </ul>
-                </section>
-            ))}
+                        </ul>
+                    </section>
+                ))}
         </nav>
     );
 }

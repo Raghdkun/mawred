@@ -370,31 +370,33 @@ function PageTabs({ builder }: { builder: ReturnType<typeof useBuilder> }) {
     const { locale } = useLocale();
 
     return (
-        <div
-            role="tablist"
-            aria-label={t('builder.pages')}
-            className="flex flex-wrap items-center gap-1"
-        >
-            {builder.schema.pages.map((page, index) => (
-                <button
-                    key={page.key}
-                    type="button"
-                    role="tab"
-                    aria-selected={builder.activePage === page.key}
-                    onClick={() => {
-                        builder.setActivePage(page.key);
-                        builder.setSelection({ kind: 'page', key: page.key });
-                    }}
-                    className={cn(
-                        'h-9 rounded-md px-3 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
-                        builder.activePage === page.key
-                            ? 'bg-accent font-medium text-accent-foreground'
-                            : 'text-text-secondary hover:bg-muted',
-                    )}
-                >
-                    {textOf(page.title, locale) || t('builder.pageN', { n: index + 1 })}
-                </button>
-            ))}
+        <div className="flex flex-wrap items-center gap-1">
+            <div
+                role="tablist"
+                aria-label={t('builder.pages')}
+                className="flex flex-wrap items-center gap-1"
+            >
+                {builder.schema.pages.map((page, index) => (
+                    <button
+                        key={page.key}
+                        type="button"
+                        role="tab"
+                        aria-selected={builder.activePage === page.key}
+                        onClick={() => {
+                            builder.setActivePage(page.key);
+                            builder.setSelection({ kind: 'page', key: page.key });
+                        }}
+                        className={cn(
+                            'h-9 rounded-md px-3 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+                            builder.activePage === page.key
+                                ? 'bg-accent font-medium text-accent-foreground'
+                                : 'text-text-secondary hover:bg-muted',
+                        )}
+                    >
+                        {textOf(page.title, locale) || t('builder.pageN', { n: index + 1 })}
+                    </button>
+                ))}
+            </div>
             <Button type="button" variant="ghost" size="sm" onClick={builder.addPage}>
                 <Plus aria-hidden />
                 {t('builder.addPage')}

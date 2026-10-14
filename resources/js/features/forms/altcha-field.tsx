@@ -36,5 +36,14 @@ export function AltchaField({
         return () => element.removeEventListener('statechange', listener);
     }, [onChange]);
 
-    return <altcha-widget ref={ref} challenge={challengeUrl} language={locale} name="altcha" />;
+    // Starts solving as soon as someone begins filling in the form, so it's usually done by Send.
+    return (
+        <altcha-widget
+            ref={ref}
+            challenge={challengeUrl}
+            language={locale}
+            name="altcha"
+            auto="onfocus"
+        />
+    );
 }
