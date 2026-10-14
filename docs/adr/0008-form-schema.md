@@ -1,6 +1,6 @@
 # ADR-0008: Mawred Form Schema and a shared rules language
 
-- Status: Proposed
+- Status: Accepted (Phase 3a)
 - Date: 2026-10-13
 
 ## Context
@@ -22,3 +22,13 @@ Forms must validate identically on the client (zod) and the server (Laravel rule
 ## Consequences
 - + One source of truth, safe evaluation, testable parity.
 - − We own a small expression engine. Its scope is deliberately limited, and growth happens only by adding typed functions.
+
+## Implementation notes (Phase 3a)
+- Rules: `app/Support/Rules/Rules.php` and `resources/js/lib/rules/index.ts`. Operators: `all any not eq neq gt gte lt lte in contains empty between add sub mul div round sum count if days_between working_days_between balance`. Null propagates; numeric strings compare as numbers; `round` is half away from zero in both. `balance()` reads `ctx.balances`, empty until the Phase 5 ledger.
+- Visibility and calculated values share one algorithm (`FormResolution` / `resolveForm`, iterated until stable), with its own parity fixture (`tests/fixtures/forms/resolution.json`).
+- The meta-schema `resources/schemas/form.v1.json` documents the contract; `FormSchema` enforces it on save (no JSON-Schema library was added). The builder relies on the server for structural errors and maps them back onto fields.
+- `buildZodSchema` is one zod schema with a `superRefine` over the resolution, so hidden fields never block the client.
+- Submissions are **encrypted at rest** (`data` as `encrypted:array`); opening one and downloading its files are audited (D54).
+- Uploads: private `FormUpload`s that expire after 24 h unless claimed (pruned hourly), content type sniffed, size and kind per field, ClamAV via clamd when `CLAMAV_HOST` is set (fails closed).
+- ALTCHA (D10): PBKDF2, cost 5000, counters 5000–10000 (about 3–4 s in Chromium), configurable in `services.altcha`; the widget starts on focus. The HMAC key is derived from `APP_KEY` until the credential vault ships (Phase 4); solved challenges are single-use.
+- Request types pointing at forms, and submit-time `form_version_id` pinning through request types, come in 3b.

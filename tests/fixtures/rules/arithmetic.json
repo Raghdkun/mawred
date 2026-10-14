@@ -1,0 +1,320 @@
+{
+  "description": "mawred.rule/v1 parity: arithmetic",
+  "context": {
+    "field": {
+      "amount": 250,
+      "amountText": "250",
+      "days": 3,
+      "reason": "Family trip",
+      "type": "annual",
+      "empty": "",
+      "blank": "   ",
+      "tags": [
+        "urgent",
+        "travel"
+      ],
+      "none": null,
+      "range": {
+        "from": "2026-03-18",
+        "to": "2026-03-24"
+      },
+      "lines": [
+        10,
+        20.5,
+        "x"
+      ],
+      "agree": true
+    },
+    "requester": {
+      "branch": "01RUH",
+      "gender": "female",
+      "grade": "G5"
+    },
+    "ctx": {
+      "today": "2026-10-15",
+      "calendar": {
+        "weekend": [
+          5,
+          6
+        ],
+        "holidays": [
+          "2026-03-22"
+        ]
+      },
+      "balances": {
+        "ANNUAL": 12.5
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "add",
+      "rule": {
+        "op": "add",
+        "args": [
+          1,
+          2,
+          3
+        ]
+      },
+      "expected": 6
+    },
+    {
+      "name": "add strings",
+      "rule": {
+        "op": "add",
+        "args": [
+          "1.5",
+          "2"
+        ]
+      },
+      "expected": 3.5
+    },
+    {
+      "name": "add null",
+      "rule": {
+        "op": "add",
+        "args": [
+          1,
+          null
+        ]
+      },
+      "expected": null
+    },
+    {
+      "name": "add text",
+      "rule": {
+        "op": "add",
+        "args": [
+          1,
+          "x"
+        ]
+      },
+      "expected": null
+    },
+    {
+      "name": "sub",
+      "rule": {
+        "op": "sub",
+        "args": [
+          10,
+          4
+        ]
+      },
+      "expected": 6
+    },
+    {
+      "name": "mul",
+      "rule": {
+        "op": "mul",
+        "args": [
+          {
+            "ref": "field.days"
+          },
+          8
+        ]
+      },
+      "expected": 24
+    },
+    {
+      "name": "div",
+      "rule": {
+        "op": "div",
+        "args": [
+          10,
+          4
+        ]
+      },
+      "expected": 2.5
+    },
+    {
+      "name": "div zero",
+      "rule": {
+        "op": "div",
+        "args": [
+          10,
+          0
+        ]
+      },
+      "expected": null
+    },
+    {
+      "name": "div zero string",
+      "rule": {
+        "op": "div",
+        "args": [
+          10,
+          "0"
+        ]
+      },
+      "expected": null
+    },
+    {
+      "name": "round default",
+      "rule": {
+        "op": "round",
+        "args": [
+          2.5
+        ]
+      },
+      "expected": 3
+    },
+    {
+      "name": "round negative",
+      "rule": {
+        "op": "round",
+        "args": [
+          -2.5
+        ]
+      },
+      "expected": -3
+    },
+    {
+      "name": "round places",
+      "rule": {
+        "op": "round",
+        "args": [
+          1.005,
+          2
+        ]
+      },
+      "expected": 1.01
+    },
+    {
+      "name": "round 2.675",
+      "rule": {
+        "op": "round",
+        "args": [
+          2.675,
+          2
+        ]
+      },
+      "expected": 2.68
+    },
+    {
+      "name": "round many",
+      "rule": {
+        "op": "round",
+        "args": [
+          1.23456789,
+          9
+        ]
+      },
+      "expected": 1.234568
+    },
+    {
+      "name": "round null",
+      "rule": {
+        "op": "round",
+        "args": [
+          null
+        ]
+      },
+      "expected": null
+    },
+    {
+      "name": "sum",
+      "rule": {
+        "op": "sum",
+        "args": [
+          {
+            "ref": "field.lines"
+          }
+        ]
+      },
+      "expected": 30.5
+    },
+    {
+      "name": "sum not list",
+      "rule": {
+        "op": "sum",
+        "args": [
+          {
+            "ref": "field.range"
+          }
+        ]
+      },
+      "expected": null
+    },
+    {
+      "name": "count list",
+      "rule": {
+        "op": "count",
+        "args": [
+          {
+            "ref": "field.tags"
+          }
+        ]
+      },
+      "expected": 2
+    },
+    {
+      "name": "count null",
+      "rule": {
+        "op": "count",
+        "args": [
+          null
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "name": "count scalar",
+      "rule": {
+        "op": "count",
+        "args": [
+          "a"
+        ]
+      },
+      "expected": 1
+    },
+    {
+      "name": "count object",
+      "rule": {
+        "op": "count",
+        "args": [
+          {
+            "ref": "field.range"
+          }
+        ]
+      },
+      "expected": 1
+    },
+    {
+      "name": "nested calc",
+      "rule": {
+        "op": "round",
+        "args": [
+          {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  {
+                    "ref": "field.amount"
+                  },
+                  3
+                ]
+              },
+              2
+            ]
+          },
+          2
+        ]
+      },
+      "expected": 166.67
+    },
+    {
+      "name": "float addition",
+      "rule": {
+        "op": "add",
+        "args": [
+          0.1,
+          0.2
+        ]
+      },
+      "expected": 0.30000000000000004
+    }
+  ]
+}

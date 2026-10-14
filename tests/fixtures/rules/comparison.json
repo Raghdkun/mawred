@@ -1,0 +1,473 @@
+{
+  "description": "mawred.rule/v1 parity: comparison",
+  "context": {
+    "field": {
+      "amount": 250,
+      "amountText": "250",
+      "days": 3,
+      "reason": "Family trip",
+      "type": "annual",
+      "empty": "",
+      "blank": "   ",
+      "tags": [
+        "urgent",
+        "travel"
+      ],
+      "none": null,
+      "range": {
+        "from": "2026-03-18",
+        "to": "2026-03-24"
+      },
+      "lines": [
+        10,
+        20.5,
+        "x"
+      ],
+      "agree": true
+    },
+    "requester": {
+      "branch": "01RUH",
+      "gender": "female",
+      "grade": "G5"
+    },
+    "ctx": {
+      "today": "2026-10-15",
+      "calendar": {
+        "weekend": [
+          5,
+          6
+        ],
+        "holidays": [
+          "2026-03-22"
+        ]
+      },
+      "balances": {
+        "ANNUAL": 12.5
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "eq numbers",
+      "rule": {
+        "op": "eq",
+        "args": [
+          {
+            "ref": "field.amount"
+          },
+          250
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "eq numeric string",
+      "rule": {
+        "op": "eq",
+        "args": [
+          {
+            "ref": "field.amountText"
+          },
+          250
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "eq decimal",
+      "rule": {
+        "op": "eq",
+        "args": [
+          "1.50",
+          1.5
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "eq strings",
+      "rule": {
+        "op": "eq",
+        "args": [
+          {
+            "ref": "field.type"
+          },
+          "annual"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "eq case-sensitive",
+      "rule": {
+        "op": "eq",
+        "args": [
+          "A",
+          "a"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "eq null null",
+      "rule": {
+        "op": "eq",
+        "args": [
+          null,
+          null
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "eq null zero",
+      "rule": {
+        "op": "eq",
+        "args": [
+          null,
+          0
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "eq bool vs 1",
+      "rule": {
+        "op": "eq",
+        "args": [
+          true,
+          1
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "neq",
+      "rule": {
+        "op": "neq",
+        "args": [
+          {
+            "ref": "requester.gender"
+          },
+          "male"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "gt",
+      "rule": {
+        "op": "gt",
+        "args": [
+          {
+            "ref": "field.amount"
+          },
+          100
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "gte equal",
+      "rule": {
+        "op": "gte",
+        "args": [
+          {
+            "ref": "field.days"
+          },
+          3
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "lt string number",
+      "rule": {
+        "op": "lt",
+        "args": [
+          "9",
+          "10"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "lt strings",
+      "rule": {
+        "op": "lt",
+        "args": [
+          "apple",
+          "banana"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "lte dates",
+      "rule": {
+        "op": "lte",
+        "args": [
+          {
+            "ref": "field.range.from"
+          },
+          {
+            "ref": "field.range.to"
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "gt null",
+      "rule": {
+        "op": "gt",
+        "args": [
+          null,
+          1
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "lt null",
+      "rule": {
+        "op": "lt",
+        "args": [
+          null,
+          1
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "gt mixed",
+      "rule": {
+        "op": "gt",
+        "args": [
+          "abc",
+          1
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "between",
+      "rule": {
+        "op": "between",
+        "args": [
+          {
+            "ref": "field.days"
+          },
+          1,
+          5
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "between edge",
+      "rule": {
+        "op": "between",
+        "args": [
+          5,
+          1,
+          5
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "between out",
+      "rule": {
+        "op": "between",
+        "args": [
+          6,
+          1,
+          5
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "between dates",
+      "rule": {
+        "op": "between",
+        "args": [
+          {
+            "ref": "ctx.today"
+          },
+          "2026-01-01",
+          "2026-12-31"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "in list",
+      "rule": {
+        "op": "in",
+        "args": [
+          {
+            "ref": "field.type"
+          },
+          {
+            "value": [
+              "annual",
+              "sick"
+            ]
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "in numeric",
+      "rule": {
+        "op": "in",
+        "args": [
+          "2",
+          {
+            "value": [
+              1,
+              2
+            ]
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "in not list",
+      "rule": {
+        "op": "in",
+        "args": [
+          "a",
+          "abc"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "contains list",
+      "rule": {
+        "op": "contains",
+        "args": [
+          {
+            "ref": "field.tags"
+          },
+          "travel"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "contains text",
+      "rule": {
+        "op": "contains",
+        "args": [
+          {
+            "ref": "field.reason"
+          },
+          "TRIP"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "contains miss",
+      "rule": {
+        "op": "contains",
+        "args": [
+          {
+            "ref": "field.reason"
+          },
+          "work"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "contains object",
+      "rule": {
+        "op": "contains",
+        "args": [
+          {
+            "ref": "field.range"
+          },
+          "2026-03-18"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "empty null",
+      "rule": {
+        "op": "empty",
+        "args": [
+          {
+            "ref": "field.none"
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "empty blank",
+      "rule": {
+        "op": "empty",
+        "args": [
+          {
+            "ref": "field.blank"
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "empty missing",
+      "rule": {
+        "op": "empty",
+        "args": [
+          {
+            "ref": "field.nope"
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "empty list",
+      "rule": {
+        "op": "empty",
+        "args": [
+          {
+            "value": []
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "name": "empty zero",
+      "rule": {
+        "op": "empty",
+        "args": [
+          0
+        ]
+      },
+      "expected": false
+    },
+    {
+      "name": "empty text",
+      "rule": {
+        "op": "empty",
+        "args": [
+          {
+            "ref": "field.reason"
+          }
+        ]
+      },
+      "expected": false
+    }
+  ]
+}

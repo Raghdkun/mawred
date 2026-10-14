@@ -4,7 +4,7 @@ An internal HR, hiring and workflow platform for one legal entity with unlimited
 
 Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install` after cloning): @AGENTS.md
 
-**Read first**: [docs/architecture.md](docs/architecture.md) · [docs/adr/](docs/adr/README.md) · [docs/roadmap.md](docs/roadmap.md) · [docs/stack-versions.md](docs/stack-versions.md) · [docs/open-questions.md](docs/open-questions.md) (decision log D1–D50)
+**Read first**: [docs/architecture.md](docs/architecture.md) · [docs/adr/](docs/adr/README.md) · [docs/roadmap.md](docs/roadmap.md) · [docs/stack-versions.md](docs/stack-versions.md) · [docs/open-questions.md](docs/open-questions.md) (decision log D1–D54)
 
 ## Ground rules
 - **Plan before code** for any non-trivial change. Ask before any decision the brief or ADRs leave ambiguous. Record new decisions as ADRs.
@@ -105,6 +105,15 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Policy values change only through `SetPolicyValues` / `AssignPolicySet` (they close the open row and bump `PolicyEpoch`); read them with `PolicyResolver`, never from `policy_values` directly.
 - Calculators stay pure: no models, clock or container. Feed them value objects (`HolidayRuleSpec`, value Data), so they run in the Unit suite.
 - Number inputs with a unit adornment must not force `dir="ltr"`: the end padding then lands on the wrong side in Arabic.
+
+## Gotchas learned in Phase 3a
+- Postgres `jsonb` reorders object keys: compare stored schemas with `toEqual`, never `toBe`.
+- Rules live twice (PHP + TS). Change both together and add a case to `tests/fixtures/rules`; both suites run every fixture.
+- Inertia's payload type can't hold arbitrary JSON (rule literals are `unknown`): send schemas and answers through `asPayload()` in `features/forms/schema.ts`.
+- `Omit<…>` on a type with an index signature drops its named properties; give such contexts an explicit type (`FormRuleContext`).
+- ALTCHA at production cost takes seconds to solve; tests set `services.altcha` to a tiny work factor.
+- Fresh test schemas drop hundreds of partition tables at once: Postgres needs `max_locks_per_transaction=256` (compose.yaml and CI).
+- react-hook-form: read live values with `useWatch`, not `form.watch()` (the React Compiler lint rejects it).
 
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.

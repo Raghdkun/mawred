@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Organization\DepartmentSearchController;
 use App\Http\Controllers\Api\V1\Organization\PositionSearchController;
 use App\Http\Controllers\Api\V1\People\EmployeesController;
 use App\Http\Controllers\Api\V1\Policies\EmployeePoliciesController;
+use App\Http\Controllers\Api\V1\Policies\LeaveTypeSearchController;
 use App\Http\Controllers\Api\V1\Search\GlobalSearchController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,7 @@ Route::prefix('v1')
         Route::get('branches', BranchSearchController::class)->name('branches.index');
         Route::get('departments', DepartmentSearchController::class)->name('departments.index');
         Route::get('positions', PositionSearchController::class)->name('positions.index');
+        Route::get('leave-types', LeaveTypeSearchController::class)->name('leave-types.index');
 
         Route::get('employees', [EmployeesController::class, 'index'])->name('employees.index');
         Route::get('employees/{employee}', [EmployeesController::class, 'show'])->name('employees.show');

@@ -77,6 +77,58 @@ requestId: string | null,
 };
 }
 }
+namespace Forms {
+namespace Data {
+export type FormData = {
+id: string,
+code: string,
+name: Record<string, string>,
+description: Record<string, string>,
+category: string | null,
+status: string,
+publishedNumber: number | null,
+publishedAt: string | null,
+isPublic: boolean,
+publicSlug: string | null,
+publicUrl: string | null,
+successMessage: Record<string, string>,
+closesAt: string | null,
+submissionsCount: number,
+};
+export type FormSettingsData = {
+code: string,
+name: {
+en: string,
+ar?: string | null,
+},
+description: {
+en?: string | null,
+ar?: string | null,
+},
+category: string | null,
+isPublic: boolean,
+publicSlug: string | null,
+successMessage: {
+en?: string | null,
+ar?: string | null,
+},
+closesAt: string | null,
+};
+export type SubmissionData = {
+id: string,
+createdAt: string,
+source: string,
+version: number,
+submittedBy: string | null,
+answers: Record<string, any> | null,
+};
+}
+namespace Enums {
+export type FieldType = 'text' | 'textarea' | 'number' | 'money' | 'email' | 'phone' | 'date' | 'date_range' | 'time' | 'select' | 'multiselect' | 'radio' | 'checkboxes' | 'boolean' | 'file' | 'employee' | 'department' | 'branch' | 'leave_type' | 'calculated' | 'note';
+export type SubmissionSource = 'internal' | 'public' | 'test';
+export type VersionStatus = 'draft' | 'published' | 'archived';
+}
+}
 namespace Notifications {
 namespace Data {
 export type NotificationItemData = {

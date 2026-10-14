@@ -3,6 +3,7 @@ import { dashboard } from '@/routes';
 import accessRoles from '@/routes/access/roles';
 import audit from '@/routes/audit';
 import organizationBranches from '@/routes/organization/branches';
+import forms from '@/routes/forms';
 import people from '@/routes/people';
 import policies from '@/routes/policies';
 import notifications from '@/routes/notifications';
@@ -79,6 +80,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: Building2,
                     permission: 'organization.view',
                     match: ['/organization'],
+                },
+                {
+                    key: 'forms',
+                    label: 'nav.forms',
+                    href: forms.index(),
+                    icon: 'forms',
+                    permission: 'forms.view',
+                    match: ['/forms'],
                 },
                 {
                     key: 'policies',

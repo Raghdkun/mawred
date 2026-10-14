@@ -17,7 +17,8 @@
         "organization": "الهيكل التنظيمي",
         "imports": "استيراد الموظفين",
         "peopleSettings": "إعدادات الموظفين",
-        "policies": "السياسات"
+        "policies": "السياسات",
+        "forms": "النماذج"
     },
     "searchPlaceholder": "ابحث أو انتقل إلى…",
     "switchLanguage": "تغيير اللغة إلى {language}",

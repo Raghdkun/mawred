@@ -8,6 +8,7 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import { i18n, namespacesForPage, prepareLocale } from '@/i18n';
 import AppShellLayout from '@/layouts/app-shell-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import SetupLayout from '@/layouts/setup-layout';
 
@@ -41,6 +42,8 @@ void createInertiaApp({
             case name.startsWith('setup/'):
             case name.startsWith('errors/'):
                 return SetupLayout;
+            case name.startsWith('public/'):
+                return PublicLayout;
             case name.startsWith('settings/'):
                 return [AppShellLayout, SettingsLayout];
             default:

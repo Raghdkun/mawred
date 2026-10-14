@@ -17,7 +17,8 @@
         "organization": "Organization",
         "imports": "Import people",
         "peopleSettings": "People settings",
-        "policies": "Policies"
+        "policies": "Policies",
+        "forms": "Forms"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

@@ -2,6 +2,7 @@
 
 use App\Providers\AccessServiceProvider;
 use App\Providers\AppServiceProvider;
+use App\Providers\FormsServiceProvider;
 use App\Providers\FortifyServiceProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\PeopleServiceProvider;
@@ -13,6 +14,7 @@ return [
     AccessServiceProvider::class,
     PeopleServiceProvider::class,
     PoliciesServiceProvider::class,
+    FormsServiceProvider::class,
     FortifyServiceProvider::class,
     HorizonServiceProvider::class,
     TypeScriptTransformerServiceProvider::class,

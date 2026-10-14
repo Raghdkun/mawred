@@ -1,0 +1,114 @@
+{
+  "description": "mawred.rule/v1 parity: errors",
+  "context": {
+    "field": {
+      "amount": 250,
+      "amountText": "250",
+      "days": 3,
+      "reason": "Family trip",
+      "type": "annual",
+      "empty": "",
+      "blank": "   ",
+      "tags": [
+        "urgent",
+        "travel"
+      ],
+      "none": null,
+      "range": {
+        "from": "2026-03-18",
+        "to": "2026-03-24"
+      },
+      "lines": [
+        10,
+        20.5,
+        "x"
+      ],
+      "agree": true
+    },
+    "requester": {
+      "branch": "01RUH",
+      "gender": "female",
+      "grade": "G5"
+    },
+    "ctx": {
+      "today": "2026-10-15",
+      "calendar": {
+        "weekend": [
+          5,
+          6
+        ],
+        "holidays": [
+          "2026-03-22"
+        ]
+      },
+      "balances": {
+        "ANNUAL": 12.5
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "unknown operator",
+      "rule": {
+        "op": "pow",
+        "args": [
+          2,
+          3
+        ]
+      },
+      "error": true
+    },
+    {
+      "name": "too few args",
+      "rule": {
+        "op": "not",
+        "args": []
+      },
+      "error": true
+    },
+    {
+      "name": "too many args",
+      "rule": {
+        "op": "not",
+        "args": [
+          1,
+          2
+        ]
+      },
+      "error": true
+    },
+    {
+      "name": "args not list",
+      "rule": {
+        "op": "eq",
+        "args": {
+          "a": 1
+        }
+      },
+      "error": true
+    },
+    {
+      "name": "ref not string",
+      "rule": {
+        "ref": 5
+      },
+      "error": true
+    },
+    {
+      "name": "raw list node",
+      "rule": [
+        1,
+        2
+      ],
+      "error": true
+    },
+    {
+      "name": "extra keys",
+      "rule": {
+        "ref": "field.amount",
+        "x": 1
+      },
+      "error": true
+    }
+  ]
+}

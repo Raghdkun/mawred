@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mawred.app/schemas/form.v1.json",
+  "title": "Mawred Form Schema v1 (mawred.form/v1)",
+  "description": "Contract for form documents (ADR-0008). Enforced on save by App\\Domain\\Forms\\Support\\FormSchema; this file documents it for tools and reviewers.",
+  "type": "object",
+  "required": ["format", "pages"],
+  "properties": {
+    "format": {
+      "const": "mawred.form/v1"
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/page"
+      }
+    }
+  },
+  "$defs": {
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,39}$"
+    },
+    "text": {
+      "type": ["object", "null"],
+      "properties": {
+        "en": {
+          "type": ["string", "null"]
+        },
+        "ar": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "rule": {
+      "description": "mawred.rule/v1 node: a JSON scalar, {value}, {ref}, or {op, args}. See app/Support/Rules/Rules.php for the operator list."
+    },
+    "page": {
+      "type": "object",
+      "required": ["key", "sections"],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/section"
+          }
+        }
+      }
+    },
+    "section": {
+      "type": "object",
+      "required": ["key", "fields"],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "description": {
+          "$ref": "#/$defs/text"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/field"
+          }
+        }
+      }
+    },
+    "option": {
+      "type": "object",
+      "required": ["value", "label"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "label": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "required": ["key", "type", "label"],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "type": {
+          "enum": [
+            "text",
+            "textarea",
+            "number",
+            "money",
+            "email",
+            "phone",
+            "date",
+            "date_range",
+            "time",
+            "select",
+            "multiselect",
+            "radio",
+            "checkboxes",
+            "boolean",
+            "file",
+            "employee",
+            "department",
+            "branch",
+            "leave_type",
+            "calculated",
+            "note"
+          ]
+        },
+        "label": {
+          "$ref": "#/$defs/text"
+        },
+        "help": {
+          "$ref": "#/$defs/text"
+        },
+        "placeholder": {
+          "$ref": "#/$defs/text"
+        },
+        "required": {
+          "description": "true/false, or a rule over field/requester/ctx",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "$ref": "#/$defs/rule"
+            }
+          ]
+        },
+        "visible": {
+          "description": "null = always; otherwise a rule",
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/rule"
+            }
+          ]
+        },
+        "default": {
+          "description": "A literal, or a rule over requester/ctx (e.g. {\"ref\":\"ctx.today\"})"
+        },
+        "calc": {
+          "$ref": "#/$defs/rule"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/$defs/option"
+          }
+        },
+        "currency": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Z]{3}$"
+        },
+        "validation": {
+          "type": "object",
+          "properties": {
+            "minLength": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5000
+            },
+            "min": {
+              "description": "number, or for dates a Y-m-d literal or rule over ctx"
+            },
+            "max": {},
+            "integer": {
+              "type": "boolean"
+            },
+            "minItems": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxItems": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxDays": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3660
+            },
+            "maxFiles": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "maxSizeKb": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20480
+            },
+            "accept": {
+              "type": "array",
+              "items": {
+                "enum": ["pdf", "image", "word", "excel"]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

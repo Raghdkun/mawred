@@ -75,3 +75,23 @@ function userWithRoles(string ...$roles): User
 
     return $user->fresh() ?? $user;
 }
+
+/**
+ * A one-page MFS v1 schema from a list of fields.
+ *
+ * @param  list<array<string, mixed>>  $fields
+ * @return array<string, mixed>
+ */
+function mfs(array $fields): array
+{
+    return ['format' => 'mawred.form/v1', 'pages' => [['key' => 'main', 'title' => ['en' => 'Main'], 'sections' => [['key' => 'details', 'title' => null, 'fields' => $fields]]]]];
+}
+
+/**
+ * @param  array<string, mixed>  $extra
+ * @return array<string, mixed>
+ */
+function field(string $key, string $type, array $extra = []): array
+{
+    return ['key' => $key, 'type' => $type, 'label' => ['en' => ucfirst(str_replace('_', ' ', $key)), 'ar' => $key], ...$extra];
+}
