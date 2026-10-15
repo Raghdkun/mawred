@@ -29,6 +29,16 @@ return [
         'counter_max' => env('ALTCHA_COUNTER_MAX', 10000),
     ],
 
+    /*
+    | WhatsApp (ADR-0015). Credentials live in the vault (integration_connections); only the
+    | pinned Graph API version and timeouts are configuration.
+    */
+    'whatsapp' => [
+        'graph_url' => env('WHATSAPP_GRAPH_URL', 'https://graph.facebook.com'),
+        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v25.0'),
+        'timeout' => (int) env('WHATSAPP_TIMEOUT', 15),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],

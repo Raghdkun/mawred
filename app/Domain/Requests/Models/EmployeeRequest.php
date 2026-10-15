@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property RequestStatus $status
  * @property CarbonImmutable $submitted_at
  * @property CarbonImmutable|null $decided_at
+ * @property int|null $cognito_source_id
+ * @property string|null $external_entry_id
  * @property CarbonImmutable $created_at
  */
 #[Guarded(['id', 'ulid'])]

@@ -32,7 +32,7 @@ final class NotificationPreferencesData extends Data
 
         return [
             'channels' => ['present', 'array:'.$categories],
-            'channels.*' => ['array:in_app,email'],
+            'channels.*' => ['array:in_app,email,whatsapp'],
             'channels.*.*' => ['boolean'],
             'quietHoursStart' => ['nullable', 'date_format:H:i', 'required_with:quietHoursEnd', 'different:quietHoursEnd'],
             'quietHoursEnd' => ['nullable', 'date_format:H:i', 'required_with:quietHoursStart'],

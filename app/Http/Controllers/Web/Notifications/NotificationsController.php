@@ -5,10 +5,18 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web\Notifications;
 
 use App\Domain\Access\Models\User;
+use App\Domain\Integrations\Actions\ConfirmWhatsAppNumber;
+use App\Domain\Integrations\Actions\RemoveWhatsAppNumber;
+use App\Domain\Integrations\Actions\StartWhatsAppVerification;
+use App\Domain\Integrations\Enums\IntegrationType;
+use App\Domain\Integrations\Models\IntegrationConnection;
+use App\Domain\Integrations\Models\WhatsAppContact;
+use App\Domain\Integrations\WhatsApp\WhatsAppGateway;
 use App\Domain\Notifications\Actions\SaveNotificationPreferences;
 use App\Domain\Notifications\Data\NotificationItemData;
 use App\Domain\Notifications\Data\NotificationPreferencesData;
 use App\Domain\Notifications\Support\NotificationPreferences;
+use App\Domain\People\Models\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
@@ -64,7 +72,56 @@ final class NotificationsController extends Controller
             'quietHours' => ['start' => $this->time($user->quiet_hours_start), 'end' => $this->time($user->quiet_hours_end)],
             'digest' => $user->digest_enabled,
             'timezone' => $preferences->timezone($user),
+            'whatsapp' => $this->whatsApp($user),
         ]);
+    }
+
+    public function startWhatsApp(Request $request, StartWhatsAppVerification $start, #[CurrentUser] User $user): RedirectResponse
+    {
+        $request->validate(['phone' => ['required', 'string', 'max:30']]);
+        $start->handle($user, $request->string('phone')->toString());
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('We sent a code to your WhatsApp.')]);
+
+        return back();
+    }
+
+    public function confirmWhatsApp(Request $request, ConfirmWhatsAppNumber $confirm, #[CurrentUser] User $user): RedirectResponse
+    {
+        $request->validate(['code' => ['required', 'string', 'max:10']]);
+        $confirm->handle($user, $request->string('code')->toString());
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('WhatsApp connected.')]);
+
+        return back();
+    }
+
+    public function removeWhatsApp(RemoveWhatsAppNumber $remove, #[CurrentUser] User $user): RedirectResponse
+    {
+        $remove->handle($user);
+
+        return back();
+    }
+
+    /**
+     * @return array{available: bool, phone: string|null, verified: bool, pending: bool, suggested: string|null}
+     */
+    private function whatsApp(User $user): array
+    {
+        $contact = WhatsAppContact::query()->where('user_id', $user->id)->first();
+
+        return [
+            'available' => WhatsAppGateway::usable(IntegrationType::WhatsAppOfficial) instanceof IntegrationConnection || WhatsAppGateway::usable(IntegrationType::WhatsAppWaha) instanceof IntegrationConnection,
+            'phone' => $contact?->phone_e164,
+            'verified' => $contact?->verified_at !== null,
+            'pending' => $contact?->verified_at === null && $contact?->code_expires_at?->isFuture() === true,
+            'suggested' => $contact instanceof WhatsAppContact ? null : $this->suggestedPhone($user),
+        ];
+    }
+
+    private function suggestedPhone(User $user): ?string
+    {
+        $work = Employee::query()->where('user_id', $user->id)->value('work_phone_e164');
+
+        return is_string($work) ? $work : $user->phone_e164;
     }
 
     public function updatePreferences(NotificationPreferencesData $data, SaveNotificationPreferences $save, #[CurrentUser] User $user): RedirectResponse

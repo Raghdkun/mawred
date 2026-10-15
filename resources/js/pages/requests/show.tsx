@@ -65,7 +65,11 @@ export default function ShowRequest(props: Props) {
     const open = request.status === 'in_review';
 
     // Live progress (handoff 12): refresh the timeline while the request is moving.
-    usePoll(15000, { only: ['request', 'timeline', 'tasks', 'comments', 'can'] }, { autoStart: open });
+    usePoll(
+        15000,
+        { only: ['request', 'timeline', 'tasks', 'comments', 'can'] },
+        { autoStart: open },
+    );
 
     return (
         <>

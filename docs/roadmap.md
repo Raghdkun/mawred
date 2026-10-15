@@ -64,7 +64,8 @@
   - Onboarding/offboarding checklists; self-service profile edit through a workflow.
 - **Exit**: scenario tests per seeded type (approve, reject, return, escalate, delegate, cancel, parallel); the "submit day off → approve from inbox" browser journey in EN and AR.
 
-## Phase 4 — Integrations (L)
+## Phase 4 — Integrations (L) — ✅ built (pending CI and owner review)
+> Demo: [phase-4.md](demos/phase-4.md). Decisions: D58 (verify numbers first), D59 (Official → Email), D60 (Cognito forms open in a new tab, prefilled), D61 (unmatched entries wait for an admin), D62 (Phase 4 implementation choices).
 - Credential vault, `mawred:reencrypt`, integrations hub with health badges, health job and alerts.
 - Cognito sources: three event URLs, raw receipts, idempotency, field-mapping UI with sample capture, replay and error view, request-center parity. Setup wizard step 9.
 - WhatsApp wizard: Official (webhook verify, signatures, templates sync, 24 h window logic, quick-reply approvals); unofficial sidecar (QR over Reverb, health, re-pair); routing with fallback chains and the critical-category warning. Setup wizard step 8.

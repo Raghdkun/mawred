@@ -1,5 +1,5 @@
-import { Head, Link, useForm } from '@inertiajs/react';
-import { ChevronLeft, Lock } from 'lucide-react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { ChevronLeft, Lock, MessageCircle } from 'lucide-react';
 import { type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DirIcon } from '@/components/mw/dir-icon';
@@ -17,20 +17,35 @@ type Row = {
     channels: Record<string, { enabled: boolean; locked: boolean }>;
 };
 
+type WhatsApp = {
+    available: boolean;
+    phone: string | null;
+    verified: boolean;
+    pending: boolean;
+    suggested: string | null;
+};
+
 type Props = {
+    whatsapp: WhatsApp;
     matrix: Row[];
     quietHours: { start: string | null; end: string | null };
     digest: boolean;
     timezone: string;
 };
 
-const CHANNELS = ['in_app', 'email'] as const;
+const CHANNELS = ['in_app', 'email', 'whatsapp'] as const;
 
 /**
  * Notification preferences (handoff 44): category × channel switches, quiet hours in the
  * person's own timezone and the daily digest. Critical in-app messages stay on.
  */
-export default function NotificationPreferences({ matrix, quietHours, digest, timezone }: Props) {
+export default function NotificationPreferences({
+    matrix,
+    quietHours,
+    digest,
+    timezone,
+    whatsapp,
+}: Props) {
     const { t } = useTranslation('notifications');
     const form = useForm({
         channels: Object.fromEntries(
@@ -71,9 +86,13 @@ export default function NotificationPreferences({ matrix, quietHours, digest, ti
             </Link>
             <PageHeader title={t('preferences.title')} description={t('preferences.description')} />
 
+            <div className="mb-8 max-w-3xl">
+                <WhatsAppCard whatsapp={whatsapp} />
+            </div>
+
             <form onSubmit={submit} className="flex max-w-3xl flex-col gap-8">
                 <Section title={t('preferences.channelsTitle')}>
-                    <div className="overflow-hidden rounded-lg border border-border bg-card">
+                    <div className="overflow-x-auto rounded-lg border border-border bg-card">
                         <table className="w-full text-sm">
                             <caption className="sr-only">{t('preferences.channelsTitle')}</caption>
                             <thead className="bg-muted/60 text-start text-caption text-text-secondary">
@@ -85,7 +104,7 @@ export default function NotificationPreferences({ matrix, quietHours, digest, ti
                                         <th
                                             key={channel}
                                             scope="col"
-                                            className="w-28 px-4 py-3 text-center font-medium"
+                                            className="w-20 px-2 py-3 text-center font-medium sm:w-28 sm:px-4"
                                         >
                                             {t(`preferences.channels.${channel}`)}
                                         </th>
@@ -111,7 +130,10 @@ export default function NotificationPreferences({ matrix, quietHours, digest, ti
                                             const label = `${t(`preferences.categories.${row.category}.name`)} · ${t(`preferences.channels.${channel}`)}`;
 
                                             return (
-                                                <td key={channel} className="px-4 py-3 text-center">
+                                                <td
+                                                    key={channel}
+                                                    className="px-2 py-3 text-center sm:px-4"
+                                                >
                                                     {cell ? (
                                                         <span className="inline-flex items-center gap-1.5">
                                                             <Switch
@@ -245,5 +267,112 @@ export default function NotificationPreferences({ matrix, quietHours, digest, ti
                 </div>
             </form>
         </>
+    );
+}
+
+/**
+ * WhatsApp opt-in (D58): add a number, confirm the code we send over WhatsApp, or remove it.
+ * Nothing goes to WhatsApp until the number is confirmed.
+ */
+function WhatsAppCard({ whatsapp }: { whatsapp: WhatsApp }) {
+    const { t } = useTranslation('notifications');
+    const start = useForm({ phone: whatsapp.phone ?? whatsapp.suggested ?? '' });
+    const confirm = useForm({ code: '' });
+
+    return (
+        <Section
+            title={t('whatsapp.title')}
+            description={whatsapp.available ? t('whatsapp.help') : t('whatsapp.unavailable')}
+        >
+            {!whatsapp.available ? null : whatsapp.verified ? (
+                <div className="flex flex-wrap items-center gap-3">
+                    <MessageCircle aria-hidden className="size-5 text-success" />
+                    <span className="flex-1 text-sm">
+                        {t('whatsapp.connected')} <bdi dir="ltr">{whatsapp.phone}</bdi>
+                    </span>
+                    <Button
+                        variant="ghost"
+                        onClick={() =>
+                            router.delete(notifications.whatsapp.remove.url(), {
+                                preserveScroll: true,
+                            })
+                        }
+                    >
+                        {t('whatsapp.remove')}
+                    </Button>
+                </div>
+            ) : (
+                <div className="flex flex-col gap-4">
+                    <form
+                        className="flex flex-wrap items-end gap-3"
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            start.post(notifications.whatsapp.start.url(), {
+                                preserveScroll: true,
+                            });
+                        }}
+                    >
+                        <div className="flex flex-col gap-1.5">
+                            <Label htmlFor="whatsapp-phone">{t('whatsapp.phone')}</Label>
+                            <Input
+                                id="whatsapp-phone"
+                                type="tel"
+                                dir="ltr"
+                                autoComplete="tel"
+                                className="w-56"
+                                value={start.data.phone}
+                                aria-invalid={start.errors.phone !== undefined}
+                                onChange={(event) => start.setData('phone', event.target.value)}
+                            />
+                        </div>
+                        <Button
+                            type="submit"
+                            variant={whatsapp.pending ? 'outline' : 'default'}
+                            loading={start.processing}
+                        >
+                            {whatsapp.pending ? t('whatsapp.resend') : t('whatsapp.send')}
+                        </Button>
+                    </form>
+                    <InputError
+                        message={
+                            start.errors.phone ??
+                            (start.errors as Record<string, string | undefined>).error
+                        }
+                    />
+                    {whatsapp.pending ? (
+                        <form
+                            className="flex flex-wrap items-end gap-3"
+                            onSubmit={(event) => {
+                                event.preventDefault();
+                                confirm.post(notifications.whatsapp.confirm.url(), {
+                                    preserveScroll: true,
+                                });
+                            }}
+                        >
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="whatsapp-code">{t('whatsapp.code')}</Label>
+                                <Input
+                                    id="whatsapp-code"
+                                    inputMode="numeric"
+                                    autoComplete="one-time-code"
+                                    dir="ltr"
+                                    maxLength={6}
+                                    className="w-32 tracking-widest"
+                                    value={confirm.data.code}
+                                    aria-invalid={confirm.errors.code !== undefined}
+                                    onChange={(event) =>
+                                        confirm.setData('code', event.target.value)
+                                    }
+                                />
+                            </div>
+                            <Button type="submit" loading={confirm.processing}>
+                                {t('whatsapp.confirm')}
+                            </Button>
+                            <InputError message={confirm.errors.code} />
+                        </form>
+                    ) : null}
+                </div>
+            )}
+        </Section>
     );
 }

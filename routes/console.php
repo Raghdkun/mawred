@@ -10,6 +10,7 @@ Schedule::command('partitions:maintain')->dailyAt('01:15')->onOneServer()->witho
 Schedule::command('people:sync-placements')->hourlyAt(5)->onOneServer()->withoutOverlapping();
 Schedule::command('people:document-reminders')->dailyAt('06:00')->onOneServer()->withoutOverlapping();
 Schedule::command('workflows:tick')->everyMinute()->onOneServer()->withoutOverlapping();
+Schedule::command('integrations:health')->everyFiveMinutes()->onOneServer()->withoutOverlapping();
 Schedule::command('notifications:digest')->dailyAt('05:00')->onOneServer()->withoutOverlapping();
 Schedule::command('horizon:snapshot')->everyFiveMinutes();
 Schedule::command('model:prune', ['--model' => [IdempotencyKey::class, FormUpload::class]])->hourly();

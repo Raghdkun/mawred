@@ -18,7 +18,7 @@ Format: Context → Decision → Consequences → Alternatives. Status: Proposed
 | [0012](0012-api-design.md) | REST API v1 conventions | Proposed |
 | [0013](0013-search.md) | Global search on PostgreSQL, scope-enforced | Proposed |
 | [0014](0014-pdf-gotenberg.md) | PDF via Gotenberg | Proposed |
-| [0015](0015-integrations.md) | Integrations: credential vault, drivers, routing | Proposed |
+| [0015](0015-integrations.md) | Integrations: credential vault, drivers, routing | Accepted |
 | [0016](0016-notifications-templates.md) | Notifications + logic-less templates | Accepted |
 | [0017](0017-runtime-and-proxy.md) | FrankenPHP (classic) + Caddy edge | Proposed |
 | [0018](0018-partitioning.md) | Monthly partitioning | Proposed |

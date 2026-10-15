@@ -6,6 +6,7 @@ import {
     BranchStep,
     CompanyStep,
     EmailStep,
+    IntegrationStep,
     type EmailSettings,
     LanguagesStep,
     LaterStep,
@@ -69,6 +70,9 @@ export default function SetupWizard({
                 return <AdminStep admin={admin} />;
             case 'email':
                 return <EmailStep email={email} />;
+            case 'whatsapp':
+            case 'cognito':
+                return <IntegrationStep step={current} />;
             case 'review':
                 return <ReviewStep steps={steps} complete={complete} />;
             default:

@@ -11,6 +11,7 @@ use App\Domain\Notifications\Support\NotificationRouter;
 use App\Domain\Notifications\Support\TemplateRenderer;
 use App\Domain\Notifications\Support\WorkflowSubject;
 use App\Domain\Workflows\Actions\IssueActionLinks;
+use App\Domain\Workflows\Enums\DecisionChannel;
 use App\Domain\Workflows\Enums\TaskKind;
 use App\Domain\Workflows\Enums\TaskStatus;
 use App\Domain\Workflows\Events\TaskAssigned;
@@ -69,7 +70,7 @@ final readonly class SendTaskNotifications implements ShouldQueue
             ]),
             url: $url,
             sourceKey: $task->ulid.':'.$event->reason,
-            actions: $task->kind === TaskKind::Approval ? fn (): array => $this->links->handle($task) : null,
+            actions: $task->kind === TaskKind::Approval ? fn (string $channel): array => $this->links->handle($task, $channel === 'whatsapp' ? DecisionChannel::WhatsApp : DecisionChannel::Email) : null,
         ));
     }
 }

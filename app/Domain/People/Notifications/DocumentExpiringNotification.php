@@ -11,8 +11,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
 /**
- * In-app reminder that a document expires soon (or has expired). Text is rendered in the
- * recipient's language (ADR-0016). Email and WhatsApp channels join in Phases 3 and 4.
+ * The wording of a document-expiry reminder in the recipient's language (ADR-0016). Delivery
+ * goes through the notification router (in-app, then WhatsApp or email per the documents
+ * category's chain, D44); `toArray` remains for the stored in-app shape.
  */
 final class DocumentExpiringNotification extends Notification implements ShouldQueue
 {
@@ -45,11 +46,33 @@ final class DocumentExpiringNotification extends Notification implements ShouldQ
     }
 
     /**
+     * @return array{subject: string, body: string}
+     */
+    public function text(?string $locale): array
+    {
+        $data = $this->wording($locale);
+
+        return ['subject' => $data['title'], 'body' => $data['body']];
+    }
+
+    public function url(): string
+    {
+        return url("/people/{$this->employeeUlid}?tab=documents");
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toArray(object $notifiable): array
     {
-        $locale = $notifiable instanceof User ? $notifiable->locale : null;
+        return $this->wording($notifiable instanceof User ? $notifiable->locale : null);
+    }
+
+    /**
+     * @return array{category: string, title: string, body: string, url: string, document: string}
+     */
+    private function wording(?string $locale): array
+    {
         $replace = ['document' => $this->documentName, 'name' => $this->employeeName, 'date' => $this->expiresOn, 'days' => $this->daysLeft];
 
         $title = match (true) {

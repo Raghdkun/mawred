@@ -25,7 +25,8 @@
         "openCount": "{count, plural, one {# waiting} other {# waiting}}",
         "requestTypes": "Request types",
         "workflows": "Workflows",
-        "notificationTemplates": "Notification templates"
+        "notificationTemplates": "Notification templates",
+        "integrations": "Integrations"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

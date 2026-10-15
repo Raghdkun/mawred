@@ -30,6 +30,7 @@ const PAGE_NAMESPACES: Record<string, string[]> = {
     requests: ['requests', 'forms'],
     approvals: ['requests', 'forms'],
     workflows: ['workflows', 'forms', 'requests'],
+    integrations: ['integrations', 'setup', 'notifications', 'organization'],
     audit: ['audit'],
     notifications: ['notifications'],
     dashboard: ['home', 'requests'],

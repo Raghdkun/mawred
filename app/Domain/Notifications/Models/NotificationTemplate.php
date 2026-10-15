@@ -18,9 +18,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $subject
  * @property string $body
  * @property int|null $updated_by
+ * @property array{name: string, language: string, params: list<string>, buttons: list<string>}|null $wa_template
  */
 #[Guarded(['id'])]
 final class NotificationTemplate extends Model
 {
     use Auditable;
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return ['wa_template' => 'array'];
+    }
 }

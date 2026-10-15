@@ -1,0 +1,17 @@
+{
+    "Id": "7-42",
+    "Entry": {
+        "Number": 42,
+        "Version": 1,
+        "DateSubmitted": "2026-10-13T09:12:44.000Z",
+        "AdminLink": "https://www.cognitoforms.com/najd/expenses/42"
+    },
+    "Name": { "First": "Rami", "Last": "Requester" },
+    "Email": "rami@najd.example",
+    "Description": "Taxi to the client",
+    "SpentOn": "2026-10-12",
+    "Amount": 45,
+    "Receipts": [
+        { "Name": "receipt.pdf", "ContentType": "application/pdf", "Size": 1200, "File": "https://files.cognitoforms.com/najd/receipt-42.pdf?token=abc" }
+    ]
+}

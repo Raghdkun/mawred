@@ -14,6 +14,7 @@ enum NotificationCategory: string
     case Requests = 'requests';
     case Documents = 'documents';
     case Security = 'security';
+    case Integrations = 'integrations';
 
     public function isCritical(): bool
     {
@@ -21,13 +22,13 @@ enum NotificationCategory: string
     }
 
     /**
-     * Channels this category can use. WhatsApp joins with Phase 4.
+     * Channels this category can use (WhatsApp needs a verified number, D58).
      *
      * @return list<string>
      */
     public function channels(): array
     {
-        return ['in_app', 'email'];
+        return ['in_app', 'email', 'whatsapp'];
     }
 
     public function canDisable(string $channel): bool
