@@ -1,0 +1,156 @@
+{
+    "pageTitle": "إجازاتي",
+    "description": "أرصدتك وكيف تُحتسب، وأيام غيابك.",
+    "requestLeave": "طلب إجازة",
+    "links": {
+        "calendar": "تقويم الإجازات",
+        "blackouts": "فترات المنع"
+    },
+    "year": {
+        "label": "سنة الإجازات",
+        "previous": "السنة السابقة",
+        "next": "السنة التالية"
+    },
+    "noEmployee": {
+        "title": "لا يوجد سجل موظف",
+        "description": "أرصدة الإجازات مرتبطة بسجلات الموظفين. اطلب من الموارد البشرية ربط حسابك بسجلك."
+    },
+    "units": {
+        "days": "{count, plural, zero {{formatted} يوم} one {يوم واحد} two {يومان} few {{formatted} أيام} many {{formatted} يومًا} other {{formatted} يوم}}",
+        "hours": "{count, plural, zero {{formatted} ساعة} one {ساعة واحدة} two {ساعتان} few {{formatted} ساعات} many {{formatted} ساعة} other {{formatted} ساعة}}",
+        "minutes": "{count, plural, zero {{formatted} دقيقة} one {دقيقة واحدة} two {دقيقتان} few {{formatted} دقائق} many {{formatted} دقيقة} other {{formatted} دقيقة}}"
+    },
+    "unitShort": {
+        "days": "يوم",
+        "hours": "ساعة",
+        "minutes": "دقيقة"
+    },
+    "balances": {
+        "title": "الأرصدة",
+        "available": "متاح",
+        "ofTotal": "من {total}",
+        "reserved": "{amount} بانتظار الموافقة",
+        "expiring": "تنتهي صلاحية {amount} في {date}",
+        "statement": "كشف الرصيد",
+        "empty": "لا توجد أنواع إجازات بعد. تضبطها الموارد البشرية من السياسات.",
+        "ringLabel": "{available} متاح من {total}"
+    },
+    "statement": {
+        "title": "{type} · {year}",
+        "description": "كل تغيير على هذا الرصيد، من الأقدم.",
+        "date": "التاريخ",
+        "what": "البند",
+        "change": "التغيير",
+        "balance": "الرصيد",
+        "empty": "لم يُسجَّل شيء لهذه السنة بعد.",
+        "by": "بواسطة {name}",
+        "summary": {
+            "earned": "المكتسب",
+            "carriedOver": "المُرحَّل",
+            "adjusted": "التعديلات",
+            "taken": "المأخوذ",
+            "reserved": "بانتظار الموافقة",
+            "available": "المتاح"
+        }
+    },
+    "timeAway": {
+        "title": "أيام الغياب",
+        "empty": "لا غياب في هذه السنة.",
+        "halfDay": {
+            "morning": "الصباح",
+            "afternoon": "بعد الظهر"
+        },
+        "kind": {
+            "leave": "إجازة",
+            "day_off": "يوم إجازة",
+            "hourly": "استئذان بالساعات"
+        },
+        "status": {
+            "pending": "بانتظار الموافقة",
+            "approved": "معتمد",
+            "rejected": "مرفوض",
+            "cancelled": "ملغى"
+        },
+        "openRequest": "فتح الطلب",
+        "cancel": "إلغاء الإجازة",
+        "cancelTitle": "إلغاء هذه الإجازة المعتمدة؟",
+        "cancelDescription": "تعود الأيام إلى الرصيد. لا يُبلَّغ الموظف تلقائيًا.",
+        "cancelReason": "السبب",
+        "cancelConfirm": "إلغاء الإجازة",
+        "keep": "إبقاؤها",
+        "cancelled": "أُلغيت الإجازة وأُعيدت الأيام."
+    },
+    "adjust": {
+        "button": "تعديل الرصيد",
+        "title": "تعديل رصيد",
+        "description": "استخدم رقمًا موجبًا لإضافة أيام وسالبًا لخصمها. يُحفظ السبب في سجل التدقيق.",
+        "type": "نوع الإجازة",
+        "amount": "التغيير",
+        "amountHint": "مثلًا 2 أو ‎-1.5",
+        "note": "السبب",
+        "save": "حفظ التعديل",
+        "saved": "عُدِّل الرصيد."
+    },
+    "quote": {
+        "title": "هذا الطلب",
+        "takes": "يستهلك",
+        "available": "المتاح في اليوم الأول",
+        "after": "المتبقي بعده",
+        "workingDays": "أيام العمل فقط: لا تُحتسب العطل الأسبوعية والرسمية.",
+        "attachment": "يلزم مستند داعم لهذه المدة من الإجازة.",
+        "pick": "اختر التواريخ لترى ما يستهلكه الطلب.",
+        "checking": "جارٍ التحقق…",
+        "error": "تعذّر التحقق من رصيدك. يمكنك إرسال الطلب وسيُتحقَّق منه مجددًا.",
+        "quotaLeft": "المتبقي هذا الشهر",
+        "blocked": "لا يمكن إرسال هذا بعد"
+    },
+    "calendar": {
+        "title": "تقويم الإجازات",
+        "description": "من الغائب، مع العطل الرسمية.",
+        "today": "اليوم",
+        "previous": "الشهر السابق",
+        "next": "الشهر التالي",
+        "branch": "الفرع",
+        "department": "القسم",
+        "allBranches": "كل الفروع",
+        "allDepartments": "كل الأقسام",
+        "more": "+{count} آخرون",
+        "moreTitle": "الغائبون في {date}",
+        "legend": {
+            "title": "دليل الألوان",
+            "approved": "معتمد",
+            "pending": "بانتظار الموافقة",
+            "holiday": "عطلة رسمية",
+            "weekend": "عطلة أسبوعية"
+        },
+        "empty": "لا أحد غائب هذا الشهر.",
+        "agendaEmpty": "لا أحد غائب في هذه الأيام."
+    },
+    "blackouts": {
+        "title": "فترات المنع",
+        "description": "تواريخ لا يمكن طلب الإجازة فيها، مثل الجرد أو مواسم الذروة. الطلبات المرسلة سابقًا تبقى.",
+        "add": "إضافة فترة منع",
+        "edit": "تعديل فترة المنع",
+        "name": "الاسم",
+        "dates": "التواريخ",
+        "from": "من",
+        "to": "إلى",
+        "appliesTo": "تنطبق على",
+        "everyone": "الجميع",
+        "branch": "الفرع (اختياري)",
+        "department": "القسم والأقسام التابعة له (اختياري)",
+        "types": "أنواع الإجازات",
+        "allTypes": "كل أنواع الإجازات",
+        "save": "حفظ",
+        "delete": "إزالة",
+        "deleteTitle": "إزالة فترة المنع هذه؟",
+        "deleteDescription": "سيتمكن الموظفون من طلب الإجازة في هذه التواريخ مجددًا.",
+        "emptyTitle": "لا توجد فترات منع",
+        "emptyDescription": "يمكن طلب الإجازة في أي يوم عمل.",
+        "typesHint": "اترك الكل دون تحديد لتشمل كل أنواع الإجازات."
+    },
+    "home": {
+        "title": "أرصدة الإجازات",
+        "all": "إجازاتي"
+    }
+}

@@ -147,6 +147,108 @@ export type IntegrationType = 'email' | 'whatsapp_official' | 'whatsapp_waha' | 
 export type ReceiptStatus = 'received' | 'processed' | 'needs_person' | 'failed' | 'duplicate' | 'late_update' | 'sample' | 'ignored' | 'discarded';
 }
 }
+namespace Leave {
+namespace Data {
+export type HolidayMarkData = {
+date: string,
+name: Record<string, string>,
+};
+export type LeaveBalanceData = {
+typeId: string,
+code: string,
+name: string,
+unit: string,
+year: number,
+entitlement: number,
+earned: number,
+carriedOver: number,
+adjusted: number,
+taken: number,
+reserved: number,
+balance: number,
+available: number,
+expiring: number | null,
+expiresOn: string | null,
+};
+export type LeaveBlackoutData = {
+id: string,
+name: Record<string, string>,
+startsOn: string,
+endsOn: string,
+branchId: string | null,
+branchName: Record<string, string> | null,
+departmentId: string | null,
+departmentName: Record<string, string> | null,
+leaveTypes: {
+id: string,
+name: Record<string, string>,
+}[],
+};
+export type LeaveBlackoutInputData = {
+name: {
+en: string,
+ar?: string | null,
+},
+startsOn: string,
+endsOn: string,
+branchId: string | null,
+departmentId: string | null,
+leaveTypeIds: string[],
+};
+export type LeaveEventData = {
+id: string,
+employeeId: string,
+employeeName: string,
+employeeNameAr: string | null,
+kind: string,
+typeCode: string | null,
+typeName: string | null,
+from: string,
+to: string,
+halfDay: string | null,
+fromTime: string | null,
+toTime: string | null,
+amount: number,
+minutes: number | null,
+status: string,
+requestId: string | null,
+};
+export type LeaveQuoteData = {
+kind: string,
+typeName: string | null,
+unit: string,
+from: string | null,
+to: string | null,
+amount: number,
+dates: string[],
+available: number | null,
+after: number | null,
+attachmentRequired: boolean,
+problems: {
+code: string,
+message: string,
+}[],
+};
+export type LedgerEntryData = {
+id: string,
+kind: string,
+label: string,
+amount: number,
+runningBalance: number,
+effectiveOn: string,
+expiresOn: string | null,
+note: string | null,
+requestId: string | null,
+requestNumber: string | null,
+actor: string | null,
+};
+}
+namespace Enums {
+export type LeaveRequestKind = 'leave' | 'day_off' | 'hourly';
+export type LeaveRequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';
+export type LedgerKind = 'accrual' | 'cap' | 'carry_over' | 'carry_expiry' | 'adjustment' | 'debit' | 'credit';
+}
+}
 namespace Notifications {
 namespace Data {
 export type NotificationItemData = {
@@ -608,6 +710,14 @@ hijriBased: boolean,
 fromYear: number | null,
 toYear: number | null,
 };
+export type ImpactBalanceData = {
+code: string,
+name: Record<string, string>,
+year: number,
+before: number,
+after: number,
+delta: number,
+};
 export type ImpactChangeData = {
 key: string,
 before: Record<string, any>,
@@ -628,6 +738,7 @@ employeeNumber: string,
 nameEn: string,
 nameAr: string | null,
 changes: App.Domain.Policies.Data.ImpactChangeData[],
+balances: App.Domain.Policies.Data.ImpactBalanceData[],
 };
 export type LeaveTypeData = {
 id: string,
@@ -730,6 +841,7 @@ tenureSteps: {
 afterYears: number,
 entitlement: number,
 }[],
+attachmentAfterDays: number | null,
 };
 export type OvertimeValue = {
 enabled: boolean,
@@ -803,6 +915,7 @@ workflowId: string | null,
 ready: boolean,
 source: string,
 externalUrl: string | null,
+behaviour: string | null,
 };
 export type TaskData = {
 id: string,

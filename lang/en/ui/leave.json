@@ -1,0 +1,156 @@
+{
+    "pageTitle": "My leave",
+    "description": "Your balances, how they add up, and your time away.",
+    "requestLeave": "Request leave",
+    "links": {
+        "calendar": "Leave calendar",
+        "blackouts": "Blackout periods"
+    },
+    "year": {
+        "label": "Leave year",
+        "previous": "Previous year",
+        "next": "Next year"
+    },
+    "noEmployee": {
+        "title": "No employee record",
+        "description": "Leave balances belong to employee records. Ask HR to link your account to one."
+    },
+    "units": {
+        "days": "{count, plural, one {{formatted} day} other {{formatted} days}}",
+        "hours": "{count, plural, one {{formatted} hour} other {{formatted} hours}}",
+        "minutes": "{count, plural, one {{formatted} minute} other {{formatted} minutes}}"
+    },
+    "unitShort": {
+        "days": "days",
+        "hours": "hours",
+        "minutes": "min"
+    },
+    "balances": {
+        "title": "Balances",
+        "available": "available",
+        "ofTotal": "of {total}",
+        "reserved": "{amount} waiting for approval",
+        "expiring": "{amount} expires {date}",
+        "statement": "Statement",
+        "empty": "No leave types yet. HR sets them up under Policies.",
+        "ringLabel": "{available} of {total} available"
+    },
+    "statement": {
+        "title": "{type} · {year}",
+        "description": "Every change to this balance, oldest first.",
+        "date": "Date",
+        "what": "What",
+        "change": "Change",
+        "balance": "Balance",
+        "empty": "Nothing posted for this year yet.",
+        "by": "by {name}",
+        "summary": {
+            "earned": "Earned",
+            "carriedOver": "Carried over",
+            "adjusted": "Adjustments",
+            "taken": "Taken",
+            "reserved": "Waiting for approval",
+            "available": "Available"
+        }
+    },
+    "timeAway": {
+        "title": "Time away",
+        "empty": "No time away this year.",
+        "halfDay": {
+            "morning": "Morning",
+            "afternoon": "Afternoon"
+        },
+        "kind": {
+            "leave": "Leave",
+            "day_off": "Day off",
+            "hourly": "Hourly permission"
+        },
+        "status": {
+            "pending": "Waiting for approval",
+            "approved": "Approved",
+            "rejected": "Rejected",
+            "cancelled": "Cancelled"
+        },
+        "openRequest": "Open request",
+        "cancel": "Cancel leave",
+        "cancelTitle": "Cancel this approved leave?",
+        "cancelDescription": "The days go back to the balance. The person is not notified automatically.",
+        "cancelReason": "Reason",
+        "cancelConfirm": "Cancel leave",
+        "keep": "Keep it",
+        "cancelled": "Leave cancelled and days returned."
+    },
+    "adjust": {
+        "button": "Adjust balance",
+        "title": "Adjust a balance",
+        "description": "Use a positive number to add days and a negative one to take them away. The reason is kept in the audit log.",
+        "type": "Leave type",
+        "amount": "Change",
+        "amountHint": "For example 2 or -1.5",
+        "note": "Reason",
+        "save": "Save adjustment",
+        "saved": "Balance adjusted."
+    },
+    "quote": {
+        "title": "This request",
+        "takes": "Takes",
+        "available": "Available on the first day",
+        "after": "Left after this",
+        "workingDays": "Working days only: weekends and public holidays don't count.",
+        "attachment": "A supporting document is required for this much leave.",
+        "pick": "Choose dates to see how much this takes.",
+        "checking": "Checking…",
+        "error": "Couldn't check your balance. You can still send the request; it is checked again.",
+        "quotaLeft": "Left this month",
+        "blocked": "This can't be sent yet"
+    },
+    "calendar": {
+        "title": "Leave calendar",
+        "description": "Who is away, with public holidays.",
+        "today": "Today",
+        "previous": "Previous month",
+        "next": "Next month",
+        "branch": "Branch",
+        "department": "Department",
+        "allBranches": "All branches",
+        "allDepartments": "All departments",
+        "more": "+{count} more",
+        "moreTitle": "Away on {date}",
+        "legend": {
+            "title": "Legend",
+            "approved": "Approved",
+            "pending": "Waiting for approval",
+            "holiday": "Public holiday",
+            "weekend": "Weekend"
+        },
+        "empty": "Nobody is away this month.",
+        "agendaEmpty": "Nobody is away on these days."
+    },
+    "blackouts": {
+        "title": "Blackout periods",
+        "description": "Dates when leave can't be requested, such as stock counts or peak season. Requests already sent stand.",
+        "add": "Add blackout",
+        "edit": "Edit blackout",
+        "name": "Name",
+        "dates": "Dates",
+        "from": "From",
+        "to": "To",
+        "appliesTo": "Applies to",
+        "everyone": "Everyone",
+        "branch": "Branch (optional)",
+        "department": "Department and the ones under it (optional)",
+        "types": "Leave types",
+        "allTypes": "Every leave type",
+        "save": "Save",
+        "delete": "Remove",
+        "deleteTitle": "Remove this blackout period?",
+        "deleteDescription": "People can request leave on these dates again.",
+        "emptyTitle": "No blackout periods",
+        "emptyDescription": "Leave can be requested on any working day.",
+        "typesHint": "Leave all unticked to cover every leave type."
+    },
+    "home": {
+        "title": "Leave balances",
+        "all": "My leave"
+    }
+}

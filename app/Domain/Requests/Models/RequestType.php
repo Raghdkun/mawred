@@ -32,6 +32,8 @@ use Spatie\Translatable\HasTranslations;
  * @property int $workflow_definition_id
  * @property bool $is_sensitive
  * @property int $available_in_phase
+ * @property string|null $behaviour leave|hourly_permission: draws on the leave engine (Phase 5a)
+ * @property int|null $leave_type_id
  * @property bool $is_active
  * @property int $sort_order
  */

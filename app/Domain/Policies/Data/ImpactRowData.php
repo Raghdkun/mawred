@@ -12,6 +12,7 @@ final class ImpactRowData extends Data
 {
     /**
      * @param  list<ImpactChangeData>  $changes
+     * @param  list<ImpactBalanceData>  $balances  leave earned before and after, for leave rule changes
      */
     public function __construct(
         public string $employeeId,
@@ -19,5 +20,6 @@ final class ImpactRowData extends Data
         public string $nameEn,
         public ?string $nameAr,
         public array $changes,
+        public array $balances = [],
     ) {}
 }

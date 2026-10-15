@@ -80,7 +80,9 @@
         "extensionDays": "Extension allowed",
         "employeeNoticeDays": "Notice from employee",
         "employerNoticeDays": "Notice from employer",
-        "noLimit": "No limit"
+        "noLimit": "No limit",
+        "attachmentAfterDays": "Document needed for more than",
+        "always": "Always"
     },
     "options": {
         "accrual": {
@@ -194,9 +196,11 @@
         "rule": "Rule",
         "before": "Before",
         "after": "After",
-        "balances": "Leave balance changes appear here once leave balances are tracked.",
+        "balances": "Leave earned in {year}: before, after and the difference. Balances update in the nightly run; increases count towards new requests straight away.",
         "confirm": "Save and apply",
-        "error": "We couldn't work out the impact. Check the values and try again."
+        "error": "We couldn't work out the impact. Check the values and try again.",
+        "earned": "{type} earned in {year}",
+        "delta": "Difference"
     },
     "assignments": {
         "pageTitle": "Assignments",

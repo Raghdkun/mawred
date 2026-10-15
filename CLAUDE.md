@@ -130,6 +130,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - A new encrypted cast must be added to `Domain/Integrations/Support/EncryptedColumns` (a test enforces it) so `mawred:reencrypt` covers it.
 - Postgres `jsonb` reorders keys in stored mappings: compare decoded structures, not built URLs or JSON strings.
 
+## Gotchas learned in Phase 5a
+- Leave balances come only from `LeaveBalances` (ledger + pending holds + projected accrual); never sum `leave_ledger` yourself. Accrual is posted as a difference against the calculator, so `leave:accrue` is safe to re-run.
+- `-1 * 0.0` is `-0.0` in PHP and serialises as `-0`; negate with `0.0 - $x`.
+- shadcn `Button` is `shrink-0`: a `w-full` trigger beside another control overflows on phones unless it also gets `min-w-0 shrink`.
+- axe rejects `role="row"`/`columnheader` outside a grid or table; a month grid is an `<ol>` of days with an sr-only full date.
+- Seeded leave request dates in tests must avoid the Friday/Saturday weekend (Riyadh factory) or the hold refuses them; use `next(MONDAY)`.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

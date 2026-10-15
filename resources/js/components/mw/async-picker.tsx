@@ -67,7 +67,7 @@ export function AsyncPicker<T>({
                         role="combobox"
                         aria-expanded={open}
                         aria-label={label}
-                        className="w-full justify-between font-normal"
+                        className="w-full min-w-0 shrink justify-between font-normal"
                     >
                         <span className={cn('truncate', !value && 'text-muted-foreground')}>
                             {value?.label ?? placeholder}

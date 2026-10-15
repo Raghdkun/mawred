@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\Access\UserSearchController;
+use App\Http\Controllers\Api\V1\Leave\LeaveCalendarController;
+use App\Http\Controllers\Api\V1\Leave\LeaveController;
 use App\Http\Controllers\Api\V1\Organization\BranchSearchController;
 use App\Http\Controllers\Api\V1\Organization\DepartmentSearchController;
 use App\Http\Controllers\Api\V1\Organization\PositionSearchController;
@@ -44,4 +46,12 @@ Route::prefix('v1')
         Route::get('employees', [EmployeesController::class, 'index'])->name('employees.index');
         Route::get('employees/{employee}', [EmployeesController::class, 'show'])->name('employees.show');
         Route::get('employees/{employee}/policies', [EmployeePoliciesController::class, 'index'])->name('employees.policies');
+
+        Route::post('request-types/{type}/leave-quote', [LeaveController::class, 'quote'])->middleware('throttle:120,1')->name('leave.quote');
+        Route::get('employees/{employee}/leave', [LeaveController::class, 'balances'])->name('leave.balances');
+        Route::get('employees/{employee}/leave/requests', [LeaveController::class, 'timeAway'])->name('leave.requests');
+        Route::get('employees/{employee}/leave/{leaveType}/statement', [LeaveController::class, 'statement'])->name('leave.statement');
+        Route::post('employees/{employee}/leave/adjustments', [LeaveController::class, 'adjust'])->name('leave.adjust');
+        Route::post('leave/requests/{leave}/cancel', [LeaveController::class, 'cancel'])->name('leave.cancel');
+        Route::get('leave/calendar', LeaveCalendarController::class)->name('leave.calendar');
     });

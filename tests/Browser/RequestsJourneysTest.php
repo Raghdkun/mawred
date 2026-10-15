@@ -79,7 +79,7 @@ it('submits a day off and approves it from the inbox', function (string $locale,
         ->wait(0.8)
         ->click($text['type'])
         ->wait(0.8)
-        ->fill('#field-date', CarbonImmutable::now()->addDays(3)->toDateString())
+        ->fill('#field-date', CarbonImmutable::now()->next(CarbonImmutable::MONDAY)->toDateString())
         ->click($text['send'])
         ->wait(1.2)
         ->assertSee($text['sent'])

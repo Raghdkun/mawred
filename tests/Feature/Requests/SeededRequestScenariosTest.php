@@ -83,7 +83,7 @@ function receipt(object $test): string
 }
 
 dataset('seeded types', [
-    'day off' => ['DAY_OFF', fn () => ['kind' => 'hourly', 'date' => CarbonImmutable::now()->addDays(2)->toDateString(), 'from_time' => '09:00', 'to_time' => '11:00'], ['managerUser', 'hrUser']],
+    'day off' => ['DAY_OFF', fn () => ['kind' => 'hourly', 'date' => CarbonImmutable::now()->next(CarbonImmutable::MONDAY)->toDateString(), 'from_time' => '09:00', 'to_time' => '11:00'], ['managerUser', 'hrUser']],
     'business trip' => ['BUSINESS_TRIP', fn () => ['destination' => 'Jeddah', 'dates' => ['from' => CarbonImmutable::now()->addWeek()->toDateString(), 'to' => CarbonImmutable::now()->addWeek()->addDays(2)->toDateString()], 'purpose' => 'Client visit'], ['managerUser', 'hrUser']],
     'expense' => ['EXPENSE', fn (object $test) => ['description' => 'Taxi', 'spent_on' => CarbonImmutable::now()->subDay()->toDateString(), 'amount' => ['amount_minor' => 4500, 'currency' => 'SAR'], 'receipts' => [receipt($test)]], ['managerUser', 'hrUser']],
     'salary certificate' => ['SALARY_CERTIFICATE', fn () => ['addressed_to' => 'Al Rajhi Bank', 'language' => 'ar'], ['hrUser']],
@@ -116,8 +116,8 @@ it('applies an approved bank details change to the requester record', function (
 
 it('keeps flagged types out of the request center until their module ships', function (): void {
     $this->actingAs($this->requesterUser)->get(route('requests.center'))->assertOk()
-        ->assertInertia(fn ($page) => $page->has('types', 9));
-    $this->actingAs($this->requesterUser)->get(route('requests.create', seeded('ANNUAL_LEAVE')))->assertNotFound();
+        ->assertInertia(fn ($page) => $page->has('types', 11));
+    $this->actingAs($this->requesterUser)->get(route('requests.create', seeded('SHIFT_SWAP')))->assertNotFound();
 });
 
 it('stops at the first rejection', function (): void {

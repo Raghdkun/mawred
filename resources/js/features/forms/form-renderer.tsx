@@ -32,6 +32,8 @@ type Props = {
     disabled?: boolean;
     /** Answers to start from (e.g. a returned request being corrected). */
     initialValues?: Record<string, unknown>;
+    /** Called with the resolved answers as they change (e.g. the leave balance preview). */
+    onValuesChange?: (values: Record<string, unknown>) => void;
 };
 
 /**
@@ -50,6 +52,7 @@ export function FormRenderer({
     footer,
     disabled,
     initialValues,
+    onValuesChange,
 }: Props) {
     const { t } = useTranslation('forms');
     const locale = useFormLocale();
@@ -67,6 +70,11 @@ export function FormRenderer({
     const values = useWatch({ control: form.control });
     const { values: resolved, hidden } = resolveForm(fields, values, context);
     const scope = { ...context, field: resolved };
+    const serialized = JSON.stringify(resolved);
+
+    useEffect(() => {
+        onValuesChange?.(JSON.parse(serialized) as Record<string, unknown>);
+    }, [serialized, onValuesChange]);
     const pages = schema.pages;
     const last = page === pages.length - 1;
 

@@ -6,6 +6,7 @@ import { DirIcon } from '@/components/mw/dir-icon';
 import { PageHeader } from '@/components/mw/page-header';
 import { FormRenderer } from '@/features/forms/form-renderer';
 import { type FormRuleContext, type FormSchema, asPayload } from '@/features/forms/schema';
+import { QuotePanel } from '@/features/leave/quote-panel';
 import { RequestTypeIcon } from '@/features/requests/type-icon';
 import { useLocale } from '@/hooks/use-locale';
 import { localized } from '@/lib/localized';
@@ -26,6 +27,7 @@ export default function CreateRequest({ type, schema, context }: Props) {
     const { locale } = useLocale();
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [sending, setSending] = useState(false);
+    const [values, setValues] = useState<Record<string, unknown>>({});
     const name = localized(type.name, locale);
 
     return (
@@ -65,6 +67,7 @@ export default function CreateRequest({ type, schema, context }: Props) {
                         serverErrors={errors}
                         submitting={sending}
                         submitLabel={t('create.submit')}
+                        onValuesChange={type.behaviour ? setValues : undefined}
                         onSubmit={(values) => {
                             setSending(true);
                             router.post(requests.store.url(type.id), asPayload({ values }), {
@@ -75,7 +78,7 @@ export default function CreateRequest({ type, schema, context }: Props) {
                     />
                 </section>
 
-                <aside className="flex w-full flex-col gap-4 rounded-lg border border-border bg-card p-5 lg:sticky lg:top-24 lg:w-72">
+                <aside className="flex w-full flex-col gap-4 rounded-lg border border-border bg-card p-5 lg:sticky lg:top-24 lg:w-80">
                     <span className="flex size-10 items-center justify-center rounded-md bg-primary/10 text-primary">
                         <RequestTypeIcon icon={type.icon} />
                     </span>
@@ -83,6 +86,7 @@ export default function CreateRequest({ type, schema, context }: Props) {
                         <h2 className="text-h4">{t('create.nextTitle')}</h2>
                         <p className="text-small text-text-secondary">{t('create.nextBody')}</p>
                     </div>
+                    {type.behaviour ? <QuotePanel typeId={type.id} values={values} /> : null}
                     {type.isSensitive ? (
                         <p className="flex items-start gap-2 rounded-md bg-muted p-3 text-small text-text-secondary">
                             <ShieldCheck aria-hidden className="mt-0.5 size-4 shrink-0" />

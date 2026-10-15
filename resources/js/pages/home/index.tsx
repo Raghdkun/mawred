@@ -8,17 +8,20 @@ import { useLocale } from '@/hooks/use-locale';
 import { hrefOf, navigation } from '@/layouts/shell/navigation';
 import { NavIcon } from '@/layouts/shell/nav-icon';
 import { formatDate, formatHijri, formatNumber } from '@/lib/format';
+import { BalanceCards } from '@/features/leave/balance-cards';
 import { RequestStatusBadge } from '@/features/requests/request-status';
 import { SlaBadge } from '@/features/requests/sla-badge';
 import { RequestTypeIcon } from '@/features/requests/type-icon';
 import { localized } from '@/lib/localized';
 import approvalRoutes from '@/routes/approvals';
+import leaveRoutes from '@/routes/leave';
 import requestRoutes from '@/routes/requests';
 import security from '@/routes/security';
 import { ChevronRight } from 'lucide-react';
 
 type Props = {
     layout: 'employee' | 'manager' | 'hr_admin';
+    balances: App.Domain.Leave.Data.LeaveBalanceData[];
     myRequests: App.Domain.Requests.Data.RequestRowData[];
     quickTypes: App.Domain.Requests.Data.RequestTypeData[];
     approvals: {
@@ -39,9 +42,11 @@ function greetingKey(hour: number): string {
 
 /**
  * Home (handoff 4 employee v1, 5 manager): greeting, quick requests, my requests and, for
- * approvers, the approvals queue with KPIs. Clock-in, balances and the agenda fill in with Phase 5.
+ * approvers, the approvals queue with KPIs; leave balances. Clock-in and the agenda fill in with
+ * Phase 5b.
  */
 export default function Home({
+    balances = [],
     myRequests = [],
     quickTypes = [],
     approvals = null,
@@ -104,6 +109,25 @@ export default function Home({
                 </div>
 
                 <div className="flex flex-col gap-6 lg:col-span-4">
+                    {balances.length > 0 ? (
+                        <section
+                            aria-labelledby="home-balances"
+                            className="rounded-lg bg-card p-5 shadow-sm inset-shadow-highlight lg:order-none"
+                        >
+                            <div className="mb-3 flex items-center justify-between gap-2">
+                                <h2 id="home-balances" className="text-h4">
+                                    {t('leave:home.title')}
+                                </h2>
+                                <Link
+                                    href={leaveRoutes.index.url()}
+                                    className="inline-flex min-h-11 items-center text-small text-link hover:underline"
+                                >
+                                    {t('leave:home.all')}
+                                </Link>
+                            </div>
+                            <BalanceCards balances={balances} compact />
+                        </section>
+                    ) : null}
                     {quickTypes.length > 0 ? (
                         <section
                             aria-labelledby="quick-desktop"

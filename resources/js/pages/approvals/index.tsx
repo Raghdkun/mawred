@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Answers } from '@/features/forms/answers';
+import { LeaveSummary } from '@/features/leave/leave-summary';
 import { RequestStatusBadge } from '@/features/requests/request-status';
 import { SlaBadge } from '@/features/requests/sla-badge';
 import { Timeline } from '@/features/requests/timeline';
@@ -356,6 +357,7 @@ function ApprovalCard({ task, detail }: { task: Task; detail: RequestDetail | nu
                     </p>
                 ) : null}
 
+                {detail?.leave ? <LeaveSummary leave={detail.leave} className="mb-4" /> : null}
                 {detail ? (
                     <Answers
                         schema={detail.schema}

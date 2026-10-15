@@ -7,6 +7,11 @@ namespace App\Http\Controllers\Web;
 use App\Domain\Access\Enums\HomeLayout;
 use App\Domain\Access\Models\Role;
 use App\Domain\Access\Models\User;
+use App\Domain\Leave\Data\LeaveBalanceData;
+use App\Domain\Leave\Support\EmployeeDays;
+use App\Domain\Leave\Support\LeaveBalances;
+use App\Domain\Leave\Support\LeaveYear;
+use App\Domain\People\Models\Employee;
 use App\Domain\Requests\Data\RequestRowData;
 use App\Domain\Requests\Data\RequestTypeData;
 use App\Domain\Requests\Data\TaskData;
@@ -24,19 +29,24 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Role-based home (handoff 4 employee v1, 5 manager). Clock-in, balances, the agenda and team
- * availability join with Phase 5; the HR admin home (6) with Phase 8.
+ * Role-based home (handoff 4 employee v1, 5 manager), with leave balances (Phase 5a). Clock-in,
+ * the agenda and team availability join with Phase 5b; the HR admin home (6) with Phase 8.
  */
 final class HomeController extends Controller
 {
-    public function __invoke(RequestPresenter $presenter, #[CurrentUser] User $user): Response
+    public function __invoke(RequestPresenter $presenter, LeaveBalances $balances, EmployeeDays $days, #[CurrentUser] User $user): Response
     {
+        $employee = Employee::query()->where('user_id', $user->id)->first();
         $layouts = Role::query()->whereIn('name', $user->getRoleNames()->all())->get()->map(fn (Role $role): HomeLayout => $role->home_layout);
         $layout = $layouts->contains(HomeLayout::HrAdmin) ? HomeLayout::HrAdmin : ($layouts->contains(HomeLayout::Manager) ? HomeLayout::Manager : HomeLayout::Employee);
         $tasks = WorkflowTask::query()->where('assignee_user_id', $user->id)->where('status', TaskStatus::Open->value);
 
         return Inertia::render('home/index', [
             'layout' => $layout->value,
+            'balances' => $employee instanceof Employee ? array_slice(array_values(array_filter(
+                $balances->all($employee, LeaveYear::of($days->today($employee))),
+                fn (LeaveBalanceData $balance): bool => $balance->entitlement > 0 || $balance->balance !== 0.0,
+            )), 0, 3) : [],
             'myRequests' => EmployeeRequest::query()->with(['type', 'requester'])->where('requester_user_id', $user->id)
                 ->where(fn (Builder $q) => $q->whereIn('status', [RequestStatus::InReview->value, RequestStatus::Returned->value])->orWhere('decided_at', '>=', now()->subDays(14)))
                 ->latest('submitted_at')->limit(5)->get()->map(RequestRowData::fromRequest(...))->values(),
