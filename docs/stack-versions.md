@@ -39,7 +39,8 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 | date-fns (+ @date-fns/tz) | 4.x | |
 | react-hook-form / zod / @hookform/resolvers | 7.90 / 4.x / 5.x | |
 | i18next / react-i18next | 26 / 17 | `laravel-react-i18n` unmaintained since 2024-10 |
-| vite-plugin-pwa | 2.0 | Vite 8 ok |
+| vite-plugin-pwa (+ workbox-build / workbox-window) | 2.0 (7.4) | Vite 8 ok (peer `^8.0.0`). Installable PWA and the offline punch queue (D70) |
+| qr-scanner | 1.4.2 | MIT; kiosk QR scanning, uses the native BarcodeDetector when present (D70). No React peer |
 | vitest / @testing-library/react | 5.x / 16.3 | |
 | playwright | 1.64 | for pest-plugin-browser 5.1 (`pnpm exec playwright install chromium`) |
 | radix-ui (unified) | 1.8 | new shadcn components import from `radix-ui`; ⚠ the CLI wrote `import { cn } from "cn"`, so check generated files |
