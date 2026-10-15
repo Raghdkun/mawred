@@ -117,5 +117,26 @@
         },
         "save": "Save and continue",
         "test": "Send a test email"
+    },
+    "integration": {
+        "done": "I've set it up",
+        "whatsapp": {
+            "description": "Send approvals and updates over WhatsApp, with email as the fallback.",
+            "points": [
+                "Connect WhatsApp (Official) with your Meta app, the unofficial WhatsApp Web driver, or both.",
+                "Choose which notifications use WhatsApp, in order.",
+                "People confirm their own numbers before anything is sent."
+            ],
+            "open": "Open WhatsApp setup"
+        },
+        "cognito": {
+            "description": "Turn entries from your Cognito forms into requests in Mawred.",
+            "points": [
+                "Add a source per form and paste its three webhook URLs into Cognito.",
+                "Capture a sample entry, then map its fields to the request form.",
+                "Employees open Cognito-backed requests from the request center, with their details filled in."
+            ],
+            "open": "Open Cognito setup"
+        }
     }
 }

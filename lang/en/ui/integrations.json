@@ -130,5 +130,131 @@
             "name": "Name",
             "employee_number": "Employee number"
         }
+    },
+    "whatsapp": {
+        "pageTitle": "WhatsApp",
+        "title": "WhatsApp",
+        "description": "Send notifications and one-tap approvals over WhatsApp. Email stays as the fallback.",
+        "steps": "Setup steps",
+        "stepNames": {
+            "driver": "Choose a driver",
+            "official": "WhatsApp (Official)",
+            "waha": "Unofficial (WAHA)",
+            "routing": "Routing",
+            "test": "Test and invite"
+        },
+        "back": "Back",
+        "next": "Next",
+        "driverHelp": "Official is Meta's supported API. The unofficial driver runs WhatsApp Web on a phone you pair; it can be banned, so use it as a fallback.",
+        "drivers": {
+            "official": {
+                "name": "Official",
+                "help": "Meta's Cloud API: approved templates, delivery receipts and one-tap approvals."
+            },
+            "waha": {
+                "name": "Unofficial — WhatsApp Web (WAHA)",
+                "help": "A paired phone. Plain messages; approvals by link. Risk of the number being banned."
+            },
+            "both": {
+                "name": "Both",
+                "help": "Official first, with the unofficial driver as a fallback where you choose."
+            }
+        },
+        "official": {
+            "title": "WhatsApp (Official)",
+            "help": "From your app in Meta for Developers → WhatsApp → API setup.",
+            "phoneNumberId": "Phone number ID",
+            "wabaId": "WhatsApp Business account ID",
+            "accessToken": "Permanent access token",
+            "appSecret": "App secret",
+            "webhook": "Webhook",
+            "webhookHelp": "In Meta, set the callback URL and verify token, then subscribe to the messages field.",
+            "callbackUrl": "Callback URL",
+            "verifyToken": "Verify token"
+        },
+        "secretsKept": "Saved secrets aren't shown again. Leave a field empty to keep it.",
+        "testConnection": "Test connection",
+        "templates": {
+            "title": "Message templates",
+            "help": "Approved templates are needed outside the 24-hour window. Sync after creating or editing them in Meta.",
+            "sync": "Sync from Meta",
+            "none": "No templates synced yet.",
+            "synced": "Last synced {date}",
+            "columns": {
+                "name": "Name",
+                "language": "Language",
+                "category": "Category",
+                "status": "Status",
+                "params": "Variables",
+                "buttons": "Quick replies"
+            },
+            "statuses": {
+                "APPROVED": "Approved",
+                "PENDING": "Pending",
+                "REJECTED": "Rejected",
+                "PAUSED": "Paused",
+                "DISABLED": "Disabled"
+            }
+        },
+        "testMessage": "Send a test message",
+        "testTo": "Goes to your number {number}.",
+        "needNumber": "Add and confirm your own WhatsApp number in notification settings to send a test.",
+        "testTemplate": "Template",
+        "sendTest": "Send test",
+        "testOfficial": "Test Official",
+        "testWaha": "Test unofficial",
+        "waha": {
+            "risk": "The unofficial driver uses WhatsApp Web. WhatsApp may ban the number, and there are no delivery receipts. Approvals over it always use links.",
+            "help": "The WAHA sidecar on your private network.",
+            "baseUrl": "Sidecar URL",
+            "session": "Session name",
+            "apiKey": "API key",
+            "pairTitle": "Pair a phone",
+            "pairHelp": "Start the session, then scan the QR with WhatsApp → Linked devices on the company phone.",
+            "webhook": "Mawred receives the sidecar's events at",
+            "connected": "Connected",
+            "qrAlt": "QR code to pair WhatsApp",
+            "scan": "Open WhatsApp → Linked devices → Link a device, and scan.",
+            "checking": "Checking the session…",
+            "pair": "Start pairing",
+            "statuses": {
+                "STOPPED": "The session is stopped.",
+                "STARTING": "Starting the session…",
+                "SCAN_QR_CODE": "Waiting for the QR…",
+                "FAILED": "Pairing failed. Start again.",
+                "UNREACHABLE": "The sidecar can't be reached."
+            }
+        },
+        "routing": {
+            "title": "Routing",
+            "help": "For each kind of notification, the ways to reach people outside the app, tried in order. Email always comes last.",
+            "warning": "A critical category uses only the unofficial driver for WhatsApp. If the number is banned, people learn about it only by email.",
+            "category": "Category",
+            "steps": {
+                "whatsapp_official": "Official",
+                "whatsapp_waha": "Unofficial",
+                "email": "Email"
+            },
+            "critical": "critical",
+            "order": "Order: Official → Unofficial → Email. People only get WhatsApp after confirming their number.",
+            "codeTitle": "Verification code template",
+            "codeHelp": "An approved authentication template with one variable, used to send number-confirmation codes on Official.",
+            "noCodeTemplate": "None — use the unofficial driver"
+        },
+        "invite": {
+            "title": "Invite people",
+            "help": "Everyone without a confirmed number gets an in-app and email message explaining how to connect WhatsApp.",
+            "send": "Send invites"
+        },
+        "log": "Recent messages",
+        "noMessages": "Nothing sent yet.",
+        "messageStatus": {
+            "queued": "Queued",
+            "sent": "Sent",
+            "delivered": "Delivered",
+            "read": "Read",
+            "failed": "Failed"
+        },
+        "defaultTemplate": "hello_world (Meta's sample)"
     }
 }

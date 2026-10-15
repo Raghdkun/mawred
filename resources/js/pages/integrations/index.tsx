@@ -22,6 +22,8 @@ const ICONS: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
 const SETTINGS: Record<string, string | undefined> = {
     email: integrations.email.url(),
     cognito: integrations.cognito.index.url(),
+    whatsapp_official: integrations.whatsapp.url(),
+    whatsapp_waha: integrations.whatsapp.url(),
 };
 
 export function healthOf(status: string): IntegrationHealth {

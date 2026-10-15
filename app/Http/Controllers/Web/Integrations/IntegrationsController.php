@@ -108,11 +108,19 @@ final class IntegrationsController extends Controller
                 'sender' => is_string($connection->config['from_address'] ?? null) ? $connection->config['from_address'] : null,
                 'password' => $connection->masked('password'),
             ],
+            IntegrationType::WhatsAppOfficial => [
+                'phone' => is_string($connection->config['phone_number_id'] ?? null) ? $connection->config['phone_number_id'] : null,
+                'token' => $connection->masked('access_token'),
+            ],
+            IntegrationType::WhatsAppWaha => [
+                'url' => is_string($connection->config['base_url'] ?? null) ? $connection->config['base_url'] : null,
+                'session' => is_string($connection->config['session'] ?? null) ? $connection->config['session'] : null,
+                'apiKey' => $connection->masked('api_key'),
+            ],
             IntegrationType::Cognito => [
                 'sources' => (string) CognitoSource::query()->where('is_active', true)->count(),
                 'received' => (string) CognitoReceipt::query()->where('created_at', '>=', today())->count(),
             ],
-            default => [],
         };
     }
 }

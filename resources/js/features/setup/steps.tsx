@@ -1,11 +1,6 @@
 import type { FormDataConvertible } from '@inertiajs/core';
 import { Link, router, useForm } from '@inertiajs/react';
-import {
-    ImageUp,
-    ShieldCheck,
-    ShieldAlert,
-    Trash2,
-} from 'lucide-react';
+import { ImageUp, ShieldCheck, ShieldAlert, Trash2 } from 'lucide-react';
 import { type DragEvent, type FormEvent, Fragment, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BranchForm } from '@/features/organization/branch-form';
@@ -23,6 +18,7 @@ import { useLocale } from '@/hooks/use-locale';
 import { localized } from '@/lib/localized';
 import { cn } from '@/lib/utils';
 import security from '@/routes/security';
+import integrations from '@/routes/integrations';
 import setup from '@/routes/setup';
 import { type Step, type StepKey } from './types';
 import { type EmailSettings, EmailSettingsForm } from '@/features/integrations/email-settings-form';
@@ -458,6 +454,51 @@ export function EmailStep({ email }: { email: EmailSettings | null }) {
                 </Button>
             }
         />
+    );
+}
+
+/**
+ * Steps 8 and 9 (WhatsApp, Cognito): their setup lives in the integrations hub, so the wizard
+ * explains the step, opens the page, and lets the owner continue or skip.
+ */
+export function IntegrationStep({ step }: { step: 'whatsapp' | 'cognito' }) {
+    const { t } = useTranslation('setup');
+    const href =
+        step === 'whatsapp' ? integrations.whatsapp.url() : integrations.cognito.index.url();
+
+    return (
+        <div className="flex max-w-[640px] flex-col gap-6">
+            <StepHeading
+                title={t(`steps.${step}`)}
+                description={t(`integration.${step}.description`)}
+            />
+            <ul className="flex list-disc flex-col gap-1 ps-5 text-small text-text-secondary">
+                {(t(`integration.${step}.points`, { returnObjects: true }) as string[]).map(
+                    (point) => (
+                        <li key={point}>{point}</li>
+                    ),
+                )}
+            </ul>
+            <div className="flex flex-wrap gap-3">
+                <Button asChild size="lg">
+                    <Link href={href}>{t(`integration.${step}.open`)}</Link>
+                </Button>
+                <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => router.post(setup.steps.complete.url(step))}
+                >
+                    {t('integration.done')}
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="lg"
+                    onClick={() => router.post(setup.steps.skip.url(step))}
+                >
+                    {t('common:actions.skip')}
+                </Button>
+            </div>
+        </div>
     );
 }
 

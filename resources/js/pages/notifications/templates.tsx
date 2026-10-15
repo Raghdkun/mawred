@@ -13,8 +13,20 @@ import { cn } from '@/lib/utils';
 import notifications from '@/routes/notifications';
 
 type Locale = 'en' | 'ar';
-type Text = { subject: string; body: string };
-type Channel = { channel: 'in_app' | 'email'; customised: boolean; locales: Record<Locale, Text> };
+type WaTemplate = {
+    name: string;
+    language: string;
+    params: string[];
+    buttons: Array<string | null>;
+};
+type Text = { subject: string; body: string; waTemplate?: WaTemplate | null };
+type TextPart = 'subject' | 'body';
+type MetaTemplate = { name: string; language: string; params: number; buttons: string[] };
+type Channel = {
+    channel: 'in_app' | 'email' | 'whatsapp';
+    customised: boolean;
+    locales: Record<Locale, Text>;
+};
 
 type Props = {
     events: Array<{ key: string; category: string; customised: string[] }>;
@@ -22,6 +34,7 @@ type Props = {
     variables: string[];
     channels: Channel[];
     samples: Record<Locale, Record<string, string>>;
+    waTemplates: MetaTemplate[];
 };
 
 const VARIABLE = /\{\{\s*([a-zA-Z_][a-zA-Z0-9_.]*)\s*(?:\|\s*[a-z_]+\s*)?\}\}/g;
@@ -41,6 +54,7 @@ export default function NotificationTemplates({
     variables,
     channels,
     samples,
+    waTemplates,
 }: Props) {
     const { t } = useTranslation('notifications');
     const [channelKey, setChannelKey] = useState<Channel['channel']>(
@@ -109,11 +123,10 @@ export default function NotificationTemplates({
                             <ToggleGroupItem value="email" className="px-3">
                                 <Mail aria-hidden /> {t('preferences.channels.email')}
                             </ToggleGroupItem>
+                            <ToggleGroupItem value="whatsapp" className="px-3">
+                                <MessageCircle aria-hidden /> {t('preferences.channels.whatsapp')}
+                            </ToggleGroupItem>
                         </ToggleGroup>
-                        <span className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
-                            <MessageCircle aria-hidden className="size-3.5" />
-                            {t('templates.whatsappLater')}
-                        </span>
                     </div>
                     {channel ? (
                         <Editor
@@ -122,6 +135,7 @@ export default function NotificationTemplates({
                             channel={channel}
                             variables={variables}
                             samples={samples}
+                            waTemplates={waTemplates}
                         />
                     ) : null}
                 </div>
@@ -135,11 +149,13 @@ function Editor({
     channel,
     variables,
     samples,
+    waTemplates,
 }: {
     event: string;
     channel: Channel;
     variables: string[];
     samples: Props['samples'];
+    waTemplates: MetaTemplate[];
 }) {
     const { t } = useTranslation('notifications');
     const form = useForm({ locales: channel.locales });
@@ -147,7 +163,7 @@ function Editor({
     const [mobileLocale, setMobileLocale] = useState<Locale>('en');
     const focused = useRef<{
         locale: Locale;
-        part: keyof Text;
+        part: TextPart;
         element: HTMLInputElement | HTMLTextAreaElement;
     } | null>(null);
     const hasSubject = channel.channel === 'email' || channel.locales.en.subject !== '';
@@ -174,7 +190,7 @@ function Editor({
         });
     };
 
-    const field = (locale: Locale, part: keyof Text) => ({
+    const field = (locale: Locale, part: TextPart) => ({
         value: form.data.locales[locale][part],
         dir: locale === 'ar' ? ('rtl' as const) : ('ltr' as const),
         lang: locale,
@@ -189,7 +205,7 @@ function Editor({
                 [locale]: { ...form.data.locales[locale], [part]: e.target.value },
             }),
     });
-    const error = (locale: Locale, part: keyof Text) =>
+    const error = (locale: Locale, part: TextPart) =>
         (form.errors as Record<string, string | undefined>)[`locales.${locale}.${part}`] ??
         (form.errors as Record<string, string | undefined>)[`${locale}.${part}`];
     const shown = {
@@ -282,6 +298,20 @@ function Editor({
                                     </p>
                                 ) : null}
                             </div>
+                            {channel.channel === 'whatsapp' ? (
+                                <MetaMapping
+                                    locale={locale}
+                                    value={form.data.locales[locale].waTemplate ?? null}
+                                    templates={waTemplates}
+                                    variables={variables}
+                                    onChange={(waTemplate) =>
+                                        form.setData('locales', {
+                                            ...form.data.locales,
+                                            [locale]: { ...form.data.locales[locale], waTemplate },
+                                        })
+                                    }
+                                />
+                            ) : null}
                         </fieldset>
                     ))}
                 </div>
@@ -312,7 +342,21 @@ function Editor({
                     lang={previewLocale}
                     className="rounded-md border border-border bg-background p-4"
                 >
-                    {channel.channel === 'email' ? (
+                    {channel.channel === 'whatsapp' ? (
+                        <div className="flex max-w-sm flex-col gap-1 rounded-lg rounded-ss-none bg-success-bg p-3 text-foreground shadow-sm">
+                            <p className="text-sm font-semibold">{shown.subject}</p>
+                            {shown.body ? (
+                                <p className="text-small whitespace-pre-line">{shown.body}</p>
+                            ) : null}
+                            {form.data.locales[previewLocale].waTemplate ? (
+                                <p className="mt-1 text-caption text-muted-foreground">
+                                    {t('templates.whatsapp.usesTemplate', {
+                                        name: form.data.locales[previewLocale].waTemplate?.name,
+                                    })}
+                                </p>
+                            ) : null}
+                        </div>
+                    ) : channel.channel === 'email' ? (
                         <div className="mx-auto flex max-w-md flex-col gap-3 rounded-md bg-card p-5 shadow-sm">
                             <p className="text-h4">{shown.subject}</p>
                             <p className="text-small whitespace-pre-line text-foreground">
@@ -359,5 +403,131 @@ function Editor({
                 ) : null}
             </div>
         </form>
+    );
+}
+
+/**
+ * Maps this message to an approved Meta template for one language (Official driver, outside
+ * the 24-hour window): which variable fills each {{n}}, and what each quick reply does.
+ */
+function MetaMapping({
+    locale,
+    value,
+    templates,
+    variables,
+    onChange,
+}: {
+    locale: Locale;
+    value: WaTemplate | null;
+    templates: MetaTemplate[];
+    variables: string[];
+    onChange: (value: WaTemplate | null) => void;
+}) {
+    const { t } = useTranslation('notifications');
+    const options = templates.filter((template) => template.language.startsWith(locale));
+    const chosen = value
+        ? templates.find(
+              (template) => template.name === value.name && template.language === value.language,
+          )
+        : undefined;
+    const select = 'h-10 w-full rounded-md border border-input bg-card px-3 text-sm';
+
+    return (
+        <div className="flex flex-col gap-2 rounded-md border border-border p-3">
+            <Label htmlFor={`${locale}-meta`}>{t('templates.whatsapp.template')}</Label>
+            <select
+                id={`${locale}-meta`}
+                className={select}
+                value={value ? `${value.name}|${value.language}` : ''}
+                onChange={(event) => {
+                    const template = templates.find(
+                        (candidate) =>
+                            `${candidate.name}|${candidate.language}` === event.target.value,
+                    );
+                    onChange(
+                        template
+                            ? {
+                                  name: template.name,
+                                  language: template.language,
+                                  params: Array.from(
+                                      { length: template.params },
+                                      () => variables[0] ?? '',
+                                  ),
+                                  buttons: template.buttons.map(() => null),
+                              }
+                            : null,
+                    );
+                }}
+            >
+                <option value="">{t('templates.whatsapp.none')}</option>
+                {options.map((template) => (
+                    <option
+                        key={`${template.name}|${template.language}`}
+                        value={`${template.name}|${template.language}`}
+                    >
+                        {`${template.name} (${template.language})`}
+                    </option>
+                ))}
+            </select>
+            <p className="text-caption text-muted-foreground">
+                {options.length === 0
+                    ? t('templates.whatsapp.noneSynced')
+                    : t('templates.whatsapp.help')}
+            </p>
+            {value && chosen ? (
+                <div className="flex flex-col gap-2">
+                    {value.params.map((param, index) => (
+                        <label key={index} className="flex items-center gap-2 text-small">
+                            <bdi dir="ltr" className="w-12 font-mono">{`{{${index + 1}}}`}</bdi>
+                            <select
+                                className={select}
+                                value={param}
+                                onChange={(event) =>
+                                    onChange({
+                                        ...value,
+                                        params: value.params.map((current, i) =>
+                                            i === index ? event.target.value : current,
+                                        ),
+                                    })
+                                }
+                            >
+                                {variables.map((variable) => (
+                                    <option key={variable} value={variable}>
+                                        {variable}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    ))}
+                    {chosen.buttons.map((title, index) => (
+                        <label key={title} className="flex items-center gap-2 text-small">
+                            <span className="w-24 truncate">{title}</span>
+                            <select
+                                className={select}
+                                value={value.buttons[index] ?? ''}
+                                onChange={(event) =>
+                                    onChange({
+                                        ...value,
+                                        buttons: chosen.buttons.map((_, i) =>
+                                            i === index
+                                                ? event.target.value || null
+                                                : (value.buttons[i] ?? null),
+                                        ),
+                                    })
+                                }
+                            >
+                                <option value="">{t('templates.whatsapp.buttonNone')}</option>
+                                <option value="approved">
+                                    {t('templates.whatsapp.buttonApprove')}
+                                </option>
+                                <option value="rejected">
+                                    {t('templates.whatsapp.buttonReject')}
+                                </option>
+                            </select>
+                        </label>
+                    ))}
+                </div>
+            ) : null}
+        </div>
     );
 }

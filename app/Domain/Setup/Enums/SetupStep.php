@@ -29,10 +29,7 @@ enum SetupStep: string
     /** Steps whose forms ship in a later phase render as "available later" until then. */
     public function availableInPhase(): int
     {
-        return match ($this) {
-            self::WhatsApp, self::Cognito => 4,
-            default => 0,
-        };
+        return 0;
     }
 
     public function number(): int

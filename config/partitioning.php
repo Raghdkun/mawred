@@ -23,5 +23,9 @@ return [
             'column' => 'created_at',
             'retention_months' => 24,
         ],
+        'whatsapp_messages' => [
+            'column' => 'created_at',
+            'retention_months' => 12,
+        ],
     ],
 ];

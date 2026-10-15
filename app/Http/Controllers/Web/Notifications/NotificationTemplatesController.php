@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web\Notifications;
 
 use App\Domain\Access\Models\User;
+use App\Domain\Integrations\Models\WhatsAppTemplate;
 use App\Domain\Notifications\Actions\ResetNotificationTemplate;
 use App\Domain\Notifications\Actions\SaveNotificationTemplate;
 use App\Domain\Notifications\Models\NotificationTemplate;
@@ -42,14 +43,18 @@ final class NotificationTemplatesController extends Controller
             ], array_keys($events), $events),
             'selected' => $selected,
             'variables' => $events[$selected]['variables'],
-            'channels' => collect($events[$selected]['templates'])->map(fn (array $defaults, string $channel): array => [
+            'channels' => collect([...array_keys($events[$selected]['templates']), 'whatsapp'])->map(fn (string $channel): array => [
                 'channel' => $channel,
                 'customised' => in_array("{$selected}:{$channel}", $overrides, true),
                 'locales' => collect(['en', 'ar'])->mapWithKeys(fn (string $locale): array => [$locale => [
                     'subject' => $renderer->template($selected, $channel, $locale)['subject'] ?? '',
                     'body' => $renderer->template($selected, $channel, $locale)['body'],
+                    'waTemplate' => $channel === 'whatsapp' ? NotificationTemplate::query()->where(['event' => $selected, 'channel' => 'whatsapp', 'locale' => $locale])->first()?->wa_template : null,
                 ]])->all(),
             ])->values()->all(),
+            'waTemplates' => WhatsAppTemplate::query()->where('status', 'APPROVED')->orderBy('name')->get()->map(fn (WhatsAppTemplate $t): array => [
+                'name' => $t->name, 'language' => $t->language, 'params' => $t->bodyParameters(), 'buttons' => $t->quickReplies(),
+            ])->values(),
             'samples' => $this->samples(),
         ]);
     }
@@ -61,6 +66,13 @@ final class NotificationTemplatesController extends Controller
             'locales' => ['required', 'array:en,ar'],
             'locales.*.subject' => ['nullable', 'string', 'max:255'],
             'locales.*.body' => ['required', 'string', 'max:5000'],
+            'locales.*.waTemplate' => ['nullable', 'array'],
+            'locales.*.waTemplate.name' => ['required_with:locales.*.waTemplate', 'string', 'max:120'],
+            'locales.*.waTemplate.language' => ['required_with:locales.*.waTemplate', 'string', 'max:12'],
+            'locales.*.waTemplate.params' => ['present_with:locales.*.waTemplate', 'array', 'max:10'],
+            'locales.*.waTemplate.params.*' => ['string', 'max:40'],
+            'locales.*.waTemplate.buttons' => ['present_with:locales.*.waTemplate', 'array', 'max:3'],
+            'locales.*.waTemplate.buttons.*' => ['nullable', 'in:approved,rejected'],
         ]);
 
         /** @var array<string, array{subject?: string|null, body: string}> $locales */
@@ -74,7 +86,7 @@ final class NotificationTemplatesController extends Controller
     public function destroy(string $event, string $channel, ResetNotificationTemplate $reset, #[CurrentUser] User $user): RedirectResponse
     {
         Gate::authorize('notifications.configure');
-        abort_unless(isset(NotificationCatalog::events()[$event]['templates'][$channel]), 404);
+        abort_unless(isset(NotificationCatalog::events()[$event]['templates'][$channel === 'whatsapp' ? 'in_app' : $channel]), 404);
 
         $reset->handle($user, $event, $channel);
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Back to the default wording.')]);

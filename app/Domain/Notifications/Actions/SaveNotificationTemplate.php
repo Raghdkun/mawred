@@ -21,13 +21,13 @@ final readonly class SaveNotificationTemplate
     public function __construct(private ConnectionInterface $db, private SafeTemplate $templates) {}
 
     /**
-     * @param  array<string, array{subject?: string|null, body: string}>  $locales  locale => text
+     * @param  array<string, array{subject?: string|null, body: string, waTemplate?: array{name: string, language: string, params: list<string>, buttons: list<string>}|null}>  $locales  locale => text
      */
     public function handle(User $actor, string $event, string $channel, array $locales): void
     {
         $definition = NotificationCatalog::event($event);
 
-        if ($definition === null || ! isset($definition['templates'][$channel])) {
+        if ($definition === null || ! isset($definition['templates'][$channel]) && ($channel !== 'whatsapp' || ! isset($definition['templates']['in_app']))) {
             throw new DomainRuleViolation('notifications.unknown_template', __('This notification can’t be edited.'), [], 404);
         }
 
@@ -41,6 +41,12 @@ final readonly class SaveNotificationTemplate
                     $errors["{$locale}.{$part}"] = [__('Use only the variables listed for this notification.')];
                 }
             }
+
+            foreach ($text['waTemplate']['params'] ?? [] as $index => $variable) {
+                if (! in_array($variable, $definition['variables'], true)) {
+                    $errors["{$locale}.waTemplate.params.{$index}"] = [__('Use only the variables listed for this notification.')];
+                }
+            }
         }
 
         if ($errors !== []) {
@@ -51,7 +57,7 @@ final readonly class SaveNotificationTemplate
             foreach ($locales as $locale => $text) {
                 NotificationTemplate::query()->updateOrCreate(
                     ['event' => $event, 'channel' => $channel, 'locale' => $locale],
-                    ['subject' => $text['subject'] ?? null, 'body' => $text['body'], 'updated_by' => $actor->id],
+                    ['subject' => $text['subject'] ?? null, 'body' => $text['body'], 'updated_by' => $actor->id, 'wa_template' => $channel === 'whatsapp' ? ($text['waTemplate'] ?? null) : null],
                 );
             }
 

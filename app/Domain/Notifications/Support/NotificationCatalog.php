@@ -134,6 +134,20 @@ final class NotificationCatalog
                     ],
                 ],
             ],
+            'whatsapp.invite' => [
+                'category' => NotificationCategory::Security,
+                'variables' => ['name', 'link'],
+                'templates' => [
+                    'in_app' => [
+                        'en' => ['subject' => 'Get Mawred updates on WhatsApp', 'body' => 'Add and confirm your number in notification settings.'],
+                        'ar' => ['subject' => 'استقبل تحديثات مَورِد على واتساب', 'body' => 'أضف رقمك وأكّده من إعدادات الإشعارات.'],
+                    ],
+                    'email' => [
+                        'en' => ['subject' => 'Get Mawred updates on WhatsApp', 'body' => "Hello {{ name }},\n\nYou can now receive approvals and updates from Mawred on WhatsApp. Add your number in your notification settings and confirm it with the code we send you."],
+                        'ar' => ['subject' => 'استقبل تحديثات مَورِد على واتساب', 'body' => "مرحبًا {{ name }}،\n\nيمكنك الآن استقبال الموافقات والتحديثات من مَورِد على واتساب. أضف رقمك من إعدادات الإشعارات وأكّده بالرمز الذي نرسله إليك."],
+                    ],
+                ],
+            ],
             'requests.returned' => [
                 'category' => NotificationCategory::Requests,
                 'variables' => $vars,

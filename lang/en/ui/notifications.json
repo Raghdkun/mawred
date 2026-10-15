@@ -22,7 +22,8 @@
         "category": "Category",
         "channels": {
             "in_app": "In the app",
-            "email": "Email"
+            "email": "Email",
+            "whatsapp": "WhatsApp"
         },
         "categories": {
             "approvals": {
@@ -64,7 +65,6 @@
         "events": "Notifications",
         "customised": "Edited",
         "channel": "Channel",
-        "whatsappLater": "WhatsApp templates arrive with the WhatsApp integration.",
         "variables": "Insert:",
         "language": "Language",
         "subject": "Subject",
@@ -89,6 +89,9 @@
             },
             "integrations": {
                 "health_changed": "Integration health changed"
+            },
+            "whatsapp": {
+                "invite": "WhatsApp invitation"
             }
         },
         "languages": {
@@ -102,6 +105,28 @@
         "approveSample": {
             "en": "Approve",
             "ar": "موافقة"
+        },
+        "whatsapp": {
+            "template": "Approved template (Official)",
+            "none": "None — text inside the 24-hour window only",
+            "noneSynced": "Sync templates on the WhatsApp page to map one.",
+            "help": "Outside the 24-hour window, Official can only send an approved template.",
+            "usesTemplate": "Sent as {name} outside the 24-hour window",
+            "buttonNone": "Does nothing",
+            "buttonApprove": "Approves",
+            "buttonReject": "Rejects (asks for a reason)"
         }
+    },
+    "whatsapp": {
+        "title": "WhatsApp",
+        "help": "Get approvals and updates on WhatsApp. We'll send a code to confirm the number first.",
+        "unavailable": "WhatsApp isn't set up for your company yet.",
+        "connected": "Messages go to",
+        "remove": "Stop and remove",
+        "phone": "Mobile number",
+        "send": "Send code",
+        "resend": "Send a new code",
+        "code": "Code from WhatsApp",
+        "confirm": "Confirm"
     }
 }

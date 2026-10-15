@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Public\CognitoHookController;
+use App\Http\Controllers\Public\WhatsAppHookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +15,8 @@ Route::prefix('hooks')->name('hooks.')->group(function (): void {
         ->whereIn('event', ['submit', 'update', 'delete'])
         ->middleware('throttle:cognito')
         ->name('cognito');
+
+    Route::get('whatsapp/official', [WhatsAppHookController::class, 'verify'])->middleware('throttle:60,1')->name('whatsapp.verify');
+    Route::post('whatsapp/official', [WhatsAppHookController::class, 'official'])->middleware('throttle:600,1')->name('whatsapp.official');
+    Route::post('whatsapp/waha', [WhatsAppHookController::class, 'waha'])->middleware('throttle:600,1')->name('whatsapp.waha');
 });
