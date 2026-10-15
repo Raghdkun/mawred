@@ -6,7 +6,12 @@ namespace App\Domain\Requests\Support;
 
 use App\Domain\Access\Models\User;
 use App\Domain\Forms\Support\AnswerLabels;
+use App\Domain\Leave\Data\LeaveBalanceData;
+use App\Domain\Leave\Data\LeaveEventData;
+use App\Domain\Leave\Models\LeaveRequest;
+use App\Domain\Leave\Support\LeaveBalances;
 use App\Domain\People\Models\Employee;
+use App\Domain\Policies\Models\LeaveType;
 use App\Domain\Requests\Data\RequestRowData;
 use App\Domain\Requests\Data\TaskData;
 use App\Domain\Requests\Data\TimelineEntryData;
@@ -29,6 +34,8 @@ final class RequestPresenter
 {
     /** @var array<int, string> */
     private array $names = [];
+
+    public function __construct(private readonly LeaveBalances $balances) {}
 
     /**
      * @return array<string, mixed>
@@ -57,11 +64,35 @@ final class RequestPresenter
             'tasks' => $instance instanceof WorkflowInstance ? array_values(WorkflowTask::query()
                 ->where('workflow_instance_id', $instance->id)->where('status', TaskStatus::Open->value)->get()
                 ->map(fn (WorkflowTask $task): TaskData => $this->task($task, null, $viewer))->all()) : [],
+            'leave' => $this->leave($request),
             'can' => [
                 'withdraw' => $request->status->isOpen() && Gate::forUser($viewer)->allows('withdraw', $request),
                 'resubmit' => $request->status->value === 'returned' && $request->requester_user_id === $viewer->id,
                 'comment' => Gate::forUser($viewer)->allows('comment', $request),
             ],
+        ];
+    }
+
+    /**
+     * The time away a request asks for, and the requester's balance for that type (so approvers
+     * see the effect, handoff 13).
+     *
+     * @return array{event: LeaveEventData, balance: LeaveBalanceData|null}|null
+     */
+    private function leave(EmployeeRequest $request): ?array
+    {
+        $leave = LeaveRequest::query()->with(['employee', 'leaveType', 'request'])->where('request_id', $request->id)->first();
+
+        if (! $leave instanceof LeaveRequest) {
+            return null;
+        }
+
+        $type = $leave->leaveType;
+        $employee = $leave->employee;
+
+        return [
+            'event' => LeaveEventData::fromModel($leave),
+            'balance' => $type instanceof LeaveType && $employee instanceof Employee ? $this->balances->of($employee, $type, $leave->year()) : null,
         ];
     }
 

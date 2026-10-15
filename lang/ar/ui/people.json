@@ -148,7 +148,8 @@
             "personal": "شخصي",
             "documents": "المستندات",
             "history": "السجل",
-            "policies": "السياسات السارية"
+            "policies": "السياسات السارية",
+            "leave": "الإجازات"
         }
     },
     "terminate": {

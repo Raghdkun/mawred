@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Leave\Actions;
 
 use App\Domain\Forms\Models\FormSubmission;
+use App\Domain\Leave\Data\LeaveQuoteData;
 use App\Domain\Leave\Enums\LeaveRequestKind;
 use App\Domain\Leave\Enums\LeaveRequestStatus;
 use App\Domain\Leave\Models\LeaveRequest;
@@ -28,7 +29,7 @@ final readonly class PlaceLeaveHold
         $existing = LeaveRequest::query()->where('request_id', $request->id)->first();
         $quote = $this->quotes->quote($employee, $type, $submission->data, $existing?->id);
 
-        if ($quote === null) {
+        if (! $quote instanceof LeaveQuoteData) {
             return null;
         }
 

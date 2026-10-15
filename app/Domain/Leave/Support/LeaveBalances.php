@@ -18,6 +18,7 @@ use App\Domain\Policies\Keys\LeaveRuleKey;
 use App\Domain\Policies\Models\LeaveType;
 use App\Domain\Policies\Support\Calculators\AccrualCalculator;
 use App\Domain\Policies\Support\PolicyResolver;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Collection;
 
 /**
@@ -38,6 +39,7 @@ final readonly class LeaveBalances
 
     /**
      * Balances for every leave type the employee can take, plus any type they hold days in.
+     * Types with nothing to show (no entitlement, nothing posted or held) are left out.
      *
      * @return list<LeaveBalanceData>
      */
@@ -47,13 +49,14 @@ final readonly class LeaveBalances
         $reserved = $this->reservedByType($employee, $year);
 
         return array_values(LeaveType::withTrashed()
-            ->where(fn ($q) => $q->where('is_active', true)->whereNull('deleted_at')
-                ->where(fn ($q) => $q->whereNull('eligible_gender')->orWhere('eligible_gender', $employee->gender ?? '')))
+            ->where(fn (Builder $q) => $q->where('is_active', true)->whereNull('deleted_at')
+                ->where(fn (Builder $q) => $q->whereNull('eligible_gender')->orWhere('eligible_gender', $employee->gender ?? '')))
             ->orWhereIn('id', array_keys($posted))
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get()
             ->map(fn (LeaveType $type): LeaveBalanceData => $this->build($employee, $type, $year, $posted[$type->id] ?? [], $reserved[$type->id] ?? 0.0))
+            ->filter(fn (LeaveBalanceData $b): bool => $b->entitlement > 0 || $b->balance !== 0.0 || $b->reserved > 0 || $b->taken !== 0.0)
             ->all());
     }
 
@@ -138,7 +141,7 @@ final readonly class LeaveBalances
             ->where('employee_id', $employee->id)
             ->where('leave_type_id', $type->id)
             ->where('year', $year)
-            ->orderBy('effective_on')
+            ->oldest('effective_on')
             ->orderBy('id')
             ->get()
             ->map(function (LeaveLedgerEntry $entry) use (&$running): LedgerEntryData {
@@ -198,7 +201,7 @@ final readonly class LeaveBalances
             earned: $sum(LedgerKind::Accrual, LedgerKind::Cap),
             carriedOver: $sum(LedgerKind::CarryOver, LedgerKind::CarryExpiry),
             adjusted: $sum(LedgerKind::Adjustment),
-            taken: -1 * $sum(LedgerKind::Debit, LedgerKind::Credit),
+            taken: 0.0 - $sum(LedgerKind::Debit, LedgerKind::Credit),
             reserved: round($reserved, 2),
             balance: $balance,
             available: round($balance - $reserved, 2),

@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLocale } from '@/hooks/use-locale';
 import { formatDate, formatNumber } from '@/lib/format';
+import { localized } from '@/lib/localized';
+import { cn } from '@/lib/utils';
 import { type ImpactPreview, type PolicyKey } from './types';
 import { keyLabel, summarize } from './values';
 
@@ -21,7 +23,8 @@ type Props = {
 
 /**
  * Change-impact preview (handoff 20): a summary banner, then each affected employee with the
- * value before and after. Leave balance deltas join once balances exist (Phase 5).
+ * value before and after, and for leave rules the days earned in the year before, after and
+ * the difference (negative deltas in danger text with a minus sign, never colour alone).
  */
 export function ImpactDialog({
     open,
@@ -145,11 +148,83 @@ export function ImpactDialog({
                                                 );
                                             })}
                                         </dl>
+                                        {row.balances.length > 0 ? (
+                                            <dl
+                                                className="grid gap-x-4 gap-y-1 rounded-md bg-muted p-2 text-small md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]"
+                                                data-impact-balance
+                                            >
+                                                {row.balances.map((balance) => (
+                                                    <div key={balance.code} className="contents">
+                                                        <dt className="text-text-secondary">
+                                                            {t('impact.earned', {
+                                                                type: localized(
+                                                                    balance.name,
+                                                                    locale,
+                                                                ),
+                                                                year: formatNumber(
+                                                                    balance.year,
+                                                                    locale,
+                                                                    { useGrouping: false },
+                                                                ),
+                                                            })}
+                                                        </dt>
+                                                        <dd className="text-muted-foreground tabular-nums">
+                                                            <span className="sr-only">
+                                                                {t('impact.before')}:{' '}
+                                                            </span>
+                                                            {formatNumber(balance.before, locale, {
+                                                                maximumFractionDigits: 2,
+                                                            })}
+                                                        </dd>
+                                                        <dd className="font-medium tabular-nums">
+                                                            <span className="sr-only">
+                                                                {t('impact.after')}:{' '}
+                                                            </span>
+                                                            {formatNumber(balance.after, locale, {
+                                                                maximumFractionDigits: 2,
+                                                            })}
+                                                        </dd>
+                                                        <dd
+                                                            className={cn(
+                                                                'tabular-nums',
+                                                                balance.delta < 0
+                                                                    ? 'text-danger'
+                                                                    : 'text-success',
+                                                            )}
+                                                        >
+                                                            <span className="sr-only">
+                                                                {t('impact.delta')}:{' '}
+                                                            </span>
+                                                            <bdi>
+                                                                {balance.delta < 0
+                                                                    ? '−'
+                                                                    : balance.delta > 0
+                                                                      ? '+'
+                                                                      : ''}
+                                                                {formatNumber(
+                                                                    Math.abs(balance.delta),
+                                                                    locale,
+                                                                    { maximumFractionDigits: 2 },
+                                                                )}
+                                                            </bdi>
+                                                        </dd>
+                                                    </div>
+                                                ))}
+                                            </dl>
+                                        ) : null}
                                     </li>
                                 ))}
                             </ul>
                         )}
-                        <p className="text-caption text-muted-foreground">{t('impact.balances')}</p>
+                        {preview.rows.some((row) => row.balances.length > 0) ? (
+                            <p className="text-caption text-muted-foreground">
+                                {t('impact.balances', {
+                                    year: formatNumber(Number(preview.date.slice(0, 4)), locale, {
+                                        useGrouping: false,
+                                    }),
+                                })}
+                            </p>
+                        ) : null}
                     </>
                 )}
             </div>

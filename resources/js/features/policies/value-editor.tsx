@@ -95,6 +95,7 @@ function FieldInput({
                         min={spec.min}
                         max={spec.max}
                         nullable={spec.nullable}
+                        emptyLabel={spec.emptyLabel}
                         value={value[spec.name] as number | null | undefined}
                         onChange={(next) => set(spec.name, next)}
                         disabled={disabled}
@@ -361,6 +362,7 @@ export function UnitInput({
     min,
     max,
     nullable,
+    emptyLabel,
     disabled,
     invalid,
 }: {
@@ -372,6 +374,7 @@ export function UnitInput({
     min?: number;
     max?: number;
     nullable?: boolean;
+    emptyLabel?: string;
     disabled?: boolean;
     invalid?: boolean;
 }) {
@@ -387,7 +390,7 @@ export function UnitInput({
                 min={min}
                 max={max}
                 value={value ?? ''}
-                placeholder={nullable ? t('fields.noLimit') : undefined}
+                placeholder={nullable ? t(emptyLabel ?? 'fields.noLimit') : undefined}
                 onChange={(event) => {
                     const raw = event.target.value;
                     onChange(raw === '' ? (nullable ? null : 0) : Number(raw));

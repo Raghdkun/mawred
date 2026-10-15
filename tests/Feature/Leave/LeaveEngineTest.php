@@ -20,6 +20,7 @@ use App\Domain\Policies\Actions\SeedPolicyDefaults;
 use App\Domain\Policies\Actions\SetPolicyValues;
 use App\Domain\Policies\Models\LeaveType;
 use App\Domain\Policies\Models\PolicySet;
+use App\Domain\Policies\Support\PolicyImpact;
 use App\Domain\Requests\Actions\ResubmitRequest;
 use App\Domain\Requests\Actions\SeedRequestTypes;
 use App\Domain\Requests\Actions\SubmitRequest;
@@ -267,4 +268,15 @@ it('caps the balance at the maximum and recalculates after a rule change', funct
 
     // Accrual is now 12 and the cap no longer bites, so it is released.
     expect(leaveBalance($this, null, 2025))->toBe(12.0);
+});
+
+it('shows leave earned before and after in the change-impact preview', function (): void {
+    $set = PolicySet::query()->sole();
+    $preview = resolve(PolicyImpact::class)->ofValues($set, ['leave.type.ANNUAL' => ['entitlement' => 30, 'accrual' => 'monthly', 'proRata' => 'daily', 'rounding' => 'half', 'carryOverMax' => 5, 'carryOverExpiresMonths' => 3, 'eligibleAfterDays' => 0, 'tenureSteps' => []]], '2026-01-01');
+    $row = collect($preview->rows)->firstWhere('employeeId', $this->requester->ulid);
+
+    expect($row?->balances)->toHaveCount(1)
+        ->and($row?->balances[0]->before)->toBe(21.0)
+        ->and($row?->balances[0]->after)->toBe(30.0)
+        ->and($row?->balances[0]->delta)->toBe(9.0);
 });

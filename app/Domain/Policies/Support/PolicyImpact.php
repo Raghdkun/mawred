@@ -7,11 +7,16 @@ namespace App\Domain\Policies\Support;
 use App\Domain\Organization\Models\Department;
 use App\Domain\People\Enums\EmployeeStatus;
 use App\Domain\People\Models\Employee;
+use App\Domain\Policies\Data\ImpactBalanceData;
 use App\Domain\Policies\Data\ImpactChangeData;
 use App\Domain\Policies\Data\ImpactPreviewData;
 use App\Domain\Policies\Data\ImpactRowData;
+use App\Domain\Policies\Data\Values\LeaveRuleValue;
 use App\Domain\Policies\Enums\PolicyLevel;
+use App\Domain\Policies\Keys\LeaveRuleKey;
+use App\Domain\Policies\Keys\PolicyKey;
 use App\Domain\Policies\Models\PolicySet;
+use App\Domain\Policies\Support\Calculators\AccrualCalculator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -89,13 +94,59 @@ final readonly class PolicyImpact
                     $affected++;
 
                     if (count($rows) < self::ROWS) {
-                        $rows[] = new ImpactRowData($employee->ulid, $employee->employee_number, $employee->name_en, $employee->name_ar, $changes);
+                        $rows[] = new ImpactRowData($employee->ulid, $employee->employee_number, $employee->name_en, $employee->name_ar, $changes, $this->balances($employee, $keys, $changes, $date));
                     }
                 }
             });
         }
 
         return new ImpactPreviewData($date, $keyIds, $checked, $affected, $rows);
+    }
+
+    /**
+     * For changed leave rules: what the employee earns over the change's (calendar, D63) year
+     * under the current and the proposed rule.
+     *
+     * @param  list<PolicyKey>  $keys
+     * @param  list<ImpactChangeData>  $changes
+     * @return list<ImpactBalanceData>
+     */
+    private function balances(Employee $employee, array $keys, array $changes, string $date): array
+    {
+        $year = (int) substr($date, 0, 4);
+        $balances = [];
+
+        foreach ($changes as $change) {
+            $key = array_values(array_filter($keys, fn (PolicyKey $k): bool => $k->id() === $change->key))[0] ?? null;
+
+            if (! $key instanceof LeaveRuleKey) {
+                continue;
+            }
+
+            $before = $this->earned($key, $employee, $year, $change->before);
+            $after = $this->earned($key, $employee, $year, $change->after);
+            $name = [];
+
+            foreach ($key->type->getTranslations('name') as $locale => $text) {
+                $name[(string) $locale] = is_string($text) ? $text : '';
+            }
+
+            $balances[] = new ImpactBalanceData($key->type->code, $name, $year, $before, $after, round($after - $before, 2));
+        }
+
+        return $balances;
+    }
+
+    /**
+     * @param  array<string, mixed>  $value  a serialised leave rule
+     */
+    private function earned(LeaveRuleKey $key, Employee $employee, int $year, array $value): float
+    {
+        $rule = $key->hydrate($value);
+
+        return $rule instanceof LeaveRuleValue
+            ? AccrualCalculator::accrued($rule, $employee->hire_date->toDateString(), sprintf('%04d-01-01', $year), sprintf('%04d-12-31', $year), $employee->termination_date?->toDateString())->accrued
+            : 0.0;
     }
 
     /**

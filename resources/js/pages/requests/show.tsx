@@ -24,6 +24,8 @@ import { FormRenderer } from '@/features/forms/form-renderer';
 import { type FormRuleContext, type FormSchema, asPayload } from '@/features/forms/schema';
 import { RequestStatusBadge } from '@/features/requests/request-status';
 import { Timeline } from '@/features/requests/timeline';
+import { LeaveSummary, type RequestLeave } from '@/features/leave/leave-summary';
+import { QuotePanel } from '@/features/leave/quote-panel';
 import { useLocale } from '@/hooks/use-locale';
 import { formatDate } from '@/lib/format';
 import { localized } from '@/lib/localized';
@@ -40,6 +42,7 @@ export type RequestDetail = {
     timeline: App.Domain.Requests.Data.TimelineEntryData[];
     comments: Array<{ id: string; author: string; body: string; at: string }>;
     tasks: Task[];
+    leave: RequestLeave;
     can: { withdraw: boolean; resubmit: boolean; comment: boolean };
 };
 
@@ -58,6 +61,7 @@ export default function ShowRequest(props: Props) {
     const [reason, setReason] = useState('');
     const [correcting, setCorrecting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [values, setValues] = useState<Record<string, unknown>>(props.answers);
     const [sending, setSending] = useState(false);
     const submitted = (flash as { submitted?: boolean } | undefined)?.submitted === true;
     const returned = [...props.timeline].reverse().find((entry) => entry.event === 'task.returned');
@@ -160,6 +164,7 @@ export default function ShowRequest(props: Props) {
                                 serverErrors={errors}
                                 submitting={sending}
                                 submitLabel={t('show.resend')}
+                                onValuesChange={props.leave ? setValues : undefined}
                                 onSubmit={(values) => {
                                     setSending(true);
                                     router.post(
@@ -174,6 +179,15 @@ export default function ShowRequest(props: Props) {
                                     );
                                 }}
                             />
+                            {props.leave ? (
+                                <div className="mt-6">
+                                    <QuotePanel
+                                        typeId={request.typeId}
+                                        values={values}
+                                        returnedRequestId={request.id}
+                                    />
+                                </div>
+                            ) : null}
                         </section>
                     ) : (
                         <section
@@ -203,6 +217,9 @@ export default function ShowRequest(props: Props) {
                                     ],
                                 ]}
                             />
+                            {props.leave ? (
+                                <LeaveSummary leave={props.leave} className="mb-4" />
+                            ) : null}
                             <Answers
                                 schema={props.schema}
                                 answers={props.answers}

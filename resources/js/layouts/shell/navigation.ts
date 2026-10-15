@@ -5,6 +5,7 @@ import audit from '@/routes/audit';
 import organizationBranches from '@/routes/organization/branches';
 import forms from '@/routes/forms';
 import integrations from '@/routes/integrations';
+import leave from '@/routes/leave';
 import people from '@/routes/people';
 import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
@@ -69,6 +70,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: 'approvals',
                     match: ['/approvals'],
                     badge: 'approvals',
+                },
+                {
+                    key: 'leave',
+                    label: 'nav.leave',
+                    href: leave.index(),
+                    icon: 'leave',
+                    match: ['/leave'],
+                    exclude: ['/leave/blackouts'],
                 },
                 {
                     key: 'people',

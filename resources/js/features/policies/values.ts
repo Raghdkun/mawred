@@ -17,6 +17,8 @@ export type FieldSpec =
           min?: number;
           max?: number;
           nullable?: boolean;
+          /** i18n key shown when a nullable value is empty (default: "No limit"). */
+          emptyLabel?: string;
       }
     | { name: string; kind: 'select'; options: string[]; segmented?: boolean }
     | { name: string; kind: 'switch' }
@@ -60,6 +62,15 @@ export const EDITORS: Record<string, FieldSpec[]> = {
             nullable: true,
         },
         { name: 'tenureSteps', kind: 'tenure' },
+        {
+            name: 'attachmentAfterDays',
+            kind: 'number',
+            unit: 'days',
+            min: 0,
+            max: 365,
+            nullable: true,
+            emptyLabel: 'fields.always',
+        },
     ],
     hourly_permission: [
         { name: 'minutesPerMonth', kind: 'number', unit: 'minutes', min: 0, max: 10000 },

@@ -148,7 +148,8 @@
             "personal": "Personal",
             "documents": "Documents",
             "history": "History",
-            "policies": "Effective policies"
+            "policies": "Effective policies",
+            "leave": "Leave"
         }
     },
     "terminate": {

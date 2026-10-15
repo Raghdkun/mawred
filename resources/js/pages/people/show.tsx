@@ -3,6 +3,7 @@ import { ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DirIcon } from '@/components/mw/dir-icon';
+import { LeavePanel } from '@/features/leave/leave-panel';
 import { DocumentsTab } from '@/features/people/profile/documents-tab';
 import { HistoryTab } from '@/features/people/profile/history-tab';
 import { JobTab } from '@/features/people/profile/job-tab';
@@ -17,10 +18,11 @@ import { cn } from '@/lib/utils';
 import people from '@/routes/people';
 
 /**
- * Leave, Attendance and Training tabs join with their modules (Phases 5–6); nothing links to an
- * unbuilt tab. Effective policies shows to people who can read policies.
+ * Attendance and Training tabs join with their modules (Phases 5b–6); nothing links to an
+ * unbuilt tab. Leave shows to people whose leave scope reaches this person; effective policies
+ * to people who can read policies.
  */
-const TABS = ['overview', 'job', 'personal', 'documents', 'history', 'policies'] as const;
+const TABS = ['overview', 'job', 'personal', 'documents', 'leave', 'history', 'policies'] as const;
 type Tab = (typeof TABS)[number];
 
 /** Employee profile (handoff 8): header + tabs; tabs scroll horizontally on phones. */
@@ -62,7 +64,11 @@ export default function PeopleShow(props: ProfileProps) {
                 className="-mx-4 mb-6 overflow-x-auto px-4 md:mx-0 md:px-0"
             >
                 <div className="flex min-w-max gap-1 border-b border-border">
-                    {TABS.filter((key) => key !== 'policies' || props.can.policies).map((key) => (
+                    {TABS.filter(
+                        (key) =>
+                            (key !== 'policies' || props.can.policies) &&
+                            (key !== 'leave' || props.can.leave),
+                    ).map((key) => (
                         <button
                             key={key}
                             type="button"
@@ -93,6 +99,12 @@ export default function PeopleShow(props: ProfileProps) {
                 {tab === 'job' ? <JobTab {...props} /> : null}
                 {tab === 'personal' ? <PersonalTab {...props} /> : null}
                 {tab === 'documents' ? <DocumentsTab {...props} /> : null}
+                {tab === 'leave' && props.can.leave ? (
+                    <LeavePanel
+                        employeeId={props.profile.summary.id}
+                        initialYear={new Date().getFullYear()}
+                    />
+                ) : null}
                 {tab === 'history' ? <HistoryTab {...props} /> : null}
                 {tab === 'policies' && props.can.policies ? <PoliciesTab {...props} /> : null}
             </div>

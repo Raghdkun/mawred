@@ -32,6 +32,7 @@ final class RequestTypeData extends Data
         public bool $ready,
         public string $source = 'native',
         public ?string $externalUrl = null,
+        public ?string $behaviour = null,
     ) {}
 
     /**
@@ -59,6 +60,7 @@ final class RequestTypeData extends Data
             workflowId: $type->workflow?->ulid,
             ready: $type->form?->published_version_id !== null && $type->workflow?->published_version_id !== null,
             source: $type->source,
+            behaviour: $type->behaviour,
         );
     }
 }

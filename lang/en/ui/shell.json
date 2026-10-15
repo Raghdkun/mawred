@@ -20,6 +20,7 @@
         "policies": "Policies",
         "forms": "Forms",
         "requests": "Requests",
+        "leave": "Leave",
         "approvals": "Approvals",
         "newRequest": "New",
         "openCount": "{count, plural, one {# waiting} other {# waiting}}",

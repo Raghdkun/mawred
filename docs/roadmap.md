@@ -72,7 +72,8 @@
 - Signed approval links over WhatsApp; WhatsApp activation invites.
 - **Exit**: faked Cognito submit/update/delete/duplicate tests; signature valid/invalid tests; sidecar fake; routing/fallback tests; wizard step tests.
 
-## Phase 5 — Time (XL, may split 5a/5b)
+## Phase 5 — Time (XL, split 5a/5b) — 5a ✅ built (pending CI and owner review)
+> Demo: [phase-5a.md](demos/phase-5a.md). Decisions: D63 (calendar leave year), D64 (reserve, then deduct), D65 (overdraw blocked), D66 (5a then 5b), D67 (leave engine choices).
 - **5a**:
   - Leave engine: ledger, accrual jobs, half-day/hourly units, hourly-permission quota, overlap and blackout checks, sick-leave attachment rule, year-end carry-over/expiry, recalculation and impact preview wired end-to-end.
   - Leave calendar (team/department/branch).

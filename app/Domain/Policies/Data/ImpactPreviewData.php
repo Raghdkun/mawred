@@ -8,7 +8,8 @@ use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * Who a proposed policy change affects and how (handoff 20). Balance deltas join in Phase 5.
+ * Who a proposed policy change affects and how (handoff 20), with leave balance deltas for
+ * leave rule changes.
  */
 #[TypeScript]
 final class ImpactPreviewData extends Data

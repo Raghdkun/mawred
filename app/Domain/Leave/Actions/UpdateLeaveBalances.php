@@ -9,6 +9,7 @@ use App\Domain\Leave\Support\EmployeeDays;
 use App\Domain\Leave\Support\LeaveYear;
 use App\Domain\People\Models\Employee;
 use App\Domain\Policies\Models\LeaveType;
+use Illuminate\Contracts\Database\Query\Builder;
 
 /**
  * The nightly run for one employee: finish last year's accrual and carry it over, expire
@@ -36,8 +37,8 @@ final readonly class UpdateLeaveBalances
 
         $held = LeaveLedgerEntry::query()->where('employee_id', $employee->id)->whereIn('year', [$year - 1, $year])->distinct()->pluck('leave_type_id')->all();
         $types = LeaveType::withTrashed()
-            ->where(fn ($q) => $q->where('is_active', true)->whereNull('deleted_at')
-                ->where(fn ($q) => $q->whereNull('eligible_gender')->orWhere('eligible_gender', $employee->gender ?? '')))
+            ->where(fn (Builder $q) => $q->where('is_active', true)->whereNull('deleted_at')
+                ->where(fn (Builder $q) => $q->whereNull('eligible_gender')->orWhere('eligible_gender', $employee->gender ?? '')))
             ->orWhereIn('id', $held)
             ->get();
 
