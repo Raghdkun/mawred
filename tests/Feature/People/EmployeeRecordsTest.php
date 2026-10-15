@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Domain\Access\Enums\FieldAccess;
 use App\Domain\Access\Models\User;
 use App\Domain\Access\Support\ScopeResolver;
+use App\Domain\Notifications\Notifications\InAppNotification;
 use App\Domain\Organization\Models\Branch;
 use App\Domain\People\Actions\AssignAsset;
 use App\Domain\People\Actions\HireEmployee;
@@ -24,7 +25,6 @@ use App\Domain\People\Data\SensitiveDetailsInputData;
 use App\Domain\People\Enums\HistoryEvent;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeCustomValue;
-use App\Domain\People\Notifications\DocumentExpiringNotification;
 use App\Support\Actors\Actor;
 use App\Support\Errors\DomainRuleViolation;
 use App\Support\Money\Money;
@@ -127,15 +127,15 @@ it('stores documents privately and reminds each threshold once', function (): vo
     resolve(SendDocumentExpiryReminders::class)->handle();
     resolve(SendDocumentExpiryReminders::class)->handle();
 
-    Notification::assertSentToTimes($employeeUser, DocumentExpiringNotification::class, 1);
-    Notification::assertSentToTimes($managerUser, DocumentExpiringNotification::class, 1);
-    Notification::assertSentToTimes($hr, DocumentExpiringNotification::class, 1);
-    Notification::assertNotSentTo($officerElsewhere, DocumentExpiringNotification::class);
-    Notification::assertSentTo($employeeUser, fn (DocumentExpiringNotification $n): bool => str_contains($n->toArray($employeeUser)['title'], 'الإقامة') && $n->daysLeft === 24);
+    Notification::assertSentToTimes($employeeUser, InAppNotification::class, 1);
+    Notification::assertSentToTimes($managerUser, InAppNotification::class, 1);
+    Notification::assertSentToTimes($hr, InAppNotification::class, 1);
+    Notification::assertNotSentTo($officerElsewhere, InAppNotification::class);
+    Notification::assertSentTo($employeeUser, fn (InAppNotification $n): bool => $n->event === 'documents.expiring' && str_contains($n->title, 'الإقامة') && str_contains($n->title, '24'));
 
     $this->travelTo('2026-10-19 08:00:00');
     resolve(SendDocumentExpiryReminders::class)->handle();
-    Notification::assertSentToTimes($employeeUser, DocumentExpiringNotification::class, 2);
+    Notification::assertSentToTimes($employeeUser, InAppNotification::class, 2);
     expect($document->fresh()?->reminders_sent)->toBe([30, 7]);
 });
 

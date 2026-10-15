@@ -1,6 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { FileText, MessageCircle, Mail, RefreshCw, Settings2, Workflow } from 'lucide-react';
-import { type ComponentType, type SVGProps, useState } from 'react';
+import { type ComponentType, type ReactNode, type SVGProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Facts } from '@/components/mw/facts';
 import { PageHeader } from '@/components/mw/page-header';
@@ -84,9 +84,13 @@ export default function IntegrationsHub({
                                 <Facts
                                     items={[
                                         ...Object.entries(card.details).map(
-                                            ([key, value]): [string, string | null] => [
+                                            ([key, value]): [string, ReactNode] => [
                                                 t(`details.${key}`),
-                                                value,
+                                                value === null ? null : (
+                                                    <bdi dir="ltr" className="break-all">
+                                                        {value}
+                                                    </bdi>
+                                                ),
                                             ],
                                         ),
                                         [

@@ -7,6 +7,9 @@ namespace App\Domain\People\Actions;
 use App\Domain\Access\Models\User;
 use App\Domain\Access\Support\ScopeResolver;
 use App\Domain\Access\Support\SubjectBinding;
+use App\Domain\Notifications\Enums\NotificationCategory;
+use App\Domain\Notifications\Support\NotificationMessage;
+use App\Domain\Notifications\Support\NotificationRouter;
 use App\Domain\Organization\Models\Branch;
 use App\Domain\People\Enums\EmployeeStatus;
 use App\Domain\People\Models\Employee;
@@ -24,7 +27,7 @@ use Illuminate\Support\Collection;
  */
 final readonly class SendDocumentExpiryReminders
 {
-    public function __construct(private LocalClock $clock, private ScopeResolver $resolver) {}
+    public function __construct(private LocalClock $clock, private ScopeResolver $resolver, private NotificationRouter $router) {}
 
     public function handle(): int
     {
@@ -77,7 +80,14 @@ final readonly class SendDocumentExpiryReminders
 
         foreach ($recipients as $user) {
             /** @var User $user */
-            $user->notify(DocumentExpiringNotification::for($document, $daysLeft, $user->is($employee->user), $user->locale));
+            $reminder = DocumentExpiringNotification::for($document, $daysLeft, $user->is($employee->user), $user->locale);
+            $this->router->send($user, new NotificationMessage(
+                event: 'documents.expiring',
+                category: NotificationCategory::Documents,
+                content: fn (string $channel, string $locale): array => DocumentExpiringNotification::for($document, $daysLeft, $user->is($employee->user), $locale)->text($locale),
+                url: $reminder->url(),
+                sourceKey: $document->ulid.':'.$document->expires_on->toDateString().':'.min($due),
+            ));
         }
 
         // Every threshold already passed is marked, so a late first run sends one reminder, not several.

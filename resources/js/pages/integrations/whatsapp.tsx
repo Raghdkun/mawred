@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useLocale } from '@/hooks/use-locale';
-import { formatDate } from '@/lib/format';
+import { formatDate, formatNumber } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import integrations from '@/routes/integrations';
 import { healthOf } from './index';
@@ -81,6 +81,7 @@ type Choice = 'official' | 'waha' | 'both';
 /** WhatsApp setup (handoff 40): a wizard with a side rail; a compact stepper on phones. */
 export default function WhatsAppSetup(props: Props) {
     const { t } = useTranslation('integrations');
+    const { locale } = useLocale();
     const [choice, setChoice] = useState<Choice>(
         props.official && props.waha ? 'both' : props.waha ? 'waha' : 'official',
     );
@@ -144,7 +145,7 @@ export default function WhatsAppSetup(props: Props) {
                                         {done(s) ? (
                                             <Check aria-hidden className="size-3.5" />
                                         ) : (
-                                            i + 1
+                                            formatNumber(i + 1, locale)
                                         )}
                                     </span>
                                     {t(`whatsapp.stepNames.${s}`)}

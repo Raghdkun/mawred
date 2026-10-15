@@ -123,6 +123,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Text clicks in Pest browser tests match the first element containing the text ("Approve" also matches "Approvals"); target buttons with a `data-*` attribute.
 - Domain `Queries\*` must extend `ScopedQuery` (arch test); deliberately unscoped lookups belong in `Support`.
 
+## Gotchas learned in Phase 4
+- Inbound webhooks live in `routes/hooks.php`, registered outside the `web` group (no session or CSRF); each controller authenticates the caller itself. Add new hook names to `PUBLIC_ROUTE_NAMES` in the route arch test.
+- PHP turns `hub.mode` query keys into `hub_mode`; read both when handling Meta's verification GET.
+- Arch rules: no `sha1` or `tempnam` (use `hash('sha256', …)` and `storage_path('app/tmp')`), and every class in `Actions` has exactly one public `handle()`.
+- A new encrypted cast must be added to `Domain/Integrations/Support/EncryptedColumns` (a test enforces it) so `mawred:reencrypt` covers it.
+- Postgres `jsonb` reorders keys in stored mappings: compare decoded structures, not built URLs or JSON strings.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

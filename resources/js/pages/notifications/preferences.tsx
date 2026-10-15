@@ -92,7 +92,7 @@ export default function NotificationPreferences({
 
             <form onSubmit={submit} className="flex max-w-3xl flex-col gap-8">
                 <Section title={t('preferences.channelsTitle')}>
-                    <div className="overflow-hidden rounded-lg border border-border bg-card">
+                    <div className="overflow-x-auto rounded-lg border border-border bg-card">
                         <table className="w-full text-sm">
                             <caption className="sr-only">{t('preferences.channelsTitle')}</caption>
                             <thead className="bg-muted/60 text-start text-caption text-text-secondary">
@@ -104,7 +104,7 @@ export default function NotificationPreferences({
                                         <th
                                             key={channel}
                                             scope="col"
-                                            className="w-28 px-4 py-3 text-center font-medium"
+                                            className="w-20 px-2 py-3 text-center font-medium sm:w-28 sm:px-4"
                                         >
                                             {t(`preferences.channels.${channel}`)}
                                         </th>
@@ -130,7 +130,10 @@ export default function NotificationPreferences({
                                             const label = `${t(`preferences.categories.${row.category}.name`)} · ${t(`preferences.channels.${channel}`)}`;
 
                                             return (
-                                                <td key={channel} className="px-4 py-3 text-center">
+                                                <td
+                                                    key={channel}
+                                                    className="px-2 py-3 text-center sm:px-4"
+                                                >
                                                     {cell ? (
                                                         <span className="inline-flex items-center gap-1.5">
                                                             <Switch

@@ -1,6 +1,6 @@
 # ADR-0015: Integrations — credential vault, driver interfaces, routing
 
-- Status: Proposed — unofficial driver = WAHA (D8); email = provider-agnostic SMTP (D9); Cognito greenfield (D19)
+- Status: Accepted (Phase 4) — unofficial driver = WAHA (D8); email = provider-agnostic SMTP (D9); Cognito greenfield (D19)
 - Date: 2026-10-13
 
 ## Credential vault
@@ -41,3 +41,10 @@
 ## Hub and health
 - A scheduled `integrations:health` job runs every 5 minutes and evaluates each connection. Status changes (healthy, degraded, disconnected, not configured) raise events, which produce an in-app and email alert to the integration admins plus a dashboard widget.
 - Webhook failure-rate spike detection uses a rolling window over the receipts tables.
+
+## Implementation notes (Phase 4)
+- Vault: `integration_connections` with `encrypted:array` credentials; `masked()` shows `••••last4`; `mawred:reencrypt` walks a registry of every encrypted column (`EncryptedColumns`, kept in step with the models by a test).
+- Health: one `HealthCheck` per type, `integrations:health` every 5 minutes, `IntegrationHealthChanged` → in-app + email alert (category `integrations`).
+- Cognito: Cognito doesn't document its payload envelope, so the entry id and version paths are configurable (defaults `Id`, `Entry.Version`) with a payload-hash fallback. Receipts are encrypted in a partitioned table; processing is queued (`integrations`). Requests keep `cognito_source_id` + `external_entry_id`.
+- WhatsApp: `WhatsAppDriver` (Official, WAHA) behind `WhatsAppGateway`, which logs every attempt in the partitioned `whatsapp_messages` (number kept as a blind index + last four digits). `NotificationRouter` treats email and WhatsApp as one "outside the app" delivery walked along the category's chain. Inbound quick-reply payloads are `mawred:<action token>`.
+- WAHA pairing is shown by polling the sidecar every 3 s from the setup page (QR as a PNG data URI from WAHA) rather than pushing over Reverb (D62).
