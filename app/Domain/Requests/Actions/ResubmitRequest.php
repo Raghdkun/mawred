@@ -7,6 +7,7 @@ namespace App\Domain\Requests\Actions;
 use App\Domain\Forms\Actions\SubmitForm;
 use App\Domain\Forms\Enums\SubmissionSource;
 use App\Domain\Forms\Models\Form;
+use App\Domain\Leave\Actions\PlaceLeaveHold;
 use App\Domain\Requests\Enums\RequestStatus;
 use App\Domain\Requests\Models\EmployeeRequest;
 use App\Domain\Workflows\Engine\WorkflowEngine;
@@ -21,7 +22,7 @@ use Illuminate\Database\ConnectionInterface;
  */
 final readonly class ResubmitRequest
 {
-    public function __construct(private ConnectionInterface $db, private SubmitForm $submitForm, private WorkflowEngine $engine) {}
+    public function __construct(private ConnectionInterface $db, private SubmitForm $submitForm, private WorkflowEngine $engine, private PlaceLeaveHold $leaveHold) {}
 
     /**
      * @param  array<string, mixed>  $values
@@ -41,6 +42,11 @@ final readonly class ResubmitRequest
             $submission = $this->submitForm->handle($actor, $form, $version, $values, SubmissionSource::Internal, replaces: $previous);
 
             $request->forceFill(['form_submission_id' => $submission->id, 'status' => RequestStatus::InReview])->save();
+            $type = $request->type()->firstOrFail();
+
+            if ($type->behaviour !== null) {
+                $this->leaveHold->handle($request, $type, $request->requester()->firstOrFail(), $submission);
+            }
             $this->engine->resubmit($instance, $submission->data, $actor->user);
 
             activity('requests')->causedBy($actor->user)->performedOn($request)->event('resubmitted')->log('Request resubmitted');

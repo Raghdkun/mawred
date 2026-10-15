@@ -10,7 +10,8 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
  * Rules for one leave type: entitlement, accrual, pro-rata, rounding, cap, carry-over, expiry,
- * waiting period and tenure steps. Composed, typed components; never a formula.
+ * waiting period and tenure steps; for types that need a supporting document, how many days can be
+ * taken without one (null = always needed). Composed, typed components; never a formula.
  */
 #[TypeScript]
 final class LeaveRuleValue extends Data
@@ -28,6 +29,7 @@ final class LeaveRuleValue extends Data
         public ?int $carryOverExpiresMonths = null,
         public int $eligibleAfterDays = 0,
         public array $tenureSteps = [],
+        public ?int $attachmentAfterDays = null,
     ) {}
 
     /**
@@ -47,6 +49,7 @@ final class LeaveRuleValue extends Data
             'tenureSteps' => ['array', 'max:10'],
             'tenureSteps.*.afterYears' => ['required', 'integer', 'between:1,60'],
             'tenureSteps.*.entitlement' => ['required', 'numeric', 'between:0,3650'],
+            'attachmentAfterDays' => ['nullable', 'integer', 'between:0,365'],
         ];
     }
 

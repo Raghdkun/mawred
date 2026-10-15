@@ -9,6 +9,7 @@ use App\Domain\Forms\Actions\SaveFormDraft;
 use App\Domain\Forms\Actions\SaveFormSettings;
 use App\Domain\Forms\Data\FormSettingsData;
 use App\Domain\Forms\Support\FieldSpec;
+use App\Domain\Policies\Models\LeaveType;
 use App\Domain\Requests\Enums\RequestCategory;
 use App\Domain\Requests\Models\RequestType;
 use App\Domain\Workflows\Actions\PublishWorkflow;
@@ -65,6 +66,8 @@ final readonly class SeedRequestTypes
                     'icon' => $type['icon'],
                     'is_sensitive' => $type['sensitive'] ?? false,
                     'available_in_phase' => $type['phase'] ?? 0,
+                    'behaviour' => isset($type['leave']) ? 'leave' : ($type['behaviour'] ?? null),
+                    'leave_type_id' => isset($type['leave']) ? LeaveType::query()->where('code', $type['leave'])->value('id') : null,
                     'sort_order' => ($index + 1) * 10,
                     'form_id' => $form->id,
                     'workflow_definition_id' => $flow->id,
@@ -128,7 +131,7 @@ final readonly class SeedRequestTypes
     }
 
     /**
-     * @return list<array{code: string, name: array<string, string>, description: array<string, string>, category: RequestCategory, icon: string, chain: 'standard'|'hr'|'extended'|'hr_update', fields: list<array<string, mixed>>, sensitive?: bool, phase?: int, update?: string}>
+     * @return list<array{code: string, name: array<string, string>, description: array<string, string>, category: RequestCategory, icon: string, chain: 'standard'|'hr'|'extended'|'hr_update', fields: list<array<string, mixed>>, sensitive?: bool, phase?: int, update?: string, leave?: string, behaviour?: string}>
      */
     public static function catalog(): array
     {
@@ -137,10 +140,14 @@ final readonly class SeedRequestTypes
         $hourly = ['op' => 'eq', 'args' => [['ref' => 'field.kind'], 'hourly']];
         $contact = ['op' => 'contains', 'args' => [['ref' => 'field.change'], 'contact']];
         $bank = ['op' => 'contains', 'args' => [['ref' => 'field.change'], 'bank']];
+        $oneDay = ['op' => 'all', 'args' => [['op' => 'not', 'args' => [['op' => 'empty', 'args' => [['ref' => 'field.dates.from']]]]], ['op' => 'eq', 'args' => [['ref' => 'field.dates.from'], ['ref' => 'field.dates.to']]]]];
+        $halfDay = self::field('half_day', 'radio', 'How much of the day?', 'أي جزء من اليوم؟', ['default' => 'full', 'visible' => $oneDay, 'options' => self::options([
+            'full' => ['The whole day', 'اليوم كاملاً'], 'morning' => ['Morning only', 'الصباح فقط'], 'afternoon' => ['Afternoon only', 'بعد الظهر فقط'],
+        ])]);
 
         return [
             [
-                'code' => 'DAY_OFF', 'category' => RequestCategory::Time, 'icon' => 'calendar', 'chain' => 'standard',
+                'code' => 'DAY_OFF', 'category' => RequestCategory::Time, 'icon' => 'calendar', 'chain' => 'standard', 'behaviour' => 'hourly_permission',
                 'name' => ['en' => 'Day off or hourly permission', 'ar' => 'إجازة يوم أو استئذان بالساعات'],
                 'description' => ['en' => 'A day away, or a few hours out of a working day.', 'ar' => 'يوم غياب، أو بضع ساعات خلال يوم العمل.'],
                 'fields' => [
@@ -240,17 +247,18 @@ final readonly class SeedRequestTypes
                 ],
             ],
             [
-                'code' => 'ANNUAL_LEAVE', 'category' => RequestCategory::Leave, 'icon' => 'leave', 'chain' => 'standard', 'phase' => 5,
+                'code' => 'ANNUAL_LEAVE', 'category' => RequestCategory::Leave, 'icon' => 'leave', 'chain' => 'standard', 'leave' => 'ANNUAL',
                 'name' => ['en' => 'Annual leave', 'ar' => 'إجازة سنوية'],
                 'description' => ['en' => 'Time off from your annual balance.', 'ar' => 'إجازة من رصيدك السنوي.'],
-                'fields' => [self::field('dates', 'date_range', 'Dates', 'التواريخ', ['required' => true, 'validation' => ['min' => $today]]), self::field('note', 'textarea', 'Note', 'ملاحظة')],
+                'fields' => [self::field('dates', 'date_range', 'Dates', 'التواريخ', ['required' => true, 'validation' => ['min' => $today]]), $halfDay, self::field('note', 'textarea', 'Note', 'ملاحظة')],
             ],
             [
-                'code' => 'SICK_LEAVE', 'category' => RequestCategory::Leave, 'icon' => 'leave', 'chain' => 'standard', 'phase' => 5,
+                'code' => 'SICK_LEAVE', 'category' => RequestCategory::Leave, 'icon' => 'leave', 'chain' => 'standard', 'leave' => 'SICK',
                 'name' => ['en' => 'Sick leave', 'ar' => 'إجازة مرضية'],
                 'description' => ['en' => 'Time off when you’re unwell, with a medical note.', 'ar' => 'إجازة عند المرض مع تقرير طبي.'],
                 'fields' => [
                     self::field('dates', 'date_range', 'Dates', 'التواريخ', ['required' => true]),
+                    $halfDay,
                     self::field('medical_note', 'file', 'Medical note', 'التقرير الطبي', ['validation' => ['maxFiles' => 2, 'accept' => ['pdf', 'image']]]),
                 ],
             ],

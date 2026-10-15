@@ -6,6 +6,7 @@ use App\Providers\FormsServiceProvider;
 use App\Providers\FortifyServiceProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\IntegrationsServiceProvider;
+use App\Providers\LeaveServiceProvider;
 use App\Providers\NotificationsServiceProvider;
 use App\Providers\PeopleServiceProvider;
 use App\Providers\PoliciesServiceProvider;
@@ -21,6 +22,7 @@ return [
     FormsServiceProvider::class,
     WorkflowsServiceProvider::class,
     RequestsServiceProvider::class,
+    LeaveServiceProvider::class,
     NotificationsServiceProvider::class,
     IntegrationsServiceProvider::class,
     FortifyServiceProvider::class,

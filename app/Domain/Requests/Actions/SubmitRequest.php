@@ -10,6 +10,7 @@ use App\Domain\Forms\Enums\SubmissionSource;
 use App\Domain\Forms\Models\Form;
 use App\Domain\Forms\Models\FormVersion;
 use App\Domain\Forms\Support\FormContext;
+use App\Domain\Leave\Actions\PlaceLeaveHold;
 use App\Domain\People\Models\Employee;
 use App\Domain\Requests\Enums\RequestStatus;
 use App\Domain\Requests\Models\EmployeeRequest;
@@ -23,7 +24,8 @@ use Illuminate\Database\ConnectionInterface;
 
 /**
  * Submits a request (handoff 11): validates the answers against the type's published form
- * version, records them, and starts the type's workflow with the request as its subject.
+ * version, records them, holds any leave it asks for (D64), and starts the type's workflow with
+ * the request as its subject.
  */
 final readonly class SubmitRequest
 {
@@ -33,6 +35,7 @@ final readonly class SubmitRequest
         private FormContext $formContext,
         private WorkflowEngine $engine,
         private RequestNumbers $numbers,
+        private PlaceLeaveHold $leaveHold,
     ) {}
 
     /**
@@ -80,6 +83,10 @@ final readonly class SubmitRequest
                 'external_entry_id' => $external['entry_id'] ?? null,
             ]);
             $request->save();
+
+            if ($type->behaviour !== null) {
+                $this->leaveHold->handle($request, $type, $employee, $submission);
+            }
 
             $context = $this->formContext->forEmployee($employee);
             $instance = $this->engine->start($workflow, [
