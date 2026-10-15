@@ -567,5 +567,17 @@
     "not checked yet": "لم يُفحص بعد",
     "Connection works.": "الاتصال يعمل.",
     "Connection check failed: :reason": "فشل فحص الاتصال: :reason",
-    "Email settings saved.": "حُفظت إعدادات البريد."
+    "Email settings saved.": "حُفظت إعدادات البريد.",
+    "No active Cognito sources.": "لا توجد مصادر Cognito فعّالة.",
+    ":failed of :total entries failed in the last 24 hours.": "فشل :failed من :total إدخالًا خلال آخر 24 ساعة.",
+    "This entry is not waiting for a person.": "هذا الإدخال لا ينتظر تحديد شخص.",
+    "This entry can’t be run again.": "لا يمكن تشغيل هذا الإدخال مجددًا.",
+    "This entry already became a request.": "أصبح هذا الإدخال طلبًا بالفعل.",
+    "The source is off or not linked to a request type.": "المصدر متوقف أو غير مرتبط بنوع طلب.",
+    "No employee matches :value.": "لا يوجد موظف يطابق :value.",
+    "The request was already decided, so the change was not applied.": "سبق البت في الطلب، فلم يُطبّق التغيير.",
+    "Nothing running to cancel.": "لا يوجد ما يمكن إلغاؤه.",
+    "The Cognito entry was deleted.": "حُذف إدخال Cognito.",
+    "Source saved.": "حُفظ المصدر.",
+    "Submit a test entry in Cognito; it will be kept as the sample.": "أرسل إدخالًا تجريبيًا في Cognito؛ سيُحفظ كعيّنة."
 }

@@ -23,6 +23,7 @@ use Spatie\Translatable\HasTranslations;
  * @property int $id
  * @property string $ulid
  * @property string $code
+ * @property string $source native|cognito
  * @property array<string, string>|string $name
  * @property array<string, string>|string|null $description
  * @property RequestCategory $category
@@ -46,7 +47,7 @@ final class RequestType extends Model
     public array $translatable = ['name', 'description'];
 
     /** @var array<string, mixed> */
-    protected $attributes = ['description' => null, 'icon' => null, 'is_sensitive' => false, 'available_in_phase' => 0, 'is_active' => true, 'sort_order' => 0];
+    protected $attributes = ['description' => null, 'icon' => null, 'is_sensitive' => false, 'available_in_phase' => 0, 'is_active' => true, 'sort_order' => 0, 'source' => 'native'];
 
     /**
      * @return BelongsTo<Form, $this>

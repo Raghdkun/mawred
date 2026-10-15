@@ -9,6 +9,9 @@ use App\Domain\Forms\Actions\StoreFormUpload;
 use App\Domain\Forms\Models\Form;
 use App\Domain\Forms\Models\FormVersion;
 use App\Domain\Forms\Support\FormContext;
+use App\Domain\Integrations\Cognito\CognitoMapping;
+use App\Domain\Integrations\Models\CognitoSource;
+use App\Domain\People\Models\Employee;
 use App\Domain\Requests\Actions\SubmitRequest;
 use App\Domain\Requests\Data\RequestTypeData;
 use App\Domain\Requests\Models\RequestType;
@@ -22,29 +25,38 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Request center (handoff 10) and the request form (handoff 11).
  */
 final class RequestCenterController extends Controller
 {
-    public function index(): Response
+    public function index(#[CurrentUser] User $user): Response
     {
         Gate::authorize('requests.create');
 
         $types = RequestType::query()->with(['form', 'workflow'])->where('is_active', true)->orderBy('sort_order')->orderBy('id')->get()
             ->filter(fn (RequestType $type): bool => $type->isAvailable())
-            ->map(RequestTypeData::fromType(...))
-            ->filter(fn (RequestTypeData $type): bool => $type->ready)
+            ->map(fn (RequestType $type): RequestTypeData => $this->withExternalLink(RequestTypeData::fromType($type), $type, $user))
+            ->filter(fn (RequestTypeData $type): bool => $type->ready && ($type->source === 'native' || $type->externalUrl !== null))
             ->values();
 
-        return Inertia::render('requests/center', ['types' => $types]);
+        return Inertia::render('requests/center', ['types' => $types, 'showSource' => Gate::allows('requests.configure')]);
     }
 
-    public function create(RequestType $type, FormContext $context, #[CurrentUser] User $user): Response
+    public function create(RequestType $type, FormContext $context, #[CurrentUser] User $user): Response|SymfonyResponse
     {
         Gate::authorize('requests.create');
         abort_unless($type->isAvailable(), 404);
+
+        // Cognito-backed types are filled in on Cognito (D60).
+        if ($type->source === 'cognito') {
+            $link = $this->withExternalLink(RequestTypeData::fromType($type->load(['form', 'workflow'])), $type, $user)->externalUrl;
+            abort_if($link === null, 404);
+
+            return Inertia::location($link);
+        }
 
         $version = $this->publishedVersion($type);
 
@@ -89,5 +101,22 @@ final class RequestCenterController extends Controller
         abort_unless($version instanceof FormVersion, 404);
 
         return $version;
+    }
+
+    /** The prefilled Cognito link for this person (D60), on Cognito-backed types. */
+    private function withExternalLink(RequestTypeData $data, RequestType $type, User $user): RequestTypeData
+    {
+        if ($type->source !== 'cognito') {
+            return $data;
+        }
+
+        $source = CognitoSource::query()->where('request_type_id', $type->id)->where('is_active', true)->whereNotNull('form_url')->first();
+        $employee = Employee::query()->where('user_id', $user->id)->first();
+
+        if ($source instanceof CognitoSource && $employee instanceof Employee && is_string($source->form_url)) {
+            $data->externalUrl = CognitoMapping::of($source)->prefillUrl($source->form_url, $employee, $user, app()->getLocale());
+        }
+
+        return $data;
     }
 }

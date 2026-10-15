@@ -9,7 +9,12 @@
         "emptyHelp": "لم تنشر الموارد البشرية أي نوع طلب بعد. عُد لاحقًا.",
         "noResults": "لا توجد أنواع طلبات تطابق بحثك.",
         "sensitive": "خاص — لا يراه إلا المعتمدون",
-        "needsApproval": "يحتاج إلى موافقة"
+        "needsApproval": "يحتاج إلى موافقة",
+        "sources": {
+            "native": "مَورِد",
+            "cognito": "Cognito"
+        },
+        "opensCognito": "(يفتح النموذج في تبويب جديد)"
     },
     "categories": {
         "all": "الكل",

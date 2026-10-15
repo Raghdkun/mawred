@@ -9,7 +9,12 @@
         "emptyHelp": "HR hasn’t published any request types. Check back soon.",
         "noResults": "No request types match your search.",
         "sensitive": "Private — only approvers see it",
-        "needsApproval": "Needs approval"
+        "needsApproval": "Needs approval",
+        "sources": {
+            "native": "Mawred",
+            "cognito": "Cognito"
+        },
+        "opensCognito": "(opens the form in a new tab)"
     },
     "categories": {
         "all": "All",

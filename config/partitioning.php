@@ -19,5 +19,9 @@ return [
             'column' => 'created_at',
             'retention_months' => 12,
         ],
+        'cognito_receipts' => [
+            'column' => 'created_at',
+            'retention_months' => 24,
+        ],
     ],
 ];

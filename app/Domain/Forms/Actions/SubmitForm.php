@@ -35,11 +35,12 @@ final readonly class SubmitForm
     /**
      * @param  array<string, mixed>  $input
      * @param  FormSubmission|null  $replaces  a submission being corrected: its files may be kept
+     * @param  Employee|null  $for  who the answers are about when an integration submits for them
      */
-    public function handle(Actor $actor, Form $form, FormVersion $version, array $input, SubmissionSource $source, ?string $sessionHash = null, ?string $ip = null, ?FormSubmission $replaces = null): FormSubmission
+    public function handle(Actor $actor, Form $form, FormVersion $version, array $input, SubmissionSource $source, ?string $sessionHash = null, ?string $ip = null, ?FormSubmission $replaces = null, ?Employee $for = null): FormSubmission
     {
         $user = $actor->user;
-        $employee = $user instanceof User ? Employee::query()->where('user_id', $user->id)->first() : null;
+        $employee = $for ?? ($user instanceof User ? Employee::query()->where('user_id', $user->id)->first() : null);
         $context = $source === SubmissionSource::Public ? ['requester' => null, 'ctx' => $this->context->forEmployee(null)['ctx']] : $this->context->forEmployee($employee);
         /** @var list<int> $claimed */
         $claimed = [];

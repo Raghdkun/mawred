@@ -21,6 +21,7 @@ const ICONS: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
 
 const SETTINGS: Record<string, string | undefined> = {
     email: integrations.email.url(),
+    cognito: integrations.cognito.index.url(),
 };
 
 export function healthOf(status: string): IntegrationHealth {

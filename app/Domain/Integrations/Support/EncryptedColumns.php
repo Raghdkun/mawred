@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Support;
 
 use App\Domain\Forms\Models\FormSubmission;
+use App\Domain\Integrations\Models\CognitoReceipt;
+use App\Domain\Integrations\Models\CognitoSource;
 use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeCustomValue;
@@ -30,6 +32,8 @@ final class EncryptedColumns
             FormSubmission::class => ['data'],
             WebhookEndpoint::class => ['secret'],
             IntegrationConnection::class => ['credentials'],
+            CognitoSource::class => ['sample_payload'],
+            CognitoReceipt::class => ['payload'],
         ];
     }
 }

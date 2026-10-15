@@ -125,7 +125,7 @@ answers: Record<string, any> | null,
 }
 namespace Enums {
 export type FieldType = 'text' | 'textarea' | 'number' | 'money' | 'email' | 'phone' | 'date' | 'date_range' | 'time' | 'select' | 'multiselect' | 'radio' | 'checkboxes' | 'boolean' | 'file' | 'employee' | 'department' | 'branch' | 'leave_type' | 'calculated' | 'note';
-export type SubmissionSource = 'internal' | 'public' | 'test';
+export type SubmissionSource = 'internal' | 'public' | 'test' | 'cognito';
 export type VersionStatus = 'draft' | 'published' | 'archived';
 }
 }
@@ -144,6 +144,7 @@ details: Record<string, string | null>,
 namespace Enums {
 export type IntegrationStatus = 'healthy' | 'degraded' | 'disconnected' | 'not_configured' | 'unverified';
 export type IntegrationType = 'email' | 'whatsapp_official' | 'whatsapp_waha' | 'cognito';
+export type ReceiptStatus = 'received' | 'processed' | 'needs_person' | 'failed' | 'duplicate' | 'late_update' | 'sample' | 'ignored' | 'discarded';
 }
 }
 namespace Notifications {
@@ -800,6 +801,8 @@ availableInPhase: number,
 formId: string | null,
 workflowId: string | null,
 ready: boolean,
+source: string,
+externalUrl: string | null,
 };
 export type TaskData = {
 id: string,

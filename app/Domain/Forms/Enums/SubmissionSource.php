@@ -10,4 +10,5 @@ enum SubmissionSource: string
     case Internal = 'internal';
     case Public = 'public';
     case Test = 'test';
+    case Cognito = 'cognito';
 }

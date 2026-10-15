@@ -13,6 +13,8 @@ use App\Domain\Integrations\Data\EmailSettingsData;
 use App\Domain\Integrations\Data\IntegrationCardData;
 use App\Domain\Integrations\Enums\IntegrationStatus;
 use App\Domain\Integrations\Enums\IntegrationType;
+use App\Domain\Integrations\Models\CognitoReceipt;
+use App\Domain\Integrations\Models\CognitoSource;
 use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\Integrations\Support\Connections;
 use App\Http\Controllers\Controller;
@@ -105,6 +107,10 @@ final class IntegrationsController extends Controller
                 'server' => FieldSpec::string($connection->config['host'] ?? null).':'.(is_int($connection->config['port'] ?? null) ? $connection->config['port'] : ''),
                 'sender' => is_string($connection->config['from_address'] ?? null) ? $connection->config['from_address'] : null,
                 'password' => $connection->masked('password'),
+            ],
+            IntegrationType::Cognito => [
+                'sources' => (string) CognitoSource::query()->where('is_active', true)->count(),
+                'received' => (string) CognitoReceipt::query()->where('created_at', '>=', today())->count(),
             ],
             default => [],
         };

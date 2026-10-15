@@ -19,6 +19,7 @@ const PUBLIC_ROUTE_NAMES = [
     'setup.claim.*', 'invitations.*', 'locale.update', 'storage.*', 'verification.verify',
     'public-forms.*', // D53: hardened with ALTCHA, honeypot, fill time and rate limits
     'action-links.*', // ADR-0009: single-use hashed tokens; sensitive types require sign-in (D24)
+    'hooks.*', // ADR-0015: inbound webhooks authenticate with URL tokens or signatures
 ];
 
 /** Package-owned endpoints with their own gates (Horizon, Pulse, Scramble, Sanctum, health…). */
