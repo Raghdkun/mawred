@@ -4,6 +4,7 @@ import accessRoles from '@/routes/access/roles';
 import audit from '@/routes/audit';
 import organizationBranches from '@/routes/organization/branches';
 import forms from '@/routes/forms';
+import integrations from '@/routes/integrations';
 import people from '@/routes/people';
 import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
@@ -135,6 +136,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: 'policies',
                     permission: 'policies.view',
                     match: ['/policies'],
+                },
+                {
+                    key: 'integrations',
+                    label: 'nav.integrations',
+                    href: integrations.index(),
+                    icon: 'integrations',
+                    permission: 'integrations.view',
+                    match: ['/integrations'],
                 },
                 {
                     key: 'notification-templates',

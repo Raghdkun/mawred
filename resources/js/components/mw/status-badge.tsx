@@ -69,9 +69,12 @@ const HEALTH: Record<IntegrationHealth, { badge: string; dot: string }> = {
 
 export function HealthBadge({
     health,
+    label,
     className,
 }: {
     health: IntegrationHealth;
+    /** Overrides the default label (e.g. "Not checked yet"). */
+    label?: string;
     className?: string;
 }) {
     const { t } = useTranslation('common');
@@ -85,7 +88,7 @@ export function HealthBadge({
             )}
         >
             <span aria-hidden className={cn('size-2 rounded-full', HEALTH[health].dot)} />
-            {t(`health.${health}`)}
+            {label ?? t(`health.${health}`)}
         </span>
     );
 }

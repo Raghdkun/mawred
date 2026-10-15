@@ -120,6 +120,20 @@ final class NotificationCatalog
                     ],
                 ],
             ],
+            'integrations.health_changed' => [
+                'category' => NotificationCategory::Integrations,
+                'variables' => ['name', 'integration', 'status', 'error', 'link'],
+                'templates' => [
+                    'in_app' => [
+                        'en' => ['subject' => '{{ integration }}: {{ status }}', 'body' => '{{ error }}'],
+                        'ar' => ['subject' => '{{ integration }}: {{ status }}', 'body' => '{{ error }}'],
+                    ],
+                    'email' => [
+                        'en' => ['subject' => '{{ integration }} is now {{ status }}', 'body' => "Hello {{ name }},\n\nMawred's {{ integration }} connection is now {{ status }}.\n\n{{ error }}\n\nOpen the integrations hub to test it or update its settings."],
+                        'ar' => ['subject' => 'حالة {{ integration }}: {{ status }}', 'body' => "مرحبًا {{ name }}،\n\nأصبحت حالة اتصال {{ integration }} في مَورِد: {{ status }}.\n\n{{ error }}\n\nافتح مركز التكاملات لاختباره أو تحديث إعداداته."],
+                    ],
+                ],
+            ],
             'requests.returned' => [
                 'category' => NotificationCategory::Requests,
                 'variables' => $vars,

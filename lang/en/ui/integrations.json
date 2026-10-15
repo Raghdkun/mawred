@@ -1,0 +1,46 @@
+{
+    "hub": {
+        "pageTitle": "Integrations",
+        "title": "Integrations",
+        "description": "The outside services Mawred uses, and whether they're working.",
+        "unverified": "Not checked yet",
+        "lastSuccess": "Last success",
+        "lastFailure": "Last failure",
+        "notConfigured": "Not set up yet.",
+        "edit": "Settings",
+        "setUp": "Set up",
+        "test": "Test",
+        "save": "Save",
+        "comingSoon": "Available soon"
+    },
+    "types": {
+        "email": {
+            "name": "Email",
+            "description": "Approvals, reminders and invitations by email, through your SMTP service."
+        },
+        "whatsapp_official": {
+            "name": "WhatsApp (Official)",
+            "description": "Meta's WhatsApp Business Cloud API: templates, delivery receipts and one-tap approvals."
+        },
+        "whatsapp_waha": {
+            "name": "Unofficial — WhatsApp Web (WAHA)",
+            "description": "A WhatsApp Web session on a phone you pair. Risk of the number being banned; approvals use links."
+        },
+        "cognito": {
+            "name": "Cognito Forms",
+            "description": "Entries from Cognito forms become requests in Mawred."
+        }
+    },
+    "details": {
+        "server": "Server",
+        "sender": "Sends as",
+        "password": "Password",
+        "phone": "Phone number",
+        "token": "Access token",
+        "session": "Session",
+        "url": "Sidecar",
+        "apiKey": "API key",
+        "sources": "Sources",
+        "received": "Entries today"
+    }
+}

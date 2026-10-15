@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Integrations\Events\IntegrationHealthChanged;
+use App\Domain\Integrations\Health\EmailHealthCheck;
+use App\Domain\Integrations\Health\HealthChecks;
+use App\Domain\Integrations\Listeners\AlertIntegrationAdmins;
 use App\Domain\Integrations\Support\RuntimeMailer;
 use Illuminate\Mail\MailManager;
 use Illuminate\Queue\Events\JobProcessing;
@@ -20,11 +24,19 @@ final class IntegrationsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(RuntimeMailer::class);
+        $this->app->singleton(function (): HealthChecks {
+            $checks = new HealthChecks;
+            $checks->register(new EmailHealthCheck);
+
+            return $checks;
+        });
     }
 
     public function boot(): void
     {
         $this->app->afterResolving('mail.manager', fn (MailManager $manager) => $this->app->make(RuntimeMailer::class)->apply($manager));
+
+        Event::listen(IntegrationHealthChanged::class, AlertIntegrationAdmins::class);
 
         Event::listen(JobProcessing::class, function (): void {
             $manager = $this->app->resolved('mail.manager') ? Mail::getFacadeRoot() : null;

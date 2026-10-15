@@ -555,5 +555,17 @@
     "Workflow cancelled.": "أُلغي مسار العمل.",
     "New approvals will go to :name on those dates.": "ستذهب الموافقات الجديدة إلى :name في تلك التواريخ.",
     "That code is already used.": "هذا الرمز مستخدم بالفعل.",
-    "Request type saved.": "حُفظ نوع الطلب."
+    "Request type saved.": "حُفظ نوع الطلب.",
+    "Email": "البريد الإلكتروني",
+    "WhatsApp (Official)": "واتساب (الرسمي)",
+    "Unofficial — WhatsApp Web (WAHA)": "غير رسمي — واتساب ويب (WAHA)",
+    "Cognito Forms": "Cognito Forms",
+    "healthy": "سليم",
+    "degraded": "متعثّر",
+    "disconnected": "منقطع",
+    "not configured": "غير مُعدّ",
+    "not checked yet": "لم يُفحص بعد",
+    "Connection works.": "الاتصال يعمل.",
+    "Connection check failed: :reason": "فشل فحص الاتصال: :reason",
+    "Email settings saved.": "حُفظت إعدادات البريد."
 }

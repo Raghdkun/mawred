@@ -129,6 +129,23 @@ export type SubmissionSource = 'internal' | 'public' | 'test';
 export type VersionStatus = 'draft' | 'published' | 'archived';
 }
 }
+namespace Integrations {
+namespace Data {
+export type IntegrationCardData = {
+type: string,
+status: string,
+checkedAt: string | null,
+lastSuccessAt: string | null,
+lastFailureAt: string | null,
+lastError: string | null,
+details: Record<string, string | null>,
+};
+}
+namespace Enums {
+export type IntegrationStatus = 'healthy' | 'degraded' | 'disconnected' | 'not_configured' | 'unverified';
+export type IntegrationType = 'email' | 'whatsapp_official' | 'whatsapp_waha' | 'cognito';
+}
+}
 namespace Notifications {
 namespace Data {
 export type NotificationItemData = {
@@ -142,7 +159,7 @@ createdAt: string,
 };
 }
 namespace Enums {
-export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'security';
+export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'security' | 'integrations';
 }
 }
 namespace Organization {

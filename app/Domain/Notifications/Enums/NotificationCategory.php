@@ -14,6 +14,7 @@ enum NotificationCategory: string
     case Requests = 'requests';
     case Documents = 'documents';
     case Security = 'security';
+    case Integrations = 'integrations';
 
     public function isCritical(): bool
     {
