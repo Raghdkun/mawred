@@ -38,6 +38,10 @@
                 "name": "Documents",
                 "help": "Expiring documents and new files."
             },
+            "schedule": {
+                "name": "Schedule and attendance",
+                "help": "Published rosters, shift changes, open shifts and swaps."
+            },
             "security": {
                 "name": "Security",
                 "help": "Sign-ins and account changes."

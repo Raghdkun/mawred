@@ -8,6 +8,7 @@ use App\Domain\Forms\Actions\PublishForm;
 use App\Domain\Forms\Actions\SaveFormDraft;
 use App\Domain\Forms\Actions\SaveFormSettings;
 use App\Domain\Forms\Data\FormSettingsData;
+use App\Domain\Forms\Models\Form;
 use App\Domain\Forms\Support\FieldSpec;
 use App\Domain\Policies\Models\LeaveType;
 use App\Domain\Requests\Enums\RequestCategory;
@@ -15,6 +16,7 @@ use App\Domain\Requests\Models\RequestType;
 use App\Domain\Workflows\Actions\PublishWorkflow;
 use App\Domain\Workflows\Actions\SaveWorkflowDefinition;
 use App\Domain\Workflows\Actions\SaveWorkflowDraft;
+use App\Domain\Workflows\Models\WorkflowDefinition;
 use App\Support\Actors\Actor;
 use Illuminate\Database\ConnectionInterface;
 
@@ -43,7 +45,11 @@ final readonly class SeedRequestTypes
         $actor = Actor::system('seed');
 
         foreach (self::catalog() as $index => $type) {
-            if (RequestType::withTrashed()->where('code', $type['code'])->exists()) {
+            $existing = RequestType::withTrashed()->where('code', $type['code'])->first();
+
+            if ($existing instanceof RequestType) {
+                $this->upgrade($actor, $existing, $type);
+
                 continue;
             }
 
@@ -77,9 +83,45 @@ final readonly class SeedRequestTypes
     }
 
     /**
+     * A type seeded while its module was still to come (D55) gets its shipped form and workflow
+     * when the module arrives; types that were already live are never touched again.
+     *
+     * @param  array{code: string, chain: 'standard'|'hr'|'extended'|'hr_update'|'swap', fields: list<array<string, mixed>>, name: array<string, string>, phase?: int, update?: string, leave?: string, behaviour?: string}  $type
+     */
+    private function upgrade(Actor $actor, RequestType $existing, array $type): void
+    {
+        if ($existing->available_in_phase === 0 || ($type['phase'] ?? 0) !== 0) {
+            return;
+        }
+
+        $this->db->transaction(function () use ($actor, $existing, $type): void {
+            $form = $existing->form()->first();
+            $flow = $existing->workflow()->first();
+
+            if ($form instanceof Form) {
+                $this->formDraft->handle($actor, $form, ['format' => 'mawred.form/v1', 'pages' => [[
+                    'key' => 'main', 'title' => $type['name'], 'sections' => [['key' => 'details', 'title' => null, 'fields' => $type['fields']]],
+                ]]]);
+                $this->publishForm->handle($actor, $form);
+            }
+
+            if ($flow instanceof WorkflowDefinition) {
+                $this->workflowDraft->handle($actor, $flow, self::graph($type['chain'], $type['update'] ?? null));
+                $this->publishWorkflow->handle($actor, $flow, array_map(fn (array $field): string => FieldSpec::string($field['key'] ?? null), $type['fields']));
+            }
+
+            $existing->forceFill([
+                'available_in_phase' => 0,
+                'behaviour' => isset($type['leave']) ? 'leave' : ($type['behaviour'] ?? null),
+                'leave_type_id' => isset($type['leave']) ? LeaveType::query()->where('code', $type['leave'])->value('id') : null,
+            ])->save();
+        });
+    }
+
+    /**
      * Start → approvals in order → (record update) → End, with any rejection ending as rejected.
      *
-     * @param  'standard'|'hr'|'extended'|'hr_update'  $chain
+     * @param  'standard'|'hr'|'extended'|'hr_update'|'swap'  $chain
      * @return array<string, mixed>
      */
     public static function graph(string $chain, ?string $update = null): array
@@ -91,6 +133,10 @@ final readonly class SeedRequestTypes
                 ['manager', ['en' => 'Manager approval', 'ar' => 'موافقة المدير'], ['type' => 'manager']],
                 ['department', ['en' => 'Department head approval', 'ar' => 'موافقة رئيس القسم'], ['type' => 'department_head']],
                 ['hr', ['en' => 'HR review', 'ar' => 'مراجعة الموارد البشرية'], $hr],
+            ],
+            'swap' => [
+                ['colleague', ['en' => 'Colleague accepts', 'ar' => 'موافقة الزميل'], ['type' => 'field', 'field' => 'colleague']],
+                ['manager', ['en' => 'Manager approval', 'ar' => 'موافقة المدير'], ['type' => 'manager']],
             ],
             default => [
                 ['manager', ['en' => 'Manager approval', 'ar' => 'موافقة المدير'], ['type' => 'manager']],
@@ -131,7 +177,7 @@ final readonly class SeedRequestTypes
     }
 
     /**
-     * @return list<array{code: string, name: array<string, string>, description: array<string, string>, category: RequestCategory, icon: string, chain: 'standard'|'hr'|'extended'|'hr_update', fields: list<array<string, mixed>>, sensitive?: bool, phase?: int, update?: string, leave?: string, behaviour?: string}>
+     * @return list<array{code: string, name: array<string, string>, description: array<string, string>, category: RequestCategory, icon: string, chain: 'standard'|'hr'|'extended'|'hr_update'|'swap', fields: list<array<string, mixed>>, sensitive?: bool, phase?: int, update?: string, leave?: string, behaviour?: string}>
      */
     public static function catalog(): array
     {
@@ -263,7 +309,7 @@ final readonly class SeedRequestTypes
                 ],
             ],
             [
-                'code' => 'SHIFT_SWAP', 'category' => RequestCategory::Time, 'icon' => 'schedule', 'chain' => 'standard', 'phase' => 5,
+                'code' => 'SHIFT_SWAP', 'category' => RequestCategory::Time, 'icon' => 'schedule', 'chain' => 'swap', 'update' => 'scheduling.shift_swap',
                 'name' => ['en' => 'Shift swap', 'ar' => 'تبديل مناوبة'],
                 'description' => ['en' => 'Swap a shift with a colleague.', 'ar' => 'بدّل مناوبة مع زميل.'],
                 'fields' => [
@@ -273,7 +319,7 @@ final readonly class SeedRequestTypes
                 ],
             ],
             [
-                'code' => 'ATTENDANCE_CORRECTION', 'category' => RequestCategory::Time, 'icon' => 'attendance', 'chain' => 'standard', 'phase' => 5,
+                'code' => 'ATTENDANCE_CORRECTION', 'category' => RequestCategory::Time, 'icon' => 'attendance', 'chain' => 'standard', 'update' => 'attendance.correction',
                 'name' => ['en' => 'Attendance correction', 'ar' => 'تصحيح الحضور'],
                 'description' => ['en' => 'Fix a missed or wrong check-in or check-out.', 'ar' => 'صحّح تسجيل دخول أو خروج فائت أو خاطئ.'],
                 'fields' => [
@@ -284,12 +330,12 @@ final readonly class SeedRequestTypes
                 ],
             ],
             [
-                'code' => 'OVERTIME', 'category' => RequestCategory::Time, 'icon' => 'attendance', 'chain' => 'standard', 'phase' => 5,
+                'code' => 'OVERTIME', 'category' => RequestCategory::Time, 'icon' => 'attendance', 'chain' => 'standard',
                 'name' => ['en' => 'Overtime', 'ar' => 'عمل إضافي'],
                 'description' => ['en' => 'Approval for hours beyond your schedule.', 'ar' => 'موافقة على ساعات تتجاوز جدولك.'],
                 'fields' => [
                     self::field('date', 'date', 'Date', 'التاريخ', ['required' => true]),
-                    self::field('hours', 'number', 'Hours', 'الساعات', ['required' => true, 'validation' => ['min' => 0.5, 'max' => 12]]),
+                    self::field('hours', 'number', 'Hours', 'الساعات', ['required' => true, 'validation' => ['min' => 0.25, 'max' => 16]]),
                     self::field('reason', 'textarea', 'Reason', 'السبب', ['required' => true]),
                 ],
             ],

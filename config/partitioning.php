@@ -23,6 +23,10 @@ return [
             'column' => 'created_at',
             'retention_months' => 24,
         ],
+        'attendance_events' => [
+            'column' => 'occurred_at',
+            'retention_months' => null,
+        ],
         'whatsapp_messages' => [
             'column' => 'created_at',
             'retention_months' => 12,

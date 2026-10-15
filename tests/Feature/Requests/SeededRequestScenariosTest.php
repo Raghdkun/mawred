@@ -116,8 +116,8 @@ it('applies an approved bank details change to the requester record', function (
 
 it('keeps flagged types out of the request center until their module ships', function (): void {
     $this->actingAs($this->requesterUser)->get(route('requests.center'))->assertOk()
-        ->assertInertia(fn ($page) => $page->has('types', 11));
-    $this->actingAs($this->requesterUser)->get(route('requests.create', seeded('SHIFT_SWAP')))->assertNotFound();
+        ->assertInertia(fn ($page) => $page->has('types', 14));
+    $this->actingAs($this->requesterUser)->get(route('requests.create', seeded('TRAINING')))->assertNotFound();
 });
 
 it('stops at the first rejection', function (): void {

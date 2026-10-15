@@ -24,6 +24,7 @@ require __DIR__.'/policies.php';
 require __DIR__.'/forms.php';
 require __DIR__.'/requests.php';
 require __DIR__.'/leave.php';
+require __DIR__.'/schedule.php';
 require __DIR__.'/workflows.php';
 require __DIR__.'/integrations.php';
 require __DIR__.'/audit.php';
