@@ -66,6 +66,7 @@
         "maplibre-gl": "^6.14.0",
         "motion": "^14.2.0",
         "pusher-js": "^8.6.0",
+        "qr-scanner": "1.4.2",
         "radix-ui": "^1.8.1",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
@@ -105,7 +106,10 @@
         "prettier": "^3.9.10",
         "prettier-plugin-tailwindcss": "^0.8.1",
         "typescript-eslint": "^8.71.2",
-        "vitest": "^5.0.4"
+        "vite-plugin-pwa": "2.0.0",
+        "vitest": "^5.0.4",
+        "workbox-build": "^7.4.1",
+        "workbox-window": "^7.4.1"
     },
     "optionalDependencies": {
         "@laravel/multiplex": "^0.4.1",

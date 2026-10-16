@@ -70,3 +70,8 @@ void createInertiaApp({
 });
 
 initializeTheme();
+
+// Installable app and offline check-in (D70); the service worker only exists in production builds.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+    void navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => undefined);
+}

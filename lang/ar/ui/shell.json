@@ -21,6 +21,8 @@
         "forms": "النماذج",
         "requests": "الطلبات",
         "leave": "الإجازات",
+        "schedule": "الجدول",
+        "attendance": "الحضور",
         "approvals": "الموافقات",
         "newRequest": "جديد",
         "openCount": "{count, plural, zero {لا شيء بانتظارك} one {واحد بانتظارك} two {اثنان بانتظارك} few {# بانتظارك} many {# بانتظارك} other {# بانتظارك}}",

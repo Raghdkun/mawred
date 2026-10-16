@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Support;
 
+use App\Domain\Attendance\Models\Kiosk;
 use App\Domain\Forms\Models\FormSubmission;
 use App\Domain\Integrations\Models\CognitoReceipt;
 use App\Domain\Integrations\Models\CognitoSource;
@@ -34,6 +35,7 @@ final class EncryptedColumns
             IntegrationConnection::class => ['credentials'],
             CognitoSource::class => ['sample_payload'],
             CognitoReceipt::class => ['payload'],
+            Kiosk::class => ['secret'],
         ];
     }
 }

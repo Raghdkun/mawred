@@ -137,6 +137,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - axe rejects `role="row"`/`columnheader` outside a grid or table; a month grid is an `<ol>` of days with an sr-only full date.
 - Seeded leave request dates in tests must avoid the Friday/Saturday weekend (Riyadh factory) or the hold refuses them; use `next(MONDAY)`.
 
+## Gotchas learned in Phase 5b-1
+- Laravel method injection hands the same instance to two parameters of the same class: a second stateful query (`RosterPeopleQuery`) must be `resolve()`d separately.
+- `inTimeZone()` alone doesn't make `Intl` format in that zone; pass `timeZone` to `formatDate` for branch-local times.
+- vite-plugin-pwa writes `sw.js` to `public/` but the manifest to `public/build/`; register `/sw.js` yourself (the virtual register module points at `/build/sw.js`).
+- TanStack Virtual's `useVirtualizer` trips `react-hooks/incompatible-library`; the line carries a disable comment with the reason.
+- A seeded request type whose module ships later is upgraded by `SeedRequestTypes` (new form and workflow versions) when its catalog entry drops `phase`.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

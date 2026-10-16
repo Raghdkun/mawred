@@ -21,6 +21,8 @@
         "forms": "Forms",
         "requests": "Requests",
         "leave": "Leave",
+        "schedule": "Schedule",
+        "attendance": "Attendance",
         "approvals": "Approvals",
         "newRequest": "New",
         "openCount": "{count, plural, one {# waiting} other {# waiting}}",

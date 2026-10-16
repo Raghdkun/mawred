@@ -44,3 +44,9 @@ yarn-error.log
 /storage/framework/cache/phpstan
 /tests/Browser/Screenshots
 /test-results
+
+# vite-plugin-pwa output (D70)
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
