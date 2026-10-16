@@ -28,7 +28,7 @@ beforeEach(function (): void {
     resolve(SeedPolicyDefaults::class)->handle();
     resolve(SeedRequestTypes::class)->handle();
     $this->branch = Branch::factory()->riyadh()->create(['name' => ['en' => 'Riyadh HQ', 'ar' => 'المقر الرئيسي'], 'geofence_lat' => '24.713600', 'geofence_lng' => '46.675300', 'geofence_radius_m' => 150]);
-    $person = function (string $role, string $name) : User {
+    $person = function (string $role, string $name): User {
         $user = userWithRoles($role);
         $user->forceFill(['two_factor_secret' => encrypt('s'), 'two_factor_confirmed_at' => now()])->save();
         Employee::factory()->placedIn($this->branch)->create(['user_id' => $user->id, 'name_en' => $name, 'hire_date' => '2024-01-01']);
