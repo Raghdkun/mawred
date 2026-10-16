@@ -21,7 +21,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { DayStatusBadge } from '@/features/attendance/day-status';
 import { dayLabel } from '@/features/leave/format';
 import { useLocale } from '@/hooks/use-locale';
-import { formatDate, formatNumber, inTimeZone } from '@/lib/format';
+import { formatDate, formatNumber } from '@/lib/format';
 import { localized } from '@/lib/localized';
 import { cn } from '@/lib/utils';
 import attendance from '@/routes/attendance';
@@ -76,9 +76,10 @@ export default function Board({
         );
     const time = (iso: string | null) =>
         iso
-            ? formatDate(inTimeZone(iso, branch.timezone), locale, {
+            ? formatDate(iso, locale, {
                   hour: '2-digit',
                   minute: '2-digit',
+                  timeZone: branch.timezone,
               })
             : '—';
     const name = (d: Day) => (locale === 'ar' && d.nameAr ? d.nameAr : d.nameEn);
@@ -377,10 +378,11 @@ function CorrectionDrawer({
     const { locale } = useLocale();
     const toLocal = (iso: string | null) =>
         iso
-            ? formatDate(inTimeZone(iso, timezone), 'en', {
+            ? formatDate(iso, 'en', {
                   hour: '2-digit',
                   minute: '2-digit',
                   hourCycle: 'h23',
+                  timeZone: timezone,
               })
             : '';
     const [checkIn, setCheckIn] = useState(toLocal(day.firstIn));
@@ -389,7 +391,7 @@ function CorrectionDrawer({
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [busy, setBusy] = useState(false);
     const time = (iso: string) =>
-        formatDate(inTimeZone(iso, timezone), locale, { hour: '2-digit', minute: '2-digit' });
+        formatDate(iso, locale, { hour: '2-digit', minute: '2-digit', timeZone: timezone });
 
     return (
         <ResponsiveDialog

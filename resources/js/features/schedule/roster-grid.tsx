@@ -157,7 +157,8 @@ export function RosterGrid({
                                 key={d}
                                 className={cn(
                                     'flex flex-col items-center px-1 py-2',
-                                    d === today && 'font-semibold text-primary',
+                                    d === today &&
+                                        'border-b-2 border-primary font-semibold text-foreground',
                                     holidayOn.has(d) && 'bg-info-bg text-info',
                                 )}
                                 title={holidayOn.get(d)}

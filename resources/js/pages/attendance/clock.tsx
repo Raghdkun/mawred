@@ -22,7 +22,7 @@ import { QrScan } from '@/features/attendance/qr-scan';
 import { type Area, useLocation } from '@/features/attendance/use-location';
 import { useLocale } from '@/hooks/use-locale';
 import { ApiError, postJson } from '@/lib/api';
-import { formatDate, inTimeZone } from '@/lib/format';
+import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import attendanceRoutes from '@/routes/attendance';
 import requests from '@/routes/requests';
@@ -73,7 +73,7 @@ export default function Clock({
     const [error, setError] = useState<string | null>(null);
     const [ripple, setRipple] = useState(0);
     const time = (iso: string) =>
-        formatDate(inTimeZone(iso, timezone), locale, { hour: '2-digit', minute: '2-digit' });
+        formatDate(iso, locale, { hour: '2-digit', minute: '2-digit', timeZone: timezone });
     const blocked = mode === 'block' && area !== null && status !== 'inside';
     const needsReason = mode === 'flag' && area !== null && status === 'outside';
 
@@ -316,8 +316,9 @@ export default function Clock({
                                     <span className="w-20 font-medium">{t(`clock.${p.kind}`)}</span>
                                     <span className="tabular-nums">{time(p.occurredAt)}</span>
                                     <span className="text-text-secondary">
-                                        {formatDate(inTimeZone(p.occurredAt, timezone), locale, {
+                                        {formatDate(p.occurredAt, locale, {
                                             weekday: 'short',
+                                            timeZone: timezone,
                                         })}
                                     </span>
                                     <span className="ms-auto text-caption text-muted-foreground">
