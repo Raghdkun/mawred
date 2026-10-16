@@ -220,68 +220,83 @@ export default function CalendarPage({
                         }
                     />
                 ) : (
-                    <ol
-                        className="grid grid-cols-7 overflow-hidden rounded-lg border border-border bg-card"
-                        data-month-grid
-                    >
-                        {days.map((d) => {
-                            const dayEvents = eventsOn(d);
+                    <div className="overflow-hidden rounded-lg border border-border bg-card">
+                        <div
+                            aria-hidden
+                            className="grid grid-cols-7 border-b border-border bg-muted text-caption text-text-secondary"
+                        >
+                            {days.slice(0, 7).map((d) => (
+                                <span key={d} className="px-1 py-2 text-center">
+                                    {formatDate(parseDay(d), locale, {
+                                        weekday: 'short',
+                                        timeZone: 'UTC',
+                                    })}
+                                </span>
+                            ))}
+                        </div>
+                        <ol className="grid grid-cols-7" data-month-grid>
+                            {days.map((d) => {
+                                const dayEvents = eventsOn(d);
 
-                            return (
-                                <li
-                                    key={d}
-                                    aria-current={d === today ? 'date' : undefined}
-                                    className={cn(
-                                        'flex min-h-24 flex-col gap-0.5 border-e border-b border-border p-1 [&:nth-child(7n)]:border-e-0',
-                                        d.slice(0, 7) !== anchor.slice(0, 7) &&
-                                            'bg-surface-sunken text-muted-foreground',
-                                    )}
-                                >
-                                    <span
-                                        aria-hidden
+                                return (
+                                    <li
+                                        key={d}
+                                        aria-current={d === today ? 'date' : undefined}
                                         className={cn(
-                                            'inline-flex size-6 items-center justify-center rounded-full text-caption tabular-nums',
-                                            d === today && 'bg-primary text-primary-foreground',
+                                            'flex min-h-24 flex-col gap-0.5 border-e border-b border-border p-1 [&:nth-child(7n)]:border-e-0',
+                                            d.slice(0, 7) !== anchor.slice(0, 7) &&
+                                                'bg-surface-sunken text-muted-foreground',
                                         )}
                                     >
-                                        {formatNumber(parseDay(d).getUTCDate(), locale)}
-                                    </span>
-                                    <span className="sr-only">
-                                        {dayLabel(d, locale, {
-                                            weekday: 'long',
-                                            day: 'numeric',
-                                            month: 'long',
-                                        })}
-                                    </span>
-                                    {dayEvents.slice(0, 3).map((e) => (
-                                        <button
-                                            key={e.key}
-                                            type="button"
-                                            onClick={() => setSelected(e)}
-                                            className="truncate rounded-sm bg-primary/10 px-1 text-start text-caption focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                                        <span
+                                            aria-hidden
+                                            className={cn(
+                                                'inline-flex size-6 items-center justify-center rounded-full text-caption tabular-nums',
+                                                d === today && 'bg-primary text-primary-foreground',
+                                            )}
                                         >
-                                            {
-                                                rangeTimeLabel(
-                                                    e.startsAt,
-                                                    e.endsAt,
-                                                    timezone,
-                                                    locale,
-                                                ).split('–')[0]
-                                            }{' '}
-                                            {e.title}
-                                        </button>
-                                    ))}
-                                    {dayEvents.length > 3 ? (
-                                        <span className="text-caption text-text-secondary">
-                                            {t('more', {
-                                                count: formatNumber(dayEvents.length - 3, locale),
+                                            {formatNumber(parseDay(d).getUTCDate(), locale)}
+                                        </span>
+                                        <span className="sr-only">
+                                            {dayLabel(d, locale, {
+                                                weekday: 'long',
+                                                day: 'numeric',
+                                                month: 'long',
                                             })}
                                         </span>
-                                    ) : null}
-                                </li>
-                            );
-                        })}
-                    </ol>
+                                        {dayEvents.slice(0, 3).map((e) => (
+                                            <button
+                                                key={e.key}
+                                                type="button"
+                                                onClick={() => setSelected(e)}
+                                                className="truncate rounded-sm bg-primary/10 px-1 text-start text-caption focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                                            >
+                                                {
+                                                    rangeTimeLabel(
+                                                        e.startsAt,
+                                                        e.endsAt,
+                                                        timezone,
+                                                        locale,
+                                                    ).split('–')[0]
+                                                }{' '}
+                                                {e.title}
+                                            </button>
+                                        ))}
+                                        {dayEvents.length > 3 ? (
+                                            <span className="text-caption text-text-secondary">
+                                                {t('more', {
+                                                    count: formatNumber(
+                                                        dayEvents.length - 3,
+                                                        locale,
+                                                    ),
+                                                })}
+                                            </span>
+                                        ) : null}
+                                    </li>
+                                );
+                            })}
+                        </ol>
+                    </div>
                 )}
             </div>
 

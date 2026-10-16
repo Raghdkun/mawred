@@ -72,8 +72,8 @@
 - Signed approval links over WhatsApp; WhatsApp activation invites.
 - **Exit**: faked Cognito submit/update/delete/duplicate tests; signature valid/invalid tests; sidecar fake; routing/fallback tests; wizard step tests.
 
-## Phase 5 — Time (XL, split 5a / 5b-1 / 5b-2) — 5a ✅ and 5b-1 ✅ built (pending CI and owner review)
-> Demos: [phase-5a.md](demos/phase-5a.md), [phase-5b-1.md](demos/phase-5b-1.md). Decisions: D63 (calendar leave year), D64 (reserve, then deduct), D65 (overdraw blocked), D66 (5a then 5b), D67 (leave engine choices), D68 (policy hours without a shift), D69 (overtime computed then approved), D70 (PWA + QR packages), D71 (5b in two PRs), D72 (swaps), D73 (open shifts), D74 (roster and attendance choices). 5b-2 (internal calendar, meetings, availability, `.ics`) is next.
+## Phase 5 — Time (XL, split 5a / 5b-1 / 5b-2) — ✅ built (pending CI and owner review)
+> Demos: [phase-5a.md](demos/phase-5a.md), [phase-5b-1.md](demos/phase-5b-1.md), [phase-5b-2.md](demos/phase-5b-2.md). Decisions: D63 (calendar leave year), D64 (reserve, then deduct), D65 (overdraw blocked), D66 (5a then 5b), D67 (leave engine choices), D68 (policy hours without a shift), D69 (overtime computed then approved), D70 (PWA + QR packages), D71 (5b in two PRs), D72 (swaps), D73 (open shifts), D74 (roster and attendance choices), D75 (meeting replies), D76 (calendar privacy), D77 (booking), D78 (repeats), D79 (calendar choices).
 - **5a**:
   - Leave engine: ledger, accrual jobs, half-day/hourly units, hourly-permission quota, overlap and blackout checks, sick-leave attachment rule, year-end carry-over/expiry, recalculation and impact preview wired end-to-end.
   - Leave calendar (team/department/branch).

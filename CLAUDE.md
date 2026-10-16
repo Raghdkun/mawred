@@ -144,6 +144,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - TanStack Virtual's `useVirtualizer` trips `react-hooks/incompatible-library`; the line carries a disable comment with the reason.
 - A seeded request type whose module ships later is upgraded by `SeedRequestTypes` (new form and workflow versions) when its catalog entry drops `phase`.
 
+## Gotchas learned in Phase 5b-2
+- Notification `actions` are generic (`approved`/`rejected`, `accepted`/`tentative`/`declined`); labels come from `ActionLabels`, and WhatsApp shows at most three buttons. Email `.ics` attachments go through `NotificationMessage::$ics`.
+- WhatsApp quick replies carry `mawred:<token>`: approval tokens and meeting `ReplyTokens` share the prefix; `HandleWhatsAppReply` tells them apart by shape.
+- RFC 5545 COUNT includes skipped months (monthly on the 31st), so `Recurrence` counts them too.
+- `composer test:browser` disables Composer's process timeout; the suite takes longer than 300 s.
+- The React Compiler purity rule rejects `Date.now()` during render; compute defaults in a lazy `useState` initialiser.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

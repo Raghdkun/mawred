@@ -237,7 +237,10 @@ export function WeekGrid({
                                             onClick={() => onOpen(event)}
                                             data-event={event.id}
                                             className={cn(
-                                                'absolute z-[5] flex flex-col overflow-hidden rounded-sm border-s-4 px-1.5 py-0.5 text-start text-caption shadow-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+                                                'absolute z-[5] flex overflow-hidden rounded-sm border-s-4 px-1.5 py-0.5 text-start text-caption leading-tight shadow-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+                                                end - start < 45
+                                                    ? 'flex-row items-center gap-1'
+                                                    : 'flex-col',
                                                 event.myResponse === 'declined'
                                                     ? 'border-border bg-muted text-muted-foreground line-through'
                                                     : 'border-primary bg-primary/10 text-foreground',
