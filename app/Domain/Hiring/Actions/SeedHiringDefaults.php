@@ -11,8 +11,13 @@ use App\Domain\Forms\Data\FormSettingsData;
 use App\Domain\Forms\Models\Form;
 use App\Domain\Hiring\Enums\StageKind;
 use App\Domain\Hiring\Models\PipelineStage;
+use App\Domain\Hiring\Models\ScorecardCriterion;
 use App\Domain\Hiring\Support\HiringSettings;
 use App\Domain\Setup\Support\Settings;
+use App\Domain\Workflows\Actions\PublishWorkflow;
+use App\Domain\Workflows\Actions\SaveWorkflowDefinition;
+use App\Domain\Workflows\Actions\SaveWorkflowDraft;
+use App\Domain\Workflows\Models\WorkflowDefinition;
 use App\Support\Actors\Actor;
 use Illuminate\Database\ConnectionInterface;
 
@@ -29,6 +34,9 @@ final readonly class SeedHiringDefaults
         private SaveFormSettings $formSettings,
         private SaveFormDraft $formDraft,
         private PublishForm $publishForm,
+        private SaveWorkflowDefinition $workflowDefinition,
+        private SaveWorkflowDraft $workflowDraft,
+        private PublishWorkflow $publishWorkflow,
     ) {}
 
     public function handle(): void
@@ -37,6 +45,12 @@ final readonly class SeedHiringDefaults
             if (! PipelineStage::query()->whereNull('job_requisition_id')->exists()) {
                 foreach (self::stages() as $position => [$kind, $en, $ar]) {
                     PipelineStage::query()->create(['job_requisition_id' => null, 'name' => ['en' => $en, 'ar' => $ar], 'kind' => $kind, 'position' => $position]);
+                }
+            }
+
+            if (! ScorecardCriterion::query()->whereNull('job_requisition_id')->exists()) {
+                foreach (self::criteria() as $position => [$en, $ar]) {
+                    ScorecardCriterion::query()->create(['job_requisition_id' => null, 'name' => ['en' => $en, 'ar' => $ar], 'position' => $position]);
                 }
             }
 
@@ -49,6 +63,13 @@ final readonly class SeedHiringDefaults
                 ]));
                 $this->formDraft->handle($actor, $form, self::applicationForm());
                 $this->publishForm->handle($actor, $form);
+            }
+
+            if (! WorkflowDefinition::query()->where('code', SubmitOffer::WORKFLOW)->exists()) {
+                $actor = Actor::system('seed');
+                $flow = $this->workflowDefinition->handle($actor, SubmitOffer::WORKFLOW, ['en' => 'Job offer', 'ar' => 'عرض وظيفي'], [], 'hiring');
+                $this->workflowDraft->handle($actor, $flow, self::offerWorkflow());
+                $this->publishWorkflow->handle($actor, $flow, ['hiring_manager', 'candidate', 'job', 'start_on', 'salary']);
             }
 
             if (! $this->settings->has('hiring.careers_intro')) {
@@ -78,6 +99,47 @@ final readonly class SeedHiringDefaults
             [StageKind::Interview, 'Interview', 'المقابلة'],
             [StageKind::Offer, 'Offer', 'العرض الوظيفي'],
             [StageKind::Hired, 'Hired', 'تم التعيين'],
+        ];
+    }
+
+    /**
+     * Job offer approval (D91): the requisition's hiring manager, then HR. Nobody resolving falls
+     * back to the workflow fallback role.
+     *
+     * @return array<string, mixed>
+     */
+    public static function offerWorkflow(): array
+    {
+        $sla = ['hours' => 48, 'reminderHours' => 24, 'escalateTo' => ['type' => 'assignee_manager']];
+        $step = fn (string $id, int $x, array $label, array $assignee): array => ['id' => $id, 'type' => 'approval', 'position' => ['x' => $x, 'y' => 120], 'config' => [
+            'label' => $label, 'assignee' => $assignee, 'mode' => 'any', 'sla' => $sla, 'allowReturn' => false,
+        ]];
+
+        return ['format' => 'mawred.workflow/v1', 'nodes' => [
+            ['id' => 'start', 'type' => 'start', 'config' => [], 'position' => ['x' => 0, 'y' => 120]],
+            $step('manager', 240, ['en' => 'Hiring manager approval', 'ar' => 'موافقة مدير التوظيف'], ['type' => 'field', 'field' => 'hiring_manager']),
+            $step('hr', 480, ['en' => 'HR approval', 'ar' => 'موافقة الموارد البشرية'], ['type' => 'role', 'role' => 'hr_admin', 'scoped' => false]),
+            ['id' => 'approved', 'type' => 'end', 'position' => ['x' => 720, 'y' => 60], 'config' => ['outcome' => 'approved']],
+            ['id' => 'rejected', 'type' => 'end', 'position' => ['x' => 720, 'y' => 220], 'config' => ['outcome' => 'rejected']],
+        ], 'edges' => [
+            ['id' => 'e-start-manager', 'source' => 'start', 'target' => 'manager'],
+            ['id' => 'e-manager-hr', 'source' => 'manager', 'target' => 'hr', 'sourceHandle' => 'approved'],
+            ['id' => 'e-manager-no', 'source' => 'manager', 'target' => 'rejected', 'sourceHandle' => 'rejected'],
+            ['id' => 'e-hr-yes', 'source' => 'hr', 'target' => 'approved', 'sourceHandle' => 'approved'],
+            ['id' => 'e-hr-no', 'source' => 'hr', 'target' => 'rejected', 'sourceHandle' => 'rejected'],
+        ]];
+    }
+
+    /**
+     * @return list<array{0: string, 1: string}>
+     */
+    public static function criteria(): array
+    {
+        return [
+            ['Relevant experience', 'الخبرة ذات الصلة'],
+            ['Communication', 'التواصل'],
+            ['Problem solving', 'حل المشكلات'],
+            ['Teamwork', 'العمل الجماعي'],
         ];
     }
 

@@ -62,7 +62,7 @@ final readonly class MoveApplication
                 'created_at' => $now,
             ]);
 
-            event(new ApplicationMoved($application, $from, $to->id));
+            event(new ApplicationMoved($application, $from, $to->id, $actor->user?->id));
 
             return $application;
         });

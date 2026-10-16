@@ -86,6 +86,14 @@ final class Candidate extends Model implements MasksAuditedAttributes
     }
 
     /**
+     * @return HasMany<CandidateMessage, $this>
+     */
+    public function messages(): HasMany
+    {
+        return $this->hasMany(CandidateMessage::class)->latest('created_at')->orderByDesc('id');
+    }
+
+    /**
      * @return BelongsTo<self, $this>
      */
     public function possibleDuplicateOf(): BelongsTo

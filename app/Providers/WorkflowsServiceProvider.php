@@ -8,6 +8,7 @@ use App\Domain\People\Events\EmployeeHired;
 use App\Domain\People\Events\EmployeeTerminated;
 use App\Domain\Workflows\Engine\NodeRegistry;
 use App\Domain\Workflows\Engine\RecordUpdates;
+use App\Domain\Workflows\Engine\SubjectSummaries;
 use App\Domain\Workflows\Engine\WorkflowEngine;
 use App\Domain\Workflows\Listeners\StartEmployeeChecklist;
 use Illuminate\Support\Facades\Event;
@@ -23,6 +24,7 @@ final class WorkflowsServiceProvider extends ServiceProvider
     {
         $this->app->singleton(NodeRegistry::class);
         $this->app->singleton(RecordUpdates::class);
+        $this->app->singleton(SubjectSummaries::class);
         $this->app->scoped(WorkflowEngine::class);
     }
 

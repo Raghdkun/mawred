@@ -13,4 +13,8 @@ enum ApplicationEventKind: string
     case Reopened = 'reopened';
     case Note = 'note';
     case Merged = 'merged';
+    case Interview = 'interview';
+    case Scorecard = 'scorecard';
+    case Offer = 'offer';
+    case Hired = 'hired';
 }

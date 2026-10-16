@@ -14,6 +14,8 @@ use App\Domain\Hiring\Actions\MoveApplication;
 use App\Domain\Hiring\Actions\RejectApplication;
 use App\Domain\Hiring\Actions\ReopenApplication;
 use App\Domain\Hiring\Actions\SavePipelineStages;
+use App\Domain\Hiring\Actions\SaveScorecardCriteria;
+use App\Domain\Hiring\Actions\SaveStageAutomation;
 use App\Domain\Hiring\Actions\SubmitApplication;
 use App\Domain\Hiring\Data\BoardCardData;
 use App\Domain\Hiring\Data\RequisitionData;
@@ -26,8 +28,10 @@ use App\Domain\Hiring\Models\JobApplication;
 use App\Domain\Hiring\Models\JobPosting;
 use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Models\PipelineStage;
+use App\Domain\Hiring\Models\ScorecardCriterion;
 use App\Domain\Hiring\Queries\ApplicationsQuery;
 use App\Domain\Hiring\Support\HiringSettings;
+use App\Domain\Hiring\Support\Texts;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -61,7 +65,7 @@ final class BoardController extends Controller
         $cards = $applications->forRequisition($requisition->id)
             ->withStatuses($showRejected ? [ApplicationStatus::Rejected, ApplicationStatus::Withdrawn] : [ApplicationStatus::Active, ApplicationStatus::Hired])
             ->visibleTo($user)
-            ->with(['candidate.tags', 'stage'])
+            ->with(['candidate.tags', 'stage', 'interviews.panel'])
             ->limit(2000)
             ->get();
         $canUpdate = Gate::allows('hiring.updateRequisition', $requisition);
@@ -74,6 +78,7 @@ final class BoardController extends Controller
             'stages' => array_values($requisition->stages()->get()->map(StageData::fromStage(...))->all()),
             'cards' => array_values($cards->map(BoardCardData::fromApplication(...))->all()),
             'showRejected' => $showRejected,
+            'criteria' => array_values($requisition->criteria()->get()->map(fn (ScorecardCriterion $c): array => ['id' => $c->ulid, 'name' => Texts::pair($c, 'name')])->all()),
             'postings' => array_values($requisition->postings()->latest()->get()->map(fn (JobPosting $p): array => [
                 'id' => $p->ulid, 'title' => $p->getTranslation('title', $locale), 'status' => $p->status->value,
             ])->all()),
@@ -178,6 +183,75 @@ final class BoardController extends Controller
         $upload = $store->handle($form, $version, $request->string('field')->toString(), $file, $user, null);
 
         return response()->json(['id' => $upload->ulid, 'name' => $upload->original_name, 'size' => $upload->size, 'mime' => $upload->mime], 201);
+    }
+
+    public function criteria(Request $request, JobRequisition $requisition, SaveScorecardCriteria $save, #[CurrentUser] User $user): RedirectResponse
+    {
+        abort_unless(Gate::allows('hiring.viewRequisition', $requisition), 404);
+        abort_unless(Gate::allows('hiring.updateRequisition', $requisition), 403);
+        $save->handle(Actor::user($user), $requisition, self::validatedCriteria($request));
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Criteria saved.')]);
+
+        return back();
+    }
+
+    public function automation(Request $request, PipelineStage $stage, SaveStageAutomation $save, #[CurrentUser] User $user): RedirectResponse
+    {
+        $requisition = $stage->requisition()->first();
+
+        if ($requisition instanceof JobRequisition) {
+            abort_unless(Gate::allows('hiring.viewRequisition', $requisition), 404);
+            abort_unless(Gate::allows('hiring.updateRequisition', $requisition), 403);
+        } else {
+            Gate::authorize('hiring.configure');
+        }
+
+        $request->validate([
+            'message.enabled' => ['required', 'boolean'],
+            'message.subject.en' => ['required_if:message.enabled,true', 'nullable', 'string', 'max:200'],
+            'message.subject.ar' => ['nullable', 'string', 'max:200'],
+            'message.body.en' => ['required_if:message.enabled,true', 'nullable', 'string', 'max:4000'],
+            'message.body.ar' => ['nullable', 'string', 'max:4000'],
+            'booking.enabled' => ['required', 'boolean'],
+            'booking.title' => ['nullable', 'string', 'max:160'],
+            'booking.duration' => ['required', 'integer', Rule::in([15, 30, 45, 60, 90, 120])],
+            'booking.panel' => ['present', 'array', 'max:8'],
+            'booking.panel.*' => ['string', 'size:26'],
+        ]);
+        $message = $request->input('message');
+        $booking = $request->input('booking');
+        $text = fn (mixed $v): array => ['en' => is_array($v) && is_string($v['en'] ?? null) ? $v['en'] : '', 'ar' => is_array($v) && is_string($v['ar'] ?? null) ? $v['ar'] : null];
+
+        $save->handle(Actor::user($user), $stage, [
+            'message' => ['enabled' => $request->boolean('message.enabled'), 'subject' => $text(is_array($message) ? ($message['subject'] ?? null) : null), 'body' => $text(is_array($message) ? ($message['body'] ?? null) : null)],
+            'booking' => [
+                'enabled' => $request->boolean('booking.enabled'),
+                'title' => $request->string('booking.title')->toString(),
+                'duration' => $request->integer('booking.duration'),
+                'panel' => array_values(array_filter(is_array($booking) && is_array($booking['panel'] ?? null) ? $booking['panel'] : [], is_string(...))),
+            ],
+        ]);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Automation saved.')]);
+
+        return back();
+    }
+
+    /**
+     * @return list<array{id?: string|null, name: array{en: string, ar?: string|null}}>
+     */
+    public static function validatedCriteria(Request $request): array
+    {
+        $request->validate([
+            'criteria' => ['required', 'array', 'min:1', 'max:10'],
+            'criteria.*.id' => ['nullable', 'string', 'size:26'],
+            'criteria.*.name.en' => ['required', 'string', 'max:60'],
+            'criteria.*.name.ar' => ['nullable', 'string', 'max:60'],
+        ]);
+
+        /** @var list<array{id?: string|null, name: array{en: string, ar?: string|null}}> $criteria */
+        $criteria = $request->input('criteria');
+
+        return $criteria;
     }
 
     /**

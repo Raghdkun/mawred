@@ -10,6 +10,7 @@ use App\Domain\Forms\Models\FormUpload;
 use App\Domain\Hiring\Enums\ApplicationSource;
 use App\Domain\Hiring\Enums\ApplicationStatus;
 use App\Domain\Hiring\Enums\RejectionReason;
+use App\Domain\People\Models\Employee;
 use App\Support\Ids\HasPublicUlid;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
@@ -38,6 +39,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property CarbonImmutable $applied_at
  * @property CarbonImmutable $stage_entered_at
  * @property CarbonImmutable $last_activity_at
+ * @property int|null $employee_id
+ * @property string|null $score average recommendation of submitted scorecards (1–4)
  */
 #[Guarded(['id', 'ulid'])]
 final class JobApplication extends Model
@@ -102,6 +105,30 @@ final class JobApplication extends Model
     public function history(): HasMany
     {
         return $this->hasMany(ApplicationEvent::class)->latest()->orderByDesc('id');
+    }
+
+    /**
+     * @return HasMany<Interview, $this>
+     */
+    public function interviews(): HasMany
+    {
+        return $this->hasMany(Interview::class)->orderByRaw('starts_at nulls last')->orderBy('id');
+    }
+
+    /**
+     * @return HasMany<Offer, $this>
+     */
+    public function offers(): HasMany
+    {
+        return $this->hasMany(Offer::class)->latest('id');
+    }
+
+    /**
+     * @return BelongsTo<Employee, $this>
+     */
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class);
     }
 
     /**

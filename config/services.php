@@ -23,6 +23,11 @@ return [
     ],
 
     // Public form proof-of-work (D10): PBKDF2 cost and the counter range the browser searches.
+    // HTML → PDF for offer letters (D95); the Compose service in dev, the `gotenberg` container in production.
+    'gotenberg' => [
+        'url' => env('GOTENBERG_URL', 'http://127.0.0.1:3001'),
+    ],
+
     'altcha' => [
         'cost' => env('ALTCHA_COST', 5000),
         'counter_min' => env('ALTCHA_COUNTER_MIN', 5000),

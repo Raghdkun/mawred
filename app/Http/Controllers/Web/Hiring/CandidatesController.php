@@ -5,25 +5,27 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web\Hiring;
 
 use App\Domain\Access\Models\User;
-use App\Domain\Forms\Models\FormSubmission;
 use App\Domain\Forms\Models\FormUpload;
-use App\Domain\Forms\Support\AnswerLabels;
 use App\Domain\Hiring\Actions\AddToRequisition;
+use App\Domain\Hiring\Actions\AnonymiseCandidate;
 use App\Domain\Hiring\Actions\DismissDuplicate;
 use App\Domain\Hiring\Actions\MergeCandidates;
+use App\Domain\Hiring\Actions\SendCandidateMessage;
 use App\Domain\Hiring\Actions\SetTalentPool;
 use App\Domain\Hiring\Actions\TagCandidate;
 use App\Domain\Hiring\Data\ApplicationDetailData;
-use App\Domain\Hiring\Data\ApplicationEventData;
+use App\Domain\Hiring\Data\CandidateMessageData;
 use App\Domain\Hiring\Data\CandidateProfileData;
 use App\Domain\Hiring\Data\CandidateRowData;
-use App\Domain\Hiring\Data\StageData;
+use App\Domain\Hiring\Enums\MessageChannel;
+use App\Domain\Hiring\Enums\MessagePurpose;
+use App\Domain\Hiring\Enums\MessageStatus;
 use App\Domain\Hiring\Models\Candidate;
 use App\Domain\Hiring\Models\HiringTag;
 use App\Domain\Hiring\Models\JobApplication;
 use App\Domain\Hiring\Models\JobRequisition;
-use App\Domain\Hiring\Queries\ApplicationsQuery;
 use App\Domain\Hiring\Queries\CandidatesQuery;
+use App\Domain\Hiring\Support\CandidateProfile;
 use App\Domain\Hiring\Support\Texts;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
@@ -32,6 +34,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -70,55 +73,58 @@ final class CandidatesController extends Controller
         ]);
     }
 
-    public function show(Request $request, Candidate $candidate, ApplicationsQuery $applications, #[CurrentUser] User $user): Response
+    public function show(Request $request, Candidate $candidate, CandidateProfile $profile, #[CurrentUser] User $user): Response
     {
         abort_unless(Gate::allows('hiring.viewCandidate', $candidate), 404);
         $request->validate(['application' => ['nullable', 'string', 'size:26']]);
         $candidate->load(['tags', 'possibleDuplicateOf']);
-        $locale = app()->getLocale();
-
-        $details = $applications->forCandidate($candidate->id)->visibleTo($user)
-            ->with(['requisition.stages', 'stage', 'cv', 'submission.version', 'history.actor', 'history.fromStage', 'history.toStage'])
-            ->get()
-            ->sortByDesc('applied_at')
-            ->values()
-            ->map(function (JobApplication $application) use ($locale, $user): ApplicationDetailData {
-                /** @var JobRequisition $requisition */
-                $requisition = $application->requisition;
-                $submission = $application->submission;
-                $schema = $submission instanceof FormSubmission ? $submission->pinnedVersion()->schema : null;
-                $answers = $submission instanceof FormSubmission ? $submission->data : [];
-                $cv = $application->cv;
-
-                return new ApplicationDetailData(
-                    $application->ulid,
-                    ['id' => $requisition->ulid, 'number' => $requisition->number, 'title' => Texts::one($requisition, 'title', $locale) ?? $requisition->number, 'open' => $requisition->status->isActive()],
-                    $application->stage->ulid ?? '',
-                    array_values($requisition->stages->map(StageData::fromStage(...))->all()),
-                    $application->status->value,
-                    $application->source->value,
-                    $application->applied_at->toIso8601String(),
-                    $application->stage_entered_at->toIso8601String(),
-                    array_map(fn (array $k): string => $k['label'][$locale === 'ar' ? 'ar' : 'en'], $application->knockout_reasons ?? []),
-                    $application->rejection_reason?->value,
-                    $schema,
-                    $answers,
-                    $schema === null ? [] : AnswerLabels::for($schema, $answers, $locale),
-                    $cv instanceof FormUpload ? ['url' => route('hiring.applications.files', [$application, $cv]), 'name' => $cv->original_name, 'mime' => $cv->mime] : null,
-                    array_values($application->history->map(ApplicationEventData::fromEvent(...))->all()),
-                    ['update' => Gate::forUser($user)->allows('hiring.updateApplication', $application)],
-                );
-            });
+        $applications = $profile->for($candidate, $user);
+        $seesAll = collect($applications)->contains(fn (ApplicationDetailData $a): bool => $a->can['see']);
 
         activity('hiring')->causedBy($user)->performedOn($candidate)->event('viewed')->log('Candidate profile viewed');
 
         return Inertia::render('hiring/candidate', [
             'candidate' => CandidateProfileData::fromCandidate($candidate),
-            'applications' => array_values($details->all()),
+            'applications' => $applications,
             'selected' => $request->string('application')->lower()->toString() ?: null,
-            'can' => ['update' => Gate::allows('hiring.updateCandidate', $candidate)],
-            'tags' => HiringTag::query()->orderBy('name')->limit(200)->pluck('name'),
+            'messages' => $seesAll ? array_values($candidate->messages()->with('sentBy')->limit(200)->get()->map(CandidateMessageData::fromMessage(...))->all()) : null,
+            'can' => [
+                'update' => Gate::allows('hiring.updateCandidate', $candidate),
+                'see' => $seesAll,
+                'anonymise' => Gate::allows('hiring.delete') && Gate::allows('hiring.updateCandidate', $candidate),
+            ],
+            'tags' => $seesAll ? HiringTag::query()->orderBy('name')->limit(200)->pluck('name') : [],
         ]);
+    }
+
+    public function message(Request $request, Candidate $candidate, SendCandidateMessage $send, #[CurrentUser] User $user): RedirectResponse
+    {
+        $this->authorizeUpdate($candidate);
+        $request->validate([
+            'channel' => ['required', Rule::enum(MessageChannel::class)],
+            'subject' => ['nullable', 'required_if:channel,email', 'string', 'max:200'],
+            'body' => ['required', 'string', 'max:4000'],
+            'application' => ['nullable', 'string', 'size:26'],
+        ]);
+        $application = $request->filled('application')
+            ? JobApplication::query()->where('candidate_id', $candidate->id)->where('ulid', $request->string('application')->lower()->toString())->first()
+            : null;
+        $message = $send->handle(Actor::user($user), $candidate, $application, MessageChannel::from($request->string('channel')->toString()), $request->string('subject')->toString() ?: null, $request->string('body')->toString(), MessagePurpose::Manual);
+        Inertia::flash('toast', $message->status === MessageStatus::Failed
+            ? ['type' => 'error', 'message' => __('The message could not be sent: :reason', ['reason' => $message->error ?? ''])]
+            : ['type' => 'success', 'message' => __('Message sent.')]);
+
+        return back();
+    }
+
+    public function anonymise(Candidate $candidate, AnonymiseCandidate $anonymise, #[CurrentUser] User $user): RedirectResponse
+    {
+        $this->authorizeUpdate($candidate);
+        abort_unless(Gate::allows('hiring.delete'), 403);
+        $anonymise->handle(Actor::user($user), $candidate, 'hr');
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('The candidate’s details were deleted.')]);
+
+        return to_route('hiring.candidates.index');
     }
 
     public function file(JobApplication $application, FormUpload $upload, #[CurrentUser] User $user): StreamedResponse

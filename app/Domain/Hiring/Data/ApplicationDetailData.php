@@ -7,7 +7,11 @@ namespace App\Domain\Hiring\Data;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
-/** One of a candidate's applications on their profile: where it stands, answers, CV, history. */
+/**
+ * One of a candidate's applications on their profile: where it stands, answers, CV, history,
+ * interviews with scorecards, offers and the hire. A panelist (D92) gets the CV, answers and
+ * their interviews only.
+ */
 #[TypeScript]
 final class ApplicationDetailData extends Data
 {
@@ -20,7 +24,11 @@ final class ApplicationDetailData extends Data
      * @param  array<string, string>  $display
      * @param  array{url: string, name: string, mime: string}|null  $cv
      * @param  list<ApplicationEventData>  $events
-     * @param  array{update: bool}  $can
+     * @param  list<InterviewData>  $interviews
+     * @param  list<array{id: string, name: string}>  $criteria
+     * @param  list<OfferData>  $offers
+     * @param  array{nameEn: string, hireDate: string, branchId: string, departmentId: string|null, positionId: string|null, managerId: string|null, employmentTypeId: string|null}|null  $hire
+     * @param  array{update: bool, see: bool}  $can
      */
     public function __construct(
         public string $id,
@@ -39,5 +47,11 @@ final class ApplicationDetailData extends Data
         public ?array $cv,
         public array $events,
         public array $can,
+        public array $interviews = [],
+        public array $criteria = [],
+        public array $offers = [],
+        public ?array $hire = null,
+        public ?string $employeeId = null,
+        public ?float $score = null,
     ) {}
 }
