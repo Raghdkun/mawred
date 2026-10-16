@@ -8,6 +8,7 @@ import integrations from '@/routes/integrations';
 import leave from '@/routes/leave';
 import schedule from '@/routes/schedule';
 import attendance from '@/routes/attendance';
+import calendarRoutes from '@/routes/calendar';
 import people from '@/routes/people';
 import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
@@ -79,6 +80,13 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     href: schedule.mine(),
                     icon: 'schedule',
                     match: ['/schedule', '/roster'],
+                },
+                {
+                    key: 'calendar',
+                    label: 'nav.calendar',
+                    href: calendarRoutes.index(),
+                    icon: 'calendar',
+                    match: ['/calendar', '/book'],
                 },
                 {
                     key: 'attendance',

@@ -20,6 +20,7 @@ const PUBLIC_ROUTE_NAMES = [
     'public-forms.*', // D53: hardened with ALTCHA, honeypot, fill time and rate limits
     'action-links.*', // ADR-0009: single-use hashed tokens; sensitive types require sign-in (D24)
     'hooks.*', // ADR-0015: inbound webhooks authenticate with URL tokens or signatures
+    'calendar-replies.*', // D75: one-tap replies carry an HMAC-signed participant token
     'kiosk.*', // D70: kiosk screens open with a secret link (hash stored) and only show rotating codes
 ];
 

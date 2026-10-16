@@ -123,6 +123,7 @@
             "phpstan analyse --memory-limit=1G --no-progress"
         ],
         "test:browser": [
+            "Composer\\Config::disableProcessTimeout",
             "@php artisan config:clear --ansi",
             "@php artisan test --testsuite=Browser"
         ],

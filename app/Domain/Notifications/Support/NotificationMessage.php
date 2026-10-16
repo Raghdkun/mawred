@@ -17,7 +17,8 @@ final readonly class NotificationMessage
      * @param  Closure(string $channel, string $locale): array{subject: string, body: string, template?: array{name: string, language: string, params: list<string>, buttons: list<string>}|null}  $content
      * @param  string  $sourceKey  identifies the cause (task + reason, step…) for idempotency
      * @param  list<string>  $channels
-     * @param  (Closure(string $channel): array<string, string>)|null  $actions  decision => URL, issued for the channel that delivers
+     * @param  (Closure(string $channel): array<string, string>)|null  $actions  action => URL, issued for the channel that delivers
+     * @param  (Closure(): string)|null  $ics  a calendar invitation attached to the email (D75)
      */
     public function __construct(
         public string $event,
@@ -27,5 +28,6 @@ final readonly class NotificationMessage
         public string $sourceKey,
         public array $channels = ['in_app', 'email'],
         public ?Closure $actions = null,
+        public ?Closure $ics = null,
     ) {}
 }

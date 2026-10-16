@@ -30,12 +30,13 @@
                 @endforeach
             </td></tr>
             <tr><td style="padding:8px 28px 28px;text-align:{{ $rtl ? 'right' : 'left' }};">
-                @if (isset($actions['approved']))
-                    <a href="{{ $actions['approved'] }}" style="display:inline-block;margin:4px;padding:12px 20px;border-radius:8px;background:#4570C0;color:#ffffff;font-weight:600;text-decoration:none;">{{ __('Approve') }}</a>
-                @endif
-                @if (isset($actions['rejected']))
-                    <a href="{{ $actions['rejected'] }}" style="display:inline-block;margin:4px;padding:12px 20px;border-radius:8px;background:#ffffff;border:1px solid #C3CDDC;color:#182238;font-weight:600;text-decoration:none;">{{ __('Reject') }}</a>
-                @endif
+                @foreach ($buttons as $button)
+                    @if ($loop->first)
+                        <a href="{{ $button['url'] }}" style="display:inline-block;margin:4px;padding:12px 20px;border-radius:8px;background:#4570C0;color:#ffffff;font-weight:600;text-decoration:none;">{{ $button['label'] }}</a>
+                    @else
+                        <a href="{{ $button['url'] }}" style="display:inline-block;margin:4px;padding:12px 20px;border-radius:8px;background:#ffffff;border:1px solid #C3CDDC;color:#182238;font-weight:600;text-decoration:none;">{{ $button['label'] }}</a>
+                    @endif
+                @endforeach
                 @if ($url)
                     <a href="{{ $url }}" style="display:inline-block;margin:4px;padding:12px 20px;color:#4570C0;font-weight:600;">{{ __('Open in Mawred') }}</a>
                 @endif

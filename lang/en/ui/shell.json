@@ -22,6 +22,7 @@
         "requests": "Requests",
         "leave": "Leave",
         "schedule": "Schedule",
+        "calendar": "Calendar",
         "attendance": "Attendance",
         "approvals": "Approvals",
         "newRequest": "New",
