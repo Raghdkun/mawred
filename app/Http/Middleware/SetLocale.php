@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Resolves the request locale (ADR-0011, D3): the user's preference, then the guest's session
- * choice, then the browser's Accept-Language, then the company default (EN).
+ * Resolves the request locale (ADR-0011, D3): a careers page's `?lang`, then the user's
+ * preference, then the guest's session choice, then the browser's Accept-Language, then the
+ * company default (EN).
  */
 final readonly class SetLocale
 {
@@ -44,6 +45,18 @@ final readonly class SetLocale
 
     private function resolve(Request $request): string
     {
+        // Careers pages take ?lang=ar|en (D87): each language has its own address for search
+        // engines and shared links, and the choice sticks for the rest of the visit.
+        $lang = $request->query('lang');
+
+        if ($request->routeIs('careers.*') && is_string($lang) && in_array($lang, self::SUPPORTED, true)) {
+            if ($request->hasSession()) {
+                $request->session()->put(self::SESSION_KEY, $lang);
+            }
+
+            return $lang;
+        }
+
         $user = $request->user();
 
         if ($user instanceof User && in_array($user->locale, self::SUPPORTED, true)) {

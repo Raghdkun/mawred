@@ -1,0 +1,331 @@
+{
+    "cancel": "Cancel",
+    "requisitionStatus": {
+        "pending": "Awaiting approval",
+        "open": "Open",
+        "on_hold": "On hold",
+        "filled": "Filled",
+        "closed": "Closed",
+        "rejected": "Not approved",
+        "cancelled": "Withdrawn"
+    },
+    "postingStatus": {
+        "draft": "Draft",
+        "published": "Live",
+        "closed": "Closed"
+    },
+    "applicationStatus": {
+        "active": "In progress",
+        "hired": "Hired",
+        "rejected": "Rejected",
+        "withdrawn": "Withdrawn"
+    },
+    "stageKind": {
+        "applied": "Applied",
+        "screening": "Screening",
+        "interview": "Interview",
+        "offer": "Offer",
+        "hired": "Hired"
+    },
+    "memberRole": {
+        "recruiter": "Recruiter",
+        "hiring_manager": "Hiring manager",
+        "coordinator": "Coordinator"
+    },
+    "reason": {
+        "new": "New position",
+        "replacement": "Replacement"
+    },
+    "workplace": {
+        "onsite": "On site",
+        "hybrid": "Hybrid",
+        "remote": "Remote"
+    },
+    "source": {
+        "careers": "Careers site",
+        "cognito": "Cognito form",
+        "manual": "Added by a recruiter",
+        "referral": "Referral",
+        "talent_pool": "Talent pool"
+    },
+    "rejection": {
+        "not_qualified": "Not qualified",
+        "knockout": "Screening answers",
+        "better_candidate": "Stronger candidate chosen",
+        "salary": "Salary expectations",
+        "no_show": "Didn't attend",
+        "withdrew": "Candidate withdrew",
+        "position_closed": "Position closed",
+        "other": "Other"
+    },
+    "stages": {
+        "nameEn": "Name (English)",
+        "nameAr": "Name (Arabic)",
+        "kind": "Meaning",
+        "up": "Move {name} earlier",
+        "down": "Move {name} later",
+        "remove": "Remove {name}",
+        "rule": "The first stage must mean “Applied” and the last “Hired”. Stages with candidates in them can’t be removed.",
+        "add": "Add a stage",
+        "save": "Save stages",
+        "description": "Rename, reorder, add or remove the columns of this board."
+    },
+    "requisitions": {
+        "title": "Job requisitions",
+        "description": "Approved needs to hire, their hiring teams and postings.",
+        "new": "New requisition",
+        "tabs": "Requisition status",
+        "group": {
+            "open": "Open",
+            "pending": "Awaiting approval",
+            "closed": "Closed",
+            "all": "All"
+        },
+        "search": "Search by title or number",
+        "noResults": "No requisitions match your search.",
+        "empty": "No requisitions here yet",
+        "emptyHelp": "Managers raise requisitions; once approved they appear as open.",
+        "col": {
+            "job": "Job",
+            "where": "Branch and department",
+            "candidates": "Candidates",
+            "status": "Status"
+        },
+        "headcount": "{count, plural, one {{formatted} hire} other {{formatted} hires}}",
+        "activeCandidates": "{count, plural, =0 {No candidates} one {{formatted} candidate} other {{formatted} candidates}}",
+        "fact": {
+            "branch": "Branch",
+            "department": "Department",
+            "position": "Position",
+            "headcount": "Number of hires",
+            "reason": "Reason",
+            "manager": "Hiring manager",
+            "start": "Target start",
+            "salary": "Salary range (monthly)",
+            "why": "Why this hire"
+        },
+        "openBoard": "Open the board",
+        "approval": "Approval",
+        "to": {
+            "open": "Reopen",
+            "on_hold": "Put on hold",
+            "filled": "Mark as filled",
+            "closed": "Close"
+        }
+    },
+    "team": {
+        "title": "Hiring team",
+        "edit": "Edit",
+        "empty": "No one on the hiring team yet.",
+        "roleFor": "Role for {name}",
+        "remove": "Remove {name}",
+        "add": "Add a team member",
+        "addPlaceholder": "Search people with hiring access",
+        "save": "Save team"
+    },
+    "postings": {
+        "title": "Postings",
+        "new": "New posting",
+        "empty": "No postings yet.",
+        "applicants": "{count, plural, =0 {No applicants} one {{formatted} applicant} other {{formatted} applicants}}",
+        "view": "View {title} on the careers site"
+    },
+    "raise": {
+        "title": "New job requisition",
+        "back": "Requisitions",
+        "description": "Ask to hire. Your manager and HR approve it before hiring starts.",
+        "submit": "Send for approval",
+        "nextTitle": "What happens next",
+        "nextBody": "The request goes to your manager, then HR. Once approved, the requisition opens with its own board and recruiters can publish postings."
+    },
+    "board": {
+        "title": "Pipeline",
+        "back": "Requisition details",
+        "add": "Add candidate",
+        "more": "More actions",
+        "stageSettings": "Stage settings",
+        "view": "Show",
+        "rejectedView": "Rejected",
+        "activeView": "In progress",
+        "selected": "{count, plural, one {{formatted} selected} other {{formatted} selected}}",
+        "reject": "Reject",
+        "noRejected": "No rejected candidates",
+        "stage": "Stage",
+        "moved": "{name} moved to {stage}",
+        "emptyStage": "No one here yet",
+        "daysInStage": "{count, plural, =0 {Today} one {{formatted} day} other {{formatted} days}}",
+        "select": "Select {name}",
+        "drag": "Drag {name} to another stage",
+        "flags": "Flags",
+        "knockedOut": "Screening",
+        "duplicate": "Possible duplicate",
+        "moveTo": "Move to…",
+        "reopen": "Put back on the board"
+    },
+    "reject": {
+        "title": "{count, plural, one {Reject {formatted} candidate} other {Reject {formatted} candidates}}",
+        "description": "They leave this board but stay searchable in Candidates.",
+        "reason": "Reason",
+        "note": "Note for the team (optional)"
+    },
+    "add": {
+        "title": "Add a candidate",
+        "description": "For someone who applied another way. Uses the default application form.",
+        "source": "How they came to us",
+        "submit": "Add candidate"
+    },
+    "posting": {
+        "editTitle": "Edit posting",
+        "newTitle": "New posting",
+        "publish": "Publish",
+        "close": "Take down",
+        "requisitionClosed": "The requisition isn’t open, so this posting can’t go live.",
+        "link": "Link to share",
+        "advert": "The advert",
+        "jobTitle": "Job title",
+        "summary": "Short summary",
+        "summaryHint": "One line for job cards and search results.",
+        "descriptionField": "Description",
+        "descriptionHint": "Leave a blank line between paragraphs; start lines with “-” for a list.",
+        "location": "Location",
+        "locationHint": "Leave empty to show the branch.",
+        "workplace": "Where they work",
+        "closesOn": "Closes on",
+        "closesOnHint": "Optional. The posting comes down after this day.",
+        "showSalary": "Show the salary range",
+        "showSalaryHint": "From the requisition, per month.",
+        "applying": "Applying",
+        "applyingHelp": "The form candidates fill in, and answers that knock them out.",
+        "form": "Application form",
+        "seo": "Search and sharing",
+        "seoHelp": "Optional. Defaults to the title and summary.",
+        "seoTitle": "Search title",
+        "seoDescription": "Search description",
+        "save": "Save posting"
+    },
+    "knockouts": {
+        "yes": "Yes",
+        "no": "No",
+        "title": "Knock-out questions",
+        "help": "Applicants who give these answers are flagged for review. They are never rejected automatically.",
+        "remove": "Remove this knock-out",
+        "custom": "A custom rule set elsewhere. Remove it to change it here.",
+        "below": "Flag when below",
+        "when": "Flag when the answer is",
+        "add": "Add a knock-out",
+        "noQuestions": "This form has no choice or number questions to screen on."
+    },
+    "candidates": {
+        "title": "Candidates",
+        "description": "Everyone who applied, and your talent pool.",
+        "tabs": "Candidate lists",
+        "view": {
+            "all": "All",
+            "pool": "Talent pool",
+            "duplicates": "Possible duplicates"
+        },
+        "search": "Search by name or exact email",
+        "tag": "Tag",
+        "anyTag": "Any tag",
+        "noResults": "No candidates match.",
+        "empty": "No candidates yet",
+        "emptyHelp": "Applications from the careers site appear here.",
+        "inPool": "In the talent pool",
+        "more": "{count, plural, one {and {formatted} more job} other {and {formatted} more jobs}}"
+    },
+    "profile": {
+        "applications": "Applications",
+        "cv": "CV",
+        "details": "Details",
+        "history": "History",
+        "noApplications": "No applications you can see.",
+        "noCv": "No CV attached.",
+        "openCv": "Open in a new tab",
+        "cvOf": "CV of {name}",
+        "cvDownload": "This file can’t be previewed. Open it to download.",
+        "contact": "Contact",
+        "email": "Email",
+        "phone": "Phone",
+        "language": "Language",
+        "lang": {
+            "en": "English",
+            "ar": "Arabic"
+        },
+        "consent": "Privacy notice accepted",
+        "noConsent": "Not recorded",
+        "tags": "Tags",
+        "noTags": "No tags yet.",
+        "removeTag": "Remove tag {tag}",
+        "addTag": "Add a tag",
+        "add": "Add",
+        "pool": "In the talent pool",
+        "poolConsented": "They agreed to be kept for future roles.",
+        "poolNoConsent": "They haven’t agreed to be kept for future roles.",
+        "stage": "Stage",
+        "applied": "Applied",
+        "source": "Source",
+        "rejectedFor": "Rejected for",
+        "knockedOut": "Flagged by screening: {questions}",
+        "answers": "Answers",
+        "note": "Note",
+        "notePlaceholder": "Add a note for the hiring team",
+        "addNote": "Add note",
+        "addToJob": "Add to another job",
+        "job": "Job",
+        "pickJob": "Choose an open requisition"
+    },
+    "event": {
+        "applied": "Applied",
+        "appliedAgain": "Applied again",
+        "moved": "Moved from {from} to {to}",
+        "rejected": "Rejected: {reason}",
+        "reopened": "Put back on the board",
+        "note": "Note",
+        "merged": "Merged from a duplicate profile"
+    },
+    "duplicate": {
+        "text": "This may be the same person as",
+        "dismiss": "Not the same person",
+        "merge": "Merge into {name}"
+    },
+    "settings": {
+        "title": "Hiring settings",
+        "description": "The default pipeline and what the careers site says.",
+        "viewCareers": "Open the careers site",
+        "pipeline": "Default pipeline",
+        "pipelineHelp": "New requisitions start with these stages. Changing them doesn’t affect existing boards.",
+        "careers": "Careers site",
+        "careersHelp": "Shown to everyone visiting the careers site.",
+        "intro": "Introduction",
+        "notice": "Privacy notice",
+        "noticeHint": "Applicants must accept this to apply.",
+        "editForm": "Edit the default application form",
+        "save": "Save"
+    },
+    "careers": {
+        "title": "Careers",
+        "search": "Search jobs",
+        "location": "Location",
+        "anyLocation": "All locations",
+        "workplace": "Workplace",
+        "anyWorkplace": "Any workplace",
+        "count": "{count, plural, =0 {No open jobs} one {{formatted} open job} other {{formatted} open jobs}}",
+        "noResults": "No jobs match your search.",
+        "empty": "No open jobs right now",
+        "emptyHelp": "Check back soon.",
+        "allJobs": "All jobs",
+        "perMonth": "{salary} per month",
+        "closes": "Closes {date}"
+    },
+    "apply": {
+        "thanks": "Thank you for applying",
+        "received": "We’ve received your application for {job} and will be in touch.",
+        "moreJobs": "See other jobs",
+        "title": "Apply for this job",
+        "closed": "This job is no longer taking applications.",
+        "submit": "Send application",
+        "honeypot": "Leave this field empty",
+        "privacy": "I have read the privacy notice and agree to my details being used for this application.",
+        "pool": "Keep my details for future roles (talent pool)."
+    }
+}

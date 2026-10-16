@@ -33,3 +33,8 @@ Permissions take the form `module.action` and combine with a data scope: own, di
 - `organization.*` became unscoped reference data (D40). `SubjectBinding::reference()` lets reference-data queries extend `ScopedQuery` and fail closed on any narrower grant.
 - A scope-leak dataset (`tests/Feature/People/EmployeeScopeTest.php`) checks exact visibility for all six scopes, anchors, accounts without an employee record and ended secondary placements. Out-of-scope profiles answer 404 on web and API.
 
+
+## Implementation notes (Phase 6a)
+- Hiring records belong to a place, not a person. `SubjectBinding::custom()` lets a domain supply its own constraint for narrower grants; `Hiring\Support\HiringScope` matches a requisition's branch, department subtree or hiring manager (team scopes), and treats **Own** as the requisitions the viewer works on (hiring team member, hiring manager or requester). Applications and candidates follow their requisitions (D82).
+- `EmployeeScopePredicates` exposes `departmentIds()`, `branchIds()` and `ownEmployee()` so other domains reuse the same anchor rules.
+- Branch and department managers get `hiring.view`/`hiring.create` in their scope; the interviewer role's **Own** gains per-interview visibility in 6b. Scope-leak tests live in `tests/Feature/Hiring`.

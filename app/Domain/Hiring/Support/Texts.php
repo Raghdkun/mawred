@@ -39,7 +39,8 @@ final class Texts
     /** A `withCount` result (0 when it was not loaded). */
     public static function count(Model $model, string $attribute): int
     {
-        $value = $model->getAttribute($attribute);
+        // Strict models throw on attributes that were not selected, so look before reading.
+        $value = $model->getAttributes()[$attribute] ?? null;
 
         return is_numeric($value) ? (int) $value : 0;
     }

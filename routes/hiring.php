@@ -8,7 +8,6 @@ use App\Http\Controllers\Web\Hiring\CandidatesController;
 use App\Http\Controllers\Web\Hiring\PostingsController;
 use App\Http\Controllers\Web\Hiring\RequisitionsController;
 use App\Http\Controllers\Web\Hiring\SettingsController;
-use App\Http\Middleware\CareersLocale;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,7 +54,7 @@ Route::middleware(['auth', 'verified'])->prefix('hiring')->group(function (): vo
 /*
 | The public careers site (D87): no sign-in; on CAREERS_HOST when it has its own host.
 */
-$careers = Route::middleware(CareersLocale::class)->prefix('careers')->name('careers.');
+$careers = Route::prefix('careers')->name('careers.');
 $host = config('mawred.careers_host');
 
 if (is_string($host) && $host !== '') {

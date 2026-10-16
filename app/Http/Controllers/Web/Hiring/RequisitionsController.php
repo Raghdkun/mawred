@@ -67,15 +67,13 @@ final class RequisitionsController extends Controller
                 'postings' => fn (Builder $q) => $q->where('status', 'published'),
             ])
             ->paginate(25)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (JobRequisition $r): RequisitionData => RequisitionData::fromRequisition($r));
 
         $open = $request->filled('open') ? JobRequisition::query()->where('ulid', $request->string('open')->lower()->toString())->first() : null;
 
         return Inertia::render('hiring/requisitions', [
-            'requisitions' => [
-                'data' => array_values(array_map(RequisitionData::fromRequisition(...), $page->items())),
-                'meta' => ['current_page' => $page->currentPage(), 'last_page' => $page->lastPage(), 'total' => $page->total()],
-            ],
+            'requisitions' => $page,
             'filters' => ['status' => $group, 'search' => $request->string('search')->toString()],
             'detail' => $open instanceof JobRequisition && Gate::allows('hiring.viewRequisition', $open) ? $this->detail($open, $presenter, $user) : null,
             'can' => ['create' => $this->canRaise($user)],

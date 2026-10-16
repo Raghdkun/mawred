@@ -465,6 +465,7 @@ function FileInput({
                     id={id}
                     type="file"
                     accept={accept}
+                    aria-labelledby={`${id}-label`}
                     aria-describedby={[describedBy, hintId].filter(Boolean).join(' ')}
                     disabled={disabled || progress !== null}
                     onChange={(event) => {

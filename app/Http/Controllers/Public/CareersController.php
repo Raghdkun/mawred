@@ -58,7 +58,7 @@ final class CareersController extends Controller
         ]);
         $locale = app()->getLocale();
         $postings = CareersPostings::open($this->today())->with(['requisition.branch', 'requisition.department', 'requisition.employmentType'])
-            ->orderByDesc('published_at')->orderByDesc('id')->limit(500)->get();
+            ->latest('published_at')->orderByDesc('id')->limit(500)->get();
         $branches = $postings->map(fn (JobPosting $p): array => ['id' => $p->requisition->branch->ulid ?? '', 'name' => $p->requisition?->branch?->getTranslation('name', $locale) ?? ''])
             ->unique('id')->sortBy('name')->values()->all();
 
@@ -68,7 +68,6 @@ final class CareersController extends Controller
             ->when($request->filled('branch'), fn ($c) => $c->filter(fn (JobPosting $p): bool => $p->requisition?->branch?->ulid === $request->string('branch')->lower()->toString()))
             ->when($q !== '', fn ($c) => $c->filter(fn (JobPosting $p): bool => collect($p->getTranslations('title'))->contains(fn (string $t): bool => str_contains(mb_strtolower($t), $q))));
 
-        $company = $this->companyName($locale);
         $intro = FieldSpec::text($this->hiring->careersIntro(), $locale);
 
         return Inertia::render('public/careers', [
@@ -78,7 +77,7 @@ final class CareersController extends Controller
             'branches' => $branches,
             'filters' => ['q' => $request->string('q')->toString(), 'workplace' => $request->string('workplace')->toString(), 'branch' => $request->string('branch')->toString()],
         ])->withViewData(['meta' => $this->meta(
-            title: __('Careers at :company', ['company' => $company]),
+            title: __('Careers'),
             description: $intro,
             path: route('careers.index', absolute: false),
         )]);
@@ -178,7 +177,7 @@ final class CareersController extends Controller
 
     public function sitemap(): HttpResponse
     {
-        $postings = CareersPostings::open($this->today())->orderByDesc('published_at')->limit(5000)->get(['slug', 'updated_at']);
+        $postings = CareersPostings::open($this->today())->latest('published_at')->limit(5000)->get(['slug', 'updated_at']);
         $urls = [['loc' => route('careers.index'), 'lastmod' => null]];
 
         foreach ($postings as $posting) {

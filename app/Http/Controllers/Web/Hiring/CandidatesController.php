@@ -60,13 +60,11 @@ final class CandidatesController extends Controller
             ->visibleTo($user)
             ->with(['tags', 'applications.requisition', 'applications.stage'])
             ->paginate(25)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (Candidate $c): CandidateRowData => CandidateRowData::fromCandidate($c));
 
         return Inertia::render('hiring/candidates', [
-            'candidates' => [
-                'data' => array_values(array_map(CandidateRowData::fromCandidate(...), $page->items())),
-                'meta' => ['current_page' => $page->currentPage(), 'last_page' => $page->lastPage(), 'total' => $page->total()],
-            ],
+            'candidates' => $page,
             'filters' => ['search' => $request->string('search')->toString(), 'tag' => $request->string('tag')->toString(), 'view' => $view],
             'tags' => HiringTag::query()->orderBy('name')->limit(200)->pluck('name'),
         ]);
@@ -80,7 +78,7 @@ final class CandidatesController extends Controller
         $locale = app()->getLocale();
 
         $details = $applications->forCandidate($candidate->id)->visibleTo($user)
-            ->with(['requisition.stages', 'stage', 'cv', 'submission.version', 'events.actor', 'events.fromStage', 'events.toStage'])
+            ->with(['requisition.stages', 'stage', 'cv', 'submission.version', 'history.actor', 'history.fromStage', 'history.toStage'])
             ->get()
             ->sortByDesc('applied_at')
             ->values()
@@ -107,7 +105,7 @@ final class CandidatesController extends Controller
                     $answers,
                     $schema === null ? [] : AnswerLabels::for($schema, $answers, $locale),
                     $cv instanceof FormUpload ? ['url' => route('hiring.applications.files', [$application, $cv]), 'name' => $cv->original_name, 'mime' => $cv->mime] : null,
-                    array_values($application->events->map(ApplicationEventData::fromEvent(...))->all()),
+                    array_values($application->history->map(ApplicationEventData::fromEvent(...))->all()),
                     ['update' => Gate::forUser($user)->allows('hiring.updateApplication', $application)],
                 );
             });

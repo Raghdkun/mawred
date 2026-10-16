@@ -141,7 +141,7 @@ final class BoardController extends Controller
     {
         abort_unless(Gate::allows('hiring.viewRequisition', $requisition), 404);
         abort_unless(Gate::allows('hiring.configure') || Gate::allows('hiring.updateRequisition', $requisition), 403);
-        $save->handle(Actor::user($user), $requisition, $this->validatedStages($request));
+        $save->handle(Actor::user($user), $requisition, self::validatedStages($request));
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Stages saved.')]);
 
         return back();

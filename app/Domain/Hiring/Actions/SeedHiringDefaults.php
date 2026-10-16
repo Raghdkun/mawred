@@ -96,6 +96,13 @@ final readonly class SeedHiringDefaults
                     $field('phone', 'phone', 'Mobile number', 'رقم الجوال', ['required' => true]),
                     $field('location', 'text', 'City', 'المدينة', ['validation' => ['max' => 120]]),
                 ]],
+                ['key' => 'screening', 'title' => ['en' => 'A few questions', 'ar' => 'بعض الأسئلة'], 'fields' => [
+                    $field('right_to_work', 'radio', 'Do you have the right to work in this country?', 'هل يحق لك العمل في هذا البلد؟', ['required' => true, 'options' => [
+                        ['value' => 'yes', 'label' => ['en' => 'Yes', 'ar' => 'نعم']],
+                        ['value' => 'sponsorship', 'label' => ['en' => 'I need sponsorship', 'ar' => 'أحتاج إلى كفالة']],
+                    ]]),
+                    $field('experience_years', 'number', 'Years of relevant experience', 'سنوات الخبرة ذات الصلة', ['validation' => ['min' => 0, 'max' => 60, 'integer' => true]]),
+                ]],
                 ['key' => 'experience', 'title' => ['en' => 'Your experience', 'ar' => 'خبراتك'], 'fields' => [
                     $field('cv', 'file', 'CV', 'السيرة الذاتية', ['required' => true, 'validation' => ['maxFiles' => 1, 'accept' => ['pdf', 'word']]]),
                     $field('linkedin', 'text', 'LinkedIn or portfolio link', 'رابط LinkedIn أو معرض الأعمال', ['validation' => ['max' => 300]]),

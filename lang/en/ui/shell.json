@@ -30,7 +30,10 @@
         "requestTypes": "Request types",
         "workflows": "Workflows",
         "notificationTemplates": "Notification templates",
-        "integrations": "Integrations"
+        "integrations": "Integrations",
+        "hiring": "Hiring",
+        "candidates": "Candidates",
+        "hiringSettings": "Hiring settings"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

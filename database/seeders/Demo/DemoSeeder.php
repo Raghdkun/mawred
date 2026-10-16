@@ -115,6 +115,7 @@ final class DemoSeeder extends Seeder
         $this->people();
         $this->policies();
         $this->accounts($password);
+        $this->call(HiringDemoSeeder::class);
 
         $this->command->info(sprintf('Demo company ready: %d people. Sign in as %s with DEMO_PASSWORD.', Employee::query()->count(), implode(', ', self::ACCOUNTS)));
     }

@@ -7,6 +7,7 @@ use AltchaOrg\Altcha\Altcha;
 use AltchaOrg\Altcha\Challenge;
 use AltchaOrg\Altcha\Payload;
 use AltchaOrg\Altcha\SolveChallengeOptions;
+use App\Domain\Forms\Models\FormUpload;
 use App\Domain\Hiring\Actions\ChangePostingStatus;
 use App\Domain\Hiring\Actions\SaveJobPosting;
 use App\Domain\Hiring\Actions\SeedHiringDefaults;
@@ -86,7 +87,7 @@ function careersApply(object $test, array $overrides = []): TestResponse
     $cv = $test->post(route('careers.uploads', $slug), ['field' => 'cv', 'file' => UploadedFile::fake()->create('cv.pdf', 30, 'application/pdf')])->assertCreated()->json('id');
 
     return $test->post(route('careers.apply', $slug), [
-        'values' => ['full_name' => 'Omar Saleh', 'email' => 'omar@example.com', 'phone' => '+966500000009', 'cv' => [$cv]],
+        'values' => ['full_name' => 'Omar Saleh', 'email' => 'omar@example.com', 'phone' => '+966500000009', 'cv' => [$cv], 'right_to_work' => 'yes'],
         'startedAt' => Crypt::encryptString((string) (time() - 30)),
         'altcha' => careersAltcha($test, $slug),
         'privacy' => true,
@@ -101,7 +102,7 @@ it('lists open jobs on the careers site with search and share tags', function ()
         ->assertSee('hreflang="en"', false)
         ->assertInertia(fn (Assert $page): Assert => $page->component('public/careers')->has('jobs', 1)->where('jobs.0.title', 'باريستا أول'));
 
-    $this->get(route('careers.show', $this->posting->slug))
+    $this->get(route('careers.show', [$this->posting->slug, 'lang' => 'en']))
         ->assertOk()
         ->assertSee('application/ld+json', false)
         ->assertSee('"@type":"JobPosting"', false)
@@ -144,14 +145,15 @@ it('shows the requisitions table scoped to the viewer, with a constant number of
         hiringHttpOpen($this->branch);
     }
 
-    DB::enableQueryLog();
     $this->actingAs($this->recruiter)->get(route('hiring.requisitions.index'))->assertOk();
+    DB::enableQueryLog();
+    $this->get(route('hiring.requisitions.index'))->assertOk();
     $few = count(DB::getQueryLog());
     foreach (range(1, 6) as $i) {
         hiringHttpOpen($this->branch);
     }
     DB::flushQueryLog();
-    $this->actingAs($this->recruiter)->get(route('hiring.requisitions.index'))->assertOk();
+    $this->get(route('hiring.requisitions.index'))->assertOk();
     expect(count(DB::getQueryLog()))->toBe($few);
 });
 
@@ -195,14 +197,15 @@ it('opens a candidate profile with the CV, scoped like the board', function (): 
 
     $this->actingAs($this->recruiter)->get(route('hiring.candidates.show', $candidate))
         ->assertInertia(fn (Assert $page): Assert => $page->component('hiring/candidate')->where('candidate.email', 'omar@example.com')->has('applications', 1)->has('applications.0.cv.url'));
-    $this->get(route('hiring.applications.files', [$application, $application->cv_upload_id]))->assertOk()->assertHeader('Content-Type', 'application/pdf');
+    $cv = FormUpload::query()->findOrFail($application->cv_upload_id);
+    $this->get(route('hiring.applications.files', [$application, $cv]))->assertOk()->assertHeader('Content-Type', 'application/pdf');
 
     $this->put(route('hiring.candidates.tags', $candidate), ['tags' => ['Barista', 'Arabic']])->assertRedirect();
     expect($candidate->tags()->pluck('name')->sort()->values()->all())->toBe(['Arabic', 'Barista']);
     $this->get(route('hiring.candidates.index', ['tag' => 'barista']))->assertInertia(fn (Assert $page): Assert => $page->has('candidates.data', 1));
 
     $this->actingAs($this->otherManager)->get(route('hiring.candidates.show', $candidate))->assertNotFound();
-    $this->actingAs($this->otherManager)->get(route('hiring.applications.files', [$application, $application->cv_upload_id]))->assertNotFound();
+    $this->actingAs($this->otherManager)->get(route('hiring.applications.files', [$application, $cv]))->assertNotFound();
     $this->actingAs($this->otherManager)->getJson(route('api.v1.hiring.candidates'))->assertOk()->assertJsonCount(0, 'data');
 });
 

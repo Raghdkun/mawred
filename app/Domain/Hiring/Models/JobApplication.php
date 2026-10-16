@@ -99,9 +99,9 @@ final class JobApplication extends Model
     /**
      * @return HasMany<ApplicationEvent, $this>
      */
-    public function events(): HasMany
+    public function history(): HasMany
     {
-        return $this->hasMany(ApplicationEvent::class)->orderByDesc('created_at')->orderByDesc('id');
+        return $this->hasMany(ApplicationEvent::class)->latest()->orderByDesc('id');
     }
 
     /**

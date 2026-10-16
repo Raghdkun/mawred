@@ -9,6 +9,7 @@ use App\Domain\Hiring\Actions\MoveApplication;
 use App\Domain\Hiring\Data\BoardCardData;
 use App\Domain\Hiring\Data\CandidateRowData;
 use App\Domain\Hiring\Enums\RequisitionStatus;
+use App\Domain\Hiring\Models\Candidate;
 use App\Domain\Hiring\Models\JobApplication;
 use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Models\PipelineStage;
@@ -59,7 +60,7 @@ final class HiringController extends Controller
             ->with(['tags', 'applications.requisition', 'applications.stage'])
             ->cursorPaginate(20);
 
-        return $this->page($page, fn ($candidate): CandidateRowData => CandidateRowData::fromCandidate($candidate));
+        return $this->page($page, fn (Candidate $candidate): CandidateRowData => CandidateRowData::fromCandidate($candidate));
     }
 
     /** Active users whose role can see hiring: who may join a hiring team. */

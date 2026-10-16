@@ -47,6 +47,14 @@ services:
     healthcheck: { disable: true }
     mem_limit: 256m
 
+  # Server-side rendering for the careers site (D87); the app falls back to client rendering if
+  # it is down. The app reaches it through INERTIA_SSR_URL=http://ssr:13714 in .env.production.
+  ssr:
+    <<: *app
+    command: ["php", "artisan", "inertia:start-ssr"]
+    healthcheck: { test: ["CMD", "php", "artisan", "inertia:check-ssr"], interval: 30s, retries: 3 }
+    mem_limit: 384m
+
   reverb:
     <<: *app
     command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]

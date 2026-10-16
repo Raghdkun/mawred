@@ -40,6 +40,7 @@
         <env name="DB_USERNAME" value="mawred"/>
         <env name="DB_PASSWORD" value="secret"/>
         <env name="DB_URL" value=""/>
+        <env name="INERTIA_SSR_ENABLED" value="false"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="MAIL_RUNTIME_CONFIG" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

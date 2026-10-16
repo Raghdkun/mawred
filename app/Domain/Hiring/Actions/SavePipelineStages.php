@@ -54,7 +54,7 @@ final readonly class SavePipelineStages
                 $kept[] = $model->id;
             }
 
-            $removed = $existing->filter(fn (PipelineStage $s): bool => ! in_array($s->id, $kept, true));
+            $removed = $existing->reject(fn (PipelineStage $s): bool => in_array($s->id, $kept, true));
 
             if ($removed->isNotEmpty() && JobApplication::query()->whereIn('pipeline_stage_id', $removed->modelKeys())->exists()) {
                 $message = __('Move the candidates out of a stage before removing it.');

@@ -30,7 +30,10 @@
         "requestTypes": "أنواع الطلبات",
         "workflows": "مسارات العمل",
         "notificationTemplates": "قوالب الإشعارات",
-        "integrations": "التكاملات"
+        "integrations": "التكاملات",
+        "hiring": "التوظيف",
+        "candidates": "المرشحون",
+        "hiringSettings": "إعدادات التوظيف"
     },
     "searchPlaceholder": "ابحث أو انتقل إلى…",
     "switchLanguage": "تغيير اللغة إلى {language}",

@@ -75,7 +75,7 @@ final class ApplicationsQuery extends ScopedQuery
             ->when($this->requisitionId !== null, fn (Builder $q) => $q->where('job_applications.job_requisition_id', $this->requisitionId))
             ->when($this->candidateId !== null, fn (Builder $q) => $q->where('job_applications.candidate_id', $this->candidateId))
             ->when($this->statuses !== [], fn (Builder $q) => $q->whereIn('job_applications.status', array_map(fn (ApplicationStatus $s): string => $s->value, $this->statuses)))
-            ->orderBy('job_applications.stage_entered_at')
+            ->oldest('job_applications.stage_entered_at')
             ->orderBy('job_applications.id');
     }
 }

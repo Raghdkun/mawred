@@ -146,6 +146,7 @@ function hiringApply(JobPosting $posting, array $values = [], bool $pool = false
         'email' => 'lina@example.com',
         'phone' => '+966500000001',
         'cv' => [hiringCv()],
+        'right_to_work' => 'yes',
         ...$values,
     ], ApplicationSource::Careers, ['privacy' => true, 'talentPool' => $pool], hash('sha256', 'visitor'));
 }
@@ -217,7 +218,7 @@ it('needs the privacy notice accepted on the careers site', function (): void {
     $posting = hiringPosting($this, hiringOpen($this));
 
     expect(fn () => resolve(SubmitApplication::class)->handle(Actor::system('careers'), $posting->requisition()->firstOrFail(), $posting, [
-        'full_name' => 'Lina', 'email' => 'l@example.com', 'phone' => '+966500000001', 'cv' => [hiringCv()],
+        'full_name' => 'Lina', 'email' => 'l@example.com', 'phone' => '+966500000001', 'cv' => [hiringCv()], 'right_to_work' => 'yes',
     ], ApplicationSource::Careers, ['privacy' => false, 'talentPool' => false], hash('sha256', 'visitor')))->toThrow(DomainRuleViolation::class);
 });
 

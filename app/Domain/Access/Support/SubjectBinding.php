@@ -29,7 +29,7 @@ final readonly class SubjectBinding
         public bool $isReference = false,
         public ?Closure $custom = null,
     ) {
-        if (! $isReference && $custom === null && $userColumn === null && $employeeColumn === null) {
+        if (! $isReference && ! $custom instanceof Closure && $userColumn === null && $employeeColumn === null) {
             throw new InvalidArgumentException('A subject binding needs a user or an employee column.');
         }
     }

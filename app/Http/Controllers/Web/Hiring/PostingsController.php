@@ -20,6 +20,7 @@ use App\Domain\Hiring\Support\HiringSettings;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
 use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -81,7 +82,7 @@ final class PostingsController extends Controller
     private function editor(JobRequisition $requisition, ?JobPosting $posting, HiringSettings $settings): Response
     {
         $default = $settings->defaultForm();
-        $forms = Form::query()->whereNotNull('published_version_id')->where(fn ($q) => $q->where('category', 'hiring')->orWhere('id', $posting?->form_id))->orderBy('id')->get()
+        $forms = Form::query()->whereNotNull('published_version_id')->where(fn (Builder $q) => $q->where('category', 'hiring')->orWhere('id', $posting?->form_id))->orderBy('id')->get()
             ->map(function (Form $form): ?array {
                 $version = FormVersion::query()->find($form->published_version_id);
 
