@@ -10,6 +10,7 @@ use App\Domain\Access\Enums\FieldAccess;
 use App\Domain\Access\Enums\HomeLayout;
 use App\Domain\Access\Enums\Scope;
 use App\Domain\Access\Models\User;
+use Closure;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -115,6 +116,12 @@ final class ScopeResolver
     {
         if ($subject->isReference) {
             $query->whereRaw('1 = 0');
+
+            return;
+        }
+
+        if ($subject->custom instanceof Closure) {
+            ($subject->custom)($query, $user, $grant);
 
             return;
         }

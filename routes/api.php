@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\V1\Access\UserSearchController;
 use App\Http\Controllers\Api\V1\Attendance\PunchesController;
 use App\Http\Controllers\Api\V1\Calendar\CalendarController;
+use App\Http\Controllers\Api\V1\Hiring\HiringController;
 use App\Http\Controllers\Api\V1\Leave\LeaveCalendarController;
 use App\Http\Controllers\Api\V1\Leave\LeaveController;
 use App\Http\Controllers\Api\V1\Organization\BranchSearchController;
@@ -66,4 +67,9 @@ Route::prefix('v1')
         Route::post('calendar/availability', [CalendarController::class, 'availability'])->middleware('throttle:60,1')->name('calendar.availability');
         Route::post('calendar/events/{event}/respond', [CalendarController::class, 'respond'])->name('calendar.respond');
         Route::post('schedule/open-shifts/{shift}/claim', [ScheduleController::class, 'claim'])->name('schedule.claim');
+
+        Route::get('hiring/requisitions', [HiringController::class, 'requisitions'])->name('hiring.requisitions');
+        Route::get('hiring/candidates', [HiringController::class, 'candidates'])->name('hiring.candidates');
+        Route::get('hiring/people', [HiringController::class, 'people'])->name('hiring.people');
+        Route::post('hiring/applications/{application}/move', [HiringController::class, 'move'])->name('hiring.applications.move');
     });

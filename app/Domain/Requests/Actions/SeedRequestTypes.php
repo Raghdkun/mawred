@@ -340,6 +340,26 @@ final readonly class SeedRequestTypes
                 ],
             ],
             [
+                'code' => 'JOB_REQUISITION', 'category' => RequestCategory::People, 'icon' => 'hiring', 'chain' => 'standard', 'update' => 'hiring.requisition',
+                'name' => ['en' => 'Job requisition', 'ar' => 'طلب توظيف'],
+                'description' => ['en' => 'Ask to hire for a new or vacated position.', 'ar' => 'اطلب التوظيف لوظيفة جديدة أو شاغرة.'],
+                'fields' => [
+                    self::field('title', 'text', 'Job title', 'المسمى الوظيفي', ['required' => true, 'validation' => ['max' => 120]]),
+                    self::field('branch', 'branch', 'Branch', 'الفرع', ['required' => true]),
+                    self::field('department', 'department', 'Department', 'القسم'),
+                    self::field('headcount', 'number', 'Number of hires', 'عدد الموظفين المطلوبين', ['required' => true, 'default' => 1, 'validation' => ['min' => 1, 'max' => 50, 'integer' => true]]),
+                    self::field('reason', 'radio', 'Reason', 'السبب', ['required' => true, 'default' => 'new', 'options' => self::options([
+                        'new' => ['New position', 'وظيفة جديدة'],
+                        'replacement' => ['Replacement', 'بديل لموظف'],
+                    ])]),
+                    self::field('replaces', 'employee', 'Replaces', 'بديلًا عن', ['visible' => ['op' => 'eq', 'args' => [['ref' => 'field.reason'], 'replacement']]]),
+                    self::field('target_start', 'date', 'Target start date', 'تاريخ المباشرة المستهدف', ['validation' => ['min' => $today]]),
+                    self::field('salary_min', 'money', 'Salary from (monthly)', 'الراتب من (شهريًا)'),
+                    self::field('salary_max', 'money', 'Salary to (monthly)', 'الراتب إلى (شهريًا)'),
+                    self::field('justification', 'textarea', 'Why is this hire needed?', 'لماذا نحتاج هذا التعيين؟', ['required' => true, 'validation' => ['max' => 2000]]),
+                ],
+            ],
+            [
                 'code' => 'TRAINING', 'category' => RequestCategory::Training, 'icon' => 'training', 'chain' => 'standard', 'phase' => 7,
                 'name' => ['en' => 'Training request', 'ar' => 'طلب تدريب'],
                 'description' => ['en' => 'A course or certification you’d like to take.', 'ar' => 'دورة أو شهادة ترغب في الحصول عليها.'],

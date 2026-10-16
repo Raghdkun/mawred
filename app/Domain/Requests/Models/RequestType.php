@@ -67,6 +67,12 @@ final class RequestType extends Model
         return $this->belongsTo(WorkflowDefinition::class, 'workflow_definition_id')->withTrashed();
     }
 
+    /** Types that their own module's screen raises, so the request center leaves them out (D84). */
+    public function isRaisedElsewhere(): bool
+    {
+        return $this->code === 'JOB_REQUISITION';
+    }
+
     /** Live now, or waiting for its module (D55). */
     public function isAvailable(): bool
     {

@@ -4,6 +4,7 @@ use App\Providers\AccessServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\FormsServiceProvider;
 use App\Providers\FortifyServiceProvider;
+use App\Providers\HiringServiceProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\IntegrationsServiceProvider;
 use App\Providers\LeaveServiceProvider;
@@ -25,6 +26,7 @@ return [
     RequestsServiceProvider::class,
     LeaveServiceProvider::class,
     TimeServiceProvider::class,
+    HiringServiceProvider::class,
     NotificationsServiceProvider::class,
     IntegrationsServiceProvider::class,
     FortifyServiceProvider::class,

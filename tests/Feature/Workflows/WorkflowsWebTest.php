@@ -39,7 +39,7 @@ beforeEach(function (): void {
 
 it('lists workflows and opens the builder with the linked form fields', function (): void {
     $this->actingAs($this->admin)->get(route('workflows.index'))->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page->component('workflows/index')->has('workflows', 15)->where('workflows.0.publishedVersion', 1));
+        ->assertInertia(fn (AssertableInertia $page) => $page->component('workflows/index')->has('workflows', 16)->where('workflows.0.publishedVersion', 1));
 
     $this->actingAs($this->admin)->get(route('workflows.builder', $this->trip))->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page->component('workflows/builder')

@@ -33,10 +33,30 @@
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/build/manifest.webmanifest">
 
+        {{-- Public pages that search engines and link previews read (careers, D87). --}}
+        @isset($meta)
+            <meta name="description" content="{{ $meta['description'] }}">
+            <link rel="canonical" href="{{ $meta['canonical'] }}">
+            @foreach ($meta['alternates'] as $lang => $href)
+                <link rel="alternate" hreflang="{{ $lang }}" href="{{ $href }}">
+            @endforeach
+            <meta property="og:type" content="website">
+            <meta property="og:title" content="{{ $meta['title'] }}">
+            <meta property="og:description" content="{{ $meta['description'] }}">
+            <meta property="og:url" content="{{ $meta['canonical'] }}">
+            <meta property="og:image" content="{{ $meta['image'] }}">
+            <meta property="og:site_name" content="{{ $meta['siteName'] }}">
+            <meta property="og:locale" content="{{ $meta['locale'] }}">
+            <meta name="twitter:card" content="summary_large_image">
+            @if ($meta['jsonLd'])
+                <script type="application/ld+json">{!! json_encode($meta['jsonLd'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+            @endif
+        @endisset
+
         @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         <x-inertia::head>
-            <title>{{ config('app.name', 'Mawred') }}</title>
+            <title>{{ $meta['title'] ?? config('app.name', 'Mawred') }}</title>
         </x-inertia::head>
     </head>
     <body class="font-sans antialiased">

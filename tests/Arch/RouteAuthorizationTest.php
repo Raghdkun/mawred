@@ -22,6 +22,7 @@ const PUBLIC_ROUTE_NAMES = [
     'hooks.*', // ADR-0015: inbound webhooks authenticate with URL tokens or signatures
     'calendar-replies.*', // D75: one-tap replies carry an HMAC-signed participant token
     'kiosk.*', // D70: kiosk screens open with a secret link (hash stored) and only show rotating codes
+    'careers.*', // D87: the public careers site; applying is hardened like public forms
 ];
 
 /** Package-owned endpoints with their own gates (Horizon, Pulse, Scramble, Sanctum, health…). */

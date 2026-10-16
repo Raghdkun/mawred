@@ -164,7 +164,7 @@ it('lets HR admins add and edit request types', function (): void {
         'isSensitive' => false, 'isActive' => true, 'sortOrder' => 200, 'formId' => $trip->form?->ulid, 'workflowId' => $trip->workflow?->ulid];
 
     $this->actingAs($this->requesterUser)->get(route('request-types.index'))->assertForbidden();
-    $this->actingAs($admin)->get(route('request-types.index'))->assertOk()->assertInertia(fn (AssertableInertia $page) => $page->has('types', 15)->has('workflows', 15));
+    $this->actingAs($admin)->get(route('request-types.index'))->assertOk()->assertInertia(fn (AssertableInertia $page) => $page->has('types', 16)->has('workflows', 16));
 
     $this->actingAs($admin)->post(route('request-types.store'), $input)->assertRedirect();
     $this->actingAs($admin)->post(route('request-types.store'), $input)->assertSessionHasErrors('code');

@@ -37,7 +37,7 @@ final class RequestCenterController extends Controller
         Gate::authorize('requests.create');
 
         $types = RequestType::query()->with(['form', 'workflow'])->where('is_active', true)->orderBy('sort_order')->orderBy('id')->get()
-            ->filter(fn (RequestType $type): bool => $type->isAvailable())
+            ->filter(fn (RequestType $type): bool => $type->isAvailable() && ! $type->isRaisedElsewhere())
             ->map(fn (RequestType $type): RequestTypeData => $this->withExternalLink(RequestTypeData::fromType($type), $type, $user))
             ->filter(fn (RequestTypeData $type): bool => $type->ready && ($type->source === 'native' || $type->externalUrl !== null))
             ->values();
@@ -49,6 +49,11 @@ final class RequestCenterController extends Controller
     {
         Gate::authorize('requests.create');
         abort_unless($type->isAvailable(), 404);
+
+        // Job requisitions are raised from the Hiring screen (D84).
+        if ($type->isRaisedElsewhere()) {
+            return Inertia::location(route('hiring.requisitions.create'));
+        }
 
         // Cognito-backed types are filled in on Cognito (D60).
         if ($type->source === 'cognito') {

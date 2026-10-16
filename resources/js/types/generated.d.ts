@@ -255,6 +255,239 @@ export type SubmissionSource = 'internal' | 'public' | 'test' | 'cognito';
 export type VersionStatus = 'draft' | 'published' | 'archived';
 }
 }
+namespace Hiring {
+namespace Data {
+export type ApplicationDetailData = {
+id: string,
+job: {
+id: string,
+number: string,
+title: string,
+open: boolean,
+},
+stageId: string,
+stages: App.Domain.Hiring.Data.StageData[],
+status: string,
+source: string,
+appliedAt: string,
+stageEnteredAt: string,
+knockouts: string[],
+rejectionReason: string | null,
+schema: Record<string, any> | null,
+answers: Record<string, any>,
+display: Record<string, string>,
+cv: {
+url: string,
+name: string,
+mime: string,
+} | null,
+events: App.Domain.Hiring.Data.ApplicationEventData[],
+can: {
+update: boolean,
+},
+};
+export type ApplicationEventData = {
+kind: string,
+at: string,
+actor: string | null,
+fromStage: string | null,
+toStage: string | null,
+body: string | null,
+data: Record<string, any>,
+};
+export type BoardCardData = {
+id: string,
+candidateId: string,
+name: string,
+stageId: string,
+status: string,
+source: string,
+appliedAt: string,
+stageEnteredAt: string,
+knockedOut: boolean,
+knockouts: string[],
+tags: string[],
+possibleDuplicate: boolean,
+rejectionReason: string | null,
+};
+export type CandidateProfileData = {
+id: string,
+name: string,
+email: string | null,
+phone: string | null,
+locale: string,
+location: string | null,
+source: string,
+talentPool: boolean,
+talentPoolConsentedAt: string | null,
+consentedAt: string | null,
+tags: string[],
+duplicateOf: {
+id: string,
+name: string,
+} | null,
+createdAt: string,
+};
+export type CandidateRowData = {
+id: string,
+name: string,
+location: string | null,
+tags: string[],
+talentPool: boolean,
+possibleDuplicate: boolean,
+lastActivityAt: string,
+applications: {
+id: string,
+job: string,
+stage: string,
+status: string,
+}[],
+};
+export type CareersPostingData = {
+slug: string,
+title: string,
+summary: string | null,
+description: string,
+location: string | null,
+workplace: string,
+employmentType: string | null,
+department: string | null,
+branch: string,
+salary: {
+min: number | null,
+max: number | null,
+currency: string,
+} | null,
+publishedAt: string | null,
+closesOn: string | null,
+};
+export type JobPostingInputData = {
+title: {
+en: string,
+ar?: string | null,
+},
+description: {
+en: string,
+ar?: string | null,
+},
+summary: {
+en?: string | null,
+ar?: string | null,
+} | null,
+location: {
+en?: string | null,
+ar?: string | null,
+} | null,
+workplace: string,
+showSalary: boolean,
+formId: string | null,
+knockouts: {
+field: string,
+rule: any,
+}[],
+seo: {
+title?: {
+en?: string | null,
+ar?: string | null,
+},
+description?: {
+en?: string | null,
+ar?: string | null,
+},
+} | null,
+closesOn: string | null,
+};
+export type PostingData = {
+id: string,
+slug: string,
+url: string,
+title: {
+en: string,
+ar: string,
+},
+description: {
+en: string,
+ar: string,
+},
+summary: {
+en: string,
+ar: string,
+},
+location: {
+en: string,
+ar: string,
+},
+workplace: string,
+showSalary: boolean,
+formId: string | null,
+knockouts: {
+field: string,
+rule: any,
+}[],
+seo: {
+title: {
+en: string,
+ar: string,
+},
+description: {
+en: string,
+ar: string,
+},
+},
+status: string,
+publishedAt: string | null,
+closesOn: string | null,
+applicants: number,
+};
+export type RequisitionData = {
+id: string,
+number: string,
+title: string,
+status: string,
+reason: string,
+branch: string,
+department: string | null,
+position: string | null,
+headcount: number,
+hiringManager: string | null,
+requestId: string | null,
+salaryMinMinor: number | null,
+salaryMaxMinor: number | null,
+currency: string | null,
+targetStartOn: string | null,
+justification: string | null,
+openedAt: string | null,
+createdAt: string,
+counts: {
+active: number,
+total: number,
+postings: number,
+},
+};
+export type StageData = {
+id: string,
+name: string,
+names: {
+en: string,
+ar: string,
+},
+kind: string,
+position: number,
+};
+}
+namespace Enums {
+export type ApplicationEventKind = 'applied' | 'moved' | 'rejected' | 'reopened' | 'note' | 'merged';
+export type ApplicationSource = 'careers' | 'cognito' | 'manual' | 'referral' | 'talent_pool';
+export type ApplicationStatus = 'active' | 'rejected' | 'withdrawn' | 'hired';
+export type MemberRole = 'recruiter' | 'hiring_manager' | 'coordinator';
+export type PostingStatus = 'draft' | 'published' | 'closed';
+export type RejectionReason = 'not_qualified' | 'knockout' | 'better_candidate' | 'salary' | 'no_show' | 'withdrew' | 'position_closed' | 'other';
+export type RequisitionReason = 'new' | 'replacement';
+export type RequisitionStatus = 'pending' | 'open' | 'on_hold' | 'filled' | 'closed' | 'rejected' | 'cancelled';
+export type StageKind = 'applied' | 'screening' | 'interview' | 'offer' | 'hired';
+export type Workplace = 'onsite' | 'hybrid' | 'remote';
+}
+}
 namespace Integrations {
 namespace Data {
 export type IntegrationCardData = {
