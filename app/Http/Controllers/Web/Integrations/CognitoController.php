@@ -14,6 +14,7 @@ use App\Domain\Integrations\Actions\ReplayCognitoReceipt;
 use App\Domain\Integrations\Actions\RotateCognitoToken;
 use App\Domain\Integrations\Actions\SaveCognitoSource;
 use App\Domain\Integrations\Cognito\CognitoMapping;
+use App\Domain\Integrations\Contracts\CognitoApplications;
 use App\Domain\Integrations\Data\CognitoSourceData;
 use App\Domain\Integrations\Enums\ReceiptStatus;
 use App\Domain\Integrations\Models\CognitoReceipt;
@@ -38,6 +39,8 @@ use Inertia\Response;
  */
 final class CognitoController extends Controller
 {
+    public function __construct(private readonly CognitoApplications $applications) {}
+
     public function index(Request $request): Response
     {
         Gate::authorize('integrations.configure');
@@ -182,6 +185,7 @@ final class CognitoController extends Controller
             'id' => $source->ulid,
             'name' => $source->name,
             'requestType' => $type instanceof RequestType ? ['id' => $type->ulid, 'name' => $type->getTranslations('name')] : null,
+            'posting' => $type instanceof RequestType ? null : $this->applications->posting($source, app()->getLocale()),
             'isActive' => $source->is_active,
             'tokenLast4' => $source->token_last4,
             'rotatedAt' => $source->rotated_at?->toIso8601String(),
@@ -216,7 +220,7 @@ final class CognitoController extends Controller
     private function formFields(CognitoSource $source): array
     {
         $type = $source->requestType;
-        $form = $type instanceof RequestType ? Form::withTrashed()->find($type->form_id) : null;
+        $form = $type instanceof RequestType ? Form::withTrashed()->find($type->form_id) : $this->applications->form($source);
         $version = $form instanceof Form && $form->published_version_id !== null ? FormVersion::query()->find($form->published_version_id) : null;
 
         if (! $version instanceof FormVersion) {

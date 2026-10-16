@@ -146,6 +146,14 @@ final class JobRequisition extends Model
     }
 
     /**
+     * @return HasMany<ScorecardCriterion, $this>
+     */
+    public function criteria(): HasMany
+    {
+        return $this->hasMany(ScorecardCriterion::class)->orderBy('position');
+    }
+
+    /**
      * @return HasMany<JobPosting, $this>
      */
     public function postings(): HasMany

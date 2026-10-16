@@ -160,13 +160,15 @@
         "knockedOut": "Screening",
         "duplicate": "Possible duplicate",
         "moveTo": "Move to…",
-        "reopen": "Put back on the board"
+        "reopen": "Put back on the board",
+        "score": "Average scorecard {score} out of 4"
     },
     "reject": {
         "title": "{count, plural, one {Reject {formatted} candidate} other {Reject {formatted} candidates}}",
         "description": "They leave this board but stay searchable in Candidates.",
         "reason": "Reason",
-        "note": "Note for the team (optional)"
+        "note": "Note for the team (optional)",
+        "notify": "Tell the candidate (thank-you message)"
     },
     "add": {
         "title": "Add a candidate",
@@ -201,7 +203,12 @@
         "seoHelp": "Optional. Defaults to the title and summary.",
         "seoTitle": "Search title",
         "seoDescription": "Search description",
-        "save": "Save posting"
+        "save": "Save posting",
+        "applyVia": "Where candidates apply",
+        "applyOnCareers": "On the careers site",
+        "applyOnCognito": "Cognito form: {name}",
+        "applyOnCognitoOff": "Cognito form: {name} (off)",
+        "applyViaCognito": "The careers page links to the Cognito form. Map its answers onto the application form below in Integrations → Cognito."
     },
     "knockouts": {
         "yes": "Yes",
@@ -281,7 +288,20 @@
         "rejected": "Rejected: {reason}",
         "reopened": "Put back on the board",
         "note": "Note",
-        "merged": "Merged from a duplicate profile"
+        "merged": "Merged from a duplicate profile",
+        "anonymised": "Details deleted",
+        "scorecard": "Scorecard submitted",
+        "hired": "Hired",
+        "interview_planned": "Interview planned: {title}",
+        "interview_booked": "Interview booked: {title}",
+        "interview_cancelled": "Interview cancelled: {title}",
+        "offer_submitted": "Offer sent for approval",
+        "offer_approved": "Offer approved",
+        "offer_rejected": "Offer not approved",
+        "offer_sent": "Offer sent",
+        "offer_accepted": "Offer accepted",
+        "offer_declined": "Offer declined",
+        "offer_withdrawn": "Offer withdrawn"
     },
     "duplicate": {
         "text": "This may be the same person as",
@@ -300,7 +320,20 @@
         "notice": "Privacy notice",
         "noticeHint": "Applicants must accept this to apply.",
         "editForm": "Edit the default application form",
-        "save": "Save"
+        "save": "Save",
+        "automationsHelp": "New requisitions copy these. Each requisition can change its own from its board.",
+        "criteriaHelp": "New requisitions copy these criteria.",
+        "retention": "Keeping candidates' details",
+        "retentionHelp": "Rejected and withdrawn candidates are anonymised this long after their last activity. Hired candidates are never anonymised here.",
+        "retentionMonths": "Months to keep (everyone)",
+        "poolRetentionMonths": "Months to keep (talent pool)",
+        "rejection": "Rejection message",
+        "rejectionHelp": "Sent when a recruiter rejects with “Tell the candidate” on.",
+        "rejectionOn": "Thank candidates when they're rejected",
+        "letter": "Offer letter",
+        "letterHelp": "Each offer starts from this letter in the candidate's language. Recruiters can adjust it per offer.",
+        "letterVariables": "Variables you can use",
+        "letterTemplate": "Letter template"
     },
     "careers": {
         "title": "Careers",
@@ -326,6 +359,234 @@
         "submit": "Send application",
         "honeypot": "Leave this field empty",
         "privacy": "I have read the privacy notice and agree to my details being used for this application.",
-        "pool": "Keep my details for future roles (talent pool)."
+        "pool": "Keep my details for future roles (talent pool).",
+        "external": "Applications for this job are taken on a separate form.",
+        "externalButton": "Apply now",
+        "newTab": "(opens in a new tab)"
+    },
+    "interviewMode": {
+        "onsite": "In person",
+        "video": "Video call",
+        "phone": "Phone"
+    },
+    "interviewStatus": {
+        "awaiting": "Waiting for the candidate to pick a time",
+        "scheduled": "Scheduled",
+        "completed": "Done",
+        "cancelled": "Cancelled"
+    },
+    "interviews": {
+        "sectionTitle": "Interviews",
+        "plan": "Plan interview",
+        "none": "No interviews yet.",
+        "defaultTitle": "Interview",
+        "planTitle": "Plan an interview",
+        "planDescription": "Pick the panel. The candidate can choose a time when everyone is free, or you set one.",
+        "sendLink": "Send booking link",
+        "book": "Book interview",
+        "title": "Title",
+        "panel": "Panel",
+        "duration": "Length",
+        "minutes": "{count, plural, one {# minute} other {# minutes}}",
+        "mode": "How",
+        "location": "Where",
+        "locationHint": "Room or address; for video calls, the link if you have it.",
+        "when": "When",
+        "how": {
+            "link": "Let the candidate pick",
+            "linkHelp": "They get a link with times the whole panel is free over the next two weeks.",
+            "time": "Set the time",
+            "timeHelp": "Book a time you already agreed."
+        },
+        "date": "Date",
+        "time": "Time",
+        "submitted": "{count} of {total} scorecards in",
+        "bookingLink": "Booking link",
+        "cancel": "Cancel interview"
+    },
+    "scorecards": {
+        "others": "The panel's scorecards",
+        "blind": "You'll see the others' scorecards once yours is in.",
+        "yours": "Your scorecard",
+        "rating": "{n} out of 4: {label}",
+        "scale": {
+            "1": "Weak",
+            "2": "Mixed",
+            "3": "Good",
+            "4": "Excellent"
+        },
+        "recommendation": "Your recommendation",
+        "comment": "Comments",
+        "saveDraft": "Save draft",
+        "submit": "Submit scorecard"
+    },
+    "recommendation": {
+        "strong_no": "Strong no",
+        "no": "No",
+        "yes": "Yes",
+        "strong_yes": "Strong yes"
+    },
+    "offerStatus": {
+        "draft": "Draft",
+        "pending": "Awaiting approval",
+        "approved": "Approved",
+        "rejected": "Not approved",
+        "sent": "Sent",
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "withdrawn": "Withdrawn",
+        "expired": "Expired"
+    },
+    "offers": {
+        "sectionTitle": "Offer",
+        "new": "Draft an offer",
+        "newTitle": "Draft an offer",
+        "editTitle": "Edit offer",
+        "description": "Set the terms and write the letter. It goes to the hiring manager, then HR, before the candidate sees it.",
+        "saveDraft": "Save draft",
+        "jobTitle": "Job title",
+        "startOn": "Start date",
+        "expiresOn": "Valid until",
+        "salary": "Monthly salary",
+        "currency": "Currency",
+        "branch": "Branch",
+        "department": "Department",
+        "position": "Position",
+        "manager": "Reports to",
+        "employmentType": "Employment type",
+        "letter": "Offer letter",
+        "fill": "Fill from template",
+        "fillFailed": "Check the terms first, then fill the letter again.",
+        "letterPlaceholder": "Use “Fill from template” to start from the letter in Hiring settings.",
+        "letterHint": "The letter is in the candidate's language. Leave a blank line between paragraphs.",
+        "signedBy": "Signed by",
+        "signedLetter": "Signed letter",
+        "preview": "Preview letter",
+        "edit": "Edit",
+        "submit": "Send for approval",
+        "sendEmail": "Send by email",
+        "resendEmail": "Send again",
+        "sendWhatsApp": "Send on WhatsApp",
+        "withdraw": "Withdraw"
+    },
+    "hire": {
+        "title": "Hire this candidate",
+        "description": "This creates their employee record. Onboarding starts, and they get their invitation on the start date.",
+        "confirm": "Hire",
+        "nameEn": "Name (English)",
+        "nameAr": "Name (Arabic)",
+        "date": "Start date",
+        "workEmail": "Work email",
+        "done": "Hired.",
+        "openEmployee": "Open their employee record",
+        "ready": "They accepted the offer. Confirm the hire to create their employee record.",
+        "button": "Hire"
+    },
+    "messages": {
+        "title": "Messages",
+        "channel": "Send by",
+        "subject": "Subject",
+        "body": "Message",
+        "send": "Send",
+        "empty": "No messages yet.",
+        "failed": "not delivered",
+        "direction": {
+            "in": "Received",
+            "out": "Sent"
+        },
+        "purpose": {
+            "manual": "Message",
+            "stage": "Stage message",
+            "rejection": "Rejection",
+            "booking": "Booking link",
+            "interview": "Interview",
+            "offer": "Offer",
+            "reply": "Reply"
+        }
+    },
+    "channel": {
+        "email": "Email",
+        "whatsapp": "WhatsApp"
+    },
+    "criteria": {
+        "title": "Scorecard criteria",
+        "description": "What interviewers rate from 1 to 4 for this job.",
+        "remove": "Remove {name}",
+        "add": "Add a criterion",
+        "save": "Save criteria"
+    },
+    "automations": {
+        "title": "Stage automations",
+        "description": "What happens when a candidate enters each stage.",
+        "stage": "Stage",
+        "message": "Message the candidate",
+        "messageHint": "By email, or WhatsApp when there's no email.",
+        "subject": "Subject",
+        "body": "Message",
+        "variables": "You can use '{{ candidate_name }}', '{{ job_title }}', '{{ stage }}' and '{{ company }}'.",
+        "booking": "Send a booking invite",
+        "bookingHint": "The candidate picks a time the panel is free.",
+        "save": "Save automation"
+    },
+    "signature": {
+        "label": "Signature pad",
+        "hint": "Sign with your finger, pen or mouse.",
+        "done": "Signed. Clear it to try again.",
+        "clear": "Clear"
+    },
+    "privacy": {
+        "anonymise": "Delete their details",
+        "confirmTitle": "Delete {name}'s details?",
+        "confirmBody": "Their name, contact details, CV, answers, messages and feedback text are removed for good. Stage history stays, without their name. Open applications are withdrawn."
+    },
+    "mine": {
+        "title": "My interviews",
+        "description": "Interviews you're on the panel of, and your scorecards.",
+        "empty": "No interviews for you",
+        "emptyHelp": "When someone puts you on an interview panel, it shows up here.",
+        "scorecard": {
+            "upcoming": "After the interview",
+            "missing": "Scorecard to do",
+            "draft": "Draft saved",
+            "submitted": "Submitted"
+        }
+    },
+    "booking": {
+        "title": "Pick a time for your interview",
+        "timezone": "Times are in {zone}.",
+        "booked": "Your interview is booked",
+        "bookedHelp": "We've sent you the details. To change it, reply to our email.",
+        "closed": "This link has expired. Contact us for a new one.",
+        "noSlots": "No free times right now",
+        "noSlotsHelp": "We'll be in touch with other times.",
+        "pick": "Pick a time",
+        "confirm": "Book {when}"
+    },
+    "offerPage": {
+        "title": "Your offer: {job}",
+        "intro": "Dear {name}, read the offer below. To accept, type your full name and sign.",
+        "pdf": "Open as PDF",
+        "sign": "Accept the offer",
+        "name": "Your full name",
+        "agree": "I accept this offer and agree that my typed name and drawn signature sign it.",
+        "legal": "We record the time and a fingerprint of your connection with your signature.",
+        "accept": "Accept and sign",
+        "declineInstead": "I'd like to decline",
+        "reason": "Would you like to tell us why? (optional)",
+        "decline": "Decline the offer",
+        "accepted": "You've accepted the offer",
+        "acceptedHelp": "Welcome aboard! We'll be in touch about your first day as {job}.",
+        "declined": "You've declined the offer",
+        "declinedHelp": "Thank you for letting us know.",
+        "expired": "This offer has expired",
+        "expiredHelp": "Contact us if you're still interested.",
+        "download": "Download the signed letter"
+    },
+    "privacyPage": {
+        "title": "Delete my details",
+        "body": "We'll delete your name, contact details, CV, answers and our messages with you, and withdraw any open applications. This can't be undone.",
+        "confirm": "Delete my details",
+        "done": "Your details are deleted",
+        "doneHelp": "Thank you. We won't contact you again about past applications."
     }
 }

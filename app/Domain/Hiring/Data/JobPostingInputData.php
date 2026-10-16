@@ -31,6 +31,7 @@ final class JobPostingInputData extends Data
         public array $knockouts = [],
         public ?array $seo = null,
         public ?string $closesOn = null,
+        public ?string $cognitoSourceId = null,
     ) {}
 
     /**
@@ -67,6 +68,7 @@ final class JobPostingInputData extends Data
             'seo.description.en' => $text(160),
             'seo.description.ar' => $text(160),
             'closesOn' => ['nullable', 'date_format:Y-m-d'],
+            'cognitoSourceId' => ['nullable', 'string', 'size:26', 'exists:cognito_sources,ulid'],
         ];
     }
 }

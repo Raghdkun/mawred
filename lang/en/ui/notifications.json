@@ -42,6 +42,10 @@
                 "name": "Schedule and attendance",
                 "help": "Published rosters, shift changes, open shifts and swaps."
             },
+            "hiring": {
+                "name": "Hiring",
+                "help": "Interviews you are on, scorecards to fill in, and offers candidates accept or decline."
+            },
             "security": {
                 "name": "Security",
                 "help": "Sign-ins and account changes."

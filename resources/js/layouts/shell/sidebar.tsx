@@ -7,7 +7,7 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useLocale } from '@/hooks/use-locale';
 import { cn } from '@/lib/utils';
 import { NavBadge, useNavBadgeCount } from './nav-badge';
-import { hrefOf, isActive, navigation, type NavItem } from './navigation';
+import { canSee, hrefOf, isActive, navigation, type NavItem } from './navigation';
 import { NavIcon } from './nav-icon';
 
 /**
@@ -16,7 +16,7 @@ import { NavIcon } from './nav-icon';
  */
 export function Sidebar() {
     const { t } = useTranslation('shell');
-    const { company, setup } = usePage().props;
+    const { company, setup, interviews } = usePage().props;
     const { locale } = useLocale();
     const { can } = useAccess();
     const { currentUrl } = useCurrentUrl();
@@ -49,8 +49,8 @@ export function Sidebar() {
 
             <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto">
                 {navigation(setup.complete).map((group) => {
-                    const items = group.items.filter(
-                        (item) => !item.permission || can(item.permission),
+                    const items = group.items.filter((item) =>
+                        canSee(item, can, interviews?.panel ?? false),
                     );
 
                     if (items.length === 0) {

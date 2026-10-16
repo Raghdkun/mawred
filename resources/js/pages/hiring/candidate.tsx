@@ -2,8 +2,11 @@ import { Head, Link, router } from '@inertiajs/react';
 import {
     AlertTriangle,
     ArrowRightLeft,
+    BadgeCheck,
+    CalendarPlus,
     ChevronLeft,
     Copy,
+    FilePlus,
     FileText,
     MessageSquare,
     Star,
@@ -17,6 +20,7 @@ import { DirIcon } from '@/components/mw/dir-icon';
 import { Facts } from '@/components/mw/facts';
 import { PageHeader } from '@/components/mw/page-header';
 import { PageState } from '@/components/mw/page-state';
+import { ResponsiveDialog } from '@/components/mw/responsive-dialog';
 import { SwitchField } from '@/components/mw/switch-field';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,10 +36,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Answers } from '@/features/forms/answers';
 import { type FormSchema } from '@/features/forms/schema';
 import { ApplicationStatusBadge, REJECTION_REASONS } from '@/features/hiring/status';
+import { HireDialog } from '@/features/hiring/hire-dialog';
+import { InterviewCard } from '@/features/hiring/interview-card';
+import { InterviewDialog } from '@/features/hiring/interview-dialog';
+import { MessagesPanel } from '@/features/hiring/messages-panel';
+import { OfferCard } from '@/features/hiring/offer-card';
+import { OfferDialog } from '@/features/hiring/offer-dialog';
 import { useLocale } from '@/hooks/use-locale';
 import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import hiring from '@/routes/hiring';
+import people from '@/routes/people';
 
 type Profile = App.Domain.Hiring.Data.CandidateProfileData;
 type Application = App.Domain.Hiring.Data.ApplicationDetailData;
@@ -43,8 +54,11 @@ type Props = {
     candidate: Profile;
     applications: Application[];
     selected: string | null;
-    can: { update: boolean };
+    messages: App.Domain.Hiring.Data.CandidateMessageData[] | null;
+    can: { update: boolean; see: boolean; anonymise: boolean };
     tags: string[];
+    employmentTypes: Array<{ id: string; name: string }>;
+    timezone: string;
 };
 
 /**
@@ -52,7 +66,16 @@ type Props = {
  * desktop, tabs on phones. Each application shows its stage, answers and history; recruiters tag,
  * pool, move, reject, merge duplicates and add the candidate to another job.
  */
-export default function CandidateProfile({ candidate, applications, selected, can, tags }: Props) {
+export default function CandidateProfile({
+    candidate,
+    applications,
+    selected,
+    messages,
+    can,
+    tags,
+    employmentTypes,
+    timezone,
+}: Props) {
     const { t } = useTranslation('hiring');
     const { locale, dir } = useLocale();
     const [current, setCurrent] = useState(
@@ -61,6 +84,7 @@ export default function CandidateProfile({ candidate, applications, selected, ca
             : (applications[0]?.id ?? null),
     );
     const application = applications.find((a) => a.id === current) ?? null;
+    const [anonymising, setAnonymising] = useState(false);
 
     return (
         <>
@@ -84,14 +108,57 @@ export default function CandidateProfile({ candidate, applications, selected, ca
                     .filter(Boolean)
                     .join(' · ')}
                 actions={
-                    candidate.talentPool ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-warning-bg px-3 py-1 text-caption">
-                            <Star aria-hidden className="size-3.5 fill-current text-warning" />
-                            {t('candidates.inPool')}
-                        </span>
-                    ) : null
+                    <div className="flex flex-wrap items-center gap-2">
+                        {candidate.talentPool ? (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-warning-bg px-3 py-1 text-caption">
+                                <Star aria-hidden className="size-3.5 fill-current text-warning" />
+                                {t('candidates.inPool')}
+                            </span>
+                        ) : null}
+                        {can.anonymise ? (
+                            <Button
+                                variant="ghost"
+                                className="min-h-11 text-danger"
+                                onClick={() => setAnonymising(true)}
+                                data-anonymise
+                            >
+                                {t('privacy.anonymise')}
+                            </Button>
+                        ) : null}
+                    </div>
                 }
             />
+            {anonymising ? (
+                <ResponsiveDialog
+                    open
+                    onOpenChange={(open) => !open && setAnonymising(false)}
+                    title={t('privacy.confirmTitle', { name: candidate.name })}
+                    description={t('privacy.confirmBody')}
+                    footer={
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                variant="ghost"
+                                className="min-h-11"
+                                onClick={() => setAnonymising(false)}
+                            >
+                                {t('cancel')}
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                className="min-h-11"
+                                data-confirm-anonymise
+                                onClick={() =>
+                                    router.post(hiring.candidates.anonymise.url(candidate.id))
+                                }
+                            >
+                                {t('privacy.anonymise')}
+                            </Button>
+                        </div>
+                    }
+                >
+                    <span />
+                </ResponsiveDialog>
+            ) : null}
 
             {candidate.duplicateOf ? (
                 <DuplicateBanner candidate={candidate} canUpdate={can.update} />
@@ -142,20 +209,35 @@ export default function CandidateProfile({ candidate, applications, selected, ca
                         forceMount
                         className="data-[state=inactive]:hidden md:row-span-2 md:data-[state=inactive]:block"
                     >
-                        <CvPane application={application} name={candidate.name} />
+                        {/* The CV stays beside the details while they scroll (handoff 30). */}
+                        <div className="md:sticky md:top-20">
+                            <CvPane application={application} name={candidate.name} />
+                        </div>
                     </TabsContent>
                     <TabsContent
                         value="details"
                         forceMount
                         className="flex flex-col gap-6 data-[state=inactive]:hidden md:data-[state=inactive]:flex"
                     >
-                        <ContactCard
-                            candidate={candidate}
-                            canUpdate={can.update}
-                            knownTags={tags}
-                        />
+                        {can.see ? (
+                            <ContactCard
+                                candidate={candidate}
+                                canUpdate={can.update}
+                                knownTags={tags}
+                            />
+                        ) : null}
                         {application ? (
-                            <ApplicationCard application={application} />
+                            <>
+                                <ApplicationCard application={application} />
+                                <InterviewsSection application={application} timezone={timezone} />
+                                {application.can.see ? (
+                                    <OffersSection
+                                        application={application}
+                                        candidate={candidate}
+                                        employmentTypes={employmentTypes}
+                                    />
+                                ) : null}
+                            </>
                         ) : (
                             <PageState
                                 kind="empty"
@@ -170,7 +252,19 @@ export default function CandidateProfile({ candidate, applications, selected, ca
                         forceMount
                         className="data-[state=inactive]:hidden md:col-start-2 md:data-[state=inactive]:block"
                     >
-                        {application ? <History application={application} /> : null}
+                        <div className="flex flex-col gap-6">
+                            {application?.can.see ? <History application={application} /> : null}
+                            {messages !== null ? (
+                                <MessagesPanel
+                                    candidateId={candidate.id}
+                                    applicationId={application?.id ?? null}
+                                    messages={messages}
+                                    canSend={can.update}
+                                    hasEmail={candidate.email !== null}
+                                    hasPhone={candidate.phone !== null}
+                                />
+                            ) : null}
+                        </div>
                     </TabsContent>
                 </div>
             </Tabs>
@@ -577,7 +671,14 @@ function History({ application }: { application: Application }) {
                                     })
                                   : event.kind === 'applied' && event.data.again
                                     ? t('event.appliedAgain')
-                                    : t(`event.${event.kind}`)}
+                                    : (event.kind === 'interview' || event.kind === 'offer') &&
+                                        typeof event.data.event === 'string'
+                                      ? t(`event.${event.kind}_${event.data.event}`, {
+                                            title: String(event.data.title ?? ''),
+                                        })
+                                      : event.kind === 'note' && event.data.anonymised
+                                        ? t('event.anonymised')
+                                        : t(`event.${event.kind}`)}
                         </span>
                         {event.body ? (
                             <p className="text-small whitespace-pre-line text-text-secondary">
@@ -719,6 +820,165 @@ function AddToJob({ candidateId }: { candidateId: string }) {
             >
                 {t('profile.add')}
             </Button>
+        </section>
+    );
+}
+
+function InterviewsSection({
+    application,
+    timezone,
+}: {
+    application: Application;
+    timezone: string;
+}) {
+    const { t } = useTranslation('hiring');
+    const [planning, setPlanning] = useState(false);
+    const canPlan =
+        application.can.update && application.status === 'active' && application.job.open;
+
+    if (application.interviews.length === 0 && !canPlan) {
+        return null;
+    }
+
+    return (
+        <section
+            aria-labelledby="interviews-title"
+            className="flex flex-col gap-3 rounded-lg bg-card p-4 shadow-sm"
+            data-interviews
+        >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 id="interviews-title" className="text-h4">
+                    {t('interviews.sectionTitle')}
+                </h2>
+                {canPlan ? (
+                    <Button
+                        variant="outline"
+                        className="min-h-11"
+                        onClick={() => setPlanning(true)}
+                        data-plan-interview
+                    >
+                        <CalendarPlus aria-hidden />
+                        {t('interviews.plan')}
+                    </Button>
+                ) : null}
+            </div>
+            {application.interviews.length === 0 ? (
+                <p className="text-small text-text-secondary">{t('interviews.none')}</p>
+            ) : (
+                application.interviews.map((interview) => (
+                    <InterviewCard
+                        key={interview.id}
+                        interview={interview}
+                        criteria={application.criteria}
+                    />
+                ))
+            )}
+            {planning ? (
+                <InterviewDialog
+                    applicationId={application.id}
+                    timezone={timezone}
+                    onClose={() => setPlanning(false)}
+                />
+            ) : null}
+        </section>
+    );
+}
+
+function OffersSection({
+    application,
+    candidate,
+    employmentTypes,
+}: {
+    application: Application;
+    candidate: Profile;
+    employmentTypes: Array<{ id: string; name: string }>;
+}) {
+    const { t } = useTranslation('hiring');
+    const [editing, setEditing] = useState<App.Domain.Hiring.Data.OfferData | 'new' | null>(null);
+    const [hiringOpen, setHiringOpen] = useState(false);
+    const live = application.offers.some((o) =>
+        ['draft', 'pending', 'approved', 'sent', 'accepted'].includes(o.status),
+    );
+    const canDraft =
+        application.can.update &&
+        application.status === 'active' &&
+        !live &&
+        application.offerDefaults !== null;
+
+    if (application.offers.length === 0 && !canDraft && !application.employeeId) {
+        return null;
+    }
+
+    return (
+        <section
+            aria-labelledby="offers-title"
+            className="flex flex-col gap-3 rounded-lg bg-card p-4 shadow-sm"
+            data-offers
+        >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 id="offers-title" className="text-h4">
+                    {t('offers.sectionTitle')}
+                </h2>
+                {canDraft ? (
+                    <Button
+                        variant="outline"
+                        className="min-h-11"
+                        onClick={() => setEditing('new')}
+                        data-new-offer
+                    >
+                        <FilePlus aria-hidden />
+                        {t('offers.new')}
+                    </Button>
+                ) : null}
+            </div>
+            {application.employeeId ? (
+                <p className="flex items-center gap-2 rounded-md bg-success-bg p-3 text-small">
+                    <BadgeCheck aria-hidden className="size-4 text-success" />
+                    {t('hire.done')}
+                    <Link
+                        href={people.show.url(application.employeeId)}
+                        className="font-medium underline"
+                    >
+                        {t('hire.openEmployee')}
+                    </Link>
+                </p>
+            ) : null}
+            {application.hire ? (
+                <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-success-border bg-success-bg p-3">
+                    <span className="text-small">{t('hire.ready')}</span>
+                    <Button className="min-h-11" onClick={() => setHiringOpen(true)} data-hire>
+                        {t('hire.button')}
+                    </Button>
+                </div>
+            ) : null}
+            {application.offers.map((offer) => (
+                <OfferCard
+                    key={offer.id}
+                    offer={offer}
+                    canUpdate={application.can.update}
+                    onEdit={() => setEditing(offer)}
+                    hasEmail={candidate.email !== null}
+                    hasPhone={candidate.phone !== null}
+                />
+            ))}
+            {editing && application.offerDefaults ? (
+                <OfferDialog
+                    applicationId={application.id}
+                    offer={editing === 'new' ? null : editing}
+                    defaults={application.offerDefaults}
+                    employmentTypes={employmentTypes}
+                    candidateLocale={candidate.locale}
+                    onClose={() => setEditing(null)}
+                />
+            ) : null}
+            {hiringOpen && application.hire ? (
+                <HireDialog
+                    applicationId={application.id}
+                    hire={application.hire}
+                    employmentTypes={employmentTypes}
+                    onClose={() => setHiringOpen(false)}
+                />
+            ) : null}
         </section>
     );
 }

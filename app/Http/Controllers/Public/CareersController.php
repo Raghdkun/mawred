@@ -17,6 +17,7 @@ use App\Domain\Hiring\Models\JobPosting;
 use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Support\CareersPostings;
 use App\Domain\Hiring\Support\HiringSettings;
+use App\Domain\Integrations\Models\CognitoSource;
 use App\Domain\Setup\Support\Settings;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
@@ -87,13 +88,15 @@ final class CareersController extends Controller
     {
         $posting = $this->posting($slug);
         $open = $this->isOpen($posting);
-        $version = $open ? $this->version($posting) : null;
+        $applyUrl = $open ? $this->cognitoUrl($posting) : null;
+        $version = $open && $applyUrl === null ? $this->version($posting) : null;
         $locale = app()->getLocale();
         $data = CareersPostingData::fromPosting($posting);
 
         return Inertia::render('public/job', [
             'job' => $data,
-            'open' => $version instanceof FormVersion,
+            'open' => $version instanceof FormVersion || $applyUrl !== null,
+            'applyUrl' => $applyUrl,
             'schema' => $version?->schema,
             'context' => ['requester' => null, 'ctx' => $context->forEmployee(null)['ctx']],
             'privacyNotice' => FieldSpec::text($this->hiring->privacyNotice(), $locale),
@@ -115,7 +118,7 @@ final class CareersController extends Controller
     public function upload(Request $request, string $slug, StoreFormUpload $store): JsonResponse
     {
         $posting = $this->posting($slug);
-        $version = $this->isOpen($posting) ? $this->version($posting) : null;
+        $version = $this->isOpen($posting) && $this->cognitoUrl($posting) === null ? $this->version($posting) : null;
         abort_unless($version instanceof FormVersion, 404);
         $request->validate(['field' => ['required', 'string', 'max:40'], 'file' => ['required', 'file', 'max:20480']]);
 
@@ -130,7 +133,7 @@ final class CareersController extends Controller
     public function apply(Request $request, string $slug, SubmitApplication $submit, AltchaGuard $altcha): RedirectResponse
     {
         $posting = $this->posting($slug);
-        abort_unless($this->isOpen($posting), 404);
+        abort_unless($this->isOpen($posting) && $this->cognitoUrl($posting) === null, 404);
         $request->validate([
             'values' => ['array'],
             'altcha' => ['nullable', 'string', 'max:8192'],
@@ -213,6 +216,14 @@ final class CareersController extends Controller
     private function isOpen(JobPosting $posting): bool
     {
         return CareersPostings::open($this->today())->whereKey($posting->id)->exists();
+    }
+
+    /** Where to apply when the posting takes applications through a Cognito form (D81). */
+    private function cognitoUrl(JobPosting $posting): ?string
+    {
+        $source = $posting->cognito_source_id === null ? null : CognitoSource::query()->find($posting->cognito_source_id);
+
+        return $source instanceof CognitoSource && $source->is_active && $source->form_url !== null && $source->form_url !== '' ? $source->form_url : null;
     }
 
     private function version(JobPosting $posting): ?FormVersion

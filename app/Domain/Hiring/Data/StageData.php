@@ -15,6 +15,7 @@ final class StageData extends Data
 {
     /**
      * @param  array{en: string, ar: string}  $names
+     * @param  array<string, mixed>|null  $automation  stage automations (D93)
      */
     public function __construct(
         public string $id,
@@ -22,6 +23,7 @@ final class StageData extends Data
         public array $names,
         public string $kind,
         public int $position,
+        public ?array $automation = null,
     ) {}
 
     public static function fromStage(PipelineStage $stage): self
@@ -34,6 +36,7 @@ final class StageData extends Data
             ['en' => $names['en'], 'ar' => $names['ar'] !== '' ? $names['ar'] : $names['en']],
             $stage->kind->value,
             $stage->position,
+            $stage->automation,
         );
     }
 }

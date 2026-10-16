@@ -18,6 +18,7 @@ use App\Domain\Requests\Data\TimelineEntryData;
 use App\Domain\Requests\Models\EmployeeRequest;
 use App\Domain\Requests\Models\RequestComment;
 use App\Domain\Workflows\Engine\Graph;
+use App\Domain\Workflows\Engine\SubjectSummaries;
 use App\Domain\Workflows\Enums\TaskKind;
 use App\Domain\Workflows\Enums\TaskStatus;
 use App\Domain\Workflows\Models\WorkflowInstance;
@@ -35,7 +36,7 @@ final class RequestPresenter
     /** @var array<int, string> */
     private array $names = [];
 
-    public function __construct(private readonly LeaveBalances $balances) {}
+    public function __construct(private readonly LeaveBalances $balances, private readonly SubjectSummaries $summaries) {}
 
     /**
      * @return array<string, mixed>
@@ -133,6 +134,7 @@ final class RequestPresenter
         $label = $this->labels($config['label'] ?? null);
         $decisions = $task->kind === TaskKind::Task ? ['done'] : ['approved', 'rejected', ...(($config['allowReturn'] ?? true) === false ? [] : ['returned'])];
         $request ??= $instance->subject_type === EmployeeRequest::class ? EmployeeRequest::query()->with(['type', 'requester'])->find($instance->subject_id) : null;
+        $summary = $request instanceof EmployeeRequest ? null : $this->summaries->for($instance, app()->getLocale());
 
         return new TaskData(
             id: $task->ulid,
@@ -144,8 +146,10 @@ final class RequestPresenter
             delegatedFrom: $task->delegated_from_user_id === null ? null : $this->name($task->delegated_from_user_id),
             decisions: $task->assignee_user_id === $viewer->id && $task->status === TaskStatus::Open ? $decisions : [],
             request: $request instanceof EmployeeRequest ? RequestRowData::fromRequest($request) : null,
-            about: $instance->subject_type === Employee::class && $instance->subject_id !== null ? Employee::withTrashed()->find($instance->subject_id)?->displayName(app()->getLocale()) : null,
+            about: $summary['about'] ?? ($instance->subject_type === Employee::class && $instance->subject_id !== null ? Employee::withTrashed()->find($instance->subject_id)?->displayName(app()->getLocale()) : null),
             instructions: ($this->labels($config['instructions'] ?? null)[app()->getLocale()] ?? null) ?: ($this->labels($config['instructions'] ?? null)['en'] ?? null),
+            facts: $summary['facts'] ?? [],
+            url: $summary['url'] ?? null,
         );
     }
 

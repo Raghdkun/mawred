@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Actions;
 
+use App\Domain\Forms\Models\Form;
+use App\Domain\Integrations\Contracts\CognitoApplications;
 use App\Domain\Integrations\Data\CognitoSourceData;
 use App\Domain\Integrations\Enums\IntegrationStatus;
 use App\Domain\Integrations\Enums\IntegrationType;
@@ -11,17 +13,19 @@ use App\Domain\Integrations\Models\CognitoSource;
 use App\Domain\Integrations\Support\Connections;
 use App\Domain\Requests\Models\RequestType;
 use App\Support\Actors\Actor;
+use App\Support\Errors\DomainRuleViolation;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Str;
 
 /**
  * Creates or edits a Cognito source (ADR-0015). A new source gets its secret token, returned
  * once so the admin can copy the three URLs; Mawred keeps only its hash. The linked request
- * type becomes Cognito-backed (D60).
+ * type becomes Cognito-backed (D60). A source that feeds a job posting (D81) can't also feed a
+ * request type.
  */
 final readonly class SaveCognitoSource
 {
-    public function __construct(private ConnectionInterface $db) {}
+    public function __construct(private ConnectionInterface $db, private CognitoApplications $applications) {}
 
     /**
      * @return array{0: CognitoSource, 1: string|null} the source and, when new, its token
@@ -40,6 +44,12 @@ final readonly class SaveCognitoSource
 
             $type = $data->requestTypeId === null ? null : RequestType::query()->where('ulid', $data->requestTypeId)->first();
 
+            if ($type instanceof RequestType && $source->exists && $this->applications->form($source) instanceof Form) {
+                $message = __('This source feeds a job posting. Unlink it from the posting first.');
+
+                throw new DomainRuleViolation('integrations.cognito_feeds_posting', $message, ['requestTypeId' => [$message]]);
+            }
+
             $source->fill([
                 'name' => trim($data->name),
                 'request_type_id' => $type?->id,
@@ -47,7 +57,7 @@ final readonly class SaveCognitoSource
                 'is_active' => $data->isActive,
                 'mapping' => [
                     'fields' => array_map(fn (array $row): array => ['from' => trim($row['from']), 'to' => trim($row['to'])], $data->fields),
-                    'requester' => ['by' => $data->requesterBy, 'path' => trim($data->requesterPath)],
+                    'requester' => ['by' => $data->requesterBy, 'path' => trim($data->requesterPath ?? '')],
                     'identity' => array_filter(['entry' => $data->entryPath, 'version' => $data->versionPath]),
                     'prefill' => array_filter($data->prefill, fn (?string $path): bool => $path !== null && $path !== ''),
                 ],

@@ -6,11 +6,14 @@ namespace App\Http\Middleware;
 
 use App\Domain\Access\Models\User;
 use App\Domain\Access\Support\ScopeResolver;
+use App\Domain\Hiring\Enums\InterviewStatus;
+use App\Domain\Hiring\Models\Interview;
 use App\Domain\People\Models\Employee;
 use App\Domain\Setup\Support\Settings;
 use App\Domain\Setup\Support\SetupState;
 use App\Domain\Workflows\Enums\TaskStatus;
 use App\Domain\Workflows\Models\WorkflowTask;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
@@ -52,6 +55,8 @@ final class HandleInertiaRequests extends Middleware
             'setup' => fn (): array => ['complete' => $this->setup->isComplete()],
             'notifications' => fn (): ?array => $user instanceof User ? ['unread' => $user->unreadNotifications()->count()] : null,
             'approvals' => fn (): ?array => $user instanceof User ? ['open' => WorkflowTask::query()->where('assignee_user_id', $user->id)->where('status', TaskStatus::Open->value)->count()] : null,
+            // Interview panels (D92): whether to show "My interviews", and scorecards still to give.
+            'interviews' => fn (): ?array => $user instanceof User ? $this->interviewsPayload($user) : null,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
@@ -105,6 +110,21 @@ final class HandleInertiaRequests extends Middleware
         return $impersonator instanceof User
             ? ['impersonator' => $impersonator->name, 'target' => $user->name]
             : null;
+    }
+
+    /**
+     * @return array{panel: bool, todo: int}
+     */
+    private function interviewsPayload(User $user): array
+    {
+        $seats = Interview::query()->whereHas('panel', fn (Builder $q) => $q->whereKey($user->id));
+
+        return [
+            'panel' => (clone $seats)->exists(),
+            'todo' => (clone $seats)->where('status', InterviewStatus::Scheduled->value)->where('starts_at', '<=', now())
+                ->whereDoesntHave('scorecards', fn (Builder $q) => $q->where('user_id', $user->id)->whereNotNull('submitted_at'))
+                ->count(),
+        ];
     }
 
     /**

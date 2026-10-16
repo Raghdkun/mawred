@@ -83,9 +83,9 @@
   - Internal calendar: meetings, availability finder, booking slots, `.ics`.
 - **Exit**: perf (roster week for 200 employees renders smoothly, attendance on 12 months of seed data); clock-in and publish-roster browser journeys; "edit policy with impact preview" journey.
 
-## Phase 6 — Hiring (L, split 6a / 6b, D80) — 6a ✅ built (pending CI and owner review)
+## Phase 6 — Hiring (L, split 6a / 6b, D80) — 6a ✅ 6b ✅ built (pending CI and owner review)
 - **6a**: requisitions with their approval chain, hiring team and pipeline; bilingual postings with knock-outs; the server-rendered careers site (sitemap, JSON-LD, OG); applications with duplicate detection; the pipeline kanban; candidate profile with CV preview; tags and talent pool.
-- **6b** (next): interviews and candidate self-booking, scorecards, offers (PDF, approval, e-accept), hire → employee + onboarding, stage automations, comms log, retention purge, interviewer scoping, Cognito-backed postings.
+- **6b**: interviews and candidate self-booking, scorecards, offers (PDF, approval, e-accept), hire → employee + onboarding, stage automations, comms log, retention purge, interviewer scoping, Cognito-backed postings.
 - Requisition workflow → postings (bilingual, SEO/OG, SSR careers page) → native or Cognito applications → stages, screening knock-outs, scorecards, interviews with candidate self-booking, offers (PDF + approval + e-accept), hire → employee + onboarding.
 - Kanban, automations on stage change, duplicate detection, tags and talent pool, comms log, CV preview, consent and retention purge, interviewer scoping.
 - **Exit**: "move candidate" journey; interviewer scope-leak tests.

@@ -14,6 +14,7 @@ enum NotificationCategory: string
     case Requests = 'requests';
     case Documents = 'documents';
     case Schedule = 'schedule';
+    case Hiring = 'hiring';
     case Security = 'security';
     case Integrations = 'integrations';
 

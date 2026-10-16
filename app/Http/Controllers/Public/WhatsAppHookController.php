@@ -9,6 +9,7 @@ use App\Domain\Integrations\Actions\CheckIntegrationHealth;
 use App\Domain\Integrations\Actions\HandleWhatsAppReply;
 use App\Domain\Integrations\Actions\RecordWhatsAppStatus;
 use App\Domain\Integrations\Enums\IntegrationType;
+use App\Domain\Integrations\Events\WhatsAppMessageReceived;
 use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\Integrations\Support\Connections;
 use App\Http\Controllers\Controller;
@@ -70,6 +71,10 @@ final class WhatsAppHookController extends Controller
 
                     $payload = Arr::get($message, 'button.payload') ?? Arr::get($message, 'interactive.button_reply.id');
                     $reply->handle(IntegrationType::WhatsAppOfficial, $message['from'], is_string($payload) ? $payload : null);
+
+                    if (is_string($text = Arr::get($message, 'text.body')) && $text !== '') {
+                        event(new WhatsAppMessageReceived(IntegrationType::WhatsAppOfficial, $message['from'], $text));
+                    }
                 }
             }
         }
@@ -99,6 +104,10 @@ final class WhatsAppHookController extends Controller
 
         if ($event === 'message' && $request->input('payload.fromMe') !== true && is_string($from = $request->input('payload.from')) && str_ends_with($from, '@c.us')) {
             $reply->handle(IntegrationType::WhatsAppWaha, strstr($from, '@', true) ?: $from, null);
+
+            if (is_string($text = $request->input('payload.body')) && $text !== '') {
+                event(new WhatsAppMessageReceived(IntegrationType::WhatsAppWaha, strstr($from, '@', true) ?: $from, $text));
+            }
         }
 
         return response()->json(['ok' => true]);

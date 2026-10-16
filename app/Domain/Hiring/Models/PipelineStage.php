@@ -22,6 +22,7 @@ use Spatie\Translatable\HasTranslations;
  * @property array<string, string>|string $name
  * @property StageKind $kind
  * @property int $position
+ * @property array{message?: array{enabled: bool, subject: array<string, string>, body: array<string, string>}, booking?: array{enabled: bool, duration: int, panel: list<string>, title: string}}|null $automation stage automations (D93)
  */
 #[Guarded(['id', 'ulid'])]
 final class PipelineStage extends Model
@@ -53,6 +54,6 @@ final class PipelineStage extends Model
      */
     protected function casts(): array
     {
-        return ['kind' => StageKind::class, 'position' => 'integer'];
+        return ['kind' => StageKind::class, 'position' => 'integer', 'automation' => 'array'];
     }
 }

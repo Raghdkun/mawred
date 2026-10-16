@@ -14,6 +14,7 @@ final class TaskData extends Data
     /**
      * @param  array<string, string>  $step
      * @param  list<string>  $decisions  what this person can decide
+     * @param  list<array{label: string, value: string}>  $facts  what a non-request subject is about (an offer)
      */
     public function __construct(
         public string $id,
@@ -27,5 +28,7 @@ final class TaskData extends Data
         public ?RequestRowData $request,
         public ?string $about = null,
         public ?string $instructions = null,
+        public array $facts = [],
+        public ?string $url = null,
     ) {}
 }

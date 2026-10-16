@@ -10,6 +10,7 @@ use App\Domain\Hiring\Enums\RequisitionStatus;
 use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Models\PipelineStage;
 use App\Domain\Hiring\Models\RequisitionMember;
+use App\Domain\Hiring\Models\ScorecardCriterion;
 use App\Domain\Hiring\Support\RequisitionAnswers;
 use App\Domain\Hiring\Support\RequisitionNumbers;
 use App\Domain\People\Models\Employee;
@@ -54,6 +55,17 @@ final readonly class OpenRequisition
                         'job_requisition_id' => $requisition->id,
                         'name' => $template->getTranslations('name'),
                         'kind' => $template->kind,
+                        'position' => $template->position,
+                        'automation' => $template->automation,
+                    ]);
+                }
+            }
+
+            if (! $requisition->criteria()->exists()) {
+                foreach (ScorecardCriterion::query()->whereNull('job_requisition_id')->orderBy('position')->get() as $template) {
+                    ScorecardCriterion::query()->create([
+                        'job_requisition_id' => $requisition->id,
+                        'name' => $template->getTranslations('name'),
                         'position' => $template->position,
                     ]);
                 }

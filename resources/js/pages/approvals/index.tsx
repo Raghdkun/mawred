@@ -1,5 +1,5 @@
 import { Head, Link, router, usePoll } from '@inertiajs/react';
-import { ChevronLeft, Forward, Plane } from 'lucide-react';
+import { ChevronLeft, FileText, Forward, Plane } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -349,6 +349,27 @@ function ApprovalCard({ task, detail }: { task: Task; detail: RequestDetail | nu
                             [t('inbox.step'), localized(task.step, locale) || '—'],
                         ]}
                     />
+                ) : null}
+
+                {!task.request && task.facts.length > 0 ? (
+                    <Facts
+                        className="mb-4"
+                        items={task.facts.map(
+                            (fact) => [fact.label, fact.value] as [string, string],
+                        )}
+                    />
+                ) : null}
+                {!task.request && task.url ? (
+                    <a
+                        href={task.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mb-4 inline-flex min-h-11 items-center gap-1 text-small text-primary hover:underline"
+                        data-task-link
+                    >
+                        <FileText aria-hidden className="size-4" />
+                        {t('inbox.openDocument')}
+                    </a>
                 ) : null}
 
                 {task.instructions ? (

@@ -160,6 +160,14 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Tests run with `INERTIA_SSR_ENABLED=false` (phpunit.xml): once `bootstrap/ssr` exists, Inertia dispatches SSR over the HTTP client, and `Http::fake(['*' => …])` would answer it with a blank page. Build SSR with `pnpm build:ssr`; production runs it as the `ssr` service.
 - Strict models throw on `getAttribute()` for a `withCount` that wasn't loaded; read counts through `Texts::count()`. Eloquent `value()` returns the cast enum, not the raw string.
 
+## Gotchas learned in Phase 6b
+- shadcn primitives set `data-slot` on every element: name test hooks something else (`data-booking-slot`), or selectors match the whole page.
+- The Arch suite needs more than 512 MB now; phpunit.xml sets `memory_limit=1G` (as PHPStan does).
+- Hiring code that needs "today" (offer letters, offer expiry) asks `LocalClock` for the branch's date; the time arch test rejects `now()->toDateString()` in domain code.
+- Integrations must not import Hiring for behaviour: Cognito postings go through `Integrations\Contracts\CognitoApplications`, bound in `HiringServiceProvider`.
+- Pest browser `drag()` presses the mouse on the source's centre and releases on the target: it draws a stroke across a canvas signature pad.
+- Prettier rewrites `lang/*.json` with 2-space indents; the repo keeps 4. Don't run it on lang files (write them with `json.dumps(…, indent=4)`).
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

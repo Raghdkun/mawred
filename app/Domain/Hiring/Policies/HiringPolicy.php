@@ -7,18 +7,24 @@ namespace App\Domain\Hiring\Policies;
 use App\Domain\Access\Models\User;
 use App\Domain\Access\Support\ScopeResolver;
 use App\Domain\Hiring\Models\Candidate;
+use App\Domain\Hiring\Models\Interview;
 use App\Domain\Hiring\Models\JobApplication;
 use App\Domain\Hiring\Models\JobPosting;
 use App\Domain\Hiring\Models\JobRequisition;
+use App\Domain\Hiring\Models\Offer;
 use App\Domain\Hiring\Support\HiringScope;
+use App\Domain\Hiring\Support\PanelAccess;
+use App\Domain\Workflows\Models\WorkflowTask;
 
 /**
- * Record-level hiring access (ADR-0005, D82): `hiring.view` to look, `hiring.update` to act, each
- * over the requisitions the viewer's grant covers. Out-of-scope records answer 404 upstream.
+ * Record-level hiring access (ADR-0005, D82, D92): `hiring.view` to look, `hiring.update` to act,
+ * each over the requisitions the viewer's grant covers. A seat on an interview panel adds that
+ * candidate (profile, CV, the interview and its scorecards) and nothing else. Out-of-scope
+ * records answer 404 upstream.
  */
 final readonly class HiringPolicy
 {
-    public function __construct(private ScopeResolver $resolver, private HiringScope $scope) {}
+    public function __construct(private ScopeResolver $resolver, private HiringScope $scope, private PanelAccess $panels) {}
 
     public function viewRequisition(User $user, JobRequisition $requisition): bool
     {
@@ -37,9 +43,16 @@ final readonly class HiringPolicy
         return $requisition instanceof JobRequisition && $this->updateRequisition($user, $requisition);
     }
 
-    public function viewApplication(User $user, JobApplication $application): bool
+    /** Sees the whole application: answers, history, messages, offers. */
+    public function seeApplication(User $user, JobApplication $application): bool
     {
         return $this->resolver->allows($user, 'hiring.view', $application, $this->scope->applications());
+    }
+
+    /** Sees the application at all: the hiring team, or a seat on one of its interviews (D92). */
+    public function viewApplication(User $user, JobApplication $application): bool
+    {
+        return $this->seeApplication($user, $application) || $this->panels->onApplication($user, $application);
     }
 
     public function updateApplication(User $user, JobApplication $application): bool
@@ -49,11 +62,38 @@ final readonly class HiringPolicy
 
     public function viewCandidate(User $user, Candidate $candidate): bool
     {
-        return $candidate->merged_into_id === null && $this->resolver->allows($user, 'hiring.view', $candidate, $this->scope->candidates());
+        return $candidate->merged_into_id === null
+            && ($this->resolver->allows($user, 'hiring.view', $candidate, $this->scope->candidates()) || $this->panels->onCandidate($user, $candidate));
     }
 
     public function updateCandidate(User $user, Candidate $candidate): bool
     {
         return $candidate->merged_into_id === null && $this->resolver->allows($user, 'hiring.update', $candidate, $this->scope->candidates());
+    }
+
+    /** Gives feedback on an interview: panelists only. */
+    public function scoreInterview(User $user, Interview $interview): bool
+    {
+        return $interview->panel()->whereKey($user->id)->exists();
+    }
+
+    /**
+     * Reads others' scorecards: the hiring team any time; a panelist once their own is in (D82).
+     */
+    public function readScorecards(User $user, Interview $interview): bool
+    {
+        $application = $interview->application()->first();
+
+        return ($application instanceof JobApplication && $this->updateApplication($user, $application))
+            || $interview->scorecards()->where('user_id', $user->id)->whereNotNull('submitted_at')->exists();
+    }
+
+    /** Reads an offer letter: the hiring team, or someone deciding its approval (D91). */
+    public function viewOffer(User $user, Offer $offer): bool
+    {
+        $application = $offer->application()->first();
+
+        return ($application instanceof JobApplication && $this->seeApplication($user, $application))
+            || ($offer->workflow_instance_id !== null && WorkflowTask::query()->where('workflow_instance_id', $offer->workflow_instance_id)->where('assignee_user_id', $user->id)->exists());
     }
 }

@@ -33,7 +33,8 @@
         "integrations": "Integrations",
         "hiring": "Hiring",
         "candidates": "Candidates",
-        "hiringSettings": "Hiring settings"
+        "hiringSettings": "Hiring settings",
+        "interviews": "My interviews"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

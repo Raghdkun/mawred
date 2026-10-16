@@ -197,7 +197,7 @@ count?: number | null,
 };
 }
 namespace Enums {
-export type EventKind = 'meeting' | 'booking';
+export type EventKind = 'meeting' | 'booking' | 'interview';
 export type ParticipantRole = 'organizer' | 'required' | 'optional';
 export type Response = 'pending' | 'accepted' | 'tentative' | 'declined';
 export type Visibility = 'normal' | 'private';
@@ -284,7 +284,42 @@ mime: string,
 events: App.Domain.Hiring.Data.ApplicationEventData[],
 can: {
 update: boolean,
+see: boolean,
 },
+interviews: App.Domain.Hiring.Data.InterviewData[],
+criteria: {
+id: string,
+name: string,
+}[],
+offers: App.Domain.Hiring.Data.OfferData[],
+hire: {
+nameEn: string,
+hireDate: string,
+branchId: string,
+branch: string | null,
+departmentId: string | null,
+department: string | null,
+positionId: string | null,
+position: string | null,
+managerId: string | null,
+manager: string | null,
+employmentTypeId: string | null,
+} | null,
+employeeId: string | null,
+score: number | null,
+offerDefaults: {
+jobTitle: string,
+branchId: string,
+branch: string | null,
+departmentId: string | null,
+department: string | null,
+positionId: string | null,
+position: string | null,
+managerId: string | null,
+manager: string | null,
+currency: string,
+salaryMinor: number | null,
+} | null,
 };
 export type ApplicationEventData = {
 kind: string,
@@ -309,6 +344,21 @@ knockouts: string[],
 tags: string[],
 possibleDuplicate: boolean,
 rejectionReason: string | null,
+score: number | null,
+interviewers: string[],
+nextInterviewAt: string | null,
+};
+export type CandidateMessageData = {
+id: string,
+direction: string,
+channel: string,
+purpose: string,
+subject: string | null,
+body: string,
+status: string,
+error: string | null,
+by: string | null,
+at: string,
 };
 export type CandidateProfileData = {
 id: string,
@@ -361,6 +411,77 @@ currency: string,
 publishedAt: string | null,
 closesOn: string | null,
 };
+export type HireCandidateData = {
+nameEn: string,
+hireDate: string,
+branchId: string,
+nameAr: string | null,
+departmentId: string | null,
+positionId: string | null,
+managerId: string | null,
+employmentTypeId: string | null,
+workEmail: string | null,
+};
+export type HiringSettingsData = {
+careersIntro: {
+en: string,
+ar?: string | null,
+},
+privacyNotice: {
+en: string,
+ar?: string | null,
+},
+retentionMonths: number | null,
+poolRetentionMonths: number | null,
+rejectionMessage: {
+enabled: boolean,
+subject: {
+en: string,
+ar?: string | null,
+},
+body: {
+en: string,
+ar?: string | null,
+},
+} | null,
+offerLetter: {
+en: string,
+ar?: string | null,
+} | null,
+};
+export type InterviewData = {
+id: string,
+title: string,
+status: string,
+mode: string,
+location: string | null,
+durationMinutes: number,
+timezone: string,
+startsAt: string | null,
+endsAt: string | null,
+bookingUrl: string | null,
+panel: {
+id: string,
+name: string,
+}[],
+mine: App.Domain.Hiring.Data.ScorecardData | null,
+scorecards: App.Domain.Hiring.Data.ScorecardData[],
+submitted: number,
+can: {
+score: boolean,
+manage: boolean,
+readOthers: boolean,
+},
+};
+export type InterviewInputData = {
+title: string,
+durationMinutes: number,
+panel: string[],
+timezone: string,
+mode: string,
+location: string | null,
+startsAt: string | null,
+};
 export type JobPostingInputData = {
 title: {
 en: string,
@@ -396,6 +517,49 @@ ar?: string | null,
 },
 } | null,
 closesOn: string | null,
+cognitoSourceId: string | null,
+};
+export type OfferData = {
+id: string,
+status: string,
+jobTitle: string,
+startOn: string,
+salary: {
+amount_minor: number,
+currency: string,
+} | null,
+branchId: string | null,
+branch: string | null,
+departmentId: string | null,
+department: string | null,
+positionId: string | null,
+position: string | null,
+employmentTypeId: string | null,
+managerId: string | null,
+manager: string | null,
+locale: string,
+letter: string,
+expiresOn: string | null,
+sentAt: string | null,
+respondedAt: string | null,
+signedName: string | null,
+declineReason: string | null,
+pdfUrl: string,
+};
+export type OfferInputData = {
+jobTitle: string,
+startOn: string,
+salary: {
+amount_minor: number,
+currency: string,
+},
+branchId: string,
+departmentId: string | null,
+positionId: string | null,
+employmentTypeId: string | null,
+managerId: string | null,
+expiresOn: string | null,
+letter: string | null,
 };
 export type PostingData = {
 id: string,
@@ -438,6 +602,7 @@ status: string,
 publishedAt: string | null,
 closesOn: string | null,
 applicants: number,
+cognitoSourceId: string | null,
 };
 export type RequisitionData = {
 id: string,
@@ -464,6 +629,16 @@ total: number,
 postings: number,
 },
 };
+export type ScorecardData = {
+by: string,
+ratings: Record<string, {
+rating: number,
+note: string | null,
+}>,
+recommendation: string | null,
+comment: string | null,
+submittedAt: string | null,
+};
 export type StageData = {
 id: string,
 name: string,
@@ -473,14 +648,23 @@ ar: string,
 },
 kind: string,
 position: number,
+automation: Record<string, any> | null,
 };
 }
 namespace Enums {
-export type ApplicationEventKind = 'applied' | 'moved' | 'rejected' | 'reopened' | 'note' | 'merged';
+export type ApplicationEventKind = 'applied' | 'moved' | 'rejected' | 'reopened' | 'note' | 'merged' | 'interview' | 'scorecard' | 'offer' | 'hired';
 export type ApplicationSource = 'careers' | 'cognito' | 'manual' | 'referral' | 'talent_pool';
 export type ApplicationStatus = 'active' | 'rejected' | 'withdrawn' | 'hired';
+export type InterviewMode = 'onsite' | 'video' | 'phone';
+export type InterviewStatus = 'awaiting' | 'scheduled' | 'completed' | 'cancelled';
 export type MemberRole = 'recruiter' | 'hiring_manager' | 'coordinator';
+export type MessageChannel = 'email' | 'whatsapp';
+export type MessageDirection = 'out' | 'in';
+export type MessagePurpose = 'manual' | 'stage' | 'rejection' | 'booking' | 'interview' | 'offer' | 'reply';
+export type MessageStatus = 'queued' | 'sent' | 'failed' | 'received';
+export type OfferStatus = 'draft' | 'pending' | 'approved' | 'rejected' | 'sent' | 'accepted' | 'declined' | 'withdrawn' | 'expired';
 export type PostingStatus = 'draft' | 'published' | 'closed';
+export type Recommendation = 'strong_no' | 'no' | 'yes' | 'strong_yes';
 export type RejectionReason = 'not_qualified' | 'knockout' | 'better_candidate' | 'salary' | 'no_show' | 'withdrew' | 'position_closed' | 'other';
 export type RequisitionReason = 'new' | 'replacement';
 export type RequisitionStatus = 'pending' | 'open' | 'on_hold' | 'filled' | 'closed' | 'rejected' | 'cancelled';
@@ -621,7 +805,7 @@ createdAt: string,
 };
 }
 namespace Enums {
-export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'security' | 'integrations';
+export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'hiring' | 'security' | 'integrations';
 }
 }
 namespace Organization {
@@ -1288,6 +1472,11 @@ decisions: string[],
 request: App.Domain.Requests.Data.RequestRowData | null,
 about: string | null,
 instructions: string | null,
+facts: {
+label: string,
+value: string,
+}[],
+url: string | null,
 };
 export type TimelineEntryData = {
 event: string,

@@ -33,7 +33,8 @@
         "integrations": "التكاملات",
         "hiring": "التوظيف",
         "candidates": "المرشحون",
-        "hiringSettings": "إعدادات التوظيف"
+        "hiringSettings": "إعدادات التوظيف",
+        "interviews": "مقابلاتي"
     },
     "searchPlaceholder": "ابحث أو انتقل إلى…",
     "switchLanguage": "تغيير اللغة إلى {language}",

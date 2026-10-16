@@ -7,8 +7,7 @@ import { type NavItem } from './navigation';
 /** The count beside a nav item (open approvals). Hidden at zero; the label carries it for screen readers. */
 export function NavBadge({ item, className }: { item: NavItem; className?: string }) {
     const { locale } = useLocale();
-    const { approvals } = usePage().props;
-    const count = item.badge === 'approvals' ? (approvals?.open ?? 0) : 0;
+    const count = useNavBadgeCount(item);
 
     if (count === 0) {
         return null;
@@ -28,7 +27,14 @@ export function NavBadge({ item, className }: { item: NavItem; className?: strin
 }
 
 export function useNavBadgeCount(item: NavItem): number {
-    const { approvals } = usePage().props;
+    const { approvals, interviews } = usePage().props;
 
-    return item.badge === 'approvals' ? (approvals?.open ?? 0) : 0;
+    switch (item.badge) {
+        case 'approvals':
+            return approvals?.open ?? 0;
+        case 'scorecards':
+            return interviews?.todo ?? 0;
+        default:
+            return 0;
+    }
 }

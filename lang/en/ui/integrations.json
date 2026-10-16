@@ -129,7 +129,9 @@
             "email": "Email",
             "name": "Name",
             "employee_number": "Employee number"
-        }
+        },
+        "feedsPosting": "Creates applications for {job}",
+        "postingHint": "This source feeds a job posting. Unlink it in the posting to use it for requests."
     },
     "whatsapp": {
         "pageTitle": "WhatsApp",

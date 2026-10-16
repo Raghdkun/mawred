@@ -45,7 +45,8 @@
             "this": "Only this one",
             "following": "This and the ones after",
             "all": "All in the series"
-        }
+        },
+        "interview": "Interview"
     },
     "form": {
         "add": "New meeting",
