@@ -31,7 +31,7 @@ final class RequestsController extends Controller
         Gate::authorize('requests.create');
 
         $types = RequestType::query()->with(['form', 'workflow'])->where('is_active', true)->orderBy('sort_order')->orderBy('id')->get()
-            ->filter(fn (RequestType $type): bool => $type->isAvailable() && $type->form?->published_version_id !== null && $type->workflow?->published_version_id !== null)
+            ->filter(fn (RequestType $type): bool => $type->isAvailable() && ! $type->isRaisedElsewhere() && $type->form?->published_version_id !== null && $type->workflow?->published_version_id !== null)
             ->values();
 
         return RequestTypeResource::collection($types);

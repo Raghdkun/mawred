@@ -9,6 +9,7 @@ import leave from '@/routes/leave';
 import schedule from '@/routes/schedule';
 import attendance from '@/routes/attendance';
 import calendarRoutes from '@/routes/calendar';
+import hiring from '@/routes/hiring';
 import people from '@/routes/people';
 import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
@@ -104,6 +105,23 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     exclude: ['/leave/blackouts'],
                 },
                 {
+                    key: 'hiring',
+                    label: 'nav.hiring',
+                    href: hiring.requisitions.index(),
+                    icon: 'hiring',
+                    permission: 'hiring.view',
+                    match: ['/hiring'],
+                    exclude: ['/hiring/candidates', '/hiring/settings'],
+                },
+                {
+                    key: 'candidates',
+                    label: 'nav.candidates',
+                    href: hiring.candidates.index(),
+                    icon: 'candidates',
+                    permission: 'hiring.view',
+                    match: ['/hiring/candidates'],
+                },
+                {
                     key: 'people',
                     label: 'nav.people',
                     href: people.index(),
@@ -193,6 +211,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: 'people',
                     permission: 'people.configure',
                     match: ['/people/settings'],
+                },
+                {
+                    key: 'hiring-settings',
+                    label: 'nav.hiringSettings',
+                    href: hiring.settings(),
+                    icon: 'hiring',
+                    permission: 'hiring.configure',
+                    match: ['/hiring/settings'],
                 },
                 {
                     key: 'access',

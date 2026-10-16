@@ -66,7 +66,7 @@ export default function Board({
     can,
 }: Props) {
     const { t } = useTranslation('attendance');
-    const { locale } = useLocale();
+    const { locale, dir } = useLocale();
     const [month, setMonth] = useState(date.slice(0, 7));
     const visit = (query: Record<string, string>) =>
         router.get(
@@ -218,7 +218,7 @@ export default function Board({
                         ))}
                     </div>
 
-                    <Tabs defaultValue="present" className="mb-6 md:hidden">
+                    <Tabs defaultValue="present" className="mb-6 md:hidden" dir={dir}>
                         <TabsList className="w-full">
                             {COLUMNS.map((c) => (
                                 <TabsTrigger key={c} value={c} className="min-h-11 flex-1">

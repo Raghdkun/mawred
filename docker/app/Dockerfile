@@ -30,7 +30,7 @@ RUN cp .env.example .env \
     && composer dump-autoload --optimize --classmap-authoritative --no-dev \
     && php artisan package:discover --ansi \
     && php artisan key:generate --force \
-    && pnpm run build \
+    && pnpm run build:ssr \
     && rm -rf node_modules .env
 
 # --- Runtime ---
@@ -39,6 +39,8 @@ ENV APP_ENV=production \
     APP_DEBUG=false \
     LOG_CHANNEL=stderr \
     SERVER_NAME=:8080
+# Node runs only the Inertia SSR server (careers pages, D87); the bundle is built above.
+COPY --from=node:24-bookworm-slim /usr/local/bin/node /usr/local/bin/node
 COPY --from=build --chown=www-data:www-data /app /app
 RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \

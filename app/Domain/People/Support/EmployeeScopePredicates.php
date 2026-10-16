@@ -63,7 +63,27 @@ final readonly class EmployeeScopePredicates implements OrgScopePredicates
         return $visible === null ? $own : $own->union($visible);
     }
 
-    private function ownEmployee(User $user): QueryBuilder
+    /**
+     * Departments a Department grant covers: its anchors (or the viewer's own department) and
+     * everything below them. Records placed in a department (requisitions) match against it.
+     */
+    public function departmentIds(User $user, Grant $grant): QueryBuilder
+    {
+        return $this->subtree($grant->departmentIds === [] ? $this->ownPlacement($user, 'current_department_id') : $grant->departmentIds);
+    }
+
+    /**
+     * Branches a Branch grant covers: its anchors, or the viewer's own branch.
+     *
+     * @return list<int>|QueryBuilder
+     */
+    public function branchIds(User $user, Grant $grant): array|QueryBuilder
+    {
+        return $grant->branchIds === [] ? $this->ownPlacement($user, 'current_branch_id') : $grant->branchIds;
+    }
+
+    /** The viewer's own employee id (empty when they have no employee record). */
+    public function ownEmployee(User $user): QueryBuilder
     {
         return $this->db->table('employees')->select('id')->where('user_id', $user->id)->whereNull('deleted_at');
     }
@@ -78,10 +98,7 @@ final readonly class EmployeeScopePredicates implements OrgScopePredicates
      */
     private function inDepartments(array|QueryBuilder $roots): QueryBuilder
     {
-        $subtree = $this->db->table('departments as d')
-            ->select('d.id')
-            ->join('departments as root', fn (JoinClause $join) => $join->whereRaw('d.path <@ root.path'))
-            ->whereIn('root.id', $roots);
+        $subtree = $this->subtree($roots);
 
         return $this->db->table('employees')->select('id')->whereIn('current_department_id', $subtree)
             ->union(
@@ -90,6 +107,17 @@ final readonly class EmployeeScopePredicates implements OrgScopePredicates
                     ->where('is_primary', false)
                     ->whereIn('department_id', clone $subtree),
             );
+    }
+
+    /**
+     * @param  list<int>|QueryBuilder  $roots
+     */
+    private function subtree(array|QueryBuilder $roots): QueryBuilder
+    {
+        return $this->db->table('departments as d')
+            ->select('d.id')
+            ->join('departments as root', fn (JoinClause $join) => $join->whereRaw('d.path <@ root.path'))
+            ->whereIn('root.id', $roots);
     }
 
     /**

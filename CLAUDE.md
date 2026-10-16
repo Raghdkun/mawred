@@ -151,6 +151,15 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - `composer test:browser` disables Composer's process timeout; the suite takes longer than 300 s.
 - The React Compiler purity rule rejects `Date.now()` during render; compute defaults in a lazy `useState` initialiser.
 
+## Gotchas learned in Phase 6a
+- Rector's Laravel set renames `$model->events` to `dispatchesEvents`: never name a relation `events` (hiring uses `history`).
+- `FormRenderer` sends file answers as upload tokens (`features/forms/submit.ts`); the server rejects file objects. Public uploads only match the session that made them: browser and HTTP tests keep one session cookie.
+- Radix `Tabs` defaults to `dir="ltr"`: pass `dir` from `useLocale()` or RTL layouts and dates inside the tabs break.
+- Inertia's shared props are built before route middleware runs: anything that changes the locale (careers `?lang`) belongs in `SetLocale`.
+- Workflow steps dispatch after commit, so a seeder that wraps actions in one transaction never sees approvals happen; demo seeders also force the sync queue.
+- Tests run with `INERTIA_SSR_ENABLED=false` (phpunit.xml): once `bootstrap/ssr` exists, Inertia dispatches SSR over the HTTP client, and `Http::fake(['*' => …])` would answer it with a blank page. Build SSR with `pnpm build:ssr`; production runs it as the `ssr` service.
+- Strict models throw on `getAttribute()` for a `withCount` that wasn't loaded; read counts through `Texts::count()`. Eloquent `value()` returns the cast enum, not the raw string.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

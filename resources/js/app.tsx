@@ -20,9 +20,20 @@ const queryClient = new QueryClient({
 
 const pages = import.meta.glob('./pages/**/*.tsx');
 
+/** Co-brand pages (D22, D87) title themselves with the company's name, not Mawred's. */
+const CO_BRANDED = ['public/careers', 'public/job'];
+let coBranded = false;
+
 void createInertiaApp({
-    title: (title) => (title ? `${title} · ${i18n.t('common:appName')}` : i18n.t('common:appName')),
+    title: (title) =>
+        coBranded && title
+            ? title
+            : title
+              ? `${title} · ${i18n.t('common:appName')}`
+              : i18n.t('common:appName'),
     resolve: async (name, page) => {
+        coBranded = CO_BRANDED.includes(name);
+
         // Translations for the page are loaded before it renders, so keys never flash (ADR-0011).
         await prepareLocale(page?.props.locale, namespacesForPage(name));
 

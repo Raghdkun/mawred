@@ -40,7 +40,8 @@ final readonly class SubmitForm
     public function handle(Actor $actor, Form $form, FormVersion $version, array $input, SubmissionSource $source, ?string $sessionHash = null, ?string $ip = null, ?FormSubmission $replaces = null, ?Employee $for = null): FormSubmission
     {
         $user = $actor->user;
-        $employee = $for ?? ($user instanceof User ? Employee::query()->where('user_id', $user->id)->first() : null);
+        // Public answers (a public link, a job application) are never about the person entering them.
+        $employee = $for ?? ($user instanceof User && $source !== SubmissionSource::Public ? Employee::query()->where('user_id', $user->id)->first() : null);
         $context = $source === SubmissionSource::Public ? ['requester' => null, 'ctx' => $this->context->forEmployee(null)['ctx']] : $this->context->forEmployee($employee);
         /** @var list<int> $claimed */
         $claimed = [];

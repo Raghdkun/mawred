@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { buildZodSchema, defaultValues } from './build-zod-schema';
 import { FieldInput } from './field-input';
 import { isRequired, resolveForm } from './resolve';
+import { forServer } from './submit';
 import {
     type FormField,
     type FormRuleContext,
@@ -104,12 +105,15 @@ export function FormRenderer({
     return (
         <form
             noValidate
-            onSubmit={form.handleSubmit(onSubmit, (errors) => {
-                const first = pages.findIndex((_, index) =>
-                    pageKeys(index).some((key) => key in errors),
-                );
-                if (first >= 0) setPage(first);
-            })}
+            onSubmit={form.handleSubmit(
+                (answers) => onSubmit(forServer(answers, fields)),
+                (errors) => {
+                    const first = pages.findIndex((_, index) =>
+                        pageKeys(index).some((key) => key in errors),
+                    );
+                    if (first >= 0) setPage(first);
+                },
+            )}
             className="flex flex-col gap-6"
         >
             {pages.length > 1 ? (

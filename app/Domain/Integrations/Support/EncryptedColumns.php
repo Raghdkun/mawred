@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Support;
 
 use App\Domain\Attendance\Models\Kiosk;
 use App\Domain\Forms\Models\FormSubmission;
+use App\Domain\Hiring\Models\Candidate;
 use App\Domain\Integrations\Models\CognitoReceipt;
 use App\Domain\Integrations\Models\CognitoSource;
 use App\Domain\Integrations\Models\IntegrationConnection;
@@ -36,6 +37,7 @@ final class EncryptedColumns
             CognitoSource::class => ['sample_payload'],
             CognitoReceipt::class => ['payload'],
             Kiosk::class => ['secret'],
+            Candidate::class => ['email', 'phone'],
         ];
     }
 }
