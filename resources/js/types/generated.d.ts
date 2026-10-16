@@ -122,6 +122,87 @@ requestId: string | null,
 };
 }
 }
+namespace Calendar {
+namespace Data {
+export type BookingPageInputData = {
+title: {
+en: string,
+ar?: string | null,
+},
+durationMinutes: number,
+windows: {
+weekday: number,
+from: string,
+to: string,
+}[],
+timezone: string,
+startsOn: string,
+endsOn: string | null,
+bufferMinutes: number,
+description: {
+en?: string | null,
+ar?: string | null,
+} | null,
+location: string | null,
+audience: string,
+branchId: string | null,
+departmentId: string | null,
+};
+export type EventData = {
+id: string,
+key: string,
+kind: string,
+title: string,
+description: string | null,
+location: string | null,
+startsAt: string,
+endsAt: string,
+timezone: string,
+private: boolean,
+recurrence: {
+freq: string,
+interval?: number,
+byweekday?: number[],
+until?: string | null,
+count?: number | null,
+} | null,
+repeats: boolean,
+organizer: string,
+isOrganizer: boolean,
+myResponse: string | null,
+participants: {
+id: string,
+name: string,
+role: string,
+response: string,
+}[],
+};
+export type EventInputData = {
+title: string,
+startsAt: string,
+endsAt: string,
+timezone: string,
+required: string[],
+optional: string[],
+description: string | null,
+location: string | null,
+private: boolean,
+recurrence: {
+freq: string,
+interval?: number,
+byweekday?: number[],
+until?: string | null,
+count?: number | null,
+} | null,
+};
+}
+namespace Enums {
+export type EventKind = 'meeting' | 'booking';
+export type ParticipantRole = 'organizer' | 'required' | 'optional';
+export type Response = 'pending' | 'accepted' | 'tentative' | 'declined';
+export type Visibility = 'normal' | 'private';
+}
+}
 namespace Forms {
 namespace Data {
 export type FormData = {

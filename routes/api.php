@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\Access\UserSearchController;
 use App\Http\Controllers\Api\V1\Attendance\PunchesController;
+use App\Http\Controllers\Api\V1\Calendar\CalendarController;
 use App\Http\Controllers\Api\V1\Leave\LeaveCalendarController;
 use App\Http\Controllers\Api\V1\Leave\LeaveController;
 use App\Http\Controllers\Api\V1\Organization\BranchSearchController;
@@ -60,5 +61,9 @@ Route::prefix('v1')
         Route::post('attendance/punches', [PunchesController::class, 'store'])->middleware('throttle:30,1')->name('attendance.punches.store');
         Route::get('attendance/today', [PunchesController::class, 'today'])->name('attendance.today');
         Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule.index');
+        Route::get('calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+        Route::get('calendar/people', [CalendarController::class, 'people'])->name('calendar.people');
+        Route::post('calendar/availability', [CalendarController::class, 'availability'])->middleware('throttle:60,1')->name('calendar.availability');
+        Route::post('calendar/events/{event}/respond', [CalendarController::class, 'respond'])->name('calendar.respond');
         Route::post('schedule/open-shifts/{shift}/claim', [ScheduleController::class, 'claim'])->name('schedule.claim');
     });

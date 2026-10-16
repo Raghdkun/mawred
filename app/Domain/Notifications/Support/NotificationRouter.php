@@ -123,7 +123,7 @@ final readonly class NotificationRouter
 
         $content = ($message->content)('email', $locale);
         $actions = $message->actions instanceof Closure ? ($message->actions)('email') : [];
-        $mail = new NotificationMail($content['subject'], $content['body'], $message->url, $locale, $actions);
+        $mail = new NotificationMail($content['subject'], $content['body'], $message->url, $locale, $actions, ics: $message->ics instanceof Closure ? ($message->ics)() : null);
         $quietUntil = $critical ? null : $this->preferences->quietUntil($user, CarbonImmutable::now());
 
         if ($quietUntil instanceof CarbonImmutable) {
@@ -161,7 +161,11 @@ final readonly class NotificationRouter
         $text = trim('*'.$content['subject']."*\n\n".$content['body']);
 
         if (! $quick && $links !== []) {
-            $text .= "\n\n".__('Approve', [], $locale).': '.($links['approved'] ?? '')."\n".__('Reject', [], $locale).': '.($links['rejected'] ?? '');
+            $text .= "\n";
+
+            foreach ($links as $action => $link) {
+                $text .= "\n".ActionLabels::label($action, $locale).': '.$link;
+            }
         } elseif ($message->url !== null) {
             $text .= "\n\n".$message->url;
         }
@@ -174,10 +178,12 @@ final readonly class NotificationRouter
             $template['buttons'] = [];
         }
 
-        $buttons = $quick ? array_values(array_filter([
-            isset($links['approved']) ? ['id' => 'mawred:'.basename((string) parse_url($links['approved'], PHP_URL_PATH)), 'title' => __('Approve', [], $locale)] : null,
-            isset($links['rejected']) ? ['id' => 'mawred:'.basename((string) parse_url($links['rejected'], PHP_URL_PATH)), 'title' => __('Reject', [], $locale)] : null,
-        ])) : [];
+        // WhatsApp reply buttons: at most three, each carrying the action link's token.
+        $buttons = [];
+
+        foreach ($quick ? array_slice($links, 0, 3, true) : [] as $action => $link) {
+            $buttons[] = ['id' => 'mawred:'.basename((string) parse_url($link, PHP_URL_PATH)), 'title' => ActionLabels::label($action, $locale)];
+        }
 
         $result = $this->whatsApp->send($driver, $user, $message->event, new OutgoingMessage($contact->phone_e164, $text, $template, $buttons, $contact->inServiceWindow()));
 

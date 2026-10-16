@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Notifications\Mail;
 
+use App\Domain\Notifications\Support\ActionLabels;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -21,7 +23,8 @@ final class NotificationMail extends Mailable implements ShouldQueue
 
     /**
      * @param  list<array{title: string, body: string|null, url: string|null}>  $items  digest entries
-     * @param  array<string, string>  $actions  decision => URL
+     * @param  array<string, string>  $actions  action => URL (the first is the primary button)
+     * @param  string|null  $ics  a calendar invitation to attach (D75)
      */
     public function __construct(
         public readonly string $subjectLine,
@@ -30,6 +33,7 @@ final class NotificationMail extends Mailable implements ShouldQueue
         public readonly string $recipientLocale,
         public readonly array $actions = [],
         public readonly array $items = [],
+        public readonly ?string $ics = null,
     ) {
         $this->onQueue('notifications');
         $this->locale($recipientLocale);
@@ -40,6 +44,16 @@ final class NotificationMail extends Mailable implements ShouldQueue
         return new Envelope(subject: $this->subjectLine);
     }
 
+    /**
+     * @return list<Attachment>
+     */
+    public function attachments(): array
+    {
+        $ics = $this->ics;
+
+        return $ics === null ? [] : [Attachment::fromData(fn (): string => $ics, 'invite.ics')->withMime('text/calendar; charset=utf-8; method=REQUEST')];
+    }
+
     public function content(): Content
     {
         return new Content(
@@ -48,6 +62,7 @@ final class NotificationMail extends Mailable implements ShouldQueue
             with: [
                 'rtl' => $this->recipientLocale === 'ar',
                 'header' => $this->recipientLocale === 'ar' ? 'email-header-ar.png' : 'email-header-en.png',
+                'buttons' => array_map(fn (string $action, string $link): array => ['label' => ActionLabels::label($action, $this->recipientLocale), 'url' => $link], array_keys($this->actions), $this->actions),
             ],
         );
     }

@@ -5,12 +5,11 @@
 
 - {{ $item['title'] }}@if ($item['body']) — {{ $item['body'] }}@endif @if ($item['url']) ({{ $item['url'] }})@endif
 @endforeach
-@if (isset($actions['approved']))
+@if ($buttons !== [])
 
-{{ __('Approve') }}: {{ $actions['approved'] }}
-@endif
-@if (isset($actions['rejected']))
-{{ __('Reject') }}: {{ $actions['rejected'] }}
+@foreach ($buttons as $button)
+{{ $button['label'] }}: {{ $button['url'] }}
+@endforeach
 @endif
 @if ($url)
 

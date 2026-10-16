@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Actions;
 
 use App\Domain\Access\Models\User;
+use App\Domain\Calendar\Actions\RespondToEvent;
+use App\Domain\Calendar\Models\EventParticipant;
+use App\Domain\Calendar\Support\ReplyTokens;
+use App\Domain\Forms\Support\FieldSpec;
 use App\Domain\Integrations\Enums\IntegrationType;
 use App\Domain\Integrations\Models\WhatsAppContact;
 use App\Domain\Integrations\WhatsApp\OutgoingMessage;
@@ -26,7 +30,7 @@ use App\Support\Errors\DomainRuleViolation;
  */
 final readonly class HandleWhatsAppReply
 {
-    public function __construct(private DecideTask $decide, private WhatsAppGateway $gateway) {}
+    public function __construct(private DecideTask $decide, private WhatsAppGateway $gateway, private RespondToEvent $respond) {}
 
     public function handle(IntegrationType $driver, string $from, ?string $payload): void
     {
@@ -43,6 +47,12 @@ final readonly class HandleWhatsAppReply
         }
 
         $token = substr($payload, 7);
+
+        if (ReplyTokens::looksLikeOne($token)) {
+            $this->meetingReply($driver, $contact, $token);
+
+            return;
+        }
         $link = strlen($token) > 128 ? null : ActionToken::query()->where('token_hash', hash('sha256', $token))->first();
         $task = $link instanceof ActionToken ? WorkflowTask::query()->find($link->workflow_task_id) : null;
         $user = User::query()->find($contact->user_id);
@@ -79,5 +89,23 @@ final readonly class HandleWhatsAppReply
     private function reply(IntegrationType $driver, ?User $user, WhatsAppContact $contact, string $text): void
     {
         $this->gateway->send($driver, $user, 'whatsapp.reply', new OutgoingMessage($contact->phone_e164, $text, inServiceWindow: true));
+    }
+
+    /** A Going / Maybe / Not going button on a meeting invitation (D75), from the invitee's own number. */
+    private function meetingReply(IntegrationType $driver, WhatsAppContact $contact, string $token): void
+    {
+        $user = User::query()->find($contact->user_id);
+        $locale = $user?->locale === 'ar' ? 'ar' : 'en';
+        $verified = ReplyTokens::verify($token, FieldSpec::string(config('app.key')));
+        $participant = $verified === null ? null : EventParticipant::query()->where('ulid', $verified[0])->first();
+
+        if ($verified === null || ! $participant instanceof EventParticipant || $participant->user_id !== $contact->user_id) {
+            $this->reply($driver, $user, $contact, __('This invitation has changed or was cancelled.', [], $locale));
+
+            return;
+        }
+
+        $this->respond->handle($participant, $verified[1]);
+        $this->reply($driver, $user, $contact, __('Thanks, your reply is saved: :reply', ['reply' => $verified[1]->label($locale)], $locale));
     }
 }
