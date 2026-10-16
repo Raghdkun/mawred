@@ -42,7 +42,7 @@ final readonly class RecalculateAttendanceDay
             ->where('employee_id', $employee->id)
             ->whereDate('local_date', $date)
             ->whereNull('voided_at')
-            ->orderBy('occurred_at')
+            ->oldest('occurred_at')
             ->get()
             ->map(fn (AttendanceEvent $e): array => ['kind' => $e->kind->value, 'at' => $this->clock->minutesInto($date, $e->occurred_at, $timezone)])
             ->all();

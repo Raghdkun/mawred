@@ -31,6 +31,7 @@
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="manifest" href="/build/manifest.webmanifest">
 
         @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])

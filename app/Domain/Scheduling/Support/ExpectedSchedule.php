@@ -66,7 +66,7 @@ final readonly class ExpectedSchedule
             ->where('employee_id', $employee->id)
             ->whereDate('date', $date)
             ->where('status', ShiftStatus::Published->value)
-            ->orderBy('starts_at')
+            ->oldest('starts_at')
             ->get();
 
         if ($shifts->isNotEmpty()) {

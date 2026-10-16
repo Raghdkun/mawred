@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\Access\UserSearchController;
+use App\Http\Controllers\Api\V1\Attendance\PunchesController;
 use App\Http\Controllers\Api\V1\Leave\LeaveCalendarController;
 use App\Http\Controllers\Api\V1\Leave\LeaveController;
 use App\Http\Controllers\Api\V1\Organization\BranchSearchController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Api\V1\Policies\LeaveTypeSearchController;
 use App\Http\Controllers\Api\V1\Requests\ApprovalsController;
 use App\Http\Controllers\Api\V1\Requests\DelegateCandidatesController;
 use App\Http\Controllers\Api\V1\Requests\RequestsController;
+use App\Http\Controllers\Api\V1\Schedule\ScheduleController;
 use App\Http\Controllers\Api\V1\Search\GlobalSearchController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,4 +56,9 @@ Route::prefix('v1')
         Route::post('employees/{employee}/leave/adjustments', [LeaveController::class, 'adjust'])->name('leave.adjust');
         Route::post('leave/requests/{leave}/cancel', [LeaveController::class, 'cancel'])->name('leave.cancel');
         Route::get('leave/calendar', LeaveCalendarController::class)->name('leave.calendar');
+
+        Route::post('attendance/punches', [PunchesController::class, 'store'])->middleware('throttle:30,1')->name('attendance.punches.store');
+        Route::get('attendance/today', [PunchesController::class, 'today'])->name('attendance.today');
+        Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule.index');
+        Route::post('schedule/open-shifts/{shift}/claim', [ScheduleController::class, 'claim'])->name('schedule.claim');
     });

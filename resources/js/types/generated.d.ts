@@ -51,6 +51,51 @@ export type HomeLayout = 'employee' | 'manager' | 'hr_admin';
 export type Scope = 'own' | 'direct_reports' | 'team_tree' | 'department' | 'branch' | 'all';
 }
 }
+namespace Attendance {
+namespace Data {
+export type AttendanceDayData = {
+id: string,
+employeeId: string,
+nameEn: string,
+nameAr: string | null,
+number: string,
+date: string,
+status: string,
+scheduleSource: string,
+scheduledStart: string | null,
+scheduledEnd: string | null,
+firstIn: string | null,
+lastOut: string | null,
+workedMinutes: number,
+lateMinutes: number,
+earlyLeaveMinutes: number,
+overtimeMinutes: number,
+overtimeStatus: string,
+overtimeApprovedMinutes: number,
+flags: string[],
+corrected: boolean,
+flaggedPunches: boolean,
+};
+export type PunchData = {
+id: string,
+kind: string,
+source: string,
+occurredAt: string,
+date: string,
+geofence: string,
+flagged: boolean,
+reason: string | null,
+voided: boolean,
+};
+}
+namespace Enums {
+export type DayStatus = 'scheduled' | 'present' | 'late' | 'absent' | 'incomplete' | 'on_leave' | 'off';
+export type GeofenceResult = 'inside' | 'outside' | 'unknown' | 'off';
+export type OvertimeStatus = 'none' | 'pending' | 'approved' | 'rejected' | 'auto';
+export type PunchKind = 'in' | 'out';
+export type PunchSource = 'pwa' | 'kiosk' | 'correction' | 'import';
+}
+}
 namespace Audit {
 namespace Data {
 export type AuditEntryData = {
@@ -262,7 +307,7 @@ createdAt: string,
 };
 }
 namespace Enums {
-export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'security' | 'integrations';
+export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'security' | 'integrations';
 }
 }
 namespace Organization {
@@ -943,6 +988,78 @@ data: Record<string, any>,
 namespace Enums {
 export type RequestCategory = 'leave' | 'time' | 'finance' | 'documents' | 'people' | 'assets' | 'training';
 export type RequestStatus = 'in_review' | 'returned' | 'approved' | 'rejected' | 'completed' | 'cancelled';
+}
+}
+namespace Scheduling {
+namespace Data {
+export type MyShiftData = {
+id: string,
+date: string,
+startsAt: string,
+endsAt: string,
+breakMinutes: number,
+paidMinutes: number,
+name: Record<string, string> | null,
+color: number,
+branch: Record<string, string>,
+claimed: boolean,
+};
+export type RosterShiftData = {
+id: string,
+employeeId: string | null,
+date: string,
+startsAt: string,
+endsAt: string,
+breakMinutes: number,
+paidMinutes: number,
+templateId: string | null,
+color: number,
+status: string,
+positionId: string | null,
+note: string | null,
+autoAssign: boolean,
+claims: number,
+conflicts: string[],
+};
+export type RosterShiftInputData = {
+date: string,
+employeeId: string | null,
+templateId: string | null,
+startsAt: string | null,
+endsAt: string | null,
+breakMinutes: number | null,
+positionId: string | null,
+note: string | null,
+autoAssign: boolean,
+};
+export type ShiftTemplateData = {
+id: string,
+code: string,
+name: Record<string, string>,
+startsAt: string,
+endsAt: string,
+breakMinutes: number,
+color: number,
+branchId: string | null,
+isActive: boolean,
+};
+export type ShiftTemplateInputData = {
+code: string,
+name: {
+en: string,
+ar?: string | null,
+},
+startsAt: string,
+endsAt: string,
+breakMinutes: number,
+color: number,
+branchId: string | null,
+isActive: boolean,
+};
+}
+namespace Enums {
+export type ClaimStatus = 'pending' | 'accepted' | 'declined';
+export type ShiftStatus = 'draft' | 'published';
 }
 }
 namespace Setup {

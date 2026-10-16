@@ -6,6 +6,8 @@ import organizationBranches from '@/routes/organization/branches';
 import forms from '@/routes/forms';
 import integrations from '@/routes/integrations';
 import leave from '@/routes/leave';
+import schedule from '@/routes/schedule';
+import attendance from '@/routes/attendance';
 import people from '@/routes/people';
 import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
@@ -70,6 +72,20 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: 'approvals',
                     match: ['/approvals'],
                     badge: 'approvals',
+                },
+                {
+                    key: 'schedule',
+                    label: 'nav.schedule',
+                    href: schedule.mine(),
+                    icon: 'schedule',
+                    match: ['/schedule', '/roster'],
+                },
+                {
+                    key: 'attendance',
+                    label: 'nav.attendance',
+                    href: attendance.clock(),
+                    icon: 'attendance',
+                    match: ['/attendance'],
                 },
                 {
                     key: 'leave',

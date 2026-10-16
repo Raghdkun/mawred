@@ -1,0 +1,129 @@
+{
+    "clock": {
+        "title": "Check in",
+        "description": "Check in when you start and out when you finish.",
+        "in": "Check in",
+        "out": "Check out",
+        "sending": "Saving…",
+        "done": {
+            "in": "Checked in at {time}",
+            "out": "Checked out at {time}"
+        },
+        "noEmployee": "Check-in belongs to employee records. Ask HR to link your account to one.",
+        "today": "Today",
+        "scheduled": "Expected {from}–{to}",
+        "unscheduled": "Nothing scheduled today",
+        "area": {
+            "inside": "Inside the branch area",
+            "outside": "Outside the branch area",
+            "checking": "Finding your location…",
+            "unknown": "Location unavailable",
+            "blocked": "You can't check in from outside the branch area. Move closer or scan the kiosk."
+        },
+        "reason": "Why are you checking in from here?",
+        "reasonHint": "Needed outside the branch area; your manager sees it.",
+        "scan": "Scan kiosk code",
+        "stopScan": "Stop scanning",
+        "camera": "Point your camera at the QR code on the kiosk.",
+        "cameraError": "The camera isn't available. Allow camera access or use the button.",
+        "offline": "{count, plural, one {# check-in is saved on this phone and will be sent when you're back online.} other {# check-ins are saved on this phone and will be sent when you're back online.}}",
+        "queued": "You're offline. Saved on this phone; it'll be sent later.",
+        "recent": "Recent check-ins",
+        "noRecent": "No check-ins in the last two days.",
+        "flagged": "Flagged",
+        "sources": {
+            "pwa": "App",
+            "kiosk": "Kiosk",
+            "correction": "Correction",
+            "import": "Import"
+        },
+        "correction": "Missed a check-in? Ask for a correction",
+        "board": "Daily board",
+        "kiosks": "Kiosks"
+    },
+    "status": {
+        "scheduled": "Not in yet",
+        "present": "Present",
+        "late": "Late",
+        "absent": "Absent",
+        "incomplete": "Missing check-out",
+        "on_leave": "On leave",
+        "off": "Day off"
+    },
+    "board": {
+        "title": "Daily attendance",
+        "description": "Who's in, late, absent or on leave, with check-in times and corrections.",
+        "date": "Date",
+        "branch": "Branch",
+        "columns": {
+            "present": "Present",
+            "late": "Late",
+            "absent": "Absent",
+            "on_leave": "On leave"
+        },
+        "count": "{count, plural, one {# person} other {# people}}",
+        "empty": "Nobody here.",
+        "table": "Everyone",
+        "name": "Name",
+        "status": "Status",
+        "scheduled": "Scheduled",
+        "in": "In",
+        "out": "Out",
+        "worked": "Worked",
+        "late": "Late",
+        "overtime": "Overtime",
+        "minutes": "{count} min",
+        "overtimeStatus": {
+            "none": "",
+            "pending": "waiting for approval",
+            "approved": "approved",
+            "rejected": "not approved",
+            "auto": "counted"
+        },
+        "flags": {
+            "missing_out": "No check-out",
+            "out_without_in": "Check-out without check-in",
+            "double_in": "Checked in twice",
+            "flagged": "Outside the area or clock drift"
+        },
+        "corrected": "Corrected",
+        "export": "Monthly sheet",
+        "exportMonth": "Month",
+        "download": "Download",
+        "noPeople": "Nobody at this branch is in your attendance scope."
+    },
+    "correct": {
+        "title": "{name} · {date}",
+        "punches": "Check-ins that day",
+        "noPunches": "No check-ins.",
+        "voided": "Replaced",
+        "form": "Correct this day",
+        "checkIn": "Check-in",
+        "checkOut": "Check-out",
+        "reason": "Reason",
+        "reasonHint": "Kept in the audit log.",
+        "save": "Save correction",
+        "readOnly": "You can see this day but not correct it."
+    },
+    "kiosks": {
+        "title": "Kiosks",
+        "description": "A screen at a branch shows a QR code that changes every 20 seconds. People scan it from the app to check in.",
+        "add": "Add kiosk",
+        "name": "Name",
+        "branch": "Branch",
+        "create": "Create kiosk",
+        "link": "Open this link on the kiosk device. It's shown only once.",
+        "relink": "New link",
+        "retire": "Switch off",
+        "retired": "Off",
+        "lastSeen": "Last seen {time}",
+        "neverSeen": "Not opened yet",
+        "empty": "No kiosks yet."
+    },
+    "kiosk": {
+        "title": "Scan to check in",
+        "help": "Open Mawred on your phone, choose Check in, then Scan kiosk code.",
+        "refresh": "New code in {seconds} s",
+        "error": "Can't reach the server. Trying again…"
+    }
+}
