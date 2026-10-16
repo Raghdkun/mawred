@@ -74,7 +74,6 @@
         "overtime": "العمل الإضافي",
         "minutes": "{count} د",
         "overtimeStatus": {
-            "none": "",
             "pending": "بانتظار الموافقة",
             "approved": "معتمد",
             "rejected": "غير معتمد",

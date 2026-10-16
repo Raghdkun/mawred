@@ -74,7 +74,6 @@
         "overtime": "Overtime",
         "minutes": "{count} min",
         "overtimeStatus": {
-            "none": "",
             "pending": "waiting for approval",
             "approved": "approved",
             "rejected": "not approved",
