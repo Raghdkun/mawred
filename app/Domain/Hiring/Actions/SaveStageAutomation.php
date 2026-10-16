@@ -28,8 +28,8 @@ final readonly class SaveStageAutomation
         $booking = $automation['booking'];
 
         if ($message['enabled']) {
-            $subject = self::both($message['subject']);
-            $body = self::both($message['body']);
+            $subject = $this->both($message['subject']);
+            $body = $this->both($message['body']);
             $this->templates->assertValid([$subject['en'], $subject['ar'], $body['en'], $body['ar']], 'message.body');
         }
 
@@ -44,7 +44,7 @@ final readonly class SaveStageAutomation
         }
 
         $stage->forceFill(['automation' => [
-            'message' => ['enabled' => $message['enabled'], 'subject' => self::both($message['subject']), 'body' => self::both($message['body'])],
+            'message' => ['enabled' => $message['enabled'], 'subject' => $this->both($message['subject']), 'body' => $this->both($message['body'])],
             'booking' => ['enabled' => $booking['enabled'], 'title' => $booking['title'], 'duration' => $booking['duration'], 'panel' => $booking['panel']],
         ]])->save();
 
@@ -58,7 +58,7 @@ final readonly class SaveStageAutomation
      * @param  array{en: string, ar?: string|null}  $text
      * @return array{en: string, ar: string}
      */
-    private static function both(array $text): array
+    private function both(array $text): array
     {
         return ['en' => $text['en'], 'ar' => ($text['ar'] ?? null) ?: $text['en']];
     }

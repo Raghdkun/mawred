@@ -15,6 +15,7 @@ use App\Domain\Hiring\Models\CandidateMessage;
 use App\Domain\Hiring\Models\JobApplication;
 use App\Domain\Hiring\Support\CandidateLinks;
 use App\Domain\Integrations\Enums\IntegrationType;
+use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\Integrations\WhatsApp\OutgoingMessage;
 use App\Domain\Integrations\WhatsApp\WhatsAppGateway;
 use App\Domain\Setup\Support\Settings;
@@ -110,7 +111,7 @@ final readonly class SendCandidateMessage
         $error = __('WhatsApp isn’t set up.');
 
         foreach ([IntegrationType::WhatsAppOfficial, IntegrationType::WhatsAppWaha] as $driver) {
-            if (WhatsAppGateway::usable($driver) === null) {
+            if (! WhatsAppGateway::usable($driver) instanceof IntegrationConnection) {
                 continue;
             }
 

@@ -49,7 +49,7 @@ final readonly class CandidateProfile
             ->where('candidate_id', $candidate->id)
             ->whereIn('id', [...$scoped, ...$onPanel])
             ->with([
-                'requisition.stages', 'requisition.criteria', 'stage', 'cv', 'submission.version',
+                'requisition.stages', 'requisition.criteria', 'requisition.branch', 'requisition.department', 'requisition.position', 'requisition.hiringManager', 'stage', 'cv', 'submission.version',
                 'history.actor', 'history.fromStage', 'history.toStage',
                 'interviews.panel', 'interviews.scorecards.user',
                 'offers.branch', 'offers.department', 'offers.position', 'offers.employmentType', 'offers.manager',
@@ -93,13 +93,30 @@ final readonly class CandidateProfile
                         'nameEn' => $application->candidate->name ?? '',
                         'hireDate' => $accepted->start_on->toDateString(),
                         'branchId' => $accepted->branch->ulid ?? '',
+                        'branch' => Texts::one($accepted->branch, 'name', $locale),
                         'departmentId' => $accepted->department?->ulid,
+                        'department' => Texts::one($accepted->department, 'name', $locale),
                         'positionId' => $accepted->position?->ulid,
+                        'position' => Texts::one($accepted->position, 'title', $locale),
                         'managerId' => $accepted->manager?->ulid,
+                        'manager' => $accepted->manager?->displayName($locale),
                         'employmentTypeId' => $accepted->employmentType?->ulid,
                     ] : null,
                     employeeId: $see ? $application->employee?->ulid : null,
                     score: $application->score === null ? null : (float) $application->score,
+                    offerDefaults: $update ? [
+                        'jobTitle' => Texts::one($requisition, 'title', $locale) ?? '',
+                        'branchId' => $requisition->branch->ulid ?? '',
+                        'branch' => Texts::one($requisition->branch, 'name', $locale),
+                        'departmentId' => $requisition->department?->ulid,
+                        'department' => Texts::one($requisition->department, 'name', $locale),
+                        'positionId' => $requisition->position?->ulid,
+                        'position' => Texts::one($requisition->position, 'title', $locale),
+                        'managerId' => $requisition->hiringManager?->ulid,
+                        'manager' => $requisition->hiringManager?->displayName($locale),
+                        'currency' => $requisition->currency ?? ($requisition->branch->default_currency ?? 'SAR'),
+                        'salaryMinor' => $requisition->salary_min_minor,
+                    ] : null,
                 );
             })
             ->all());

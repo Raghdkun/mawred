@@ -38,6 +38,7 @@ final class PostingData extends Data
         public ?string $publishedAt,
         public ?string $closesOn,
         public int $applicants,
+        public ?string $cognitoSourceId = null,
     ) {}
 
     public static function fromPosting(JobPosting $posting, ?string $formUlid): self
@@ -63,6 +64,7 @@ final class PostingData extends Data
             $posting->published_at?->toIso8601String(),
             $posting->closes_on?->toDateString(),
             Texts::count($posting, 'applications_count'),
+            $posting->cognitoSource?->ulid,
         );
     }
 }

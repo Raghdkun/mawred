@@ -27,8 +27,9 @@ final class ApplicationDetailData extends Data
      * @param  list<InterviewData>  $interviews
      * @param  list<array{id: string, name: string}>  $criteria
      * @param  list<OfferData>  $offers
-     * @param  array{nameEn: string, hireDate: string, branchId: string, departmentId: string|null, positionId: string|null, managerId: string|null, employmentTypeId: string|null}|null  $hire
+     * @param  array{nameEn: string, hireDate: string, branchId: string, branch: string|null, departmentId: string|null, department: string|null, positionId: string|null, position: string|null, managerId: string|null, manager: string|null, employmentTypeId: string|null}|null  $hire
      * @param  array{update: bool, see: bool}  $can
+     * @param  array{jobTitle: string, branchId: string, branch: string|null, departmentId: string|null, department: string|null, positionId: string|null, position: string|null, managerId: string|null, manager: string|null, currency: string, salaryMinor: int|null}|null  $offerDefaults
      */
     public function __construct(
         public string $id,
@@ -53,5 +54,6 @@ final class ApplicationDetailData extends Data
         public ?array $hire = null,
         public ?string $employeeId = null,
         public ?float $score = null,
+        public ?array $offerDefaults = null,
     ) {}
 }

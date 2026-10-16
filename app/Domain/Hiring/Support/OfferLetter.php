@@ -16,6 +16,7 @@ use App\Domain\People\Models\Employee;
 use App\Domain\Setup\Support\Settings;
 use App\Support\Money\Money;
 use App\Support\Templates\SafeTemplate;
+use App\Support\Time\LocalClock;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,7 +33,7 @@ final readonly class OfferLetter
         'employment_type', 'manager', 'company', 'expires_on', 'today',
     ];
 
-    public function __construct(private Settings $settings, private SafeTemplate $templates) {}
+    public function __construct(private Settings $settings, private SafeTemplate $templates, private LocalClock $clock) {}
 
     public function template(string $locale): string
     {
@@ -91,8 +92,14 @@ final readonly class OfferLetter
             'manager' => $offer->manager?->displayName($locale),
             'company' => $this->company($locale),
             'expires_on' => $offer->expires_on?->toDateString(),
-            'today' => CarbonImmutable::now()->toDateString(),
+            'today' => $this->today($offer),
         ];
+    }
+
+    /** Today's date where the job is: letters are dated in the branch's timezone (ADR-0004). */
+    private function today(Offer $offer): string
+    {
+        return $this->clock->today($offer->branch instanceof Branch ? $offer->branch->timezone : FieldSpec::string(config('app.timezone'), 'UTC'));
     }
 
     /**
@@ -122,7 +129,7 @@ final readonly class OfferLetter
             .'table{border-collapse:collapse;margin:16px 0;width:100%}th,td{text-align:start;padding:6px 8px;border-bottom:1px solid #DCE3EE;vertical-align:top}th{width:35%;color:#5E6A82;font-weight:500}'
             .'.signature{margin-top:32px}.signature img{max-height:80px;display:block;margin-bottom:4px}.muted{color:#5E6A82;font-size:10pt}'
             .'</style></head><body><header>'.($logo !== null ? '<img alt="" src="'.$logo.'">' : '<span class="company">'.e($vars['company'] ?? '').'</span>')
-            .'<span class="muted">'.e(CarbonImmutable::now()->toDateString()).'</span></header>'
+            .'<span class="muted">'.e($vars['today']).'</span></header>'
             .$paragraphs
             .'<table>'
             .$row('Position', 'الوظيفة', $vars['job_title'])

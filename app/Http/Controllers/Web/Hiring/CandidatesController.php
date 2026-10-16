@@ -27,6 +27,7 @@ use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Queries\CandidatesQuery;
 use App\Domain\Hiring\Support\CandidateProfile;
 use App\Domain\Hiring\Support\Texts;
+use App\Domain\Organization\Models\EmploymentType;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -94,6 +95,8 @@ final class CandidatesController extends Controller
                 'anonymise' => Gate::allows('hiring.delete') && Gate::allows('hiring.updateCandidate', $candidate),
             ],
             'tags' => $seesAll ? HiringTag::query()->orderBy('name')->limit(200)->pluck('name') : [],
+            'employmentTypes' => $seesAll ? array_values(EmploymentType::query()->where('is_active', true)->orderBy('id')->get()->map(fn (EmploymentType $t): array => ['id' => $t->ulid, 'name' => Texts::one($t, 'name') ?? ''])->all()) : [],
+            'timezone' => $user->timezone ?? config('app.timezone'),
         ]);
     }
 

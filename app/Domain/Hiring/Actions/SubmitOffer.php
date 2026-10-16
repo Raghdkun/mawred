@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Hiring\Actions;
 
+use App\Domain\Access\Models\User;
 use App\Domain\Hiring\Enums\ApplicationEventKind;
 use App\Domain\Hiring\Enums\OfferStatus;
 use App\Domain\Hiring\Models\ApplicationEvent;
@@ -45,7 +46,7 @@ final readonly class SubmitOffer
         /** @var JobRequisition $requisition */
         $requisition = $application->requisition;
         $manager = $requisition->hiring_manager_employee_id === null ? null : Employee::query()->find($requisition->hiring_manager_employee_id);
-        $requester = $actor->user === null ? null : Employee::query()->where('user_id', $actor->user->id)->first();
+        $requester = $actor->user instanceof User ? Employee::query()->where('user_id', $actor->user->id)->first() : null;
 
         return $this->db->transaction(function () use ($actor, $offer, $application, $requisition, $manager, $requester, $workflow): Offer {
             $salary = $offer->salary;

@@ -36,7 +36,9 @@ export type NavItem = {
     /** Prefixes inside `match` that belong to another item. */
     exclude?: string[];
     /** A shared-prop counter shown beside the item. */
-    badge?: 'approvals';
+    badge?: 'approvals' | 'scorecards';
+    /** Also shown to people on an interview panel, whatever their permissions (D92). */
+    panelists?: boolean;
     /** The raised centre action of the bottom tab bar. */
     primary?: boolean;
 };
@@ -111,7 +113,17 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: 'hiring',
                     permission: 'hiring.view',
                     match: ['/hiring'],
-                    exclude: ['/hiring/candidates', '/hiring/settings'],
+                    exclude: ['/hiring/candidates', '/hiring/settings', '/hiring/interviews'],
+                },
+                {
+                    key: 'interviews',
+                    label: 'nav.interviews',
+                    href: hiring.interviews.index(),
+                    icon: 'interviews',
+                    permission: 'hiring.view',
+                    panelists: true,
+                    match: ['/hiring/interviews'],
+                    badge: 'scorecards',
                 },
                 {
                     key: 'candidates',
@@ -274,6 +286,15 @@ export function mobileTabs(): NavItem[] {
         },
         { key: 'me', label: 'nav.me', href: profile.edit(), icon: UserRound, match: ['/settings'] },
     ];
+}
+
+/** Whether a nav item shows for this person: its permission, or a seat on an interview panel. */
+export function canSee(
+    item: NavItem,
+    can: (permission: string) => boolean,
+    onPanel: boolean,
+): boolean {
+    return !item.permission || can(item.permission) || (item.panelists === true && onPanel);
 }
 
 export function hrefOf(href: NavItem['href']): string {

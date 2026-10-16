@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Hiring\Actions;
 
+use App\Domain\Access\Models\User;
 use App\Domain\Hiring\Enums\ApplicationEventKind;
 use App\Domain\Hiring\Enums\InterviewStatus;
 use App\Domain\Hiring\Enums\Recommendation;
@@ -32,7 +33,7 @@ final readonly class SubmitScorecard
     {
         $user = $actor->user;
 
-        if ($user === null || ! $interview->panel()->whereKey($user->id)->exists()) {
+        if (! $user instanceof User || ! $interview->panel()->whereKey($user->id)->exists()) {
             throw new DomainRuleViolation('hiring.not_on_panel', __('Only the interview panel gives feedback on it.'));
         }
 
@@ -52,7 +53,7 @@ final readonly class SubmitScorecard
             }
         }
 
-        if ($submit && ($recommendation === null || count($clean) < count($criteria))) {
+        if ($submit && (! $recommendation instanceof Recommendation || count($clean) < count($criteria))) {
             $message = __('Rate every criterion and give your recommendation before submitting.');
 
             throw new DomainRuleViolation('hiring.scorecard_incomplete', $message, ['recommendation' => [$message]]);

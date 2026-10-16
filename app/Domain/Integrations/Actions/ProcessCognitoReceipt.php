@@ -9,6 +9,7 @@ use App\Domain\Forms\Models\FormVersion;
 use App\Domain\Forms\Support\FormSchema;
 use App\Domain\Integrations\Cognito\CognitoFiles;
 use App\Domain\Integrations\Cognito\CognitoMapping;
+use App\Domain\Integrations\Contracts\CognitoApplications;
 use App\Domain\Integrations\Enums\ReceiptStatus;
 use App\Domain\Integrations\Models\CognitoReceipt;
 use App\Domain\Integrations\Models\CognitoSource;
@@ -31,6 +32,7 @@ use Throwable;
  *   for an admin ("needs a person");
  * - update: replace the answers while the request is open, otherwise log a late update;
  * - delete: cancel the request while it is still running.
+ * A source linked to a job posting creates (or refreshes) the candidate's application instead.
  * Capture mode stores the payload as the source's sample instead.
  */
 final readonly class ProcessCognitoReceipt
@@ -40,6 +42,7 @@ final readonly class ProcessCognitoReceipt
         private ReplaceRequestAnswers $replace,
         private WorkflowEngine $engine,
         private CognitoFiles $files,
+        private CognitoApplications $applications,
     ) {}
 
     public function handle(CognitoReceipt $receipt, ?Employee $person = null): CognitoReceipt
@@ -51,6 +54,12 @@ final readonly class ProcessCognitoReceipt
             $source->forceFill(['capture_sample' => false, 'sample_payload' => $receipt->payload, 'sample_captured_at' => now()])->save();
 
             return $this->finish($receipt, ReceiptStatus::Sample);
+        }
+
+        $applicationForm = $source->request_type_id === null ? $this->applications->form($source) : null;
+
+        if ($applicationForm instanceof Form) {
+            return $this->apply($receipt, $source, $applicationForm);
         }
 
         $type = $source->request_type_id === null ? null : RequestType::query()->find($source->request_type_id);
@@ -67,6 +76,44 @@ final readonly class ProcessCognitoReceipt
                 'update' => $existing instanceof EmployeeRequest ? $this->update($receipt, $source, $existing) : $this->submit($receipt, $source, $type, $person),
                 default => $existing instanceof EmployeeRequest ? $this->finish($receipt, ReceiptStatus::Duplicate, null, $existing) : $this->submit($receipt, $source, $type, $person),
             };
+        } catch (ValidationException $e) {
+            return $this->finish($receipt, ReceiptStatus::Failed, $this->describe($e));
+        } catch (DomainRuleViolation $e) {
+            return $this->finish($receipt, ReceiptStatus::Failed, $e->getMessage());
+        } catch (Throwable $e) {
+            report($e);
+
+            return $this->finish($receipt, ReceiptStatus::Failed, mb_substr($e->getMessage(), 0, 500));
+        }
+    }
+
+    /**
+     * An entry on a posting's Cognito form becomes an application. Submitting again (or an
+     * update) refreshes it; a deleted entry leaves it for the recruiter to reject on the board.
+     */
+    private function apply(CognitoReceipt $receipt, CognitoSource $source, Form $form): CognitoReceipt
+    {
+        if (! $source->is_active) {
+            return $this->finish($receipt, ReceiptStatus::Ignored, __('The source is off or not linked to a request type.'));
+        }
+
+        if ($receipt->event === 'delete') {
+            return $this->finish($receipt, ReceiptStatus::Ignored, __('Applications stay when the entry is deleted; reject it on the board instead.'));
+        }
+
+        $version = $form->published_version_id === null ? null : FormVersion::query()->find($form->published_version_id);
+
+        try {
+            $session = "cognito:{$receipt->ulid}";
+            $answers = CognitoMapping::of($source)->answers($receipt->payload);
+
+            if ($version instanceof FormVersion) {
+                $answers = $this->downloadFiles($answers, $form, $version, $session);
+            }
+
+            $receipt->forceFill(['job_application_id' => $this->applications->submit($source, $answers, $session)]);
+
+            return $this->finish($receipt, ReceiptStatus::Processed);
         } catch (ValidationException $e) {
             return $this->finish($receipt, ReceiptStatus::Failed, $this->describe($e));
         } catch (DomainRuleViolation $e) {
@@ -133,6 +180,15 @@ final readonly class ProcessCognitoReceipt
             return $answers;
         }
 
+        return $this->downloadFiles($answers, $form, $version, $session);
+    }
+
+    /**
+     * @param  array<string, mixed>  $answers
+     * @return array<string, mixed>
+     */
+    private function downloadFiles(array $answers, Form $form, FormVersion $version, string $session): array
+    {
         foreach (FormSchema::fieldsByKey($version->schema) as $key => $field) {
             if (($field['type'] ?? null) === 'file' && array_key_exists($key, $answers)) {
                 $answers[$key] = $this->files->download($answers[$key], $form, $version, $key, $session);

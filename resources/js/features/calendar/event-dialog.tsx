@@ -120,6 +120,7 @@ export function EventDialog({
                         </li>
                     ) : null}
                     {event.kind === 'booking' ? <li>{t('event.booking')}</li> : null}
+                    {event.kind === 'interview' ? <li>{t('event.interview')}</li> : null}
                 </ul>
                 {event.description ? (
                     <p className="whitespace-pre-line">{event.description}</p>

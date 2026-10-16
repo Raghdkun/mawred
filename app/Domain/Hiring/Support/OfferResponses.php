@@ -5,21 +5,23 @@ declare(strict_types=1);
 namespace App\Domain\Hiring\Support;
 
 use App\Domain\Access\Models\User;
+use App\Domain\Forms\Support\FieldSpec;
 use App\Domain\Hiring\Enums\ApplicationEventKind;
 use App\Domain\Hiring\Enums\OfferStatus;
 use App\Domain\Hiring\Models\ApplicationEvent;
 use App\Domain\Hiring\Models\Offer;
+use App\Domain\Organization\Models\Branch;
 use App\Support\Errors\DomainRuleViolation;
-use Carbon\CarbonImmutable;
+use App\Support\Time\LocalClock;
 
 /** Shared by accepting and declining an offer: is it still open, and recording the answer. */
 final readonly class OfferResponses
 {
-    public function __construct(private HiringNotifier $notifier) {}
+    public function __construct(private HiringNotifier $notifier, private LocalClock $clock) {}
 
     public function assertOpen(Offer $offer): void
     {
-        if ($offer->status === OfferStatus::Sent && $offer->expires_on !== null && $offer->expires_on->toDateString() < CarbonImmutable::now()->toDateString()) {
+        if ($offer->status === OfferStatus::Sent && $offer->expires_on !== null && $offer->expires_on->toDateString() < $this->clock->today($offer->branch instanceof Branch ? $offer->branch->timezone : FieldSpec::string(config('app.timezone'), 'UTC'))) {
             $offer->forceFill(['status' => OfferStatus::Expired])->save();
         }
 

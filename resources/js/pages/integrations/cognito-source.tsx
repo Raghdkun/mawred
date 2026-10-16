@@ -33,6 +33,7 @@ type Props = {
         id: string;
         name: string;
         requestType: { id: string; name: Record<string, string> } | null;
+        posting: string | null;
         isActive: boolean;
         tokenLast4: string;
         rotatedAt: string | null;
@@ -149,7 +150,9 @@ export default function CognitoSourcePage({
                 description={
                     source.requestType
                         ? t('cognito.feeds', { type: localized(source.requestType.name, locale) })
-                        : t('cognito.notLinked')
+                        : source.posting
+                          ? t('cognito.feedsPosting', { job: source.posting })
+                          : t('cognito.notLinked')
                 }
             />
             <datalist id={listId}>
@@ -213,11 +216,13 @@ export default function CognitoSourcePage({
                             id="source-type"
                             label={t('cognito.requestType')}
                             error={form.errors.requestTypeId}
+                            hint={source.posting ? t('cognito.postingHint') : undefined}
                         >
                             <select
                                 id="source-type"
                                 className={selectClass}
                                 value={form.data.requestTypeId}
+                                disabled={source.posting !== null}
                                 onChange={(event) =>
                                     form.setData('requestTypeId', event.target.value)
                                 }
@@ -292,54 +297,56 @@ export default function CognitoSourcePage({
                     )}
                 </Section>
 
-                <Section title={t('cognito.person')} description={t('cognito.personHelp')}>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <Field id="requester-by" label={t('cognito.matchBy')}>
-                            <select
-                                id="requester-by"
-                                className={selectClass}
-                                value={form.data.requesterBy}
-                                onChange={(event) =>
-                                    form.setData(
-                                        'requesterBy',
-                                        event.target.value as 'email' | 'employee_number',
-                                    )
-                                }
+                {source.posting ? null : (
+                    <Section title={t('cognito.person')} description={t('cognito.personHelp')}>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <Field id="requester-by" label={t('cognito.matchBy')}>
+                                <select
+                                    id="requester-by"
+                                    className={selectClass}
+                                    value={form.data.requesterBy}
+                                    onChange={(event) =>
+                                        form.setData(
+                                            'requesterBy',
+                                            event.target.value as 'email' | 'employee_number',
+                                        )
+                                    }
+                                >
+                                    <option value="email">{t('cognito.byEmail')}</option>
+                                    <option value="employee_number">{t('cognito.byNumber')}</option>
+                                </select>
+                            </Field>
+                            <Field
+                                id="requester-path"
+                                label={t('cognito.cognitoField')}
+                                error={form.errors.requesterPath}
                             >
-                                <option value="email">{t('cognito.byEmail')}</option>
-                                <option value="employee_number">{t('cognito.byNumber')}</option>
-                            </select>
-                        </Field>
-                        <Field
-                            id="requester-path"
-                            label={t('cognito.cognitoField')}
-                            error={form.errors.requesterPath}
-                        >
-                            {pathInput(
-                                'requester-path',
-                                form.data.requesterPath,
-                                (value) => form.setData('requesterPath', value),
-                                t('cognito.cognitoField'),
-                            )}
-                        </Field>
-                        <Field id="entry-path" label={t('cognito.entryPath')}>
-                            {pathInput(
-                                'entry-path',
-                                form.data.entryPath,
-                                (value) => form.setData('entryPath', value),
-                                t('cognito.entryPath'),
-                            )}
-                        </Field>
-                        <Field id="version-path" label={t('cognito.versionPath')}>
-                            {pathInput(
-                                'version-path',
-                                form.data.versionPath,
-                                (value) => form.setData('versionPath', value),
-                                t('cognito.versionPath'),
-                            )}
-                        </Field>
-                    </div>
-                </Section>
+                                {pathInput(
+                                    'requester-path',
+                                    form.data.requesterPath,
+                                    (value) => form.setData('requesterPath', value),
+                                    t('cognito.cognitoField'),
+                                )}
+                            </Field>
+                            <Field id="entry-path" label={t('cognito.entryPath')}>
+                                {pathInput(
+                                    'entry-path',
+                                    form.data.entryPath,
+                                    (value) => form.setData('entryPath', value),
+                                    t('cognito.entryPath'),
+                                )}
+                            </Field>
+                            <Field id="version-path" label={t('cognito.versionPath')}>
+                                {pathInput(
+                                    'version-path',
+                                    form.data.versionPath,
+                                    (value) => form.setData('versionPath', value),
+                                    t('cognito.versionPath'),
+                                )}
+                            </Field>
+                        </div>
+                    </Section>
+                )}
 
                 <Section
                     title={t('cognito.mapping')}
@@ -405,28 +412,30 @@ export default function CognitoSourcePage({
                     ) : null}
                 </Section>
 
-                <Section title={t('cognito.prefill')} description={t('cognito.prefillHelp')}>
-                    <div className="grid gap-4 sm:grid-cols-3">
-                        {(['email', 'name', 'employee_number'] as const).map((key) => (
-                            <Field
-                                key={key}
-                                id={`prefill-${key}`}
-                                label={t(`cognito.prefillKeys.${key}`)}
-                            >
-                                {pathInput(
-                                    `prefill-${key}`,
-                                    form.data.prefill[key],
-                                    (value) =>
-                                        form.setData('prefill', {
-                                            ...form.data.prefill,
-                                            [key]: value,
-                                        }),
-                                    t(`cognito.prefillKeys.${key}`),
-                                )}
-                            </Field>
-                        ))}
-                    </div>
-                </Section>
+                {source.posting ? null : (
+                    <Section title={t('cognito.prefill')} description={t('cognito.prefillHelp')}>
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            {(['email', 'name', 'employee_number'] as const).map((key) => (
+                                <Field
+                                    key={key}
+                                    id={`prefill-${key}`}
+                                    label={t(`cognito.prefillKeys.${key}`)}
+                                >
+                                    {pathInput(
+                                        `prefill-${key}`,
+                                        form.data.prefill[key],
+                                        (value) =>
+                                            form.setData('prefill', {
+                                                ...form.data.prefill,
+                                                [key]: value,
+                                            }),
+                                        t(`cognito.prefillKeys.${key}`),
+                                    )}
+                                </Field>
+                            ))}
+                        </div>
+                    </Section>
+                )}
 
                 <div>
                     <Button type="submit" loading={form.processing}>

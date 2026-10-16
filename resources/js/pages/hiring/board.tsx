@@ -14,10 +14,13 @@ import {
     AlertTriangle,
     ChevronLeft,
     Copy,
+    ListChecks,
     MoreHorizontal,
     Plus,
     Settings2,
     UserX,
+    Users,
+    Zap,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -46,6 +49,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { FormRenderer } from '@/features/forms/form-renderer';
 import { type FormRuleContext, type FormSchema, asPayload } from '@/features/forms/schema';
+import { AutomationEditor } from '@/features/hiring/automation-editor';
+import { CriteriaEditor } from '@/features/hiring/criteria-editor';
 import { StageEditor } from '@/features/hiring/stage-editor';
 import { daysSince, REJECTION_REASONS, RequisitionStatusBadge } from '@/features/hiring/status';
 import { useLocale } from '@/hooks/use-locale';
@@ -71,6 +76,8 @@ type Props = {
     showRejected: boolean;
     postings: Array<{ id: string; title: string; status: string }>;
     addForm: { schema: FormSchema; context: FormRuleContext } | null;
+    criteria: Array<{ id: string; name: { en: string; ar: string } }>;
+    automationPeople: Record<string, string>;
     can: { update: boolean; open: boolean };
 };
 
@@ -86,6 +93,8 @@ export default function Board({
     showRejected,
     postings,
     addForm,
+    criteria,
+    automationPeople,
     can,
 }: Props) {
     const { t } = useTranslation('hiring');
@@ -96,6 +105,7 @@ export default function Board({
     const [rejecting, setRejecting] = useState<string[] | null>(null);
     const [adding, setAdding] = useState(false);
     const [editingStages, setEditingStages] = useState(false);
+    const [editing, setEditing] = useState<'criteria' | 'automations' | null>(null);
     const [mobileStage, setMobileStage] = useState(stages[0]?.id ?? '');
     const [announcement, setAnnouncement] = useState('');
     const isMobile = useIsMobile();
@@ -206,6 +216,20 @@ export default function Board({
                                     <DropdownMenuItem onSelect={() => setEditingStages(true)}>
                                         <Settings2 aria-hidden />
                                         {t('board.stageSettings')}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={() => setEditing('automations')}
+                                        data-automations
+                                    >
+                                        <Zap aria-hidden />
+                                        {t('automations.title')}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={() => setEditing('criteria')}
+                                        data-criteria
+                                    >
+                                        <ListChecks aria-hidden />
+                                        {t('criteria.title')}
                                     </DropdownMenuItem>
                                     {can.open ? (
                                         <DropdownMenuItem asChild>
@@ -363,6 +387,34 @@ export default function Board({
                     stages={stages}
                     saveUrl={hiring.board.stages.url(requisition.id)}
                     onSaved={() => setEditingStages(false)}
+                />
+            </ResponsiveDialog>
+
+            <ResponsiveDialog
+                open={editing === 'criteria'}
+                onOpenChange={(open) => !open && setEditing(null)}
+                title={t('criteria.title')}
+                description={t('criteria.description')}
+                className="sm:max-w-2xl"
+            >
+                <CriteriaEditor
+                    criteria={criteria}
+                    saveUrl={hiring.board.criteria.url(requisition.id)}
+                    onSaved={() => setEditing(null)}
+                />
+            </ResponsiveDialog>
+
+            <ResponsiveDialog
+                open={editing === 'automations'}
+                onOpenChange={(open) => !open && setEditing(null)}
+                title={t('automations.title')}
+                description={t('automations.description')}
+                className="sm:max-w-3xl"
+            >
+                <AutomationEditor
+                    stages={stages}
+                    people={automationPeople}
+                    onSaved={() => setEditing(null)}
                 />
             </ResponsiveDialog>
         </>
@@ -530,7 +582,23 @@ function BoardCard({
                         {' · '}
                         {t(`source.${card.source}`)}
                     </span>
+                    {card.interviewers.length > 0 ? (
+                        <span className="flex items-center gap-1 text-caption text-text-secondary">
+                            <Users aria-hidden className="size-3" />
+                            <span className="truncate">{card.interviewers.join(', ')}</span>
+                        </span>
+                    ) : null}
                 </div>
+                {card.score !== null ? (
+                    <span
+                        className="inline-flex h-6 shrink-0 items-center rounded-full bg-primary/10 px-2 text-caption font-medium text-foreground tabular-nums"
+                        aria-label={t('board.score', {
+                            score: formatNumber(card.score, locale, { maximumFractionDigits: 1 }),
+                        })}
+                    >
+                        {formatNumber(card.score, locale, { maximumFractionDigits: 1 })}/4
+                    </span>
+                ) : null}
                 {editable ? (
                     <button
                         type="button"
@@ -637,6 +705,7 @@ function RejectDialog({ ids, onClose }: { ids: string[]; onClose: (done: boolean
     const { locale } = useLocale();
     const [reason, setReason] = useState<string>('not_qualified');
     const [note, setNote] = useState('');
+    const [notify, setNotify] = useState(true);
     const [sending, setSending] = useState(false);
 
     return (
@@ -662,7 +731,7 @@ function RejectDialog({ ids, onClose }: { ids: string[]; onClose: (done: boolean
                             setSending(true);
                             router.post(
                                 hiring.applications.reject.url(),
-                                { applications: ids, reason, note: note || null },
+                                { applications: ids, reason, note: note || null, notify },
                                 {
                                     preserveScroll: true,
                                     onError: showError,
@@ -701,6 +770,17 @@ function RejectDialog({ ids, onClose }: { ids: string[]; onClose: (done: boolean
                         maxLength={2000}
                         rows={3}
                     />
+                </label>
+                <label
+                    htmlFor="reject-notify"
+                    className="flex min-h-11 items-center gap-2 text-small"
+                >
+                    <Checkbox
+                        id="reject-notify"
+                        checked={notify}
+                        onCheckedChange={(on) => setNotify(on === true)}
+                    />
+                    {t('reject.notify')}
                 </label>
             </div>
         </ResponsiveDialog>

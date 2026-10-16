@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property ReceiptStatus $status
  * @property string|null $error
  * @property int|null $request_id
+ * @property int|null $job_application_id
  * @property int|null $employee_id
  * @property int $attempts
  * @property CarbonImmutable|null $processed_at

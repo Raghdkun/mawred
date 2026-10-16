@@ -13,6 +13,7 @@ use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Support\ApplicantFields;
 use App\Domain\Hiring\Support\HiringSettings;
 use App\Domain\Hiring\Support\Knockouts;
+use App\Domain\Integrations\Models\CognitoSource;
 use App\Support\Actors\Actor;
 use App\Support\Errors\DomainRuleViolation;
 use Illuminate\Support\Str;
@@ -20,7 +21,9 @@ use Illuminate\Support\Str;
 /**
  * Creates or edits a posting for a requisition (D81, D87). The application form must be
  * published and ask for a name and an email; knock-outs must check questions on it. The slug
- * is fixed when the posting is created, so shared links keep working.
+ * is fixed when the posting is created, so shared links keep working. A posting can take its
+ * applications through a Cognito form instead (D81): a source with no request type, feeding no
+ * other posting.
  */
 final readonly class SaveJobPosting
 {
@@ -44,6 +47,14 @@ final readonly class SaveJobPosting
         }
 
         $posting ??= new JobPosting(['job_requisition_id' => $requisition->id]);
+        $cognito = $input->cognitoSourceId === null ? null : CognitoSource::query()->where('ulid', $input->cognitoSourceId)->first();
+
+        if ($cognito instanceof CognitoSource && ($cognito->request_type_id !== null
+            || JobPosting::query()->where('cognito_source_id', $cognito->id)->when($posting->exists, fn ($q) => $q->whereKeyNot($posting->id))->exists())) {
+            $message = __('This Cognito source already feeds a request type or another posting.');
+
+            throw new DomainRuleViolation('hiring.cognito_in_use', $message, ['cognitoSourceId' => [$message]]);
+        }
         $both = fn (?array $text): ?array => $text === null || ($text['en'] ?? '') === '' ? null : ['en' => $text['en'], 'ar' => ($text['ar'] ?? null) ?: $text['en']];
 
         $posting->fill([
@@ -57,6 +68,7 @@ final readonly class SaveJobPosting
             'knockouts' => $input->knockouts === [] ? null : $input->knockouts,
             'seo' => $input->seo,
             'closes_on' => $input->closesOn,
+            'cognito_source_id' => $cognito?->id,
         ]);
 
         if (! $posting->exists) {

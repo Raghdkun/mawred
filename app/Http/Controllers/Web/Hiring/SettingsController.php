@@ -12,6 +12,7 @@ use App\Domain\Hiring\Data\HiringSettingsData;
 use App\Domain\Hiring\Data\StageData;
 use App\Domain\Hiring\Models\PipelineStage;
 use App\Domain\Hiring\Models\ScorecardCriterion;
+use App\Domain\Hiring\Support\AutomationPeople;
 use App\Domain\Hiring\Support\HiringSettings;
 use App\Domain\Hiring\Support\OfferLetter;
 use App\Domain\Hiring\Support\Texts;
@@ -38,7 +39,8 @@ final class SettingsController extends Controller
         $saved = $raw->get('hiring.offer_letter');
 
         return Inertia::render('hiring/settings', [
-            'stages' => array_values(PipelineStage::query()->whereNull('job_requisition_id')->orderBy('position')->get()->map(StageData::fromStage(...))->all()),
+            'stages' => array_values(($stages = PipelineStage::query()->whereNull('job_requisition_id')->orderBy('position')->get())->map(StageData::fromStage(...))->all()),
+            'automationPeople' => AutomationPeople::for($stages),
             'criteria' => array_values(ScorecardCriterion::query()->whereNull('job_requisition_id')->orderBy('position')->get()->map(fn (ScorecardCriterion $c): array => ['id' => $c->ulid, 'name' => Texts::pair($c, 'name')])->all()),
             'careersIntro' => $pair($settings->careersIntro()),
             'privacyNotice' => $pair($settings->privacyNotice()),

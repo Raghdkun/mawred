@@ -1,9 +1,10 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Briefcase, Building2, CalendarClock, ChevronLeft, MapPin, Wallet } from 'lucide-react';
+import { Briefcase, Building2, CalendarClock, ChevronLeft, ExternalLink, MapPin, Wallet } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DirIcon } from '@/components/mw/dir-icon';
 import { Illustration } from '@/components/mw/illustration';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AltchaField } from '@/features/forms/altcha-field';
 import { FormRenderer } from '@/features/forms/form-renderer';
@@ -18,6 +19,7 @@ import careers from '@/routes/careers';
 type Props = {
     job: App.Domain.Hiring.Data.CareersPostingData;
     open: boolean;
+    applyUrl: string | null;
     schema: FormSchema | null;
     context: FormRuleContext;
     privacyNotice: string;
@@ -27,9 +29,10 @@ type Props = {
 /**
  * Job detail and apply (handoff 31, D81): the advert beside the application form on desktop,
  * stacked on phones. The CV goes through the form's file field (dropzone); applying needs the
- * privacy notice accepted and may opt in to the talent pool. Hardened like public forms.
+ * privacy notice accepted and may opt in to the talent pool. Hardened like public forms. A job
+ * that takes applications through a Cognito form links to it instead.
  */
-export default function Job({ job, open, schema, context, privacyNotice, startedAt }: Props) {
+export default function Job({ job, open, applyUrl, schema, context, privacyNotice, startedAt }: Props) {
     const { t } = useTranslation('hiring');
     const { locale } = useLocale();
     const page = usePage();
@@ -114,7 +117,18 @@ export default function Job({ job, open, schema, context, privacyNotice, started
                     <h2 id="apply-title" className="mb-4 text-h3">
                         {t('apply.title')}
                     </h2>
-                    {!open || !schema ? (
+                    {open && applyUrl ? (
+                        <div className="flex flex-col gap-3">
+                            <p className="text-small text-text-secondary">{t('apply.external')}</p>
+                            <Button asChild className="min-h-11 self-start">
+                                <a href={applyUrl} target="_blank" rel="noreferrer" data-apply-external>
+                                    {t('apply.externalButton')}
+                                    <ExternalLink aria-hidden />
+                                    <span className="sr-only">{t('apply.newTab')}</span>
+                                </a>
+                            </Button>
+                        </div>
+                    ) : !open || !schema ? (
                         <p className="rounded-md bg-muted p-4 text-small text-text-secondary">{t('apply.closed')}</p>
                     ) : (
                         <>

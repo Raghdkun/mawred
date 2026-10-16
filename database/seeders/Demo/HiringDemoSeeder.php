@@ -16,34 +16,51 @@ use App\Domain\Hiring\Actions\MoveApplication;
 use App\Domain\Hiring\Actions\RaiseRequisition;
 use App\Domain\Hiring\Actions\RejectApplication;
 use App\Domain\Hiring\Actions\SaveJobPosting;
+use App\Domain\Hiring\Actions\SaveOffer;
 use App\Domain\Hiring\Actions\SaveRequisitionTeam;
+use App\Domain\Hiring\Actions\SaveScorecardCriteria;
+use App\Domain\Hiring\Actions\ScheduleInterview;
+use App\Domain\Hiring\Actions\SeedHiringDefaults;
+use App\Domain\Hiring\Actions\SendOffer;
 use App\Domain\Hiring\Actions\SubmitApplication;
+use App\Domain\Hiring\Actions\SubmitOffer;
+use App\Domain\Hiring\Actions\SubmitScorecard;
 use App\Domain\Hiring\Actions\TagCandidate;
+use App\Domain\Hiring\Data\InterviewInputData;
 use App\Domain\Hiring\Data\JobPostingInputData;
+use App\Domain\Hiring\Data\OfferInputData;
 use App\Domain\Hiring\Enums\ApplicationSource;
+use App\Domain\Hiring\Enums\MessageChannel;
 use App\Domain\Hiring\Enums\PostingStatus;
+use App\Domain\Hiring\Enums\Recommendation;
 use App\Domain\Hiring\Enums\RejectionReason;
+use App\Domain\Hiring\Models\Interview;
 use App\Domain\Hiring\Models\JobApplication;
 use App\Domain\Hiring\Models\JobPosting;
 use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Models\PipelineStage;
+use App\Domain\Hiring\Models\ScorecardCriterion;
+use App\Domain\Hiring\Support\CandidateMatcher;
 use App\Domain\Hiring\Support\HiringSettings;
 use App\Domain\Organization\Models\Branch;
 use App\Domain\Organization\Models\Department;
+use App\Domain\People\Models\Employee;
 use App\Domain\Requests\Models\EmployeeRequest;
 use App\Domain\Workflows\Engine\WorkflowEngine;
 use App\Domain\Workflows\Enums\Decision;
 use App\Domain\Workflows\Enums\TaskStatus;
 use App\Domain\Workflows\Models\WorkflowTask;
 use App\Support\Actors\Actor;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
 use RuntimeException;
 
 /**
- * Demo hiring (Phase 6a): a recruiter sign-in, two approved requisitions with live postings and
+ * Demo hiring (Phase 6): a recruiter sign-in, two approved requisitions with live postings and
  * candidates across the board (one flagged by screening, one possible duplicate), and one
- * requisition still awaiting approval. Runs on an existing demo company; everything goes through
+ * requisition still awaiting approval; then interviews, a scorecard and an offer out for
+ * signature (6b), added to a 6a demo too. Runs on an existing demo company; everything goes through
  * the real actions.
  *
  *   php artisan db:seed --class="Database\Seeders\Demo\HiringDemoSeeder"
@@ -65,16 +82,80 @@ final class HiringDemoSeeder extends Seeder
             throw new RuntimeException('Seed the demo company (DemoSeeder) with DEMO_PASSWORD first.');
         }
 
-        if (User::query()->where('email', self::RECRUITER)->exists()) {
+        // Approval steps run on the queue after each commit; run them inline so requisitions open
+        // as the seeder goes (no outer transaction, or the steps would wait for it).
+        config(['queue.default' => 'sync']);
+
+        if (! User::query()->where('email', self::RECRUITER)->exists()) {
+            $this->seed($manager, $password);
+        }
+
+        if (Interview::query()->exists()) {
             $this->command->info('Hiring demo data is already there.');
 
             return;
         }
 
-        // Approval steps run on the queue after each commit; run them inline so requisitions open
-        // as the seeder goes (no outer transaction, or the steps would wait for it).
-        config(['queue.default' => 'sync']);
-        $this->seed($manager, $password);
+        $this->seedInterviewsAndOffers($manager, User::query()->where('email', self::RECRUITER)->firstOrFail());
+    }
+
+    /**
+     * Phase 6b: Layla had her first interview yesterday (one scorecard in, one to go), Priya has a
+     * booking link waiting, and Omar's offer went through the hiring manager and HR and is with him.
+     */
+    private function seedInterviewsAndOffers(User $manager, User $recruiter): void
+    {
+        resolve(SeedHiringDefaults::class)->handle();
+        $actor = Actor::user($recruiter);
+        $colleague = User::query()->whereKeyNot($manager->id)->whereIn('id', Employee::query()->whereNotNull('user_id')->select('user_id'))->orderBy('id')->firstOrFail();
+        $application = function (string $email): JobApplication {
+            $candidate = CandidateMatcher::sameEmail($email) ?? throw new RuntimeException("Demo candidate {$email} is missing.");
+
+            return JobApplication::query()->where('candidate_id', $candidate->id)->firstOrFail();
+        };
+
+        $layla = $application('layla.m@example.com');
+        $requisition = $layla->requisition()->firstOrFail();
+
+        if (! ScorecardCriterion::query()->where('job_requisition_id', $requisition->id)->exists()) {
+            resolve(SaveScorecardCriteria::class)->handle($actor, $requisition, array_map(fn (array $c): array => ['name' => ['en' => $c[0], 'ar' => $c[1]]], SeedHiringDefaults::criteria()));
+        }
+
+        $timezone = $requisition->branch()->firstOrFail()->timezone;
+        $interview = resolve(ScheduleInterview::class)->handle($actor, $layla, InterviewInputData::from([
+            'title' => 'First interview', 'durationMinutes' => 45, 'mode' => 'onsite', 'location' => 'Dubai Mall store, back office',
+            'panel' => [$manager->ulid, $colleague->ulid], 'timezone' => $timezone,
+            'startsAt' => CarbonImmutable::now($timezone)->subDay()->setTime(10, 0)->toIso8601String(),
+        ]));
+        $ratings = [];
+
+        foreach (ScorecardCriterion::query()->where('job_requisition_id', $requisition->id)->orderBy('position')->get() as $i => $criterion) {
+            $ratings[$criterion->ulid] = ['rating' => $i === 0 ? 4 : 3, 'note' => null];
+        }
+
+        resolve(SubmitScorecard::class)->handle(Actor::user($manager), $interview, $ratings, Recommendation::Yes, 'Warm with customers and knows the brands. Check weekend availability.', true);
+
+        resolve(ScheduleInterview::class)->handle($actor, $application('priya.n@example.com'), InterviewInputData::from([
+            'title' => 'Phone screen', 'durationMinutes' => 30, 'mode' => 'phone', 'panel' => [$recruiter->ulid], 'timezone' => $timezone,
+        ]));
+
+        $omar = $application('omar.h@example.com');
+        $hiringManager = Employee::query()->where('user_id', $manager->id)->first();
+        $offer = resolve(SaveOffer::class)->handle($actor, $omar, OfferInputData::from([
+            'jobTitle' => 'Senior Sales Associate',
+            'startOn' => CarbonImmutable::now($timezone)->addMonth()->startOfMonth()->toDateString(),
+            'salary' => ['amount_minor' => 950000, 'currency' => 'AED'],
+            'branchId' => $requisition->branch()->firstOrFail()->ulid,
+            'managerId' => $hiringManager?->ulid,
+            'expiresOn' => CarbonImmutable::now($timezone)->addWeeks(2)->toDateString(),
+        ]));
+        $offer = resolve(SubmitOffer::class)->handle($actor, $offer);
+
+        while ($task = WorkflowTask::query()->where('workflow_instance_id', $offer->fresh()?->workflow_instance_id)->where('status', TaskStatus::Open->value)->first()) {
+            resolve(WorkflowEngine::class)->decide($task, Decision::Approved, User::query()->findOrFail($task->assignee_user_id));
+        }
+
+        resolve(SendOffer::class)->handle($actor, $offer->fresh() ?? $offer, MessageChannel::Email);
     }
 
     private function seed(User $manager, string $password): void

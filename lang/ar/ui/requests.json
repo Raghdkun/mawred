@@ -150,7 +150,8 @@
             "done": "تم الإنجاز"
         },
         "delegate": "تفويض",
-        "fromLabel": "من"
+        "fromLabel": "من",
+        "openDocument": "فتح المستند"
     },
     "delegate": {
         "title": "فوّض هذه الموافقة",

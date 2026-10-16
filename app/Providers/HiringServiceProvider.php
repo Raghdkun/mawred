@@ -11,8 +11,10 @@ use App\Domain\Hiring\Listeners\SettleOffers;
 use App\Domain\Hiring\Listeners\SettleRequisitions;
 use App\Domain\Hiring\Models\Offer;
 use App\Domain\Hiring\Policies\HiringPolicy;
+use App\Domain\Hiring\Support\CognitoPostings;
 use App\Domain\Hiring\Support\OfferSummary;
 use App\Domain\Hiring\Workflows\OpenApprovedRequisition;
+use App\Domain\Integrations\Contracts\CognitoApplications;
 use App\Domain\Integrations\Events\WhatsAppMessageReceived;
 use App\Domain\Workflows\Engine\RecordUpdates;
 use App\Domain\Workflows\Engine\SubjectSummaries;
@@ -24,7 +26,7 @@ use Illuminate\Support\ServiceProvider;
 /**
  * Hiring wiring (Phase 6): the requisition approval's Update Record step, settling requisitions
  * and offers when their workflows end, offers in the approvals inbox, stage automations,
- * candidate WhatsApp replies, and record-level gates.
+ * candidate WhatsApp replies, Cognito-backed postings, and record-level gates.
  */
 final class HiringServiceProvider extends ServiceProvider
 {
@@ -35,6 +37,8 @@ final class HiringServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        $this->app->bind(CognitoApplications::class, CognitoPostings::class);
+
         $this->app->afterResolving(RecordUpdates::class, function (RecordUpdates $updates): void {
             $updates->register($this->app->make(OpenApprovedRequisition::class));
         });

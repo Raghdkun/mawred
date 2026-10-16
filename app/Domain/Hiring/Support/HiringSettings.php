@@ -58,9 +58,20 @@ final readonly class HiringSettings
             return null;
         }
 
-        $pair = fn (mixed $text): array => array_filter(is_array($text) ? $text : [], fn (mixed $v): bool => is_string($v) && $v !== '');
+        $pair = function (mixed $text): array {
+            $texts = [];
 
-        /** @var array{subject: array<string, string>, body: array<string, string>} */
+            foreach (['en', 'ar'] as $locale) {
+                $line = is_array($text) ? ($text[$locale] ?? null) : null;
+
+                if (is_string($line) && $line !== '') {
+                    $texts[$locale] = $line;
+                }
+            }
+
+            return $texts;
+        };
+
         return ['subject' => $pair($value['subject'] ?? null), 'body' => $pair($value['body'] ?? null)];
     }
 

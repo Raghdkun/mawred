@@ -31,11 +31,13 @@ import hiring from '@/routes/hiring';
 
 type Posting = App.Domain.Hiring.Data.PostingData;
 type FormOption = { id: string; name: string; schema: FormSchema };
+type CognitoOption = { id: string; name: string; formUrl: string | null; active: boolean };
 type Knockout = { field: string; rule: unknown };
 type Props = {
     requisition: App.Domain.Hiring.Data.RequisitionData;
     posting: Posting | null;
     forms: FormOption[];
+    cognitoSources: CognitoOption[];
     defaultFormId: string | null;
     suggestedTitle: Record<string, string>;
     requisitionOpen: boolean;
@@ -45,14 +47,16 @@ const empty: Pair = { en: '', ar: '' };
 const SCREENING_TYPES = ['select', 'radio', 'boolean', 'checkboxes', 'multiselect', 'number'];
 
 /**
- * Posting editor (D81, D87): the advert in both languages, the application form, screening
- * knock-outs built from the form's questions, and the search and share texts. Publishing puts it
+ * Posting editor (D81, D87): the advert in both languages, the application form (or a Cognito
+ * form whose answers map onto it), screening knock-outs built from the form's questions, and the
+ * search and share texts. Publishing puts it
  * on the careers site while the requisition is open.
  */
 export default function PostingEditor({
     requisition,
     posting,
     forms,
+    cognitoSources,
     defaultFormId,
     suggestedTitle,
     requisitionOpen,
@@ -70,6 +74,7 @@ export default function PostingEditor({
     const [showSalary, setShowSalary] = useState(posting?.showSalary ?? false);
     const [formId, setFormId] = useState(posting?.formId ?? defaultFormId ?? forms[0]?.id ?? '');
     const [closesOn, setClosesOn] = useState(posting?.closesOn ?? '');
+    const [cognitoSourceId, setCognitoSourceId] = useState(posting?.cognitoSourceId ?? '');
     const [knockouts, setKnockouts] = useState<Knockout[]>(
         (posting?.knockouts as Knockout[] | undefined) ?? [],
     );
@@ -91,6 +96,7 @@ export default function PostingEditor({
             showSalary,
             formId: formId || null,
             closesOn: closesOn || null,
+            cognitoSourceId: cognitoSourceId || null,
             knockouts,
             seo: { title: seoTitle, description: seoDescription },
         });
@@ -276,6 +282,45 @@ export default function PostingEditor({
 
                 <Section title={t('posting.applying')} description={t('posting.applyingHelp')}>
                     <div className="flex flex-col gap-4">
+                        {cognitoSources.length > 0 ? (
+                            <Field
+                                id="apply-via"
+                                label={t('posting.applyVia')}
+                                hint={cognitoSourceId ? t('posting.applyViaCognito') : undefined}
+                                error={errors.cognitoSourceId}
+                            >
+                                <Select
+                                    value={cognitoSourceId || 'careers'}
+                                    onValueChange={(id) =>
+                                        setCognitoSourceId(id === 'careers' ? '' : id)
+                                    }
+                                >
+                                    <SelectTrigger
+                                        id="apply-via"
+                                        className="min-h-11"
+                                        data-apply-via
+                                    >
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="careers">
+                                            {t('posting.applyOnCareers')}
+                                        </SelectItem>
+                                        {cognitoSources.map((source) => (
+                                            <SelectItem key={source.id} value={source.id}>
+                                                {source.active
+                                                    ? t('posting.applyOnCognito', {
+                                                          name: source.name,
+                                                      })
+                                                    : t('posting.applyOnCognitoOff', {
+                                                          name: source.name,
+                                                      })}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </Field>
+                        ) : null}
                         <Field id="form" label={t('posting.form')} error={errors.formId}>
                             <Select
                                 value={formId}

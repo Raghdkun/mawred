@@ -150,7 +150,8 @@
             "done": "Mark done"
         },
         "delegate": "Delegate",
-        "fromLabel": "From"
+        "fromLabel": "From",
+        "openDocument": "Open the document"
     },
     "delegate": {
         "title": "Delegate this approval",

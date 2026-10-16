@@ -6,6 +6,7 @@ namespace App\Domain\Hiring\Models;
 
 use App\Support\Ids\HasPublicUlid;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 
@@ -20,12 +21,11 @@ use Spatie\Translatable\HasTranslations;
  * @property int $position
  */
 #[Guarded(['id', 'ulid'])]
+#[Table(name: 'scorecard_criteria')]
 final class ScorecardCriterion extends Model
 {
     use HasPublicUlid;
     use HasTranslations;
-
-    protected $table = 'scorecard_criteria';
 
     /** @var list<string> */
     public array $translatable = ['name'];

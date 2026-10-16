@@ -18,6 +18,7 @@ use App\Domain\Hiring\Support\Texts;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
 use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -34,7 +35,7 @@ final class InterviewsController extends Controller
     public function mine(#[CurrentUser] User $user): Response
     {
         $interviews = Interview::query()
-            ->whereHas('panel', fn ($q) => $q->whereKey($user->id))
+            ->whereHas('panel', fn (Builder $q) => $q->whereKey($user->id))
             ->whereIn('status', [InterviewStatus::AwaitingBooking, InterviewStatus::Scheduled, InterviewStatus::Completed])
             ->with(['application.candidate', 'application.requisition', 'scorecards' => fn ($q) => $q->where('user_id', $user->id)])
             ->orderByRaw('starts_at desc nulls first')
@@ -53,7 +54,9 @@ final class InterviewsController extends Controller
                 'candidate' => ['id' => $i->application->candidate->ulid ?? '', 'name' => $i->application->candidate->name ?? '—'],
                 'application' => $i->application->ulid ?? '',
                 'job' => Texts::one($i->application?->requisition, 'title', $locale) ?? '',
-                'scorecard' => ($card = $i->scorecards->first()) instanceof Scorecard ? ($card->submitted_at !== null ? 'submitted' : 'draft') : 'missing',
+                'scorecard' => ($card = $i->scorecards->first()) instanceof Scorecard
+                    ? ($card->submitted_at !== null ? 'submitted' : 'draft')
+                    : ($i->starts_at === null || $i->starts_at->isFuture() ? 'upcoming' : 'missing'),
             ])->all()),
         ]);
     }

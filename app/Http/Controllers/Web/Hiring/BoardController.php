@@ -30,6 +30,7 @@ use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Models\PipelineStage;
 use App\Domain\Hiring\Models\ScorecardCriterion;
 use App\Domain\Hiring\Queries\ApplicationsQuery;
+use App\Domain\Hiring\Support\AutomationPeople;
 use App\Domain\Hiring\Support\HiringSettings;
 use App\Domain\Hiring\Support\Texts;
 use App\Http\Controllers\Controller;
@@ -75,7 +76,8 @@ final class BoardController extends Controller
 
         return Inertia::render('hiring/board', [
             'requisition' => RequisitionData::fromRequisition($requisition),
-            'stages' => array_values($requisition->stages()->get()->map(StageData::fromStage(...))->all()),
+            'stages' => array_values(($stages = $requisition->stages()->get())->map(StageData::fromStage(...))->all()),
+            'automationPeople' => AutomationPeople::for($stages),
             'cards' => array_values($cards->map(BoardCardData::fromApplication(...))->all()),
             'showRejected' => $showRejected,
             'criteria' => array_values($requisition->criteria()->get()->map(fn (ScorecardCriterion $c): array => ['id' => $c->ulid, 'name' => Texts::pair($c, 'name')])->all()),
@@ -104,6 +106,7 @@ final class BoardController extends Controller
             'applications.*' => ['string', 'size:26'],
             'reason' => ['required', Rule::enum(RejectionReason::class)],
             'note' => ['nullable', 'string', 'max:2000'],
+            'notify' => ['boolean'],
         ]);
         $reason = RejectionReason::from($request->string('reason')->toString());
         /** @var list<string> $ids */
@@ -114,7 +117,7 @@ final class BoardController extends Controller
             $this->authorizeUpdate($application);
 
             if ($application->status === ApplicationStatus::Active) {
-                $reject->handle(Actor::user($user), $application, $reason, $request->string('note')->toString());
+                $reject->handle(Actor::user($user), $application, $reason, $request->string('note')->toString(), $request->boolean('notify'));
                 $rejected++;
             }
         }

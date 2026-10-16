@@ -18,6 +18,7 @@ export type SharedProps = {
     setup: { complete: boolean };
     notifications: { unread: number } | null;
     approvals: { open: number } | null;
+    interviews: { panel: boolean; todo: number } | null;
     sidebarOpen: boolean;
 };
 

@@ -25,7 +25,7 @@ import { useLocale } from '@/hooks/use-locale';
 import { namespacesForPage, prepareLocale } from '@/i18n';
 import { logout } from '@/routes';
 import locale from '@/routes/locale';
-import { hrefOf, navigation } from './navigation';
+import { canSee, hrefOf, navigation } from './navigation';
 import { NavIcon } from './nav-icon';
 
 const RESULT_ICONS: Record<string, typeof UserRound> = {
@@ -77,7 +77,10 @@ export function CommandPalette({
 
     const pages = navigation(page.props.setup.complete)
         .flatMap((group) => group.items)
-        .filter((item) => (!item.permission || can(item.permission)) && matches(t(item.label)));
+        .filter(
+            (item) =>
+                canSee(item, can, page.props.interviews?.panel ?? false) && matches(t(item.label)),
+        );
 
     const actions = [
         {

@@ -165,7 +165,7 @@ it('lets a panelist see only that candidate and give blind feedback', function (
             ->where('applications.0.interviews.0.can.score', true)
             ->where('applications.0.interviews.0.scorecards', []));
     $this->actingAs($this->panelist)->get(route('hiring.interviews.index'))
-        ->assertInertia(fn (Assert $page): Assert => $page->component('hiring/interviews')->where('interviews.0.scorecard', 'missing'));
+        ->assertInertia(fn (Assert $page): Assert => $page->component('hiring/interviews')->where('interviews.0.scorecard', 'upcoming'));
 
     // The second panelist submits first; the first can't see it until they submit too.
     resolve(SubmitScorecard::class)->handle(Actor::user($this->second), $interview, hiringSixBRatings($interview, 4), Recommendation::StrongYes, 'Great', true);

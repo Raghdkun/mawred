@@ -17,6 +17,7 @@ use App\Domain\Hiring\Models\JobPosting;
 use App\Domain\Hiring\Models\JobRequisition;
 use App\Domain\Hiring\Support\ApplicantFields;
 use App\Domain\Hiring\Support\HiringSettings;
+use App\Domain\Integrations\Models\CognitoSource;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -95,11 +96,17 @@ final class PostingsController extends Controller
             ->all();
 
         $posting?->loadCount('applications');
+        $taken = JobPosting::query()->whereNotNull('cognito_source_id')->when($posting instanceof JobPosting, fn ($q) => $q->whereKeyNot($posting?->id))->pluck('cognito_source_id');
+        $cognitoSources = CognitoSource::query()->whereNull('request_type_id')->whereNotIn('id', $taken)->orderBy('name')->get()
+            ->map(fn (CognitoSource $source): array => ['id' => $source->ulid, 'name' => $source->name, 'formUrl' => $source->form_url, 'active' => $source->is_active])
+            ->values()
+            ->all();
 
         return Inertia::render('hiring/posting', [
             'requisition' => RequisitionData::fromRequisition($requisition),
             'posting' => $posting instanceof JobPosting ? PostingData::fromPosting($posting, $posting->form?->ulid) : null,
             'forms' => $forms,
+            'cognitoSources' => $cognitoSources,
             'defaultFormId' => $default?->ulid,
             'suggestedTitle' => $requisition->getTranslations('title'),
             'requisitionOpen' => $requisition->status->isActive(),
