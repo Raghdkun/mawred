@@ -19,6 +19,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { type Audience, AudienceEditor, EMPTY_AUDIENCE } from '@/features/training/audience-editor';
 import { ModulesEditor } from '@/features/training/modules-editor';
+import { SessionsEditor } from '@/features/training/sessions-editor';
 import { CourseStatusBadge } from '@/features/training/status';
 import { useLocale } from '@/hooks/use-locale';
 import training from '@/routes/training';
@@ -28,10 +29,12 @@ type Props = {
     course: Editor | null;
     categories: string[];
     employmentTypes: App.Domain.Organization.Data.CatalogEntryData[];
+    sessions: App.Domain.Training.Data.SessionData[];
+    timezone: string;
 };
 
 const blank: Pair = { en: '', ar: '' };
-const TABS = ['details', 'modules', 'audience'] as const;
+const TABS = ['details', 'modules', 'sessions', 'audience'] as const;
 
 /**
  * The course editor for trainers and HR (D98–D100, D103): details, modules and quizzes, and the
@@ -42,7 +45,7 @@ export default function CourseEditorPage(props: Props) {
     return <CourseEditor key={props.course?.id ?? 'new'} {...props} />;
 }
 
-function CourseEditor({ course, categories, employmentTypes }: Props) {
+function CourseEditor({ course, categories, employmentTypes, sessions, timezone }: Props) {
     const { t } = useTranslation('training');
     const { dir } = useLocale();
     const query = usePage().url.split('?')[1] ?? '';
@@ -319,6 +322,13 @@ function CourseEditor({ course, categories, employmentTypes }: Props) {
                     </TabsContent>
                     <TabsContent value="modules" className="max-w-3xl">
                         <ModulesEditor courseId={course.id} modules={course.modules} />
+                    </TabsContent>
+                    <TabsContent value="sessions" className="max-w-3xl">
+                        <SessionsEditor
+                            courseId={course.id}
+                            sessions={sessions}
+                            timezone={timezone}
+                        />
                     </TabsContent>
                     <TabsContent value="audience" className="max-w-3xl">
                         <Section title={t('audience.title')} description={t('audience.help')}>

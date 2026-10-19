@@ -9,31 +9,39 @@ use App\Domain\Access\Models\User;
 use App\Domain\Organization\Models\Branch;
 use App\Domain\People\Enums\EmployeeStatus;
 use App\Domain\People\Models\Employee;
+use App\Domain\Training\Actions\BookSession;
 use App\Domain\Training\Actions\ChangeCourseStatus;
 use App\Domain\Training\Actions\ChangeLearningPathStatus;
 use App\Domain\Training\Actions\CompleteModule;
 use App\Domain\Training\Actions\Enrol;
+use App\Domain\Training\Actions\IssueCertificate;
 use App\Domain\Training\Actions\SaveCourse;
 use App\Domain\Training\Actions\SaveCourseModules;
 use App\Domain\Training\Actions\SaveLearningPath;
+use App\Domain\Training\Actions\SaveSession;
 use App\Domain\Training\Actions\SeedTrainingDefaults;
 use App\Domain\Training\Actions\SubmitQuizAttempt;
 use App\Domain\Training\Data\CourseInputData;
 use App\Domain\Training\Data\LearningPathInputData;
 use App\Domain\Training\Data\ModulesInputData;
+use App\Domain\Training\Data\SessionInputData;
 use App\Domain\Training\Enums\CourseStatus;
 use App\Domain\Training\Enums\EnrollmentSource;
 use App\Domain\Training\Enums\ModuleKind;
 use App\Domain\Training\Models\Course;
 use App\Domain\Training\Models\CourseModule;
+use App\Domain\Training\Models\Enrollment;
+use App\Domain\Training\Models\TrainingSession;
 use App\Support\Actors\Actor;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
 use RuntimeException;
 
 /**
- * Demo training (Phase 7a): a trainer sign-in, four courses (one mandatory for the Dubai branch,
+ * Demo training (Phase 7): a trainer sign-in, four courses (one mandatory for the Dubai branch,
  * one that needs the manager's approval), a learning path, and learners part-way through or
- * finished. Runs on an existing demo company; everything goes through the real actions.
+ * finished (7a); then a classroom course with booked sessions, and certificates (7b), added to a
+ * 7a demo too. Runs on an existing demo company; everything goes through the real actions.
  *
  *   php artisan db:seed --class="Database\Seeders\Demo\TrainingDemoSeeder"
  */
@@ -54,16 +62,63 @@ final class TrainingDemoSeeder extends Seeder
             throw new RuntimeException('Seed the demo company (DemoSeeder) with DEMO_PASSWORD first.');
         }
 
-        if (User::query()->where('email', self::TRAINER)->exists()) {
+        // Enrolment approvals and audience assignment run on the queue; keep them inline here.
+        config(['queue.default' => 'sync']);
+        resolve(SeedTrainingDefaults::class)->handle();
+
+        if (! User::query()->where('email', self::TRAINER)->exists()) {
+            $this->seedCatalog($password, $learner);
+        }
+
+        if (TrainingSession::query()->exists()) {
             $this->command->info('Training demo data is already there.');
 
             return;
         }
 
-        // Enrolment approvals and audience assignment run on the queue; keep them inline here.
-        config(['queue.default' => 'sync']);
-        resolve(SeedTrainingDefaults::class)->handle();
+        $this->seedSessionsAndCertificates(User::query()->where('email', self::TRAINER)->firstOrFail());
+    }
 
+    /**
+     * Phase 7b: a classroom course with two sessions next week (a few seats booked), and
+     * certificates for the people who finished Customer service essentials.
+     */
+    private function seedSessionsAndCertificates(User $trainer): void
+    {
+        $actor = Actor::user($trainer);
+        $barista = $this->course($actor, [
+            'title' => ['en' => 'Barista masterclass', 'ar' => 'دورة الباريستا المتقدمة'],
+            'summary' => ['en' => 'Two hours behind the bar with our head barista.', 'ar' => 'ساعتان خلف البار مع رئيس الباريستا.'],
+            'category' => 'skills', 'durationMinutes' => 150, 'validityMonths' => 24,
+        ], [
+            ['kind' => 'text', 'title' => ['en' => 'Before the class', 'ar' => 'قبل الدورة'], 'body' => ['en' => 'Bring an apron and closed shoes.', 'ar' => 'أحضر مريلة وحذاءً مغلقًا.']],
+        ]);
+        $timezone = Branch::query()->where('code', 'DXB')->value('timezone');
+        $timezone = is_string($timezone) ? $timezone : 'Asia/Dubai';
+        $sessions = [];
+
+        foreach ([[7, 'Dubai Mall store, back of house'], [9, 'Head office training room']] as [$days, $place]) {
+            $start = CarbonImmutable::now($timezone)->addDays($days)->setTime(10, 0);
+            $sessions[] = resolve(SaveSession::class)->handle($actor, $barista, SessionInputData::from([
+                'startsAt' => $start->toIso8601String(), 'endsAt' => $start->addHours(2)->toIso8601String(), 'timezone' => $timezone,
+                'location' => $place, 'capacity' => 6, 'trainerId' => $trainer->ulid,
+            ]));
+        }
+
+        foreach (Employee::query()->where('status', EmployeeStatus::Active->value)->whereNotNull('user_id')->orderBy('id')->limit(4)->get() as $i => $employee) {
+            $enrollment = resolve(Enrol::class)->handle($actor, $employee, $barista, EnrollmentSource::Assigned);
+            resolve(BookSession::class)->handle($actor, $enrollment, $sessions[$i % 2]);
+        }
+
+        foreach (Enrollment::query()->where('status', 'completed')->get() as $done) {
+            resolve(IssueCertificate::class)->handle($done);
+        }
+
+        $this->command->info('Training sessions and certificates seeded.');
+    }
+
+    private function seedCatalog(string $password, User $learner): void
+    {
         $trainer = User::query()->forceCreate(['name' => 'Tala Trainer', 'email' => self::TRAINER, 'password' => $password, 'status' => 'active', 'email_verified_at' => now(), 'locale' => 'en']);
         resolve(AssignRoles::class)->handle(Actor::system('demo-seed'), $trainer, ['trainer' => [], 'employee' => []]);
         $actor = Actor::user($trainer);

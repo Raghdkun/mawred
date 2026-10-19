@@ -10,4 +10,5 @@ enum EventKind: string
     case Meeting = 'meeting';
     case Booking = 'booking';
     case Interview = 'interview';
+    case Training = 'training';
 }

@@ -80,4 +80,8 @@ Route::prefix('v1')
         Route::get('training/enrollments', [TrainingController::class, 'mine'])->name('training.enrollments.index');
         Route::delete('training/enrollments/{enrollment}', [TrainingController::class, 'leave'])->name('training.enrollments.cancel');
         Route::get('employees/{employee}/training', [TrainingController::class, 'record'])->name('training.record');
+        Route::get('training/courses/{course}/sessions', [TrainingController::class, 'sessions'])->name('training.sessions.index');
+        Route::post('training/courses/{course}/sessions/{session}/book', [TrainingController::class, 'book'])->name('training.sessions.book');
+        Route::delete('training/bookings/{booking}', [TrainingController::class, 'cancelBooking'])->name('training.bookings.cancel');
+        Route::post('training/check-in', [TrainingController::class, 'checkIn'])->middleware('throttle:30,1')->name('training.check-in');
     });

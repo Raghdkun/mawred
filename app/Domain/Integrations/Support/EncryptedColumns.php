@@ -16,6 +16,7 @@ use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeCustomValue;
 use App\Domain\People\Models\EmployeeDocument;
 use App\Domain\People\Models\EmploymentHistoryEntry;
+use App\Domain\Training\Models\TrainingSession;
 use App\Domain\Workflows\Models\WebhookEndpoint;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,6 +46,7 @@ final class EncryptedColumns
             CandidateMessage::class => ['body'],
             Offer::class => ['letter', 'salary_minor'],
             EmploymentHistoryEntry::class => ['salary_minor'],
+            TrainingSession::class => ['checkin_secret'],
         ];
     }
 }

@@ -29,9 +29,13 @@ beforeEach(function (): void {
 it('lists the request types someone can use, with the form on show', function (): void {
     Sanctum::actingAs($this->requesterUser);
 
-    $this->getJson('/api/v1/request-types')->assertOk()->assertJsonCount(14, 'data')->assertJsonMissingPath('data.0.form');
+    $this->getJson('/api/v1/request-types')->assertOk()->assertJsonCount(15, 'data')->assertJsonMissingPath('data.0.form');
     $this->getJson("/api/v1/request-types/{$this->asset->ulid}")->assertOk()->assertJsonPath('data.code', 'ASSET_REQUEST')->assertJsonPath('data.form.format', 'mawred.form/v1');
-    $this->getJson('/api/v1/request-types/'.RequestType::query()->where('code', 'TRAINING')->value('ulid'))->assertNotFound();
+
+    // A type flagged for a later phase isn't offered.
+    $training = RequestType::query()->where('code', 'TRAINING')->sole();
+    $training->forceFill(['available_in_phase' => 99])->save();
+    $this->getJson("/api/v1/request-types/{$training->ulid}")->assertNotFound();
 });
 
 it('submits once per idempotency key and validates with the error envelope', function (): void {

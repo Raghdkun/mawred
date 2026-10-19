@@ -360,7 +360,7 @@ final readonly class SeedRequestTypes
                 ],
             ],
             [
-                'code' => 'TRAINING', 'category' => RequestCategory::Training, 'icon' => 'training', 'chain' => 'standard', 'phase' => 7,
+                'code' => 'TRAINING', 'category' => RequestCategory::Training, 'icon' => 'training', 'chain' => 'standard', 'update' => 'training.external',
                 'name' => ['en' => 'Training request', 'ar' => 'طلب تدريب'],
                 'description' => ['en' => 'A course or certification you’d like to take.', 'ar' => 'دورة أو شهادة ترغب في الحصول عليها.'],
                 'fields' => [

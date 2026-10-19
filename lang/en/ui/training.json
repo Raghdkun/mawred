@@ -148,8 +148,11 @@
             "active": "In progress",
             "waiting": "Waiting for approval",
             "completed": "Completed",
-            "paths": "Your learning paths"
-        }
+            "paths": "Your learning paths",
+            "certificates": "Certificates",
+            "external": "Outside training"
+        },
+        "externalHelp": "Courses taken outside the catalog from your approved training requests. Add the certificate when you have it."
     },
     "path": {
         "back": "Learning paths",
@@ -163,7 +166,8 @@
     "panel": {
         "empty": "No training yet",
         "emptyHelp": "Courses this person enrols in or is assigned appear here.",
-        "error": "The training record couldn’t be loaded."
+        "error": "The training record couldn’t be loaded.",
+        "courses": "Courses"
     },
     "manage": {
         "title": "Courses",
@@ -191,6 +195,7 @@
         "tabs": {
             "details": "Details",
             "modules": "Modules",
+            "sessions": "Sessions",
             "audience": "Audience"
         },
         "title": "Title",
@@ -306,5 +311,112 @@
         "chooseCourse": "Choose a course",
         "removeCourse": "Remove course",
         "save": "Save"
+    },
+    "sessions": {
+        "title": "Sessions",
+        "help": "Book one session; attending it is part of completing the course.",
+        "attendedHelp": "You attended a session for this course.",
+        "book": "Book a seat",
+        "booked": "Your seat is booked",
+        "release": "Give up my seat",
+        "joinWaitlist": "Join the waitlist",
+        "waitlisted": "On the waitlist, number {position}",
+        "leaveWaitlist": "Leave the waitlist",
+        "attended": "Attended",
+        "joinOnline": "Join the online session",
+        "online": "Online",
+        "onsite": "On site",
+        "openSeats": "Open seats",
+        "seatsLeft": "{count, plural, =0 {Full} one {# seat left} other {# seats left}}",
+        "with": "with {name}",
+        "checkedIn": "You’re checked in. Enjoy the session.",
+        "editorHelp": "Learners book one of these; attending one is needed to complete the course. Each session is on the trainer’s calendar.",
+        "none": "No sessions planned.",
+        "new": "Plan a session",
+        "edit": "Edit",
+        "cancel": "Cancel session",
+        "cancelled": "Cancelled",
+        "roster": "Roster",
+        "save": "Save session",
+        "dialogHelp": "Times are in {zone}.",
+        "date": "Date",
+        "from": "From",
+        "to": "To",
+        "mode": "Where",
+        "location": "Room or address",
+        "meetingUrl": "Meeting link",
+        "capacity": "Seats",
+        "capacityHint": "Leave empty for no limit.",
+        "bookedOf": "{booked} of {capacity} booked",
+        "bookedOpen": "{booked} booked",
+        "waiting": "{count, plural, one {# waiting} other {# waiting}}"
+    },
+    "roster": {
+        "title": "Roster",
+        "showQr": "Show the check-in QR",
+        "counts": "{booked} booked · {attended} attended · {waiting} waiting",
+        "empty": "No one has booked yet",
+        "emptyHelp": "People on the course can book a seat from the course page.",
+        "seated": "Booked",
+        "waitlist": "Waitlist",
+        "notYet": "Not checked in",
+        "byQr": "Checked in with the QR at {time}",
+        "byHand": "Marked present at {time}"
+    },
+    "display": {
+        "title": "Check in",
+        "help": "Scan with your phone’s camera to check in. The code changes every 30 seconds.",
+        "qr": "Check-in QR code",
+        "offline": "Can’t reach the server. Retrying…",
+        "count": "{count, plural, =0 {No one checked in yet} one {{formatted} checked in} other {{formatted} checked in}}"
+    },
+    "checkIn": {
+        "title": "Check in",
+        "confirm": "Check in",
+        "expired": "This code has expired",
+        "expiredHelp": "Codes change every 30 seconds. Scan the one on screen now."
+    },
+    "feedback": {
+        "title": "How was this course?",
+        "rate": "Your rating",
+        "stars": "{count, plural, one {# star} other {# stars}}",
+        "comment": "Comment (optional)",
+        "send": "Send feedback",
+        "update": "Update feedback",
+        "summary": "Rated {average} out of 5 by {count, plural, one {# learner} other {# learners}}"
+    },
+    "certificate": {
+        "yours": "Your certificate",
+        "download": "Download",
+        "check": "Check online",
+        "issued": "Issued {date}",
+        "expires": "Valid until {date}",
+        "noExpiry": "Doesn’t expire",
+        "revoke": "Revoke",
+        "revokeTitle": "Revoke this certificate?",
+        "revokeHelp": "Certificate {serial} will show as revoked to anyone who checks it.",
+        "reason": "Reason",
+        "state": {
+            "valid": "Valid",
+            "expired": "Expired",
+            "revoked": "Revoked"
+        }
+    },
+    "external": {
+        "upload": "Add the certificate",
+        "replace": "Replace the certificate",
+        "metBy": "Met with the catalog course: {course}",
+        "catalogCourse": "Catalog course",
+        "enrolInstead": "Enrol instead"
+    },
+    "verify": {
+        "title": "Certificate check",
+        "serial": "Serial",
+        "holder": "Holder",
+        "course": "Course",
+        "issued": "Issued",
+        "expires": "Valid until",
+        "unknown": "No certificate has this serial",
+        "unknownHelp": "Check the serial on the certificate and try again."
     }
 }
