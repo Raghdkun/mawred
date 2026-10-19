@@ -899,5 +899,21 @@
     "Session saved. It’s on the trainer’s calendar.": "حُفظت الجلسة، وهي في تقويم المدرّب.",
     "The session was cancelled and everyone booked was told.": "أُلغيت الجلسة وأُبلغ كل من حجز.",
     "Allowance recorded.": "سُجّل البدل.",
-    "Allowance updated.": "حُدّث البدل."
+    "Allowance updated.": "حُدّث البدل.",
+    "Choose a branch.": "اختر فرعًا.",
+    "Choose a date.": "اختر تاريخًا.",
+    "Choose a department.": "اختر قسمًا.",
+    "Choose a month.": "اختر شهرًا.",
+    "Choose a period of two years or less.": "اختر فترة لا تزيد على سنتين.",
+    "Choose a start date on or before the end date.": "اختر تاريخ بداية يسبق تاريخ النهاية أو يساويه.",
+    "Download it in Mawred within :days days.": "نزّله من مورد خلال :days أيام.",
+    "Something went wrong while making this file. Try again, or ask your administrator if it keeps happening.": "حدث خطأ أثناء إعداد هذا الملف. حاول مرة أخرى، أو تواصل مع مسؤول النظام إذا تكرر ذلك.",
+    "This export didn’t finish. Please try again.": "لم يكتمل إعداد هذا الملف. يرجى المحاولة مرة أخرى.",
+    "This report has more than :count rows, too many to print. Export it as XLSX or CSV instead.": "يحتوي هذا التقرير على أكثر من :count صف، وهذا أكثر مما يمكن طباعته. صدّره بصيغة XLSX أو CSV بدلًا من ذلك.",
+    "We’re making your file. We’ll let you know when it’s ready.": "نُعدّ ملفك الآن، وسنُعلمك عندما يصبح جاهزًا.",
+    "You already have :count exports on the way. Try again when one is ready.": "لديك :count ملفات قيد الإعداد. حاول مرة أخرى عندما يجهز أحدها.",
+    "You can’t export this report.": "لا يمكنك تصدير هذا التقرير.",
+    "You no longer have access to this report.": "لم تعد لديك صلاحية الوصول إلى هذا التقرير.",
+    "Your report couldn’t be made: :report": "تعذّر إعداد تقريرك: :report",
+    "Your report is ready: :report": "تقريرك جاهز: :report"
 }

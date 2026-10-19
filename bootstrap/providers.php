@@ -11,6 +11,7 @@ use App\Providers\LeaveServiceProvider;
 use App\Providers\NotificationsServiceProvider;
 use App\Providers\PeopleServiceProvider;
 use App\Providers\PoliciesServiceProvider;
+use App\Providers\ReportsServiceProvider;
 use App\Providers\RequestsServiceProvider;
 use App\Providers\TimeServiceProvider;
 use App\Providers\TrainingServiceProvider;
@@ -29,6 +30,7 @@ return [
     TimeServiceProvider::class,
     HiringServiceProvider::class,
     TrainingServiceProvider::class,
+    ReportsServiceProvider::class,
     NotificationsServiceProvider::class,
     IntegrationsServiceProvider::class,
     FortifyServiceProvider::class,

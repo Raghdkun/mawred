@@ -57,6 +57,10 @@
             "training": {
                 "name": "Training",
                 "help": "Courses assigned to you, enrolment decisions, sessions and certificates about to expire."
+            },
+            "reports": {
+                "name": "Reports",
+                "help": "When a report export you asked for is ready, or could not be made."
             }
         },
         "locked": "Locked switches stay on: you always need to know about these.",

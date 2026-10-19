@@ -805,7 +805,7 @@ createdAt: string,
 };
 }
 namespace Enums {
-export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'hiring' | 'training' | 'security' | 'integrations';
+export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'hiring' | 'training' | 'reports' | 'security' | 'integrations';
 }
 }
 namespace Organization {
@@ -1448,6 +1448,71 @@ export type HolidayType = 'fixed' | 'nth_weekday' | 'one_off';
 export type ObservedRule = 'none' | 'nearest_weekday' | 'next_working_day' | 'previous_working_day';
 export type PolicyLevel = 'global' | 'branch' | 'department' | 'position' | 'grade' | 'employment_type' | 'employee';
 export type PolicySection = 'leave' | 'work_week' | 'overtime' | 'attendance' | 'rest' | 'employment';
+}
+}
+namespace Reports {
+namespace Data {
+export type ReportCardData = {
+key: string,
+category: App.Domain.Reports.Enums.ReportCategory,
+title: string,
+description: string,
+canExport: boolean,
+};
+export type ReportFilterData = {
+key: string,
+type: App.Domain.Reports.Enums.FilterType,
+required: boolean,
+label: string | null,
+options: {
+value: string,
+label: string,
+}[],
+};
+export type ReportResultData = {
+columns: {
+key: string,
+label: string,
+type: App.Domain.Reports.Enums.ColumnType,
+}[],
+rows: Record<string, string | number | null>[],
+total: number,
+truncated: boolean,
+kpis: {
+label: string,
+value: number,
+format: string,
+}[],
+chart: {
+type: string,
+x: string,
+series: {
+key: string,
+label: string,
+}[],
+data: Record<string, string | number | null>[],
+} | null,
+};
+export type ReportRunData = {
+id: string,
+report: string,
+title: string,
+period: string,
+format: App.Domain.Reports.Enums.ReportFormat,
+status: App.Domain.Reports.Enums.RunStatus,
+rows: number | null,
+fileName: string | null,
+error: string | null,
+createdAt: string,
+expiresAt: string | null,
+};
+}
+namespace Enums {
+export type ColumnType = 'text' | 'number' | 'decimal' | 'percent' | 'date' | 'minutes';
+export type FilterType = 'period' | 'month' | 'year' | 'as_of' | 'days' | 'branch' | 'department' | 'choice';
+export type ReportCategory = 'people' | 'leave' | 'time' | 'requests' | 'hiring' | 'training' | 'payroll' | 'admin';
+export type ReportFormat = 'xlsx' | 'csv' | 'pdf';
+export type RunStatus = 'queued' | 'running' | 'ready' | 'failed';
 }
 }
 namespace Requests {
