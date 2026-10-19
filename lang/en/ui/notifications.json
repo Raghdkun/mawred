@@ -53,6 +53,10 @@
             "integrations": {
                 "name": "Integrations",
                 "help": "When a connection such as email or WhatsApp stops or recovers."
+            },
+            "training": {
+                "name": "Training",
+                "help": "Courses assigned to you, enrolment decisions, sessions and certificates about to expire."
             }
         },
         "locked": "Locked switches stay on: you always need to know about these.",

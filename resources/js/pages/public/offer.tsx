@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { PlainText } from '@/features/hiring/plain-text';
+import { PlainText } from '@/components/mw/plain-text';
 import { SignaturePad } from '@/features/hiring/signature-pad';
 import { useLocale } from '@/hooks/use-locale';
 import { formatDate } from '@/lib/format';

@@ -151,6 +151,7 @@ final class PeopleController extends Controller
                 'invite' => $canUpdate && $employee->user_id === null,
                 'policies' => Gate::allows('policies.view'),
                 'leave' => Gate::allows('viewLeave', $employee),
+                'training' => Gate::allows('training.viewRecord', $employee),
                 'salary' => [
                     'read' => $canSeeSalary,
                     'write' => $canUpdate && $resolver->fieldAccess($viewer, 'employee.salary')?->value === 'write',

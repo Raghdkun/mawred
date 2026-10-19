@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { AltchaField } from '@/features/forms/altcha-field';
 import { FormRenderer } from '@/features/forms/form-renderer';
 import { type FormRuleContext, type FormSchema, asPayload } from '@/features/forms/schema';
-import { PlainText } from '@/features/hiring/plain-text';
+import { PlainText } from '@/components/mw/plain-text';
 import { formatMinor } from '@/features/hiring/status';
 import { useLocale } from '@/hooks/use-locale';
 import { formatDate } from '@/lib/format';

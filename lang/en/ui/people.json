@@ -149,7 +149,8 @@
             "documents": "Documents",
             "history": "History",
             "policies": "Effective policies",
-            "leave": "Leave"
+            "leave": "Leave",
+            "training": "Training"
         }
     },
     "terminate": {

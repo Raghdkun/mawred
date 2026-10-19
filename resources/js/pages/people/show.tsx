@@ -10,6 +10,7 @@ import { JobTab } from '@/features/people/profile/job-tab';
 import { OverviewTab } from '@/features/people/profile/overview-tab';
 import { PersonalTab } from '@/features/people/profile/personal-tab';
 import { PoliciesTab } from '@/features/people/profile/policies-tab';
+import { TrainingPanel } from '@/features/training/training-panel';
 import { ProfileHeader } from '@/features/people/profile/profile-header';
 import { type ProfileProps } from '@/features/people/profile/types';
 import { useLocale } from '@/hooks/use-locale';
@@ -18,11 +19,19 @@ import { cn } from '@/lib/utils';
 import people from '@/routes/people';
 
 /**
- * Attendance and Training tabs join with their modules (Phases 5b–6); nothing links to an
- * unbuilt tab. Leave shows to people whose leave scope reaches this person; effective policies
- * to people who can read policies.
+ * Attendance joins with its module; nothing links to an unbuilt tab. Leave and Training show to
+ * people whose scope reaches this person; effective policies to people who can read policies.
  */
-const TABS = ['overview', 'job', 'personal', 'documents', 'leave', 'history', 'policies'] as const;
+const TABS = [
+    'overview',
+    'job',
+    'personal',
+    'documents',
+    'leave',
+    'training',
+    'history',
+    'policies',
+] as const;
 type Tab = (typeof TABS)[number];
 
 /** Employee profile (handoff 8): header + tabs; tabs scroll horizontally on phones. */
@@ -67,7 +76,8 @@ export default function PeopleShow(props: ProfileProps) {
                     {TABS.filter(
                         (key) =>
                             (key !== 'policies' || props.can.policies) &&
-                            (key !== 'leave' || props.can.leave),
+                            (key !== 'leave' || props.can.leave) &&
+                            (key !== 'training' || props.can.training),
                     ).map((key) => (
                         <button
                             key={key}
@@ -104,6 +114,9 @@ export default function PeopleShow(props: ProfileProps) {
                         employeeId={props.profile.summary.id}
                         initialYear={new Date().getFullYear()}
                     />
+                ) : null}
+                {tab === 'training' && props.can.training ? (
+                    <TrainingPanel employeeId={props.profile.summary.id} />
                 ) : null}
                 {tab === 'history' ? <HistoryTab {...props} /> : null}
                 {tab === 'policies' && props.can.policies ? <PoliciesTab {...props} /> : null}

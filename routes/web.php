@@ -28,6 +28,7 @@ require __DIR__.'/schedule.php';
 require __DIR__.'/attendance.php';
 require __DIR__.'/calendar.php';
 require __DIR__.'/hiring.php';
+require __DIR__.'/training.php';
 require __DIR__.'/workflows.php';
 require __DIR__.'/integrations.php';
 require __DIR__.'/audit.php';
