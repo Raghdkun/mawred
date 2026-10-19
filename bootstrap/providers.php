@@ -13,6 +13,7 @@ use App\Providers\PeopleServiceProvider;
 use App\Providers\PoliciesServiceProvider;
 use App\Providers\RequestsServiceProvider;
 use App\Providers\TimeServiceProvider;
+use App\Providers\TrainingServiceProvider;
 use App\Providers\TypeScriptTransformerServiceProvider;
 use App\Providers\WorkflowsServiceProvider;
 
@@ -27,6 +28,7 @@ return [
     LeaveServiceProvider::class,
     TimeServiceProvider::class,
     HiringServiceProvider::class,
+    TrainingServiceProvider::class,
     NotificationsServiceProvider::class,
     IntegrationsServiceProvider::class,
     FortifyServiceProvider::class,

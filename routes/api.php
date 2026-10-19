@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\Requests\DelegateCandidatesController;
 use App\Http\Controllers\Api\V1\Requests\RequestsController;
 use App\Http\Controllers\Api\V1\Schedule\ScheduleController;
 use App\Http\Controllers\Api\V1\Search\GlobalSearchController;
+use App\Http\Controllers\Api\V1\Training\TrainingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,4 +73,11 @@ Route::prefix('v1')
         Route::get('hiring/candidates', [HiringController::class, 'candidates'])->name('hiring.candidates');
         Route::get('hiring/people', [HiringController::class, 'people'])->name('hiring.people');
         Route::post('hiring/applications/{application}/move', [HiringController::class, 'move'])->name('hiring.applications.move');
+
+        Route::get('training/courses', [TrainingController::class, 'courses'])->name('training.courses.index');
+        Route::get('training/courses/{course}', [TrainingController::class, 'course'])->name('training.courses.show');
+        Route::post('training/courses/{course}/enrol', [TrainingController::class, 'enrol'])->name('training.courses.enrol');
+        Route::get('training/enrollments', [TrainingController::class, 'mine'])->name('training.enrollments.index');
+        Route::delete('training/enrollments/{enrollment}', [TrainingController::class, 'leave'])->name('training.enrollments.cancel');
+        Route::get('employees/{employee}/training', [TrainingController::class, 'record'])->name('training.record');
     });

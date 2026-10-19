@@ -6,6 +6,7 @@ namespace App\Domain\People\Actions;
 
 use App\Domain\Organization\Models\Branch;
 use App\Domain\People\Enums\EmployeeStatus;
+use App\Domain\People\Events\EmployeePlacementChanged;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeAssignment;
 use App\Domain\People\Support\ReportingLines;
@@ -15,8 +16,9 @@ use Illuminate\Database\ConnectionInterface;
 /**
  * Recomputes what is "current" for one employee on their branch-local today: the `is_current`
  * flag on assignments, the denormalised `current_*` columns, the reporting line and the
- * pending → active → terminated status. Called after every placement change and by the hourly
- * `people:sync-placements` command, so future-dated changes take effect on their day.
+ * pending → active → terminated status, announcing a change of placement or status. Called after
+ * every placement change and by the hourly `people:sync-placements` command, so future-dated
+ * changes take effect on their day.
  *
  * With no primary assignment in force (a future hire, or after termination) the `current_*`
  * columns follow the next upcoming primary, else the last one, so the person stays visible to
@@ -69,7 +71,12 @@ final readonly class SyncEmployeePlacement
                 $employee->current_manager_id = $previousManager;
             }
 
+            $placementChanged = $employee->exists && $employee->isDirty(['current_branch_id', 'current_department_id', 'current_position_id', 'current_employment_type_id', 'status']);
             $employee->save();
+
+            if ($placementChanged) {
+                event(new EmployeePlacementChanged($employee));
+            }
 
             if ($managerChanged) {
                 $this->lines->move($employee, $employee->current_manager_id);
