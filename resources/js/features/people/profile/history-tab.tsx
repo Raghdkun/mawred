@@ -13,6 +13,7 @@ import { formatDate, formatNumber } from '@/lib/format';
 import { type Locale } from '@/i18n';
 import { localized } from '@/lib/localized';
 import people from '@/routes/people';
+import { AllowancesSection } from './allowances-section';
 import { type HistoryEntry, type ProfileProps, today } from './types';
 
 const KINDS = ['branch', 'department', 'position', 'manager', 'employment_type', 'grade'] as const;
@@ -32,7 +33,11 @@ export function HistoryTab({
     historyNames,
     defaultCurrency,
     can,
-}: Pick<ProfileProps, 'profile' | 'history' | 'historyNames' | 'defaultCurrency' | 'can'>) {
+    allowances,
+}: Pick<
+    ProfileProps,
+    'profile' | 'history' | 'historyNames' | 'defaultCurrency' | 'can' | 'allowances'
+>) {
     const { t } = useTranslation('people');
     const { locale } = useLocale();
     const [recording, setRecording] = useState(false);
@@ -68,60 +73,81 @@ export function HistoryTab({
     };
 
     return (
-        <Section
-            title={t('history.title')}
-            actions={
-                can.salary.write ? (
-                    <Button size="sm" variant="outline" onClick={() => setRecording(true)}>
-                        <Plus aria-hidden />
-                        {t('history.recordSalary')}
-                    </Button>
-                ) : null
-            }
-        >
-            {history.length === 0 ? (
-                <p className="text-small text-muted-foreground">{t('history.empty')}</p>
-            ) : (
-                <ol className="relative flex flex-col gap-5 border-s border-border ps-6">
-                    {history
-                        .filter((entry) => entry.event !== 'salary_changed' || can.salary.read)
-                        .map((entry) => (
-                            <li key={entry.id} className="relative">
-                                <span
-                                    aria-hidden
-                                    className="absolute -start-[1.95rem] top-1.5 size-3 rounded-full border-2 border-card bg-primary"
-                                />
-                                <p className="text-sm font-medium">
-                                    {t(`history.events.${entry.event}`)}
-                                </p>
-                                <p className="text-caption text-muted-foreground">
-                                    {formatDate(entry.effectiveOn, locale, { dateStyle: 'medium' })}
-                                </p>
-                                {entry.salary ? (
-                                    <p className="mt-1 text-sm tabular-nums">
-                                        {money(entry.salary.minor, entry.salary.currency, locale)}
-                                    </p>
-                                ) : null}
-                                <ul className="mt-1 text-small text-text-secondary">
-                                    {describe(entry)}
-                                </ul>
-                                {entry.note ? (
-                                    <p className="mt-1 text-small text-text-secondary">
-                                        {entry.note}
-                                    </p>
-                                ) : null}
-                            </li>
-                        ))}
-                </ol>
-            )}
-            {recording ? (
-                <SalaryDialog
+        <div className="flex flex-col gap-8">
+            {allowances !== null ? (
+                <AllowancesSection
                     employeeId={profile.summary.id}
+                    allowances={allowances}
                     currency={defaultCurrency}
-                    onClose={() => setRecording(false)}
+                    canWrite={can.salary.write}
                 />
             ) : null}
-        </Section>
+            <Section
+                title={t('history.title')}
+                actions={
+                    can.salary.write ? (
+                        <Button size="sm" variant="outline" onClick={() => setRecording(true)}>
+                            <Plus aria-hidden />
+                            {t('history.recordSalary')}
+                        </Button>
+                    ) : null
+                }
+            >
+                {history.length === 0 ? (
+                    <p className="text-small text-muted-foreground">{t('history.empty')}</p>
+                ) : (
+                    <ol className="relative flex flex-col gap-5 border-s border-border ps-6">
+                        {history
+                            .filter(
+                                (entry) =>
+                                    !['salary_changed', 'allowance_changed'].includes(
+                                        entry.event,
+                                    ) || can.salary.read,
+                            )
+                            .map((entry) => (
+                                <li key={entry.id} className="relative">
+                                    <span
+                                        aria-hidden
+                                        className="absolute -start-[1.95rem] top-1.5 size-3 rounded-full border-2 border-card bg-primary"
+                                    />
+                                    <p className="text-sm font-medium">
+                                        {t(`history.events.${entry.event}`)}
+                                    </p>
+                                    <p className="text-caption text-muted-foreground">
+                                        {formatDate(entry.effectiveOn, locale, {
+                                            dateStyle: 'medium',
+                                        })}
+                                    </p>
+                                    {entry.salary ? (
+                                        <p className="mt-1 text-sm tabular-nums">
+                                            {money(
+                                                entry.salary.minor,
+                                                entry.salary.currency,
+                                                locale,
+                                            )}
+                                        </p>
+                                    ) : null}
+                                    <ul className="mt-1 text-small text-text-secondary">
+                                        {describe(entry)}
+                                    </ul>
+                                    {entry.note ? (
+                                        <p className="mt-1 text-small text-text-secondary">
+                                            {entry.note}
+                                        </p>
+                                    ) : null}
+                                </li>
+                            ))}
+                    </ol>
+                )}
+                {recording ? (
+                    <SalaryDialog
+                        employeeId={profile.summary.id}
+                        currency={defaultCurrency}
+                        onClose={() => setRecording(false)}
+                    />
+                ) : null}
+            </Section>
+        </div>
     );
 }
 

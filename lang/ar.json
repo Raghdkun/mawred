@@ -897,5 +897,7 @@
     "Certificate uploaded.": "رُفعت الشهادة.",
     "Enrolled in the catalog course.": "سُجّل في دورة الكتالوج.",
     "Session saved. It’s on the trainer’s calendar.": "حُفظت الجلسة، وهي في تقويم المدرّب.",
-    "The session was cancelled and everyone booked was told.": "أُلغيت الجلسة وأُبلغ كل من حجز."
+    "The session was cancelled and everyone booked was told.": "أُلغيت الجلسة وأُبلغ كل من حجز.",
+    "Allowance recorded.": "سُجّل البدل.",
+    "Allowance updated.": "حُدّث البدل."
 }

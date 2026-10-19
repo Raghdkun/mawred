@@ -918,6 +918,27 @@ export type CatalogKind = 'employment-types' | 'grades' | 'cost-centers';
 }
 namespace People {
 namespace Data {
+export type AllowanceData = {
+id: string,
+type: string,
+label: string | null,
+amount: {
+minor: number,
+currency: string,
+} | null,
+effectiveFrom: string,
+effectiveTo: string | null,
+note: string | null,
+};
+export type AllowanceInputData = {
+type: string,
+amount: string,
+currency: string,
+effectiveFrom: string,
+effectiveTo: string | null,
+label: string | null,
+note: string | null,
+};
 export type AssetData = {
 id: string,
 name: string,
@@ -1169,10 +1190,11 @@ dateOfBirth: undefined | string | null,
 };
 }
 namespace Enums {
+export type AllowanceType = 'housing' | 'transport' | 'food' | 'phone' | 'education' | 'other';
 export type CustomFieldType = 'text' | 'textarea' | 'number' | 'date' | 'select' | 'multiselect' | 'boolean' | 'email' | 'phone' | 'url';
 export type EmployeeStatus = 'pending' | 'active' | 'suspended' | 'terminated';
 export type Gender = 'female' | 'male';
-export type HistoryEvent = 'hired' | 'placement_changed' | 'salary_changed' | 'status_changed' | 'terminated';
+export type HistoryEvent = 'hired' | 'placement_changed' | 'salary_changed' | 'allowance_changed' | 'status_changed' | 'terminated';
 export type ImportRowStatus = 'valid' | 'invalid' | 'done' | 'failed';
 export type ImportStatus = 'uploaded' | 'validating' | 'validated' | 'committing' | 'completed' | 'failed' | 'cancelled';
 export type MaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';

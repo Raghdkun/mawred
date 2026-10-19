@@ -58,6 +58,8 @@ Route::middleware(['auth', 'verified'])->prefix('people')->name('people.')->grou
     Route::get('{employee}/documents/{document}/file', [EmployeeDocumentsController::class, 'download'])->name('documents.download');
 
     Route::post('{employee}/salaries', [EmployeeRecordsController::class, 'storeSalary'])->name('salaries.store');
+    Route::post('{employee}/allowances', [EmployeeRecordsController::class, 'storeAllowance'])->name('allowances.store');
+    Route::put('{employee}/allowances/{allowance}', [EmployeeRecordsController::class, 'updateAllowance'])->name('allowances.update');
     Route::post('{employee}/assets', [EmployeeRecordsController::class, 'storeAsset'])->name('assets.store');
     Route::patch('{employee}/assets/{asset}/return', [EmployeeRecordsController::class, 'returnAsset'])->name('assets.return');
     Route::post('{employee}/invitation', [EmployeeRecordsController::class, 'invite'])->name('invitation.store');
