@@ -1,0 +1,83 @@
+{
+    "pageTitle": "Reports",
+    "title": "Reports",
+    "description": "Ready-made reports across Mawred. Each one shows only what you're allowed to see.",
+    "myExports": "My exports",
+    "exportsPending": "An export is on the way",
+    "categories": {
+        "people": "People",
+        "leave": "Leave",
+        "time": "Time and attendance",
+        "requests": "Requests",
+        "hiring": "Hiring",
+        "training": "Training",
+        "payroll": "Payroll",
+        "admin": "Administration"
+    },
+    "open": "Open {title}",
+    "empty": {
+        "title": "No reports for you yet",
+        "description": "Reports appear here when your role can see the data behind them."
+    },
+    "back": "All reports",
+    "filters": {
+        "label": "Report filters",
+        "from": "From",
+        "to": "To",
+        "month": "Month",
+        "year": "Year",
+        "asOf": "On",
+        "days": "Next (days)",
+        "branch": "Branch",
+        "department": "Department",
+        "anyBranch": "All branches",
+        "anyDepartment": "All departments",
+        "any": "All",
+        "apply": "Show report",
+        "reset": "Reset",
+        "chooseBranch": "Choose a branch to see this report."
+    },
+    "export": {
+        "button": "Export",
+        "label": "Export as",
+        "xlsx": "Excel (XLSX)",
+        "csv": "CSV",
+        "pdf": "PDF",
+        "denied": "You can view this report but not export it."
+    },
+    "result": {
+        "loading": "Loading the report…",
+        "error": "This report couldn't be loaded. Try again.",
+        "empty": "Nothing matches these filters",
+        "emptyHelp": "Try a longer period or a different branch.",
+        "showing": "{shown, plural, one {Showing # row} other {Showing # rows}} of {total, plural, one {#} other {#}}",
+        "truncated": "This report has more rows than the screen reads. The numbers above cover the first {count, plural, one {# row} other {# rows}}; export it for everything.",
+        "chart": "Chart of {title}. The same figures are in the table below.",
+        "table": "{title} data"
+    },
+    "minutes": "{hours}h {minutes}m",
+    "minutesOnly": "{minutes}m",
+    "hoursOnly": "{hours}h",
+    "exports": {
+        "pageTitle": "My exports",
+        "title": "My exports",
+        "description": "Files you asked for. Each is kept for {days, plural, one {# day} other {# days}} and only you can download it.",
+        "empty": {
+            "title": "No exports yet",
+            "description": "Open a report and choose Export to make a file."
+        },
+        "status": {
+            "queued": "Waiting",
+            "running": "Making the file",
+            "ready": "Ready",
+            "failed": "Failed"
+        },
+        "rows": "{count, plural, one {# row} other {# rows}}",
+        "download": "Download {name}",
+        "downloadShort": "Download",
+        "requested": "Asked for {date}",
+        "expires": "Available until {date}",
+        "retry": "Open the report",
+        "live": "Exports update on their own while a file is being made."
+    }
+}

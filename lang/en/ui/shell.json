@@ -37,7 +37,8 @@
         "interviews": "My interviews",
         "training": "Training",
         "myLearning": "My learning",
-        "trainingCourses": "Courses"
+        "trainingCourses": "Courses",
+        "reports": "Reports"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

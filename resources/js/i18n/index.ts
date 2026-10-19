@@ -36,6 +36,7 @@ const PAGE_NAMESPACES: Record<string, string[]> = {
     calendar: ['calendar', 'schedule', 'organization', 'leave'],
     hiring: ['hiring', 'requests', 'forms', 'organization', 'calendar'],
     training: ['training', 'organization'],
+    reports: ['reports', 'organization'],
     integrations: ['integrations', 'setup', 'notifications', 'organization'],
     audit: ['audit'],
     notifications: ['notifications'],
