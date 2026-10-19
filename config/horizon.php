@@ -98,6 +98,10 @@ return [
 
     'waits' => [
         'redis:default' => 60,
+        'redis:workflows' => 60,
+        'redis:notifications' => 120,
+        'redis:reports' => 600,
+        'redis:imports' => 600,
     ],
 
     /*
@@ -197,9 +201,10 @@ return [
     */
 
     'defaults' => [
+        // Quick work: requests and workflow steps, notifications, integrations.
         'supervisor-1' => [
             'connection' => 'redis',
-            'queue' => ['default'],
+            'queue' => ['default', 'workflows', 'notifications', 'integrations'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 1,
@@ -208,6 +213,21 @@ return [
             'memory' => 128,
             'tries' => 1,
             'timeout' => 60,
+            'nice' => 0,
+        ],
+        // Heavy work (architecture §11): imports, report exports and PDFs, kept apart so a big
+        // report never holds up an approval.
+        'supervisor-heavy' => [
+            'connection' => 'redis',
+            'queue' => ['reports', 'imports', 'pdf'],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'maxProcesses' => 1,
+            'maxTime' => 0,
+            'maxJobs' => 0,
+            'memory' => 512,
+            'tries' => 1,
+            'timeout' => 900,
             'nice' => 0,
         ],
     ],
@@ -219,11 +239,17 @@ return [
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
+            'supervisor-heavy' => [
+                'maxProcesses' => 2,
+            ],
         ],
 
         'local' => [
             'supervisor-1' => [
                 'maxProcesses' => 3,
+            ],
+            'supervisor-heavy' => [
+                'maxProcesses' => 1,
             ],
         ],
     ],
