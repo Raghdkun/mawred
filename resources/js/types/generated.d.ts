@@ -197,7 +197,7 @@ count?: number | null,
 };
 }
 namespace Enums {
-export type EventKind = 'meeting' | 'booking' | 'interview';
+export type EventKind = 'meeting' | 'booking' | 'interview' | 'training';
 export type ParticipantRole = 'organizer' | 'required' | 'optional';
 export type Response = 'pending' | 'accepted' | 'tentative' | 'declined';
 export type Visibility = 'normal' | 'private';
@@ -1573,6 +1573,17 @@ export type StepStatus = 'pending' | 'completed' | 'skipped';
 }
 namespace Training {
 namespace Data {
+export type CertificateData = {
+id: string,
+serial: string,
+course: string,
+holder: string,
+issuedOn: string,
+expiresOn: string | null,
+state: string,
+verifyUrl: string,
+pdfUrl: string | null,
+};
 export type CourseCardData = {
 id: string,
 code: string,
@@ -1735,6 +1746,23 @@ id: string,
 name: string,
 } | null,
 };
+export type ExternalTrainingData = {
+id: string,
+title: string,
+provider: string | null,
+startsOn: string | null,
+endsOn: string | null,
+cost: {
+amountMinor: number,
+currency: string,
+} | null,
+certificateName: string | null,
+certificateUrl: string | null,
+course: {
+id: string,
+title: string,
+} | null,
+};
 export type LearningPathData = {
 id: string,
 title: string,
@@ -1858,14 +1886,55 @@ correct: boolean,
 }[],
 }[],
 };
+export type RosterRowData = {
+id: string,
+name: string,
+status: string,
+attendedAt: string | null,
+checkIn: string | null,
+};
+export type SessionData = {
+id: string,
+startsAt: string,
+endsAt: string,
+timezone: string,
+mode: string,
+location: string | null,
+meetingUrl: string | null,
+capacity: number | null,
+booked: number,
+waitlisted: number,
+attended: number,
+trainer: string | null,
+status: string,
+mine: {
+id: string,
+status: string,
+attended: boolean,
+position: number | null,
+} | null,
+};
+export type SessionInputData = {
+startsAt: string,
+endsAt: string,
+timezone: string,
+mode: string,
+location: string | null,
+meetingUrl: string | null,
+capacity: number | null,
+trainerId: string | null,
+};
 }
 namespace Enums {
+export type BookingStatus = 'booked' | 'waitlisted' | 'cancelled';
 export type CourseCategory = 'compliance' | 'safety' | 'onboarding' | 'skills' | 'leadership' | 'technical';
 export type CourseStatus = 'draft' | 'published' | 'archived';
 export type EnrollmentSource = 'self' | 'assigned' | 'audience' | 'path' | 'request' | 'renewal';
 export type EnrollmentStatus = 'requested' | 'enrolled' | 'completed' | 'rejected' | 'cancelled';
 export type ModuleKind = 'text' | 'video' | 'file' | 'quiz';
 export type QuestionType = 'single' | 'multiple' | 'true_false';
+export type SessionMode = 'onsite' | 'online';
+export type SessionStatus = 'scheduled' | 'cancelled';
 }
 }
 namespace Workflows {

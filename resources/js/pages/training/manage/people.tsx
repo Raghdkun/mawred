@@ -19,7 +19,7 @@ import { AssignDialog } from '@/features/training/assign-dialog';
 import { ProgressRing } from '@/features/training/progress-ring';
 import { DueChip, EnrollmentStatusBadge } from '@/features/training/status';
 import { useLocale } from '@/hooks/use-locale';
-import { formatDate } from '@/lib/format';
+import { formatDate, formatNumber } from '@/lib/format';
 import training from '@/routes/training';
 import { type Paginated } from '@/types/pagination';
 
@@ -29,12 +29,17 @@ type Props = {
     quizzes: Array<{ id: string; title: string }>;
     enrollments: Paginated<Enrollment>;
     filters: { status: string; search: string };
+    feedback: {
+        count: number;
+        average: number;
+        comments: Array<{ rating: number; comment: string; at: string | null }>;
+    };
 };
 
 const STATUSES = ['', 'enrolled', 'overdue', 'requested', 'completed', 'cancelled'] as const;
 
 /** The people on a course (trainers and HR): progress and due dates, assigning, resetting a quiz, removing. */
-export default function CoursePeople({ course, quizzes, enrollments, filters }: Props) {
+export default function CoursePeople({ course, quizzes, enrollments, filters, feedback }: Props) {
     const { t } = useTranslation('training');
     const { locale } = useLocale();
     const [search, setSearch] = useState(filters.search);
@@ -209,6 +214,36 @@ export default function CoursePeople({ course, quizzes, enrollments, filters }: 
                     />
                 </>
             )}
+            {feedback.count > 0 ? (
+                <section
+                    aria-labelledby="feedback-summary"
+                    className="mt-8 flex flex-col gap-3"
+                    data-feedback-summary
+                >
+                    <h2 id="feedback-summary" className="text-h3">
+                        {t('feedback.summary', {
+                            average: formatNumber(feedback.average, locale, {
+                                minimumFractionDigits: 1,
+                                maximumFractionDigits: 1,
+                            }),
+                            count: feedback.count,
+                        })}
+                    </h2>
+                    <ul className="flex flex-col gap-2">
+                        {feedback.comments.map((c, i) => (
+                            <li key={i} className="rounded-md bg-card p-3 text-small shadow-sm">
+                                <span className="sr-only">
+                                    {t('feedback.stars', { count: c.rating })}:{' '}
+                                </span>
+                                <span aria-hidden className="me-2 text-warning">
+                                    {'★'.repeat(c.rating)}
+                                </span>
+                                {c.comment}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            ) : null}
             {assigning ? (
                 <AssignDialog courseId={course.id} onClose={() => setAssigning(false)} />
             ) : null}

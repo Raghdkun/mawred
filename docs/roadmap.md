@@ -90,9 +90,9 @@
 - Kanban, automations on stage change, duplicate detection, tags and talent pool, comms log, CV preview, consent and retention purge, interviewer scoping.
 - **Exit**: "move candidate" journey; interviewer scope-leak tests.
 
-## Phase 7 — Training (M, split 7a / 7b, D106) — 7a ✅ built (pending CI and owner review)
+## Phase 7 — Training (M, split 7a / 7b, D106) — 7a ✅ 7b ✅ built (pending CI and owner review)
 - **7a**: catalog with categories and search, courses with lesson, video, file and quiz modules, learning paths, self-enrolment with the manager's approval, mandatory courses for an audience with due dates, My learning, the profile Training tab, and the API.
-- **7b** (next): sessions with capacity, waitlist and rotating-QR check-in, certificates (PDF + QR verification page) with expiry reminders and renewal, feedback, training requests as external records.
+- **7b**: sessions with capacity, waitlist and rotating-QR check-in, certificates (PDF + QR verification page) with expiry reminders and renewal, feedback, training requests as external records.
 - Catalog, learning paths, sessions (capacity, waitlist, attendance), enrollment rules plus an optional approval workflow, quizzes, feedback, certificates (PDF + QR verify page) with expiry reminders, training needs requests, per-employee training record.
 
 ## Phase 8 — Reports & dashboards (L)

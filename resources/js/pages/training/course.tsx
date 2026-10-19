@@ -16,8 +16,10 @@ import {
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { FeedbackForm } from '@/features/training/feedback-form';
 import { CATEGORY_ICONS, FallbackIcon, MODULE_ICONS } from '@/features/training/icons';
 import { ProgressRing } from '@/features/training/progress-ring';
+import { SessionCard } from '@/features/training/session-card';
 import { CourseStatusBadge, DueChip, EnrollmentStatusBadge } from '@/features/training/status';
 import { useLocale } from '@/hooks/use-locale';
 import { formatDate } from '@/lib/format';
@@ -32,7 +34,11 @@ type Props = {
     modules: App.Domain.Training.Data.ModuleSummaryData[];
     enrollment: App.Domain.Training.Data.EnrollmentData | null;
     paths: Array<{ id: string; title: string }>;
-    can: { enrol: boolean; learn: boolean; leave: boolean; manage: boolean };
+    sessions: App.Domain.Training.Data.SessionData[];
+    attended: boolean;
+    feedback: { rating: number; comment: string | null } | null;
+    certificate: App.Domain.Training.Data.CertificateData | null;
+    can: { enrol: boolean; book: boolean; learn: boolean; leave: boolean; manage: boolean };
 };
 
 /**
@@ -47,12 +53,16 @@ export default function Course({
     modules,
     enrollment,
     paths,
+    sessions,
+    attended,
+    feedback,
+    certificate,
     can,
 }: Props) {
     const { t } = useTranslation('training');
     const { locale } = useLocale();
     const page = usePage();
-    const flash = page.flash as { completed?: boolean } | undefined;
+    const flash = page.flash as { completed?: boolean; checkedIn?: boolean } | undefined;
     const justCompleted =
         Boolean(flash?.completed) ||
         (enrollment?.status === 'completed' &&
@@ -88,6 +98,16 @@ export default function Course({
             {status !== 'published' ? (
                 <p className="mb-4 rounded-md border border-status-pending-border bg-status-pending-bg p-3 text-small text-status-pending-fg">
                     {t('course.notPublished')}
+                </p>
+            ) : null}
+
+            {flash?.checkedIn && !justCompleted ? (
+                <p
+                    role="status"
+                    className="mb-4 rounded-md border border-status-approved-border bg-status-approved-bg p-3 text-small text-status-approved-fg"
+                    data-checked-in
+                >
+                    {t('sessions.checkedIn')}
                 </p>
             ) : null}
 
@@ -220,6 +240,41 @@ export default function Course({
                         </ol>
                     </section>
 
+                    {sessions.length > 0 ? (
+                        <section aria-labelledby="sessions-title" className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-1">
+                                <h2 id="sessions-title" className="text-h3">
+                                    {t('sessions.title')}
+                                </h2>
+                                <p className="text-small text-text-secondary">
+                                    {attended ? t('sessions.attendedHelp') : t('sessions.help')}
+                                </p>
+                            </div>
+                            <div className="grid gap-3 md:grid-cols-2">
+                                {sessions.map((session) => (
+                                    <SessionCard
+                                        key={session.id}
+                                        courseId={course.id}
+                                        session={session}
+                                        canBook={can.book}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+                    ) : null}
+
+                    {enrollment?.status === 'completed' ? (
+                        <section
+                            aria-labelledby="feedback-title"
+                            className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4"
+                        >
+                            <h2 id="feedback-title" className="text-h4">
+                                {t('feedback.title')}
+                            </h2>
+                            <FeedbackForm enrollmentId={enrollment.id} initial={feedback} />
+                        </section>
+                    ) : null}
+
                     {paths.length > 0 ? (
                         <section aria-labelledby="paths-title" className="flex flex-col gap-2">
                             <h2 id="paths-title" className="text-h4">
@@ -334,6 +389,30 @@ export default function Course({
                                 ? t('course.withdraw')
                                 : t('course.leave')}
                         </Button>
+                    ) : null}
+                    {certificate ? (
+                        <div
+                            className="flex flex-col gap-2 border-t border-border pt-4"
+                            data-course-certificate
+                        >
+                            <span className="inline-flex items-center gap-1.5 text-small font-medium">
+                                <Award aria-hidden className="size-4 text-primary" />
+                                {t('certificate.yours')}
+                            </span>
+                            <span className="text-caption text-text-secondary">
+                                <bdi dir="ltr" className="font-mono">
+                                    {certificate.serial}
+                                </bdi>
+                                {certificate.expiresOn
+                                    ? ` · ${t('certificate.expires', { date: formatDate(certificate.expiresOn, locale, { dateStyle: 'medium' }) })}`
+                                    : ''}
+                            </span>
+                            {certificate.pdfUrl ? (
+                                <Button asChild variant="outline" className="min-h-11">
+                                    <a href={certificate.pdfUrl}>{t('certificate.download')}</a>
+                                </Button>
+                            ) : null}
+                        </div>
                     ) : null}
                     {can.manage ? (
                         <div className="flex flex-wrap gap-2 border-t border-border pt-4">

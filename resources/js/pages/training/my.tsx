@@ -5,6 +5,7 @@ import { PageHeader, Section } from '@/components/mw/page-header';
 import { PageState } from '@/components/mw/page-state';
 import { Button } from '@/components/ui/button';
 import { ProgressRing } from '@/features/training/progress-ring';
+import { CertificateList, ExternalList } from '@/features/training/records';
 import { DueChip, EnrollmentStatusBadge } from '@/features/training/status';
 import { useLocale } from '@/hooks/use-locale';
 import { formatDate, formatNumber } from '@/lib/format';
@@ -16,6 +17,8 @@ type Props = {
     enrollments: Enrollment[];
     stats: { active: number; overdue: number; completed: number };
     paths: App.Domain.Training.Data.LearningPathData[];
+    certificates: App.Domain.Training.Data.CertificateData[];
+    external: App.Domain.Training.Data.ExternalTrainingData[];
     hasEmployee: boolean;
 };
 
@@ -23,7 +26,14 @@ type Props = {
  * My learning (handoff 34, mobile-first): counts at the top, then courses in progress (overdue
  * first by due date), waiting for approval, and finished; the learning paths joined.
  */
-export default function MyLearning({ enrollments, stats, paths, hasEmployee }: Props) {
+export default function MyLearning({
+    enrollments,
+    stats,
+    paths,
+    certificates,
+    external,
+    hasEmployee,
+}: Props) {
     const { t } = useTranslation('training');
     const { locale } = useLocale();
     const groups = [
@@ -48,7 +58,8 @@ export default function MyLearning({ enrollments, stats, paths, hasEmployee }: P
                 }
             />
 
-            {!hasEmployee || enrollments.length === 0 ? (
+            {!hasEmployee ||
+            (enrollments.length === 0 && certificates.length === 0 && external.length === 0) ? (
                 <PageState
                     kind="empty"
                     illustration="empty-trainings"
@@ -153,6 +164,18 @@ export default function MyLearning({ enrollments, stats, paths, hasEmployee }: P
                             </ul>
                         </Section>
                     ))}
+
+                    {certificates.length > 0 ? (
+                        <Section title={t('my.groups.certificates')}>
+                            <CertificateList certificates={certificates} />
+                        </Section>
+                    ) : null}
+
+                    {external.length > 0 ? (
+                        <Section title={t('my.groups.external')} description={t('my.externalHelp')}>
+                            <ExternalList records={external} canUpload />
+                        </Section>
+                    ) : null}
 
                     {paths.length > 0 ? (
                         <Section title={t('my.groups.paths')}>

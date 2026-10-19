@@ -175,6 +175,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - A `<legend>` sits on its fieldset's border: put the card border on a wrapper, not on the fieldset.
 - `SyncEmployeePlacement` fires `EmployeePlacementChanged` when someone's branch, department, position, employment type or status changes; mandatory courses listen to it.
 
+## Gotchas learned in Phase 7b
+- A fixed-width page with `dir="rtl"` on `<html>` prints or screenshots blank in Chromium (Gotenberg): keep the root LTR and put `dir` on the content wrapper.
+- `CarbonImmutable::locale($x)` reads as `static|string` to PHPStan; use `->settings(['locale' => $x])->isoFormat(…)`.
+- Don't force `dir="ltr"` on times that may contain Arabic AM/PM marks; isolate each time with its own `<bdi>`.
+- `<dl>` may only contain `<dt>`/`<dd>` groups wrapped in single `<div>`s; nesting a grid `<div>` inside fails axe.
+- The standard request chain's HR step needs an HR user to fall back to in tests (`userWithRoles('hr_admin')`), or the workflow stops with "Nobody can approve this step".
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

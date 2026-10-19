@@ -26,7 +26,7 @@ const PAGE_NAMESPACES: Record<string, string[]> = {
     people: ['people', 'organization', 'imports', 'policies', 'leave', 'training'],
     policies: ['policies', 'organization'],
     forms: ['forms', 'organization'],
-    public: ['forms', 'requests', 'attendance', 'calendar', 'hiring'],
+    public: ['forms', 'requests', 'attendance', 'calendar', 'hiring', 'training'],
     requests: ['requests', 'forms', 'leave'],
     approvals: ['requests', 'forms', 'leave'],
     workflows: ['workflows', 'forms', 'requests'],
