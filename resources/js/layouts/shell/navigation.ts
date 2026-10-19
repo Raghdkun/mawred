@@ -15,6 +15,7 @@ import policies from '@/routes/policies';
 import approvals from '@/routes/approvals';
 import notifications from '@/routes/notifications';
 import requestTypes from '@/routes/request-types';
+import reports from '@/routes/reports';
 import requests from '@/routes/requests';
 import workflowRoutes from '@/routes/workflows';
 import profile from '@/routes/profile';
@@ -159,6 +160,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     permission: 'people.view',
                     match: ['/people'],
                     exclude: ['/people/settings'],
+                },
+                {
+                    key: 'reports',
+                    label: 'nav.reports',
+                    href: reports.index(),
+                    icon: 'reports',
+                    permission: 'reports.view',
+                    match: ['/reports'],
                 },
             ],
         },

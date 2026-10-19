@@ -182,6 +182,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - `<dl>` may only contain `<dt>`/`<dd>` groups wrapped in single `<div>`s; nesting a grid `<div>` inside fails axe.
 - The standard request chain's HR step needs an HR user to fall back to in tests (`userWithRoles('hr_admin')`), or the workflow stops with "Nobody can approve this step".
 
+## Gotchas learned in Phase 8a
+- Tailwind v4 emits a `--color-*` theme variable only when a class uses it; inline styles (Recharts fills, strokes) must use the raw tokens (`var(--chart-1)`, `var(--border)`), or they fall back to black.
+- Recharts 3 makes the chart surface focusable (`accessibilityLayer`): never wrap it in `aria-hidden`, or axe fails `aria-hidden-focus`.
+- `ScopeResolver` and `ReportRegistry` are request-scoped; a test that changes someone's roles mid-test calls `app()->forgetScopedInstances()` before running a job, as a queue worker would.
+- Report rows go through `BaseReport::scoped()` with the module permission; never filter by branch yourself. Days a run covers come from the `today` that `ParamResolver` stores, never the server clock.
+- Rector turns locally-called `private static` helpers into instance methods; write them as instance methods to begin with.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

@@ -253,7 +253,8 @@
             "placement_changed": "Placement changed",
             "salary_changed": "Salary changed",
             "status_changed": "Status changed",
-            "terminated": "Left the company"
+            "terminated": "Left the company",
+            "allowance_changed": "Allowance changed"
         },
         "kinds": {
             "branch": "Branch",
@@ -329,5 +330,33 @@
             "prefix": "Employee number prefix",
             "preview": "New employees get numbers like {example}."
         }
-    }
+    },
+    "allowances": {
+        "title": "Allowances",
+        "help": "Monthly allowances on top of salary. They appear in the payroll-input export when they start, change or end.",
+        "add": "Add an allowance",
+        "edit": "Edit allowance",
+        "empty": "No allowances.",
+        "ongoing": "ongoing",
+        "notCurrent": "not in force today",
+        "dialogHelp": "A monthly amount, from a date until another (or open-ended). Set an end date to stop it.",
+        "type": "Type",
+        "label": "Name",
+        "amount": "Monthly amount",
+        "currency": "Currency",
+        "from": "From",
+        "to": "Until",
+        "toHint": "Leave empty while it continues.",
+        "note": "Note",
+        "save": "Save",
+        "types": {
+            "housing": "Housing",
+            "transport": "Transport",
+            "food": "Food",
+            "phone": "Phone",
+            "education": "Education",
+            "other": "Other"
+        }
+    },
+    "cancel": "Cancel"
 }

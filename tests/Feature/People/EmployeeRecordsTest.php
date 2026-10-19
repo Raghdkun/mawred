@@ -11,12 +11,14 @@ use App\Domain\People\Actions\AssignAsset;
 use App\Domain\People\Actions\HireEmployee;
 use App\Domain\People\Actions\RecordSalaryChange;
 use App\Domain\People\Actions\ReturnAsset;
+use App\Domain\People\Actions\SaveAllowance;
 use App\Domain\People\Actions\SaveCustomFieldDefinition;
 use App\Domain\People\Actions\SaveDocumentType;
 use App\Domain\People\Actions\SaveEmployeeDocument;
 use App\Domain\People\Actions\SendDocumentExpiryReminders;
 use App\Domain\People\Actions\SetCustomFieldValues;
 use App\Domain\People\Actions\UpdateSensitiveDetails;
+use App\Domain\People\Data\AllowanceInputData;
 use App\Domain\People\Data\CustomFieldDefinitionInputData;
 use App\Domain\People\Data\DocumentTypeInputData;
 use App\Domain\People\Data\EmployeeDocumentInputData;
@@ -24,6 +26,7 @@ use App\Domain\People\Data\HireEmployeeData;
 use App\Domain\People\Data\SensitiveDetailsInputData;
 use App\Domain\People\Enums\HistoryEvent;
 use App\Domain\People\Models\Employee;
+use App\Domain\People\Models\EmployeeAllowance;
 use App\Domain\People\Models\EmployeeCustomValue;
 use App\Support\Actors\Actor;
 use App\Support\Errors\DomainRuleViolation;
@@ -101,6 +104,36 @@ it('keeps salary as encrypted, permissioned history', function (): void {
 
     expect(fn () => resolve(RecordSalaryChange::class)->handle(Actor::user(userWithRoles('hr_officer')), $employee, Money::fromDecimal(1, 'SAR'), '2026-02-01'))
         ->toThrow(DomainRuleViolation::class);
+});
+
+it('keeps allowances on the record, encrypted, in the history and behind the salary permission', function (): void {
+    $employee = Employee::factory()->placedIn(Branch::factory()->riyadh()->create())->create();
+    $hr = userWithRoles('hr_admin');
+    $hr->forceFill(['two_factor_secret' => encrypt('s'), 'two_factor_confirmed_at' => now()])->save();
+
+    $this->actingAs($hr)->post(route('people.allowances.store', $employee), [
+        'type' => 'housing', 'amount' => '2500', 'currency' => 'SAR', 'effectiveFrom' => '2026-11-01',
+    ])->assertRedirect();
+    $allowance = EmployeeAllowance::query()->sole();
+
+    expect($allowance->amount)->toEqual(new Money(250000, 'SAR'))
+        ->and(DB::table('employee_allowances')->where('id', $allowance->id)->value('amount_minor'))->not->toContain('250000');
+
+    // Ending it is a change on the timeline, with the amount kept encrypted there too.
+    $this->put(route('people.allowances.update', [$employee, $allowance]), [
+        'type' => 'housing', 'amount' => '2500', 'currency' => 'SAR', 'effectiveFrom' => '2026-11-01', 'effectiveTo' => '2027-03-31',
+    ])->assertRedirect();
+    expect($employee->history()->where('event', HistoryEvent::AllowanceChanged->value)->pluck('changes')->pluck('action')->all())->toEqualCanonicalizing(['added', 'ended']);
+    $this->get(route('people.show', $employee))->assertInertia(fn ($page) => $page->where('allowances.0.amount.minor', 250000)->where('allowances.0.effectiveTo', '2027-03-31'));
+
+    // Without the salary field permission: no changes, and no amounts on the profile.
+    expect(fn () => resolve(SaveAllowance::class)->handle(Actor::user(userWithRoles('hr_officer')), $employee, AllowanceInputData::from([
+        'type' => 'transport', 'amount' => '1', 'currency' => 'SAR', 'effectiveFrom' => '2026-11-01',
+    ])))->toThrow(DomainRuleViolation::class);
+    $auditor = userWithRoles('auditor');
+    $auditor->forceFill(['two_factor_secret' => encrypt('s'), 'two_factor_confirmed_at' => now()])->save();
+    $this->actingAs($auditor)->get(route('people.show', $employee))->assertInertia(fn ($page) => $page->where('allowances', null));
+    expect(EmployeeAllowance::query()->count())->toBe(1);
 });
 
 it('stores documents privately and reminds each threshold once', function (): void {

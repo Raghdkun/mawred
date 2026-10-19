@@ -9,6 +9,7 @@ enum HistoryEvent: string
     case Hired = 'hired';
     case PlacementChanged = 'placement_changed';
     case SalaryChanged = 'salary_changed';
+    case AllowanceChanged = 'allowance_changed';
     case StatusChanged = 'status_changed';
     case Terminated = 'terminated';
 }

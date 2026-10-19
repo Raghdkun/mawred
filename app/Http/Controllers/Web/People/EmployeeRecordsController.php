@@ -10,8 +10,11 @@ use App\Domain\People\Actions\InviteEmployee;
 use App\Domain\People\Actions\RecordSalaryChange;
 use App\Domain\People\Actions\ReturnAsset;
 use App\Domain\People\Actions\RevokeInvitation;
+use App\Domain\People\Actions\SaveAllowance;
+use App\Domain\People\Data\AllowanceInputData;
 use App\Domain\People\Models\AssetAssignment;
 use App\Domain\People\Models\Employee;
+use App\Domain\People\Models\EmployeeAllowance;
 use App\Domain\People\Models\UserInvitation;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\SetLocale;
@@ -26,7 +29,7 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 /**
- * Smaller profile records: salary changes, assets and account invitations.
+ * Smaller profile records: salary changes, allowances (D116), assets and account invitations.
  */
 final class EmployeeRecordsController extends Controller
 {
@@ -49,6 +52,23 @@ final class EmployeeRecordsController extends Controller
         );
 
         return $this->done(__('Salary change recorded.'));
+    }
+
+    public function storeAllowance(AllowanceInputData $input, Employee $employee, SaveAllowance $save, #[CurrentUser] User $user): RedirectResponse
+    {
+        $this->authorizeUpdate($employee);
+        $save->handle(Actor::user($user), $employee, $input);
+
+        return $this->done(__('Allowance recorded.'));
+    }
+
+    public function updateAllowance(AllowanceInputData $input, Employee $employee, EmployeeAllowance $allowance, SaveAllowance $save, #[CurrentUser] User $user): RedirectResponse
+    {
+        $this->authorizeUpdate($employee);
+        abort_unless($allowance->employee_id === $employee->id, 404);
+        $save->handle(Actor::user($user), $employee, $input, $allowance);
+
+        return $this->done(__('Allowance updated.'));
     }
 
     public function storeAsset(Request $request, Employee $employee, AssignAsset $assign): RedirectResponse

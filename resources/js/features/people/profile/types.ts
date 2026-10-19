@@ -18,6 +18,7 @@ export type ProfileProps = {
     assignments: Assignment[];
     documents: EmployeeDocument[];
     history: HistoryEntry[];
+    allowances: App.Domain.People.Data.AllowanceData[] | null;
     historyNames: Record<string, Record<string, string>>;
     defaultCurrency: string;
     assets: Asset[];

@@ -805,7 +805,7 @@ createdAt: string,
 };
 }
 namespace Enums {
-export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'hiring' | 'training' | 'security' | 'integrations';
+export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'hiring' | 'training' | 'reports' | 'security' | 'integrations';
 }
 }
 namespace Organization {
@@ -918,6 +918,27 @@ export type CatalogKind = 'employment-types' | 'grades' | 'cost-centers';
 }
 namespace People {
 namespace Data {
+export type AllowanceData = {
+id: string,
+type: string,
+label: string | null,
+amount: {
+minor: number,
+currency: string,
+} | null,
+effectiveFrom: string,
+effectiveTo: string | null,
+note: string | null,
+};
+export type AllowanceInputData = {
+type: string,
+amount: string,
+currency: string,
+effectiveFrom: string,
+effectiveTo: string | null,
+label: string | null,
+note: string | null,
+};
 export type AssetData = {
 id: string,
 name: string,
@@ -1169,10 +1190,11 @@ dateOfBirth: undefined | string | null,
 };
 }
 namespace Enums {
+export type AllowanceType = 'housing' | 'transport' | 'food' | 'phone' | 'education' | 'other';
 export type CustomFieldType = 'text' | 'textarea' | 'number' | 'date' | 'select' | 'multiselect' | 'boolean' | 'email' | 'phone' | 'url';
 export type EmployeeStatus = 'pending' | 'active' | 'suspended' | 'terminated';
 export type Gender = 'female' | 'male';
-export type HistoryEvent = 'hired' | 'placement_changed' | 'salary_changed' | 'status_changed' | 'terminated';
+export type HistoryEvent = 'hired' | 'placement_changed' | 'salary_changed' | 'allowance_changed' | 'status_changed' | 'terminated';
 export type ImportRowStatus = 'valid' | 'invalid' | 'done' | 'failed';
 export type ImportStatus = 'uploaded' | 'validating' | 'validated' | 'committing' | 'completed' | 'failed' | 'cancelled';
 export type MaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';
@@ -1426,6 +1448,71 @@ export type HolidayType = 'fixed' | 'nth_weekday' | 'one_off';
 export type ObservedRule = 'none' | 'nearest_weekday' | 'next_working_day' | 'previous_working_day';
 export type PolicyLevel = 'global' | 'branch' | 'department' | 'position' | 'grade' | 'employment_type' | 'employee';
 export type PolicySection = 'leave' | 'work_week' | 'overtime' | 'attendance' | 'rest' | 'employment';
+}
+}
+namespace Reports {
+namespace Data {
+export type ReportCardData = {
+key: string,
+category: App.Domain.Reports.Enums.ReportCategory,
+title: string,
+description: string,
+canExport: boolean,
+};
+export type ReportFilterData = {
+key: string,
+type: App.Domain.Reports.Enums.FilterType,
+required: boolean,
+label: string | null,
+options: {
+value: string,
+label: string,
+}[],
+};
+export type ReportResultData = {
+columns: {
+key: string,
+label: string,
+type: App.Domain.Reports.Enums.ColumnType,
+}[],
+rows: Record<string, string | number | null>[],
+total: number,
+truncated: boolean,
+kpis: {
+label: string,
+value: number,
+format: string,
+}[],
+chart: {
+type: string,
+x: string,
+series: {
+key: string,
+label: string,
+}[],
+data: Record<string, string | number | null>[],
+} | null,
+};
+export type ReportRunData = {
+id: string,
+report: string,
+title: string,
+period: string,
+format: App.Domain.Reports.Enums.ReportFormat,
+status: App.Domain.Reports.Enums.RunStatus,
+rows: number | null,
+fileName: string | null,
+error: string | null,
+createdAt: string,
+expiresAt: string | null,
+};
+}
+namespace Enums {
+export type ColumnType = 'text' | 'number' | 'decimal' | 'percent' | 'date' | 'minutes';
+export type FilterType = 'period' | 'month' | 'year' | 'as_of' | 'days' | 'branch' | 'department' | 'choice';
+export type ReportCategory = 'people' | 'leave' | 'time' | 'requests' | 'hiring' | 'training' | 'payroll' | 'admin';
+export type ReportFormat = 'xlsx' | 'csv' | 'pdf';
+export type RunStatus = 'queued' | 'running' | 'ready' | 'failed';
 }
 }
 namespace Requests {

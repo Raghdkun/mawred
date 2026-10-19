@@ -13,6 +13,7 @@ use App\Domain\Integrations\Models\CognitoReceipt;
 use App\Domain\Integrations\Models\CognitoSource;
 use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\People\Models\Employee;
+use App\Domain\People\Models\EmployeeAllowance;
 use App\Domain\People\Models\EmployeeCustomValue;
 use App\Domain\People\Models\EmployeeDocument;
 use App\Domain\People\Models\EmploymentHistoryEntry;
@@ -46,6 +47,7 @@ final class EncryptedColumns
             CandidateMessage::class => ['body'],
             Offer::class => ['letter', 'salary_minor'],
             EmploymentHistoryEntry::class => ['salary_minor'],
+            EmployeeAllowance::class => ['amount_minor'],
             TrainingSession::class => ['checkin_secret'],
         ];
     }

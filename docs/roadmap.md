@@ -95,7 +95,9 @@
 - **7b**: sessions with capacity, waitlist and rotating-QR check-in, certificates (PDF + QR verification page) with expiry reminders and renewal, feedback, training requests as external records.
 - Catalog, learning paths, sessions (capacity, waitlist, attendance), enrollment rules plus an optional approval workflow, quizzes, feedback, certificates (PDF + QR verify page) with expiry reminders, training needs requests, per-employee training record.
 
-## Phase 8 — Reports & dashboards (L)
+## Phase 8 — Reports & dashboards (L, split 8a / 8b, D113) — 8a ✅ built (pending CI and owner review)
+- **8a**: the report library and viewer (filters, headline numbers, a chart, the table; cards on phones), 15 prebuilt reports (D112) each with a scope-leak test, the payroll-input export with allowances (D7, D116), the audit log export (D36), and queued XLSX/CSV/PDF exports kept a week for their owner (D114, D117).
+- **8b**: dataset registry and custom builder, saved, shared and scheduled reports, role dashboards (D115).
 - Prebuilt reports (all in brief §16) plus the **monthly payroll-input export** (D7), dataset registry, custom builder (dataset → columns → filters → grouping → chart), saved/shared/scheduled reports, XLSX/CSV/PDF exports (queued), role dashboards with count-up KPIs.
 - **Exit**: every report has a scope-leak test, and heavy reports are queued.
 

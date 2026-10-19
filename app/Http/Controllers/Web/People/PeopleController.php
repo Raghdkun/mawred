@@ -12,6 +12,7 @@ use App\Domain\Organization\Models\Branch;
 use App\Domain\Organization\Models\Department;
 use App\Domain\Organization\Support\OrganizationOptions;
 use App\Domain\People\Actions\HireEmployee;
+use App\Domain\People\Data\AllowanceData;
 use App\Domain\People\Data\AssetData;
 use App\Domain\People\Data\AssignmentData;
 use App\Domain\People\Data\EmployeeDocumentData;
@@ -22,6 +23,7 @@ use App\Domain\People\Enums\EmployeeStatus;
 use App\Domain\People\Models\AssetAssignment;
 use App\Domain\People\Models\DocumentType;
 use App\Domain\People\Models\Employee;
+use App\Domain\People\Models\EmployeeAllowance;
 use App\Domain\People\Models\EmployeeAssignment;
 use App\Domain\People\Models\EmployeeDocument;
 use App\Domain\People\Models\EmploymentHistoryEntry;
@@ -132,6 +134,8 @@ final class PeopleController extends Controller
                 ->map(fn (EmployeeDocument $d): EmployeeDocumentData => EmployeeDocumentData::fromDocument($d)),
             'history' => $history->map(fn (EmploymentHistoryEntry $entry): HistoryEntryData => HistoryEntryData::fromEntry($entry, $canSeeSalary)),
             'historyNames' => (object) HistoryNames::for($history),
+            'allowances' => $canSeeSalary ? array_values(EmployeeAllowance::query()->where('employee_id', $employee->id)->orderByDesc('effective_from')->orderByDesc('id')->get()
+                ->map(fn (EmployeeAllowance $a): AllowanceData => AllowanceData::fromAllowance($a))->all()) : null,
             'defaultCurrency' => $employee->currentBranch()->value('default_currency') ?? 'SAR',
             'assets' => $employee->assets()->orderByRaw('returned_on is not null')->latest('assigned_on')->get()
                 ->map(fn (AssetAssignment $asset): AssetData => AssetData::fromAssignment($asset)),
