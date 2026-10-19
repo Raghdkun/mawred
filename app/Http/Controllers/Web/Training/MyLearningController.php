@@ -6,10 +6,14 @@ namespace App\Http\Controllers\Web\Training;
 
 use App\Domain\Access\Models\User;
 use App\Domain\People\Models\Employee;
+use App\Domain\Training\Data\CertificateData;
 use App\Domain\Training\Data\EnrollmentData;
+use App\Domain\Training\Data\ExternalTrainingData;
 use App\Domain\Training\Data\LearningPathData;
 use App\Domain\Training\Enums\EnrollmentStatus;
+use App\Domain\Training\Models\Certificate;
 use App\Domain\Training\Models\Enrollment;
+use App\Domain\Training\Models\ExternalTraining;
 use App\Domain\Training\Models\LearningPath;
 use App\Domain\Training\Support\CatalogCourses;
 use App\Domain\Training\Support\CoursePage;
@@ -22,7 +26,8 @@ use Inertia\Response;
 
 /**
  * My learning (handoff 34): what the viewer is on (with due dates and overdue flags), waiting
- * for approval, finished, and the learning paths they joined.
+ * for approval, finished, their certificates and outside training (D103, D105), and the learning
+ * paths they joined.
  */
 final class MyLearningController extends Controller
 {
@@ -52,6 +57,10 @@ final class MyLearningController extends Controller
             ],
             'paths' => array_values(LearningPath::query()->whereIn('id', $pathIds)->with('courses')->get()
                 ->map(fn (LearningPath $path): LearningPathData => LearningPathData::fromPath($path, $mine, $locale))->all()),
+            'certificates' => $employee instanceof Employee ? array_values(Certificate::query()->where('employee_id', $employee->id)->latest('issued_on')->orderByDesc('id')->limit(100)->get()
+                ->map(fn (Certificate $c): CertificateData => CertificateData::fromCertificate($c, $locale, $today))->all()) : [],
+            'external' => $employee instanceof Employee ? array_values(ExternalTraining::query()->where('employee_id', $employee->id)->latest('starts_on')->orderByDesc('id')->limit(100)->get()
+                ->map(fn (ExternalTraining $r): ExternalTrainingData => ExternalTrainingData::fromRecord($r, $locale))->all()) : [],
             'hasEmployee' => $employee instanceof Employee,
         ]);
     }

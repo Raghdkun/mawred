@@ -17,6 +17,8 @@ Schedule::command('leave:accrue')->dailyAt('02:30')->onOneServer()->withoutOverl
 Schedule::command('hiring:purge')->dailyAt('03:10')->onOneServer()->withoutOverlapping();
 // Mandatory courses (D100): catch new hires and moves the events missed.
 Schedule::command('training:assign')->dailyAt('02:40')->onOneServer()->withoutOverlapping();
+// Certificate expiry (D103): reminders and renewal enrolments, before people start work.
+Schedule::command('training:certificates')->dailyAt('06:10')->onOneServer()->withoutOverlapping();
 Schedule::command('notifications:digest')->dailyAt('05:00')->onOneServer()->withoutOverlapping();
 Schedule::command('horizon:snapshot')->everyFiveMinutes();
 Schedule::command('model:prune', ['--model' => [IdempotencyKey::class, FormUpload::class]])->hourly();

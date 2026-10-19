@@ -8,7 +8,9 @@ use App\Domain\Access\Models\User;
 use App\Domain\Access\Support\ScopeResolver;
 use App\Domain\Access\Support\SubjectBinding;
 use App\Domain\People\Models\Employee;
+use App\Domain\Training\Models\Certificate;
 use App\Domain\Training\Models\Enrollment;
+use App\Domain\Training\Models\ExternalTraining;
 
 /**
  * Training access (ADR-0005). Everyone with a training grant browses the catalog and enrols
@@ -54,6 +56,42 @@ final readonly class TrainingPolicy
     public function manageEnrollment(User $user, Enrollment $enrollment): bool
     {
         $employee = $enrollment->employee()->first();
+
+        return $employee instanceof Employee && $this->assign($user, $employee);
+    }
+
+    public function viewCertificate(User $user, Certificate $certificate): bool
+    {
+        $employee = $certificate->employee()->first();
+
+        return $employee instanceof Employee && $this->viewRecord($user, $employee);
+    }
+
+    public function revokeCertificate(User $user, Certificate $certificate): bool
+    {
+        $employee = $certificate->employee()->first();
+
+        return $employee instanceof Employee && $this->assign($user, $employee);
+    }
+
+    /** The learner adds their certificate; trainers and HR over them can too. */
+    public function updateExternal(User $user, ExternalTraining $record): bool
+    {
+        $employee = $record->employee()->first();
+
+        return $employee instanceof Employee && ($employee->user_id === $user->id || $this->assign($user, $employee));
+    }
+
+    public function viewExternal(User $user, ExternalTraining $record): bool
+    {
+        $employee = $record->employee()->first();
+
+        return $employee instanceof Employee && $this->viewRecord($user, $employee);
+    }
+
+    public function linkExternal(User $user, ExternalTraining $record): bool
+    {
+        $employee = $record->employee()->first();
 
         return $employee instanceof Employee && $this->assign($user, $employee);
     }

@@ -21,12 +21,15 @@ use App\Domain\Training\Data\CourseRefData;
 use App\Domain\Training\Data\CourseRowData;
 use App\Domain\Training\Data\EnrollmentData;
 use App\Domain\Training\Data\ModulesInputData;
+use App\Domain\Training\Data\SessionData;
 use App\Domain\Training\Enums\CourseCategory;
 use App\Domain\Training\Enums\CourseStatus;
 use App\Domain\Training\Enums\EnrollmentStatus;
 use App\Domain\Training\Models\Course;
+use App\Domain\Training\Models\CourseFeedback;
 use App\Domain\Training\Models\CourseModule;
 use App\Domain\Training\Models\Enrollment;
+use App\Domain\Training\Models\TrainingSession;
 use App\Domain\Training\Queries\EnrollmentDirectoryQuery;
 use App\Domain\Training\Support\LearnerClock;
 use App\Http\Controllers\Controller;
@@ -165,6 +168,12 @@ final class CoursesController extends Controller
             'course' => CourseRefData::fromCourse($course, $locale),
             'quizzes' => array_values($course->modules()->where('kind', 'quiz')->get()->map(fn (CourseModule $m): array => ['id' => $m->ulid, 'title' => FieldSpec::text($m->getTranslations('title'), $locale)])->all()),
             'enrollments' => $rows,
+            'feedback' => [
+                'count' => CourseFeedback::query()->where('course_id', $course->id)->count(),
+                'average' => round((float) CourseFeedback::query()->where('course_id', $course->id)->avg('rating'), 1),
+                'comments' => array_values(CourseFeedback::query()->where('course_id', $course->id)->whereNotNull('comment')->latest()->limit(20)->get()
+                    ->map(fn (CourseFeedback $f): array => ['rating' => $f->rating, 'comment' => (string) $f->comment, 'at' => $f->created_at?->toIso8601String()])->all()),
+            ],
             'filters' => ['status' => $status, 'search' => $request->string('search')->toString()],
         ]);
     }
@@ -205,6 +214,9 @@ final class CoursesController extends Controller
     {
         return [
             'course' => $course instanceof Course ? CourseEditorData::fromCourse($course, app()->getLocale()) : null,
+            'sessions' => $course instanceof Course ? array_values(TrainingSession::query()->with('trainer')->where('course_id', $course->id)
+                ->latest('starts_at')->limit(100)->get()->map(fn (TrainingSession $s): SessionData => SessionData::fromSession($s, null, true))->all()) : [],
+            'timezone' => FieldSpec::string(config('app.timezone'), 'UTC'),
             'categories' => array_map(fn (CourseCategory $c): string => $c->value, CourseCategory::cases()),
             'employmentTypes' => OrganizationOptions::entries(CatalogKind::EmploymentType),
         ];

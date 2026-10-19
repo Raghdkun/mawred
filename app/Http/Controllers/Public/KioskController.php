@@ -7,10 +7,7 @@ namespace App\Http\Controllers\Public;
 use App\Domain\Attendance\Models\Kiosk;
 use App\Domain\Attendance\Support\KioskCodes;
 use App\Http\Controllers\Controller;
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
+use App\Support\Qr\QrSvg;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -34,7 +31,7 @@ final class KioskController extends Controller
         $kiosk->forceFill(['last_seen_at' => now()])->saveQuietly();
         $now = now()->getTimestamp();
         $code = KioskCodes::code($kiosk->ulid, $kiosk->secret, $now);
-        $svg = (new Writer(new ImageRenderer(new RendererStyle(320, 1), new SvgImageBackEnd)))->writeString($code);
+        $svg = QrSvg::render($code);
 
         return response()->json([
             'code' => $code,

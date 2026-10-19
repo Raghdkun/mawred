@@ -6,14 +6,26 @@ namespace App\Http\Controllers\Api\V1\Training;
 
 use App\Domain\Access\Models\User;
 use App\Domain\People\Models\Employee;
+use App\Domain\Training\Actions\BookSession;
+use App\Domain\Training\Actions\CancelBooking;
 use App\Domain\Training\Actions\CancelEnrollment;
+use App\Domain\Training\Actions\CheckIn;
 use App\Domain\Training\Actions\Enrol;
+use App\Domain\Training\Data\CertificateData;
+use App\Domain\Training\Data\CourseRefData;
 use App\Domain\Training\Data\EnrollmentData;
+use App\Domain\Training\Data\ExternalTrainingData;
+use App\Domain\Training\Data\SessionData;
 use App\Domain\Training\Enums\CourseCategory;
 use App\Domain\Training\Enums\CourseStatus;
 use App\Domain\Training\Enums\EnrollmentSource;
+use App\Domain\Training\Enums\SessionStatus;
+use App\Domain\Training\Models\Certificate;
 use App\Domain\Training\Models\Course;
 use App\Domain\Training\Models\Enrollment;
+use App\Domain\Training\Models\ExternalTraining;
+use App\Domain\Training\Models\SessionBooking;
+use App\Domain\Training\Models\TrainingSession;
 use App\Domain\Training\Support\CatalogCourses;
 use App\Domain\Training\Support\CoursePage;
 use App\Domain\Training\Support\LearnerClock;
@@ -22,6 +34,7 @@ use App\Http\Resources\Api\V1\Training\CourseResource;
 use App\Http\Resources\Api\V1\Training\EnrollmentResource;
 use App\Support\Actors\Actor;
 use App\Support\Actors\Channel;
+use Carbon\CarbonImmutable;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -103,6 +116,68 @@ final class TrainingController extends Controller
 
         return response()->json(['data' => [
             'enrollments' => $enrollments->map(fn (Enrollment $e): EnrollmentData => EnrollmentData::fromEnrollment($e, $locale, $today))->values(),
+            'certificates' => Certificate::query()->where('employee_id', $employee->id)->latest('issued_on')->orderByDesc('id')->limit(100)->get()
+                ->map(fn (Certificate $c): CertificateData => CertificateData::fromCertificate($c, $locale, $today))->values(),
+            'external' => ExternalTraining::query()->where('employee_id', $employee->id)->latest('starts_on')->orderByDesc('id')->limit(100)->get()
+                ->map(fn (ExternalTraining $r): ExternalTrainingData => ExternalTrainingData::fromRecord($r, $locale))->values(),
+        ], 'meta' => [
+            'canManage' => Gate::allows('training.assign', $employee),
+            'courses' => Gate::allows('training.assign', $employee)
+                ? Course::query()->where('status', CourseStatus::Published->value)->orderBy('code')->limit(300)->get()
+                    ->map(fn (Course $c): CourseRefData => CourseRefData::fromCourse($c, $locale))->values()
+                : [],
         ]]);
+    }
+
+    /** Sessions of a course for the viewer, with their own seat (D107). */
+    public function sessions(Course $course, #[CurrentUser] User $user): JsonResponse
+    {
+        Gate::authorize('training.browse');
+        abort_unless($course->status === CourseStatus::Published, 404);
+        $enrollment = CoursePage::latest(CoursePage::employeeOf($user), $course);
+        $mine = [];
+
+        foreach ($enrollment instanceof Enrollment ? SessionBooking::query()->where('enrollment_id', $enrollment->id)->get() : [] as $booking) {
+            $mine[$booking->training_session_id] = $booking;
+        }
+
+        return response()->json(['data' => TrainingSession::query()->with('trainer')->where('course_id', $course->id)->where('status', SessionStatus::Scheduled->value)
+            ->where('ends_at', '>=', now())->oldest('starts_at')->limit(50)->get()
+            ->map(fn (TrainingSession $s): SessionData => SessionData::fromSession($s, $mine[$s->id] ?? null))->values()]);
+    }
+
+    public function book(Course $course, TrainingSession $session, BookSession $book, #[CurrentUser] User $user): JsonResponse
+    {
+        abort_unless($session->course_id === $course->id, 404);
+        $enrollment = CoursePage::latest(CoursePage::employeeOf($user), $course);
+        abort_unless($enrollment instanceof Enrollment, 404);
+        $booking = $book->handle(Actor::token($user, Channel::Api), $enrollment, $session);
+
+        return response()->json(['data' => SessionData::fromSession($session->fresh() ?? $session, $booking)], 201);
+    }
+
+    public function cancelBooking(SessionBooking $booking, CancelBooking $cancel, #[CurrentUser] User $user): JsonResponse
+    {
+        abort_unless($booking->enrollment()->firstOrFail()->employee()->value('user_id') === $user->id, 404);
+        $cancel->handle(Actor::token($user, Channel::Api), $booking);
+
+        return response()->json(['data' => ['id' => $booking->ulid, 'status' => $booking->status->value]]);
+    }
+
+    /** Check in with the code from the trainer's QR (D101), e.g. scanned in the mobile app. */
+    public function checkIn(Request $request, CheckIn $checkIn, #[CurrentUser] User $user): JsonResponse
+    {
+        $request->validate(['code' => ['required', 'string', 'max:300']]);
+        $code = $request->string('code')->toString();
+        $query = parse_url($code, PHP_URL_QUERY);
+
+        if (is_string($query)) {
+            parse_str($query, $params);
+            $code = is_string($params['code'] ?? null) ? $params['code'] : $code;
+        }
+
+        $booking = $checkIn->handle($user, $code, CarbonImmutable::now());
+
+        return response()->json(['data' => ['id' => $booking->ulid, 'attendedAt' => $booking->attended_at?->toIso8601String()]]);
     }
 }

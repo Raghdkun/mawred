@@ -16,7 +16,7 @@ it('seeds the 16 request types with published forms and workflows, idempotently'
 
     expect($types)->toHaveCount(16)
         ->and($types->filter(fn (RequestType $type): bool => $type->isAvailable())->pluck('code')->sort()->values()->all())
-        ->toBe(['ANNUAL_LEAVE', 'ASSET_REQUEST', 'ATTENDANCE_CORRECTION', 'BUSINESS_TRIP', 'DAY_OFF', 'DETAILS_CHANGE', 'EXPENSE', 'EXPERIENCE_LETTER', 'JOB_REQUISITION', 'OVERTIME', 'RESIGNATION', 'SALARY_ADVANCE', 'SALARY_CERTIFICATE', 'SHIFT_SWAP', 'SICK_LEAVE'])
+        ->toBe(['ANNUAL_LEAVE', 'ASSET_REQUEST', 'ATTENDANCE_CORRECTION', 'BUSINESS_TRIP', 'DAY_OFF', 'DETAILS_CHANGE', 'EXPENSE', 'EXPERIENCE_LETTER', 'JOB_REQUISITION', 'OVERTIME', 'RESIGNATION', 'SALARY_ADVANCE', 'SALARY_CERTIFICATE', 'SHIFT_SWAP', 'SICK_LEAVE', 'TRAINING'])
         ->and($types->every(fn (RequestType $type): bool => $type->form?->published_version_id !== null && $type->workflow?->published_version_id !== null))->toBeTrue()
         ->and(WorkflowDefinition::query()->count())->toBe(16);
 });

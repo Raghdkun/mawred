@@ -23,6 +23,7 @@ const PUBLIC_ROUTE_NAMES = [
     'calendar-replies.*', // D75: one-tap replies carry an HMAC-signed participant token
     'kiosk.*', // D70: kiosk screens open with a secret link (hash stored) and only show rotating codes
     'careers.*', // D87: the public careers site; applying is hardened like public forms
+    'certificates.verify', // D104: shows only name, course, dates and status for a serial; rate limited
 ];
 
 /** Package-owned endpoints with their own gates (Horizon, Pulse, Scramble, Sanctum, health…). */

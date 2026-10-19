@@ -95,6 +95,14 @@ final class Enrollment extends Model
         return $this->hasMany(QuizAttempt::class);
     }
 
+    /**
+     * @return HasMany<SessionBooking, $this>
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(SessionBooking::class);
+    }
+
     /** Past its due date and not finished. */
     public function isOverdue(string $today): bool
     {

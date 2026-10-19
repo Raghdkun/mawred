@@ -7,17 +7,24 @@ namespace App\Domain\Training\Support;
 use App\Domain\Access\Models\User;
 use App\Domain\Forms\Support\FieldSpec;
 use App\Domain\People\Models\Employee;
+use App\Domain\Training\Data\CertificateData;
 use App\Domain\Training\Data\CourseCardData;
 use App\Domain\Training\Data\EnrollmentData;
 use App\Domain\Training\Data\ModuleSummaryData;
+use App\Domain\Training\Data\SessionData;
 use App\Domain\Training\Enums\CourseStatus;
 use App\Domain\Training\Enums\EnrollmentStatus;
+use App\Domain\Training\Enums\SessionStatus;
+use App\Domain\Training\Models\Certificate;
 use App\Domain\Training\Models\Course;
+use App\Domain\Training\Models\CourseFeedback;
 use App\Domain\Training\Models\CourseModule;
 use App\Domain\Training\Models\Enrollment;
 use App\Domain\Training\Models\LearningPath;
 use App\Domain\Training\Models\ModuleProgress;
 use App\Domain\Training\Models\QuizAttempt;
+use App\Domain\Training\Models\SessionBooking;
+use App\Domain\Training\Models\TrainingSession;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\Gate;
 
@@ -65,6 +72,18 @@ final readonly class CoursePage
             }
         }
 
+        $sessions = TrainingSession::query()->with('trainer')->where('course_id', $course->id)
+            ->where(fn (Builder $q) => $q->where('status', SessionStatus::Scheduled->value)->where('ends_at', '>=', now()->subDays(1)))
+            ->oldest('starts_at')->limit(50)->get();
+        /** @var array<int, SessionBooking> $bookings */
+        $bookings = [];
+
+        foreach ($enrollment instanceof Enrollment ? SessionBooking::query()->where('enrollment_id', $enrollment->id)->get() : [] as $booking) {
+            $bookings[$booking->training_session_id] = $booking;
+        }
+
+        $feedback = $enrollment instanceof Enrollment ? CourseFeedback::query()->where('enrollment_id', $enrollment->id)->first() : null;
+        $certificate = $enrollment instanceof Enrollment ? Certificate::query()->where('enrollment_id', $enrollment->id)->first() : null;
         $paths = LearningPath::query()->where('status', CourseStatus::Published->value)
             ->whereHas('courses', fn (Builder $q) => $q->whereKey($course->id))->get();
         $description = FieldSpec::text($course->getTranslations('description'), $locale);
@@ -78,10 +97,15 @@ final readonly class CoursePage
                 $module, $locale, in_array($module->id, $done, true), $attempts[$module->id] ?? [],
             ))->all()),
             'enrollment' => $enrollment instanceof Enrollment ? EnrollmentData::fromEnrollment($enrollment, $locale, $today) : null,
+            'sessions' => array_values($sessions->map(fn (TrainingSession $session): SessionData => SessionData::fromSession($session, $bookings[$session->id] ?? null))->all()),
+            'attended' => array_filter($bookings, fn (SessionBooking $b): bool => $b->attended_at !== null) !== [],
+            'feedback' => $feedback instanceof CourseFeedback ? ['rating' => $feedback->rating, 'comment' => $feedback->comment] : null,
+            'certificate' => $certificate instanceof Certificate ? CertificateData::fromCertificate($certificate, $locale, $today) : null,
             'paths' => array_values($paths->map(fn (LearningPath $path): array => ['id' => $path->ulid, 'title' => FieldSpec::text($path->getTranslations('title'), $locale)])->all()),
             'can' => [
                 'enrol' => $course->status === CourseStatus::Published && Gate::allows('training.enrol')
-                    && (! $enrollment instanceof Enrollment || ! $enrollment->status->isLive()),
+                    && (! $enrollment instanceof Enrollment || (! $enrollment->status->isLive() && $enrollment->status !== EnrollmentStatus::Completed)),
+                'book' => $enrollment instanceof Enrollment && $enrollment->status === EnrollmentStatus::Enrolled,
                 'learn' => $enrollment instanceof Enrollment && in_array($enrollment->status, [EnrollmentStatus::Enrolled, EnrollmentStatus::Completed], true),
                 'leave' => $enrollment instanceof Enrollment && $enrollment->status->isLive() && in_array($enrollment->source->value, ['self', 'path'], true),
                 'manage' => Gate::allows('training.manage'),

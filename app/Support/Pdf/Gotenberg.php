@@ -15,19 +15,20 @@ final readonly class Gotenberg
 {
     public function __construct(private Http $http) {}
 
-    public function html(string $html): string
+    /** Prints A4, portrait unless `$landscape`; full-bleed artwork (certificates, D110) passes no margin. */
+    public function html(string $html, bool $landscape = false, string $margin = '0.6'): string
     {
         $url = config('services.gotenberg.url');
 
         $response = $this->http->timeout(30)
             ->attach('files', $html, 'index.html', ['Content-Type' => 'text/html'])
             ->post(rtrim(is_string($url) ? $url : '', '/').'/forms/chromium/convert/html', [
-                'paperWidth' => '8.27',
-                'paperHeight' => '11.7',
-                'marginTop' => '0.6',
-                'marginBottom' => '0.6',
-                'marginLeft' => '0.6',
-                'marginRight' => '0.6',
+                'paperWidth' => $landscape ? '11.7' : '8.27',
+                'paperHeight' => $landscape ? '8.27' : '11.7',
+                'marginTop' => $margin,
+                'marginBottom' => $margin,
+                'marginLeft' => $margin,
+                'marginRight' => $margin,
                 'printBackground' => 'true',
             ]);
 

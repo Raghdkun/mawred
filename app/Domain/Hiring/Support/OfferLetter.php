@@ -13,12 +13,12 @@ use App\Domain\Organization\Models\Department;
 use App\Domain\Organization\Models\EmploymentType;
 use App\Domain\Organization\Models\Position;
 use App\Domain\People\Models\Employee;
+use App\Domain\Setup\Support\CompanyBrand;
 use App\Domain\Setup\Support\Settings;
 use App\Support\Money\Money;
 use App\Support\Templates\SafeTemplate;
 use App\Support\Time\LocalClock;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Offer letters (D95): one template per language in Hiring settings with `{{ variable }}` chips,
@@ -33,7 +33,7 @@ final readonly class OfferLetter
         'employment_type', 'manager', 'company', 'expires_on', 'today',
     ];
 
-    public function __construct(private Settings $settings, private SafeTemplate $templates, private LocalClock $clock) {}
+    public function __construct(private Settings $settings, private SafeTemplate $templates, private LocalClock $clock, private CompanyBrand $brand) {}
 
     public function template(string $locale): string
     {
@@ -155,19 +155,11 @@ final readonly class OfferLetter
 
     private function company(string $locale): string
     {
-        return FieldSpec::text($this->settings->get('company.name'), $locale, FieldSpec::string(config('app.name'), 'Mawred'));
+        return $this->brand->name($locale);
     }
 
     private function logoDataUri(): ?string
     {
-        $path = $this->settings->get('company.logo_path');
-
-        if (! is_string($path) || ! Storage::disk('public')->exists($path)) {
-            return null;
-        }
-
-        $mime = Storage::disk('public')->mimeType($path) ?: 'image/png';
-
-        return 'data:'.$mime.';base64,'.base64_encode((string) Storage::disk('public')->get($path));
+        return $this->brand->logoDataUri();
     }
 }

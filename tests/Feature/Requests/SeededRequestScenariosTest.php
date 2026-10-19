@@ -116,8 +116,12 @@ it('applies an approved bank details change to the requester record', function (
 
 it('keeps flagged types out of the request center until their module ships', function (): void {
     $this->actingAs($this->requesterUser)->get(route('requests.center'))->assertOk()
-        ->assertInertia(fn ($page) => $page->has('types', 14));
-    $this->actingAs($this->requesterUser)->get(route('requests.create', seeded('TRAINING')))->assertNotFound();
+        ->assertInertia(fn ($page) => $page->has('types', 15));
+
+    // Every seeded module has shipped (Training in Phase 7); a type flagged for a later phase hides.
+    seeded('TRAINING')->forceFill(['available_in_phase' => 99])->save();
+    $this->get(route('requests.center'))->assertInertia(fn ($page) => $page->has('types', 14));
+    $this->get(route('requests.create', seeded('TRAINING')))->assertNotFound();
 });
 
 it('stops at the first rejection', function (): void {
