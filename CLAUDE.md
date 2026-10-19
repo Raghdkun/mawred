@@ -168,6 +168,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Pest browser `drag()` presses the mouse on the source's centre and releases on the target: it draws a stroke across a canvas signature pad.
 - Prettier rewrites `lang/*.json` with 2-space indents; the repo keeps 4. Don't run it on lang files (write them with `json.dumps(…, indent=4)`).
 
+## Gotchas learned in Phase 7a
+- The React Compiler reads an event handler's dependencies during render: `course!.id` inside an `onClick` closure crashed the page when `course` was null. Pull the id into a local (`course?.id ?? null`) and check it inside the handler.
+- Inertia keeps the page component across visits to the same component (create → edit): key the inner editor by the record id, or its `useState` defaults stay from the first visit.
+- `case Self` is a fatal error in a PHP enum (reserved word); use `SelfService`.
+- A `<legend>` sits on its fieldset's border: put the card border on a wrapper, not on the fieldset.
+- `SyncEmployeePlacement` fires `EmployeePlacementChanged` when someone's branch, department, position, employment type or status changes; mandatory courses listen to it.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

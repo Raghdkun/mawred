@@ -149,7 +149,8 @@
             "documents": "المستندات",
             "history": "السجل",
             "policies": "السياسات السارية",
-            "leave": "الإجازات"
+            "leave": "الإجازات",
+            "training": "التدريب"
         }
     },
     "terminate": {

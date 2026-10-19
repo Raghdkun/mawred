@@ -13,7 +13,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { type Person, PeoplePicker } from '@/features/calendar/people-picker';
-import { BilingualText, type Pair } from '@/features/hiring/bilingual-text';
+import { BilingualText, type Pair } from '@/components/mw/bilingual-text';
 import hiring from '@/routes/hiring';
 
 type Stage = App.Domain.Hiring.Data.StageData;

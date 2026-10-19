@@ -19,7 +19,8 @@ import requests from '@/routes/requests';
 import workflowRoutes from '@/routes/workflows';
 import profile from '@/routes/profile';
 import setup from '@/routes/setup';
-import { Building2, House, type LucideIcon, Plus, UserRound } from 'lucide-react';
+import training from '@/routes/training';
+import { Building2, GraduationCap, House, type LucideIcon, Plus, UserRound } from 'lucide-react';
 import { type ModuleIconName } from '@/components/mw/module-icons.generated';
 
 export type NavItem = {
@@ -134,6 +135,23 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     match: ['/hiring/candidates'],
                 },
                 {
+                    key: 'training',
+                    label: 'nav.training',
+                    href: training.catalog(),
+                    icon: 'training',
+                    permission: 'training.view',
+                    match: ['/training'],
+                    exclude: ['/training/manage', '/training/my'],
+                },
+                {
+                    key: 'my-learning',
+                    label: 'nav.myLearning',
+                    href: training.my(),
+                    icon: GraduationCap,
+                    permission: 'training.view',
+                    match: ['/training/my'],
+                },
+                {
                     key: 'people',
                     label: 'nav.people',
                     href: people.index(),
@@ -167,6 +185,14 @@ export function navigation(setupComplete: boolean): NavGroup[] {
                     icon: Building2,
                     permission: 'organization.view',
                     match: ['/organization'],
+                },
+                {
+                    key: 'training-courses',
+                    label: 'nav.trainingCourses',
+                    href: training.manage.courses.index(),
+                    icon: 'certificates',
+                    permission: 'training.update',
+                    match: ['/training/manage'],
                 },
                 {
                     key: 'forms',

@@ -24,7 +24,7 @@ import {
     asPayload,
     textOf,
 } from '@/features/forms/schema';
-import { BilingualText, type Pair } from '@/features/hiring/bilingual-text';
+import { BilingualText, type Pair } from '@/components/mw/bilingual-text';
 import { PostingStatusBadge } from '@/features/hiring/status';
 import { useLocale } from '@/hooks/use-locale';
 import hiring from '@/routes/hiring';

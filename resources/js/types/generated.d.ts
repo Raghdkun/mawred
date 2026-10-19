@@ -805,7 +805,7 @@ createdAt: string,
 };
 }
 namespace Enums {
-export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'hiring' | 'security' | 'integrations';
+export type NotificationCategory = 'approvals' | 'requests' | 'documents' | 'schedule' | 'hiring' | 'training' | 'security' | 'integrations';
 }
 }
 namespace Organization {
@@ -1569,6 +1569,303 @@ namespace Setup {
 namespace Enums {
 export type SetupStep = 'welcome' | 'company' | 'languages' | 'branch' | 'policies' | 'admin' | 'email' | 'whatsapp' | 'cognito' | 'review';
 export type StepStatus = 'pending' | 'completed' | 'skipped';
+}
+}
+namespace Training {
+namespace Data {
+export type CourseCardData = {
+id: string,
+code: string,
+title: string,
+summary: string | null,
+category: string,
+durationMinutes: number | null,
+modules: number,
+requiresApproval: boolean,
+mandatory: boolean,
+issuesCertificate: boolean,
+enrollment: App.Domain.Training.Data.EnrollmentData | null,
+};
+export type CourseEditorData = {
+id: string,
+code: string,
+status: string,
+title: {
+en: string,
+ar: string,
+},
+summary: {
+en: string,
+ar: string,
+},
+description: {
+en: string,
+ar: string,
+},
+category: string,
+durationMinutes: number | null,
+requiresApproval: boolean,
+issuesCertificate: boolean,
+validityMonths: number | null,
+owner: {
+id: string,
+name: string,
+} | null,
+audience: {
+branches: {
+id: string,
+name: string,
+}[],
+departments: {
+id: string,
+name: string,
+}[],
+positions: {
+id: string,
+name: string,
+}[],
+employmentTypes: {
+id: string,
+name: string,
+}[],
+hiredWithinDays: number | null,
+} | null,
+dueDays: number | null,
+modules: {
+id: string,
+kind: string,
+title: {
+en: string,
+ar: string,
+},
+body: {
+en: string,
+ar: string,
+},
+url: string | null,
+fileName: string | null,
+durationMinutes: number | null,
+required: boolean,
+passMark: number | null,
+maxAttempts: number | null,
+questions: {
+id: string,
+type: string,
+prompt: {
+en: string,
+ar: string,
+},
+points: number,
+options: {
+id: string,
+label: {
+en: string,
+ar: string,
+},
+correct: boolean,
+}[],
+}[],
+}[],
+};
+export type CourseInputData = {
+title: {
+en: string,
+ar?: string | null,
+},
+summary: {
+en?: string | null,
+ar?: string | null,
+} | null,
+description: {
+en?: string | null,
+ar?: string | null,
+} | null,
+category: string,
+durationMinutes: number | null,
+requiresApproval: boolean,
+issuesCertificate: boolean,
+validityMonths: number | null,
+ownerId: string | null,
+audience: {
+branches?: string[],
+departments?: string[],
+positions?: string[],
+employmentTypes?: string[],
+hiredWithinDays?: number | null,
+} | null,
+dueDays: number | null,
+};
+export type CourseRefData = {
+id: string,
+code: string,
+title: string,
+status: string,
+mandatory: boolean,
+};
+export type CourseRowData = {
+id: string,
+code: string,
+title: string,
+category: string,
+status: string,
+mandatory: boolean,
+requiresApproval: boolean,
+modules: number,
+active: number,
+requested: number,
+completed: number,
+};
+export type EnrollmentData = {
+id: string,
+status: string,
+source: string,
+progress: number,
+dueOn: string | null,
+overdue: boolean,
+requestedAt: string | null,
+enrolledAt: string | null,
+completedAt: string | null,
+course: {
+id: string,
+code: string,
+title: string,
+},
+employee: {
+id: string,
+name: string,
+} | null,
+};
+export type LearningPathData = {
+id: string,
+title: string,
+description: string | null,
+status: string,
+courses: {
+id: string,
+code: string,
+title: string,
+durationMinutes: number | null,
+status: string | null,
+progress: number,
+}[],
+joined: boolean,
+};
+export type LearningPathEditorData = {
+id: string,
+title: {
+en: string,
+ar: string,
+},
+description: {
+en: string,
+ar: string,
+},
+status: string,
+courses: string[],
+};
+export type LearningPathInputData = {
+title: {
+en: string,
+ar?: string | null,
+},
+description: {
+en?: string | null,
+ar?: string | null,
+} | null,
+courses: string[],
+};
+export type ModuleData = {
+id: string,
+kind: string,
+title: string,
+body: string | null,
+url: string | null,
+fileName: string | null,
+durationMinutes: number | null,
+required: boolean,
+done: boolean,
+quiz: {
+passMark: number,
+attemptsAllowed: number,
+attemptsUsed: number,
+passed: boolean,
+bestScore: number | null,
+questions: {
+id: string,
+type: string,
+prompt: string,
+points: number,
+options: {
+id: string,
+label: string,
+}[],
+}[],
+last: {
+score: number,
+passed: boolean,
+correct: string[],
+} | null,
+} | null,
+};
+export type ModuleSummaryData = {
+id: string,
+kind: string,
+title: string,
+durationMinutes: number | null,
+required: boolean,
+done: boolean,
+quiz: {
+passMark: number,
+attemptsAllowed: number,
+attemptsUsed: number,
+bestScore: number | null,
+passed: boolean,
+} | null,
+};
+export type ModulesInputData = {
+modules: {
+id?: string | null,
+kind: string,
+title: {
+en: string,
+ar?: string | null,
+},
+body?: {
+en?: string | null,
+ar?: string | null,
+} | null,
+url?: string | null,
+durationMinutes?: number | null,
+required?: boolean,
+passMark?: number | null,
+maxAttempts?: number | null,
+questions?: {
+id?: string | null,
+type: string,
+prompt: {
+en: string,
+ar?: string | null,
+},
+points?: number,
+options: {
+id?: string | null,
+label: {
+en: string,
+ar?: string | null,
+},
+correct: boolean,
+}[],
+}[],
+}[],
+};
+}
+namespace Enums {
+export type CourseCategory = 'compliance' | 'safety' | 'onboarding' | 'skills' | 'leadership' | 'technical';
+export type CourseStatus = 'draft' | 'published' | 'archived';
+export type EnrollmentSource = 'self' | 'assigned' | 'audience' | 'path' | 'request' | 'renewal';
+export type EnrollmentStatus = 'requested' | 'enrolled' | 'completed' | 'rejected' | 'cancelled';
+export type ModuleKind = 'text' | 'video' | 'file' | 'quiz';
+export type QuestionType = 'single' | 'multiple' | 'true_false';
 }
 }
 namespace Workflows {

@@ -34,7 +34,10 @@
         "hiring": "Hiring",
         "candidates": "Candidates",
         "hiringSettings": "Hiring settings",
-        "interviews": "My interviews"
+        "interviews": "My interviews",
+        "training": "Training",
+        "myLearning": "My learning",
+        "trainingCourses": "Courses"
     },
     "searchPlaceholder": "Search or jump to…",
     "switchLanguage": "Switch language to {language}",

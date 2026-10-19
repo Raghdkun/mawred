@@ -8,7 +8,7 @@ import { SwitchField } from '@/components/mw/switch-field';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AutomationEditor } from '@/features/hiring/automation-editor';
-import { BilingualText, type Pair } from '@/features/hiring/bilingual-text';
+import { BilingualText, type Pair } from '@/components/mw/bilingual-text';
 import { CriteriaEditor } from '@/features/hiring/criteria-editor';
 import { StageEditor } from '@/features/hiring/stage-editor';
 import forms from '@/routes/forms';
