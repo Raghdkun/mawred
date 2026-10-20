@@ -10,6 +10,8 @@ use App\Domain\Notifications\Enums\NotificationCategory;
 use App\Domain\Notifications\Support\NotificationMessage;
 use App\Domain\Notifications\Support\NotificationRouter;
 use App\Domain\Reports\Models\ReportRun;
+use App\Domain\Reports\Models\ReportSchedule;
+use Carbon\CarbonImmutable;
 
 /**
  * Tells the person who asked that their export is ready, with a link to it in Mawred; the file
@@ -30,6 +32,20 @@ final readonly class ReportNotifier
             ],
             url: route('reports.exports.download', $run),
             sourceKey: $run->ulid.':ready',
+        ));
+    }
+
+    public function schedulePaused(User $user, ReportSchedule $schedule, string $reason): void
+    {
+        $this->router->send($user, new NotificationMessage(
+            event: 'reports.schedule_paused',
+            category: NotificationCategory::Reports,
+            content: fn (string $channel, string $locale): array => [
+                'subject' => FieldSpec::string(__('A scheduled report was paused', [], $locale)),
+                'body' => $reason,
+            ],
+            url: route('reports.schedules.index'),
+            sourceKey: $schedule->ulid.':paused:'.CarbonImmutable::now()->toIso8601String(),
         ));
     }
 

@@ -37,7 +37,7 @@ final class ExportsController extends Controller
         $locale = app()->getLocale();
 
         return Inertia::render('reports/exports', [
-            'exports' => array_values(MyExports::for($user)->map(fn (ReportRun $run): ReportRunData => ReportRunData::fromRun($run, $registry->find($run->report), $locale))->all()),
+            'exports' => array_values(MyExports::for($user)->map(fn (ReportRun $run): ReportRunData => ReportRunData::fromRun($run, $registry->resolve($run->report, $user), $locale))->all()),
             'keepDays' => ReportRun::KEEP_DAYS,
         ]);
     }
@@ -45,7 +45,7 @@ final class ExportsController extends Controller
     public function store(Request $request, string $report, ReportRegistry $registry, ParamResolver $resolver, QueueReportExport $queue, #[CurrentUser] User $user): RedirectResponse
     {
         Gate::authorize('reports.export');
-        $found = $registry->find($report);
+        $found = $registry->resolve($report, $user);
         abort_unless($found instanceof Report && $registry->canView($user, $found), 404);
         $request->validate(['format' => ['required', Rule::enum(ReportFormat::class)]]);
         /** @var array<string, mixed> $input */

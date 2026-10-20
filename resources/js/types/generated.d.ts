@@ -1452,6 +1452,30 @@ export type PolicySection = 'leave' | 'work_week' | 'overtime' | 'attendance' | 
 }
 namespace Reports {
 namespace Data {
+export type CustomReportInputData = {
+name: string,
+description: string | null,
+definition: Record<string, any>,
+};
+export type DatasetData = {
+key: string,
+category: App.Domain.Reports.Enums.ReportCategory,
+title: string,
+description: string,
+fields: App.Domain.Reports.Data.DatasetFieldData[],
+};
+export type DatasetFieldData = {
+key: string,
+label: string,
+type: App.Domain.Reports.Enums.ColumnType,
+options: {
+value: string,
+label: string,
+}[],
+groupable: boolean,
+measurable: boolean,
+ops: App.Domain.Reports.Enums.FilterOp[],
+};
 export type ReportCardData = {
 key: string,
 category: App.Domain.Reports.Enums.ReportCategory,
@@ -1506,13 +1530,62 @@ error: string | null,
 createdAt: string,
 expiresAt: string | null,
 };
+export type ReportScheduleData = {
+id: string,
+report: string,
+title: string,
+format: App.Domain.Reports.Enums.ReportFormat,
+frequency: App.Domain.Reports.Enums.ScheduleFrequency,
+weekday: number | null,
+monthDay: number | null,
+hour: number,
+timezone: string,
+params: Record<string, string | number | null>,
+nextRunAt: string,
+lastRunAt: string | null,
+lastRunStatus: App.Domain.Reports.Enums.RunStatus | null,
+paused: boolean,
+pausedReason: string | null,
+};
+export type ReportScheduleInputData = {
+report: string,
+format: App.Domain.Reports.Enums.ReportFormat,
+frequency: App.Domain.Reports.Enums.ScheduleFrequency,
+weekday: number | null,
+monthDay: number | null,
+hour: number,
+params: Record<string, string | number | null> | null,
+};
+export type SavedReportData = {
+id: string,
+key: string,
+name: string,
+description: string | null,
+dataset: string,
+datasetTitle: string,
+mine: boolean,
+owner: string | null,
+definition: Record<string, any>,
+sharedWith: {
+people: {
+id: string,
+label: string,
+}[],
+roles: string[],
+} | null,
+updatedAt: string,
+};
 }
 namespace Enums {
 export type ColumnType = 'text' | 'number' | 'decimal' | 'percent' | 'date' | 'minutes';
+export type FilterOp = 'is' | 'contains' | 'in' | 'between' | 'last_days' | 'gte' | 'lte';
 export type FilterType = 'period' | 'month' | 'year' | 'as_of' | 'days' | 'branch' | 'department' | 'choice';
+export type Measure = 'count' | 'sum' | 'avg';
+export type PeriodRange = 'this_month' | 'last_month' | 'last_7_days' | 'last_30_days' | 'this_year';
 export type ReportCategory = 'people' | 'leave' | 'time' | 'requests' | 'hiring' | 'training' | 'payroll' | 'admin';
 export type ReportFormat = 'xlsx' | 'csv' | 'pdf';
 export type RunStatus = 'queued' | 'running' | 'ready' | 'failed';
+export type ScheduleFrequency = 'daily' | 'weekly' | 'monthly';
 }
 }
 namespace Requests {

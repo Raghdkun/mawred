@@ -9,6 +9,7 @@ use App\Domain\Organization\Models\Branch;
 use App\Domain\Organization\Models\Department;
 use App\Domain\Reports\Contracts\Report;
 use App\Domain\Reports\Enums\FilterType;
+use App\Domain\Reports\Enums\PeriodRange;
 use App\Support\Errors\DomainRuleViolation;
 use App\Support\Time\LocalClock;
 use Carbon\CarbonImmutable;
@@ -35,8 +36,16 @@ final readonly class ParamResolver
         foreach ($report->filters() as $filter) {
             switch ($filter->type) {
                 case FilterType::Period:
-                    $from = $string('from') ?? $today->startOfMonth()->toDateString();
-                    $to = $string('to') ?? $today->toDateString();
+                    $range = PeriodRange::tryFrom((string) $string('range'));
+
+                    // A saved report has no period unless one is chosen; prebuilt ones start at this month so far.
+                    if (! $range instanceof PeriodRange && $string('from') === null && $string('to') === null && $filter->default === 'any') {
+                        break;
+                    }
+
+                    [$from, $to] = $range instanceof PeriodRange
+                        ? $range->between($today)
+                        : [$string('from') ?? $today->startOfMonth()->toDateString(), $string('to') ?? $today->toDateString()];
 
                     if (! $date($from) || ! $date($to) || $from > $to) {
                         $errors['from'] = [__('Choose a start date on or before the end date.')];
@@ -46,6 +55,7 @@ final readonly class ParamResolver
 
                     $values['from'] = $from;
                     $values['to'] = $to;
+                    $values['range'] = $range?->value;
                     break;
                 case FilterType::Month:
                     $month = $string('month') ?? $today->subMonthNoOverflow()->format('Y-m');
