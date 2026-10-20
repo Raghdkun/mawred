@@ -20,6 +20,8 @@ Schedule::command('training:assign')->dailyAt('02:40')->onOneServer()->withoutOv
 // Certificate expiry (D103): reminders and renewal enrolments, before people start work.
 Schedule::command('training:certificates')->dailyAt('06:10')->onOneServer()->withoutOverlapping();
 // Report exports (D114): files are kept for a week.
+// Scheduled reports (D120): due runs start within 15 minutes of their hour, as their owners.
+Schedule::command('reports:schedules')->everyFifteenMinutes()->onOneServer()->withoutOverlapping();
 Schedule::command('reports:prune')->dailyAt('03:40')->onOneServer()->withoutOverlapping();
 Schedule::command('notifications:digest')->dailyAt('05:00')->onOneServer()->withoutOverlapping();
 Schedule::command('horizon:snapshot')->everyFiveMinutes();

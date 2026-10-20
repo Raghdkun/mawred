@@ -70,8 +70,8 @@ export default function ReportExports({ exports, keepDays }: Props) {
                                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                                     <span className="text-body font-medium">
                                         {run.title}{' '}
-                                        <span className="text-small font-normal text-text-secondary uppercase">
-                                            {run.format}
+                                        <span className="text-small font-normal text-text-secondary">
+                                            {run.format.toUpperCase()}
                                         </span>
                                     </span>
                                     <div className="flex flex-wrap items-center gap-2 text-caption text-text-secondary">

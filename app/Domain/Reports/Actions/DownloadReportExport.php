@@ -26,7 +26,7 @@ final readonly class DownloadReportExport
      */
     public function handle(User $user, ReportRun $run): array
     {
-        $report = $this->registry->find($run->report);
+        $report = $this->registry->resolve($run->report, $user);
         $disk = Storage::disk(ReportRun::DISK);
 
         if ($run->user_id !== $user->id

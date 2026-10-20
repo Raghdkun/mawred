@@ -26,7 +26,10 @@ final readonly class QueueReportExport
 
     public function __construct(private ConnectionInterface $db, private ReportRegistry $registry) {}
 
-    public function handle(Actor $actor, Report $report, ReportParams $params, ReportFormat $format, string $locale): ReportRun
+    /**
+     * @param  bool  $scheduled  a schedule's run (D120), which doesn't count against the waiting limit
+     */
+    public function handle(Actor $actor, Report $report, ReportParams $params, ReportFormat $format, string $locale, bool $scheduled = false): ReportRun
     {
         $user = $actor->user;
 
@@ -36,11 +39,11 @@ final readonly class QueueReportExport
 
         $pending = ReportRun::query()->where('user_id', $user->id)->whereIn('status', ['queued', 'running'])->count();
 
-        if ($pending >= self::MAX_PENDING) {
+        if (! $scheduled && $pending >= self::MAX_PENDING) {
             throw new DomainRuleViolation('reports.too_many', __('You already have :count exports on the way. Try again when one is ready.', ['count' => $pending]));
         }
 
-        return $this->db->transaction(function () use ($user, $report, $params, $format, $locale, $actor): ReportRun {
+        return $this->db->transaction(function () use ($user, $report, $params, $format, $locale, $actor, $scheduled): ReportRun {
             $run = ReportRun::query()->create([
                 'user_id' => $user->id,
                 'report' => $report->key(),
@@ -50,7 +53,7 @@ final readonly class QueueReportExport
             ]);
 
             activity('reports')->causedBy($user)->performedOn($run)->event('export_requested')
-                ->withProperties(['report' => $report->key(), 'format' => $format->value, 'params' => $params->toArray(), 'impersonator' => $actor->impersonator?->ulid])
+                ->withProperties(['report' => $report->key(), 'format' => $format->value, 'params' => $params->toArray(), 'impersonator' => $actor->impersonator?->ulid, 'scheduled' => $scheduled])
                 ->log('Report export requested');
 
             dispatch(new GenerateReportExportJob($run->id))->afterCommit();

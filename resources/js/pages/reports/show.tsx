@@ -1,11 +1,25 @@
-import { Deferred, Head, Link } from '@inertiajs/react';
-import { ChevronLeft } from 'lucide-react';
+import { Deferred, Head, Link, router } from '@inertiajs/react';
+import { CalendarClock, ChevronLeft, Pencil, Share2, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type PickerOption } from '@/components/mw/async-picker';
 import { DirIcon } from '@/components/mw/dir-icon';
 import { PageHeader } from '@/components/mw/page-header';
 import { PageState } from '@/components/mw/page-state';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ScheduleDialog } from '@/features/reports/schedule-dialog';
+import { ShareDialog } from '@/features/reports/share-dialog';
 import { ExportMenu } from '@/features/reports/export-menu';
 import { FilterBar, type FilterValues } from '@/features/reports/filter-bar';
 import { KpiCards } from '@/features/reports/kpi-cards';
@@ -23,6 +37,11 @@ type Props = {
     formats: App.Domain.Reports.Enums.ReportFormat[];
     filterErrors: Record<string, string>;
     result?: App.Domain.Reports.Data.ReportResultData | null;
+    saved: {
+        report: App.Domain.Reports.Data.SavedReportData;
+        can: { edit: boolean; share: boolean; delete: boolean };
+    } | null;
+    roles: Array<{ name: string; label: string }>;
 };
 
 /**
@@ -30,8 +49,13 @@ type Props = {
  * loads after the page (it can take a moment), behind a skeleton.
  */
 export default function ReportShow(props: Props) {
-    const { report, filters, values, selected, formats, filterErrors, result } = props;
+    const { report, filters, values, selected, formats, filterErrors, result, saved, roles } =
+        props;
     const { t } = useTranslation('reports');
+    const [sharing, setSharing] = useState(false);
+    const [scheduling, setScheduling] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+    const savedId = saved?.report.id ?? null;
 
     return (
         <>
@@ -49,9 +73,53 @@ export default function ReportShow(props: Props) {
                 title={report.title}
                 description={report.description}
                 actions={
-                    report.canExport && result !== null ? (
-                        <ExportMenu reportKey={report.key} values={values} formats={formats} />
-                    ) : null
+                    <div className="flex flex-wrap items-center gap-2">
+                        {saved?.can.edit && savedId ? (
+                            <Button asChild variant="outline" className="min-h-11">
+                                <Link href={reports.builder.edit.url(savedId)} data-edit-report>
+                                    <Pencil aria-hidden />
+                                    {t('saved.edit')}
+                                </Link>
+                            </Button>
+                        ) : null}
+                        {saved?.can.share ? (
+                            <Button
+                                variant="outline"
+                                className="min-h-11"
+                                onClick={() => setSharing(true)}
+                                data-share-report
+                            >
+                                <Share2 aria-hidden />
+                                {t('saved.share')}
+                            </Button>
+                        ) : null}
+                        {saved?.can.delete ? (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-11"
+                                aria-label={t('saved.delete')}
+                                onClick={() => setDeleting(true)}
+                                data-delete-report
+                            >
+                                <Trash2 aria-hidden />
+                            </Button>
+                        ) : null}
+                        {report.canExport ? (
+                            <Button
+                                variant="outline"
+                                className="min-h-11"
+                                onClick={() => setScheduling(true)}
+                                data-schedule-report
+                            >
+                                <CalendarClock aria-hidden />
+                                {t('schedule.button')}
+                            </Button>
+                        ) : null}
+                        {report.canExport && result !== null ? (
+                            <ExportMenu reportKey={report.key} values={values} formats={formats} />
+                        ) : null}
+                    </div>
                 }
             />
             <div className="flex flex-col gap-6">
@@ -86,6 +154,46 @@ export default function ReportShow(props: Props) {
                     </Deferred>
                 )}
             </div>
+            {saved?.can.share ? (
+                <ShareDialog
+                    saved={saved.report}
+                    roles={roles}
+                    open={sharing}
+                    onOpenChange={setSharing}
+                />
+            ) : null}
+            {report.canExport && scheduling ? (
+                <ScheduleDialog
+                    reportKey={report.key}
+                    values={values}
+                    hasPeriod={filters.some((f) => f.type === 'period')}
+                    formats={formats}
+                    open={scheduling}
+                    onOpenChange={setScheduling}
+                />
+            ) : null}
+            <AlertDialog open={deleting} onOpenChange={setDeleting}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t('saved.deleteTitle')}</AlertDialogTitle>
+                        <AlertDialogDescription>{t('saved.deleteBody')}</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="min-h-11">
+                            {t('builder.back')}
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            className="min-h-11"
+                            onClick={() =>
+                                savedId && router.delete(reports.saved.destroy.url(savedId))
+                            }
+                            data-confirm-delete
+                        >
+                            {t('saved.deleteConfirm')}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }

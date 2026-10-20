@@ -39,7 +39,7 @@ final readonly class GenerateReportExport
 
         $run->refresh();
         $user = $run->user()->first();
-        $report = $this->registry->find($run->report);
+        $report = $user instanceof User ? $this->registry->resolve($run->report, $user) : null;
 
         if (! $user instanceof User || ! $report instanceof Report || ! $this->registry->canExport($user, $report)) {
             $this->fail($run, __('You no longer have access to this report.', [], $run->locale), $user);
@@ -98,7 +98,7 @@ final readonly class GenerateReportExport
         $run->forceFill(['status' => RunStatus::Failed, 'error' => $message, 'finished_at' => CarbonImmutable::now()])->save();
 
         if ($user instanceof User) {
-            $report = $this->registry->find($run->report);
+            $report = $this->registry->resolve($run->report, $user);
             $this->notifier->failed($user, $run, $report instanceof Report ? $report->title()[$run->locale === 'ar' ? 'ar' : 'en'] : $run->report);
         }
     }

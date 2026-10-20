@@ -79,5 +79,176 @@
         "expires": "Available until {date}",
         "retry": "Open the report",
         "live": "Exports update on their own while a file is being made."
+    },
+    "custom": {
+        "title": "Custom reports",
+        "help": "Reports built in Mawred. Each one shows you only the data you're allowed to see.",
+        "new": "New report",
+        "schedules": "Scheduled reports",
+        "empty": "No custom reports yet. Build one from any module's data.",
+        "sharedBy": "Shared by {name}",
+        "yours": "Yours",
+        "shared": "{count, plural, one {Shared with # person or role} other {Shared with # people or roles}}"
+    },
+    "builder": {
+        "newTitle": "New report",
+        "editTitle": "Edit {name}",
+        "description": "Pick the data, the columns and filters, and how to show it. The preview updates as you go.",
+        "steps": {
+            "label": "Report steps",
+            "dataset": "Dataset",
+            "fields": "Fields",
+            "filters": "Filters",
+            "group": "Group",
+            "visualize": "Visualize"
+        },
+        "next": "Next",
+        "back": "Back",
+        "desktopOnly": {
+            "title": "Build reports on a larger screen",
+            "body": "The report builder needs a desktop screen. You can still open and export reports here."
+        },
+        "dataset": {
+            "title": "What do you want to report on?",
+            "change": "Changing the data clears the fields and filters you chose."
+        },
+        "fields": {
+            "title": "Columns",
+            "help": "Choose the columns to show, in this order.",
+            "sensitive": "Some fields need extra permission and aren't listed."
+        },
+        "filters": {
+            "title": "Filters",
+            "help": "Only rows that match every filter are included.",
+            "add": "Add a filter",
+            "none": "No filters: every row you can see is included.",
+            "field": "Field",
+            "condition": "Condition",
+            "value": "Value",
+            "remove": "Remove this filter",
+            "choose": "Choose…",
+            "from": "From",
+            "to": "To",
+            "days": "Days",
+            "ops": {
+                "is": "is",
+                "contains": "contains",
+                "in": "is one of",
+                "between": "is between",
+                "last_days": "in the last",
+                "gte": "is at least",
+                "lte": "is at most"
+            }
+        },
+        "group": {
+            "title": "Group",
+            "help": "Group rows to count or add them up, or list every row.",
+            "none": "Don't group: list the rows",
+            "by": "Group by",
+            "measure": "Show",
+            "measureField": "Of",
+            "measures": {
+                "count": "How many",
+                "sum": "Total",
+                "avg": "Average"
+            }
+        },
+        "visualize": {
+            "title": "Visualize",
+            "chart": "Chart",
+            "charts": {
+                "none": "Table only",
+                "bar": "Bar chart",
+                "line": "Line chart"
+            },
+            "chartNeedsGroup": "Charts show grouped reports. Group the rows to add one.",
+            "sort": "Sort by",
+            "sortMeasure": "The number",
+            "direction": {
+                "asc": "A to Z / low to high",
+                "desc": "Z to A / high to low"
+            },
+            "name": "Report name",
+            "description": "Description (optional)",
+            "order": "Order"
+        },
+        "preview": {
+            "title": "Preview",
+            "empty": "Choose the data and at least one column to see a preview.",
+            "error": "The preview couldn't be loaded. Check the steps marked in red."
+        },
+        "save": "Save report",
+        "saving": "Saving…"
+    },
+    "saved": {
+        "edit": "Edit",
+        "share": "Share",
+        "delete": "Delete",
+        "deleteTitle": "Delete this report?",
+        "deleteBody": "Its schedules stop. Files already made stay in My exports for their week.",
+        "deleteConfirm": "Delete report",
+        "keep": "Keep it"
+    },
+    "share": {
+        "title": "Share this report",
+        "help": "People you share with see it with their own data: only what their role lets them see, never yours.",
+        "people": "People",
+        "roles": "Roles",
+        "addPerson": "Add a person",
+        "remove": "Remove {name}",
+        "save": "Save sharing"
+    },
+    "schedule": {
+        "button": "Schedule",
+        "title": "Schedule this report",
+        "help": "It runs on its own with the filters below and the file arrives in My exports, with a notification.",
+        "frequency": "How often",
+        "frequencies": {
+            "daily": "Every day",
+            "weekly": "Every week",
+            "monthly": "Every month"
+        },
+        "weekday": "On",
+        "monthDay": "On day",
+        "hour": "At",
+        "format": "File",
+        "range": "Period",
+        "ranges": {
+            "this_month": "This month so far",
+            "last_month": "Last month",
+            "last_7_days": "Last 7 days",
+            "last_30_days": "Last 30 days",
+            "this_year": "This year so far"
+        },
+        "rangeHelp": "Each run covers its own period.",
+        "save": "Schedule it"
+    },
+    "schedules": {
+        "pageTitle": "Scheduled reports",
+        "title": "Scheduled reports",
+        "description": "Reports that run on their own for you. Each file arrives in My exports.",
+        "empty": {
+            "title": "Nothing scheduled",
+            "description": "Open a report and choose Schedule to have it made for you regularly."
+        },
+        "every": {
+            "daily": "Every day at {time}",
+            "weekly": "Every {weekday} at {time}",
+            "monthly": "On day {day} of each month at {time}"
+        },
+        "next": "Next run {date}",
+        "last": "Last run {date}",
+        "paused": "Paused",
+        "pausedBecause": "Paused: {reason}",
+        "pause": "Pause",
+        "resume": "Resume",
+        "delete": "Delete",
+        "deleteLabel": "Delete the schedule for {title}",
+        "lastStatus": {
+            "queued": "Waiting",
+            "running": "Making the file",
+            "ready": "Ready",
+            "failed": "Failed"
+        }
     }
 }

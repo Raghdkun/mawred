@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Web\Reports;
 
+use App\Domain\Access\Models\Role;
 use App\Domain\Access\Models\User;
 use App\Domain\Organization\Models\Branch;
 use App\Domain\Organization\Models\Department;
@@ -11,14 +12,18 @@ use App\Domain\Reports\Contracts\Report;
 use App\Domain\Reports\Data\ReportCardData;
 use App\Domain\Reports\Data\ReportFilterData;
 use App\Domain\Reports\Data\ReportResultData;
+use App\Domain\Reports\Data\SavedReportData;
 use App\Domain\Reports\Enums\ReportCategory;
 use App\Domain\Reports\Enums\ReportFormat;
+use App\Domain\Reports\Models\SavedReport;
+use App\Domain\Reports\Support\CustomReport;
 use App\Domain\Reports\Support\MyExports;
 use App\Domain\Reports\Support\ParamResolver;
 use App\Domain\Reports\Support\ReportFilter;
 use App\Domain\Reports\Support\ReportParams;
 use App\Domain\Reports\Support\ReportPreview;
 use App\Domain\Reports\Support\ReportRegistry;
+use App\Domain\Reports\Support\SavedReportAccess;
 use App\Http\Controllers\Controller;
 use App\Support\Errors\DomainRuleViolation;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -42,13 +47,17 @@ final class ReportsController extends Controller
             'categories' => array_map(fn (ReportCategory $c): string => $c->value, ReportCategory::cases()),
             'reports' => array_map(fn (Report $r): ReportCardData => ReportCardData::fromReport($r, $locale, $registry->canExport($user, $r)), $registry->for($user)),
             'pendingExports' => MyExports::pending($user),
+            'saved' => array_values(SavedReportAccess::visibleTo($user)->with('owner')->latest('updated_at')->limit(100)->get()
+                ->filter(fn (SavedReport $s): bool => $registry->custom($s, $user) instanceof CustomReport)
+                ->map(fn (SavedReport $s): SavedReportData => SavedReportData::fromSaved($s, $user, $locale))->all()),
+            'can' => ['build' => Gate::allows('create', SavedReport::class), 'schedule' => Gate::allows('reports.export')],
         ]);
     }
 
     public function show(Request $request, string $report, ReportRegistry $registry, ParamResolver $resolver, #[CurrentUser] User $user): Response
     {
         Gate::authorize('reports.view');
-        $found = $registry->find($report);
+        $found = $registry->resolve($report, $user);
         abort_unless($found instanceof Report && $registry->canView($user, $found), 404);
         $locale = app()->getLocale();
         $errors = [];
@@ -74,6 +83,13 @@ final class ReportsController extends Controller
             'formats' => array_map(fn (ReportFormat $f): string => $f->value, ReportFormat::cases()),
             'filterErrors' => (object) $errors,
             'result' => $this->needsBranch($found, $params) ? null : Inertia::defer(fn (): ReportResultData => ReportPreview::build($found, $user, $params, $locale)),
+            'saved' => $found instanceof CustomReport ? [
+                'report' => SavedReportData::fromSaved($found->saved, $user, $locale),
+                'can' => ['edit' => Gate::allows('update', $found->saved), 'share' => Gate::allows('share', $found->saved), 'delete' => Gate::allows('delete', $found->saved)],
+            ] : null,
+            'roles' => $found instanceof CustomReport && Gate::allows('share', $found->saved)
+                ? array_values(Role::query()->where('api_only', false)->orderByDesc('rank')->get()->map(fn (Role $r): array => ['name' => $r->name, 'label' => $r->getTranslation('label', $locale)])->all())
+                : [],
         ]);
     }
 
