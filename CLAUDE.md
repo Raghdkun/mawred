@@ -189,6 +189,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Report rows go through `BaseReport::scoped()` with the module permission; never filter by branch yourself. Days a run covers come from the `today` that `ParamResolver` stores, never the server clock.
 - Rector turns locally-called `private static` helpers into instance methods; write them as instance methods to begin with.
 
+## Gotchas learned in Phase 8b
+- PHPStan only accepts raw SQL it can prove is a code literal: dataset field expressions are typed `literal-string` all the way down; column aliases come from a constant list, not string building.
+- A JSON request to a web route that throws `DomainRuleViolation` now gets a 422 `{message, errors}` (it used to fall through to a 500); `postJson` reads it.
+- A laravel-data `array` property is required even with a default: an empty array posted as a form is dropped. Make it `?array … = null`.
+- In Pest, an arrow fn captures by value: a deferred-props callback that writes to an outer `&$rows` must sit inside a `function () use (&$rows)`, not `fn`.
+- Typing into a field that enables a button and running axe right away catches the button mid-transition (disabled colours); wait briefly first.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.
