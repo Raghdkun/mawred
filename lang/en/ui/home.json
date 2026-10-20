@@ -33,5 +33,98 @@
             "overdue": "Overdue",
             "decided": "Decided this week"
         }
+    },
+    "kpi": {
+        "headcount": "Headcount",
+        "turnover": "Turnover (12 months)",
+        "openPositions": "Open positions",
+        "waitingRequests": "Requests waiting",
+        "team": "Your team",
+        "lateWeek": "Late arrivals this week",
+        "trend": "Trend over the last {count, plural, one {# point} other {# points}}",
+        "delta": "{delta, plural, =0 {No change since last month} one {+# since last month} other {+# since last month}}",
+        "deltaDown": "{delta, plural, one {−# since last month} other {−# since last month}}",
+        "open": "Open {label}"
+    },
+    "hr": {
+        "loading": "Loading your dashboard…",
+        "error": "The dashboard couldn't be loaded. Try again.",
+        "banner": "{count, plural, one {An integration is disconnected} other {# integrations are disconnected}}. Messages that rely on it may not arrive.",
+        "bannerLink": "Check integrations",
+        "expiring": {
+            "title": "Documents expiring",
+            "help": "Expired, or expiring in the next 30 days.",
+            "empty": "Nothing expiring in the next 30 days.",
+            "all": "See all {count}",
+            "daysLeft": "{days, plural, one {# day left} other {# days left}}",
+            "expired": "{days, plural, one {Expired # day ago} other {Expired # days ago}}",
+            "today": "Expires today"
+        },
+        "attendance": {
+            "title": "Attendance today",
+            "help": "Each branch on its own date.",
+            "empty": "No attendance recorded yet today.",
+            "present": "In",
+            "late": "Late",
+            "away": "On leave",
+            "absent": "Absent",
+            "notIn": "Not in yet"
+        },
+        "integrations": {
+            "title": "Integrations",
+            "empty": "No integrations set up yet.",
+            "checked": "Checked {date}",
+            "notChecked": "Not checked yet",
+            "manage": "Manage integrations"
+        }
+    },
+    "team": {
+        "title": "Your team today",
+        "date": "On {date}",
+        "in": "In",
+        "late": "Late",
+        "away": "Away",
+        "notIn": "Not in yet",
+        "awayTitle": "Who's away",
+        "awayEmpty": "Everyone's in today.",
+        "until": "Back after {date}",
+        "lateTitle": "Late today",
+        "lateEmpty": "No late arrivals today.",
+        "lateBy": "{minutes} late",
+        "arrived": "In at {time}",
+        "board": "Open the attendance board"
+    },
+    "clock": {
+        "title": "Check-in",
+        "notIn": "You haven't checked in today.",
+        "in": "Checked in at {time}",
+        "out": "Checked out at {time}",
+        "shift": "Shift {start}–{end}",
+        "noShift": "No shift today",
+        "checkIn": "Check in",
+        "checkOut": "Check out",
+        "status": {
+            "scheduled": "Not in yet",
+            "present": "Present",
+            "late": "Late",
+            "absent": "Absent",
+            "incomplete": "Missing check-out",
+            "on_leave": "On leave",
+            "off": "Day off"
+        }
+    },
+    "agendaItems": {
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "shift": "Shift",
+        "meeting": "Meeting",
+        "booking": "Booking",
+        "interview": "Interview",
+        "training": "Training session",
+        "leave": "Time away",
+        "holiday": "Holiday",
+        "until": "until {date}",
+        "allDay": "All day",
+        "calendar": "Open calendar"
     }
 }

@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Deferred, Head, Link, usePage } from '@inertiajs/react';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { DirIcon } from '@/components/mw/dir-icon';
@@ -8,6 +8,11 @@ import { useLocale } from '@/hooks/use-locale';
 import { hrefOf, navigation } from '@/layouts/shell/navigation';
 import { NavIcon } from '@/layouts/shell/nav-icon';
 import { formatDate, formatHijri, formatNumber } from '@/lib/format';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Agenda } from '@/features/home/agenda';
+import { ClockCard } from '@/features/home/clock-card';
+import { HrDashboard } from '@/features/home/hr-dashboard';
+import { TeamToday } from '@/features/home/team-today';
 import { BalanceCards } from '@/features/leave/balance-cards';
 import { RequestStatusBadge } from '@/features/requests/request-status';
 import { SlaBadge } from '@/features/requests/sla-badge';
@@ -30,6 +35,9 @@ type Props = {
         decidedThisWeek: number;
         tasks: App.Domain.Requests.Data.TaskData[];
     } | null;
+    hr?: App.Domain.Reports.Data.HrDashboardData | null;
+    team?: App.Domain.Reports.Data.ManagerDashboardData | null;
+    mine?: App.Domain.Reports.Data.EmployeeDashboardData | null;
 };
 
 function greetingKey(hour: number): string {
@@ -40,16 +48,38 @@ function greetingKey(hour: number): string {
     return hour < 18 ? 'greeting.afternoon' : 'greeting.evening';
 }
 
+function DashboardSkeleton({ label, tall = false }: { label: string; tall?: boolean }) {
+    return (
+        <div
+            role="status"
+            aria-label={label}
+            className="flex flex-col gap-4"
+            data-dashboard-loading
+        >
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                {[0, 1, 2, 3].map((n) => (
+                    <Skeleton key={n} className="h-32 rounded-lg" />
+                ))}
+            </div>
+            {tall ? <Skeleton className="h-64 rounded-lg" /> : null}
+        </div>
+    );
+}
+
 /**
- * Home (handoff 4 employee v1, 5 manager): greeting, quick requests, my requests and, for
- * approvers, the approvals queue with KPIs; leave balances. Clock-in and the agenda fill in with
- * Phase 5b.
+ * Home by role (handoff 4 employee, 5 manager, 6 HR admin; D115, D123): greeting, the role's
+ * dashboard (loaded after the page), quick requests, my requests, approvals, leave balances and
+ * the agenda.
  */
 export default function Home({
+    layout = 'employee',
     balances = [],
     myRequests = [],
     quickTypes = [],
     approvals = null,
+    hr,
+    team,
+    mine,
 }: Partial<Props>) {
     const { t } = useTranslation('home');
     const { auth, setup } = usePage().props;
@@ -78,6 +108,51 @@ export default function Home({
                 </p>
             </div>
 
+            {layout === 'hr_admin' ? (
+                <div className="mb-8 min-w-0">
+                    <Deferred
+                        data="hr"
+                        fallback={<DashboardSkeleton label={t('hr.loading')} tall />}
+                        rescue={() => <PageState kind="error" description={t('hr.error')} />}
+                    >
+                        {hr ? (
+                            <HrDashboard hr={hr} />
+                        ) : (
+                            <DashboardSkeleton label={t('hr.loading')} tall />
+                        )}
+                    </Deferred>
+                </div>
+            ) : null}
+            {layout === 'manager' ? (
+                <div className="mb-8">
+                    <Deferred
+                        data="team"
+                        fallback={<DashboardSkeleton label={t('hr.loading')} />}
+                        rescue={() => <PageState kind="error" description={t('hr.error')} />}
+                    >
+                        {team ? (
+                            <TeamToday team={team} />
+                        ) : (
+                            <DashboardSkeleton label={t('hr.loading')} />
+                        )}
+                    </Deferred>
+                </div>
+            ) : null}
+            {layout !== 'hr_admin' ? (
+                <Deferred
+                    data="mine"
+                    fallback={<Skeleton className="mb-6 h-36 rounded-lg lg:hidden" />}
+                >
+                    {mine?.clock ? (
+                        <div className="mb-6 lg:hidden">
+                            <ClockCard clock={mine.clock} />
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+                </Deferred>
+            ) : null}
+
             {quickTypes.length > 0 ? (
                 <section aria-labelledby="quick" className="mb-6 lg:hidden">
                     <h2 id="quick" className="mb-2 text-overline text-muted-foreground uppercase">
@@ -91,24 +166,19 @@ export default function Home({
                 <div className="flex flex-col gap-6 lg:col-span-8">
                     {approvals ? <ApprovalsQueue approvals={approvals} /> : null}
                     <MyRequests requests={myRequests} />
-                    <section
-                        aria-labelledby="agenda"
-                        className="rounded-lg bg-card p-5 shadow-sm inset-shadow-highlight"
-                    >
-                        <h2 id="agenda" className="text-h4">
-                            {t('agenda.title')}
-                        </h2>
-                        <PageState
-                            kind="empty"
-                            illustration="empty-schedule"
-                            title={t('agenda.emptyTitle')}
-                            description={t('agenda.emptyDescription')}
-                            className="py-6"
-                        />
-                    </section>
+                    {layout !== 'hr_admin' ? (
+                        <Deferred data="mine" fallback={<Skeleton className="h-48 rounded-lg" />}>
+                            <Agenda items={mine?.agenda ?? []} today={mine?.clock?.date ?? null} />
+                        </Deferred>
+                    ) : null}
                 </div>
 
                 <div className="flex flex-col gap-6 lg:col-span-4">
+                    {layout !== 'hr_admin' && mine?.clock ? (
+                        <div className="hidden lg:block">
+                            <ClockCard clock={mine.clock} />
+                        </div>
+                    ) : null}
                     {balances.length > 0 ? (
                         <section
                             aria-labelledby="home-balances"

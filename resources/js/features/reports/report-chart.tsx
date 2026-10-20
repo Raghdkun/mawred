@@ -37,6 +37,8 @@ export function ReportChart({ chart, title }: { chart: Chart; title: string }) {
     };
     const legend = (
         <Legend
+            itemSorter={null}
+            formatter={(value) => <span className="text-foreground">{String(value)}</span>}
             align={isRtl ? 'right' : 'left'}
             verticalAlign="top"
             wrapperStyle={{ direction: isRtl ? 'rtl' : 'ltr', paddingBottom: 8 }}

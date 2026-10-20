@@ -1457,6 +1457,14 @@ name: string,
 description: string | null,
 definition: Record<string, any>,
 };
+export type DashboardKpiData = {
+key: string,
+value: number,
+format: unknown,
+trend: number[],
+delta: number | null,
+href: string | null,
+};
 export type DatasetData = {
 key: string,
 category: App.Domain.Reports.Enums.ReportCategory,
@@ -1475,6 +1483,81 @@ label: string,
 groupable: boolean,
 measurable: boolean,
 ops: App.Domain.Reports.Enums.FilterOp[],
+};
+export type EmployeeDashboardData = {
+clock: {
+date: string,
+timezone: string,
+status: string | null,
+firstIn: string | null,
+lastOut: string | null,
+shift: {
+startsAt: string,
+endsAt: string,
+} | null,
+next: unknown,
+} | null,
+agenda: {
+key: string,
+kind: unknown,
+title: string | null,
+date: string,
+startsAt: string | null,
+endsAt: string | null,
+timezone: string | null,
+}[],
+};
+export type HrDashboardData = {
+kpis: App.Domain.Reports.Data.DashboardKpiData[],
+expiring: {
+total: number,
+rows: {
+number: string,
+name: string,
+branch: string,
+document: string,
+expiresOn: string,
+daysLeft: number,
+}[],
+href: string | null,
+} | null,
+attendance: {
+branch: string,
+present: number,
+late: number,
+away: number,
+absent: number,
+notIn: number,
+}[] | null,
+integrations: {
+name: string,
+type: string,
+status: string,
+checkedAt: string | null,
+}[] | null,
+};
+export type ManagerDashboardData = {
+date: string,
+kpis: App.Domain.Reports.Data.DashboardKpiData[],
+today: {
+in: number,
+late: number,
+away: number,
+notIn: number,
+},
+away: {
+id: string,
+name: string,
+until: string | null,
+}[],
+late: {
+id: string,
+name: string,
+minutes: number,
+firstIn: string | null,
+timezone: string,
+}[],
+attendanceHref: string | null,
 };
 export type ReportCardData = {
 key: string,
