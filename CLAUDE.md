@@ -196,6 +196,12 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - In Pest, an arrow fn captures by value: a deferred-props callback that writes to an outer `&$rows` must sit inside a `function () use (&$rows)`, not `fn`.
 - Typing into a field that enables a button and running axe right away catches the button mid-transition (disabled colours); wait briefly first.
 
+## Gotchas learned in Phase 8c
+- An absolutely positioned `sr-only` element escapes an `overflow-x-auto` scroller unless something between them is positioned: give scroller cards `relative`, or the page grows sideways on phones (mobile Chrome then widens the layout viewport, so even the fixed tab bar looks too wide).
+- A `<table>` ignores `sr-only`'s 1 px width: wrap a screen-reader table in an `sr-only` div.
+- Recharts legends colour their text with the series colour and sort by name: pass `itemSorter={null}` and a `formatter` that renders `text-foreground`.
+- SVG `pathLength` draw-ins break with `vector-effect: non-scaling-stroke`; reveal the line with an animated clip rect instead.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.
