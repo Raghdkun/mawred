@@ -40,8 +40,8 @@ const PAGE_NAMESPACES: Record<string, string[]> = {
     integrations: ['integrations', 'setup', 'notifications', 'organization'],
     audit: ['audit'],
     notifications: ['notifications'],
-    dashboard: ['home', 'requests', 'leave'],
-    home: ['home', 'requests', 'leave'],
+    dashboard: ['home', 'requests', 'leave', 'reports'],
+    home: ['home', 'requests', 'leave', 'reports'],
     errors: [],
 };
 
