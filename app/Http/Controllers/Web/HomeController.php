@@ -12,6 +12,12 @@ use App\Domain\Leave\Support\EmployeeDays;
 use App\Domain\Leave\Support\LeaveBalances;
 use App\Domain\Leave\Support\LeaveYear;
 use App\Domain\People\Models\Employee;
+use App\Domain\Reports\Dashboards\EmployeeDashboard;
+use App\Domain\Reports\Dashboards\HrDashboard;
+use App\Domain\Reports\Dashboards\ManagerDashboard;
+use App\Domain\Reports\Data\EmployeeDashboardData;
+use App\Domain\Reports\Data\HrDashboardData;
+use App\Domain\Reports\Data\ManagerDashboardData;
 use App\Domain\Requests\Data\RequestRowData;
 use App\Domain\Requests\Data\RequestTypeData;
 use App\Domain\Requests\Data\TaskData;
@@ -29,20 +35,27 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Role-based home (handoff 4 employee v1, 5 manager), with leave balances (Phase 5a). Clock-in,
- * the agenda and team availability join with Phase 5b; the HR admin home (6) with Phase 8.
+ * Role-based home (handoff 4 employee, 5 manager, 6 HR admin): requests, approvals and leave
+ * balances, plus the role dashboards (D115, D123): the check-in card and agenda, the team today,
+ * and the HR KPIs, expiring documents, attendance today and integration health.
  */
 final class HomeController extends Controller
 {
-    public function __invoke(RequestPresenter $presenter, LeaveBalances $balances, EmployeeDays $days, #[CurrentUser] User $user): Response
+    public function __invoke(RequestPresenter $presenter, LeaveBalances $balances, EmployeeDays $days, HrDashboard $hr, ManagerDashboard $manager, EmployeeDashboard $mine, #[CurrentUser] User $user): Response
     {
         $employee = Employee::query()->where('user_id', $user->id)->first();
         $layouts = Role::query()->whereIn('name', $user->getRoleNames()->all())->get()->map(fn (Role $role): HomeLayout => $role->home_layout);
         $layout = $layouts->contains(HomeLayout::HrAdmin) ? HomeLayout::HrAdmin : ($layouts->contains(HomeLayout::Manager) ? HomeLayout::Manager : HomeLayout::Employee);
         $tasks = WorkflowTask::query()->where('assignee_user_id', $user->id)->where('status', TaskStatus::Open->value);
 
+        $locale = app()->getLocale();
+
         return Inertia::render('home/index', [
             'layout' => $layout->value,
+            // Dashboards (D115, D123) load after the page, each on its own.
+            'hr' => $layout === HomeLayout::HrAdmin ? Inertia::defer(fn (): HrDashboardData => $hr->build($user, $locale), 'hr') : null,
+            'team' => $layout === HomeLayout::Manager ? Inertia::defer(fn (): ManagerDashboardData => $manager->build($user, $locale), 'team') : null,
+            'mine' => $layout !== HomeLayout::HrAdmin ? Inertia::defer(fn (): EmployeeDashboardData => $mine->build($user, $locale), 'mine') : null,
             'balances' => $employee instanceof Employee ? array_slice(array_values(array_filter(
                 $balances->all($employee, LeaveYear::of($days->today($employee))),
                 fn (LeaveBalanceData $balance): bool => $balance->entitlement > 0 || $balance->balance !== 0.0,
