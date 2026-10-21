@@ -7,6 +7,7 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 |---|---|---|
 | laravel/framework | 13.x (13.36) | PHP 8.3–8.5. Upgrade local PHP 8.4.1 to the latest 8.4.x |
 | altcha-org/altcha | 2.3 | Public form captcha (D10, D53): proof-of-work challenge and verification, HMAC key from the vault |
+| minishlink/web-push | 11.0 | Web push (D128): VAPID signing and payload encryption for the `webpush` notification channel; PHP 8.2+, MIT. Needs ext-gmp in the image for speed (added to `docker/app/Dockerfile`) |
 | Starter kit (react) | main | Inertia **v3**, React 19.2 + Compiler, Vite **8**, Tailwind 4.3, Fortify (2FA + passkeys), Wayfinder 0.1, SSR on |
 | inertiajs/inertia-laravel | 3.x | `Inertia::lazy` removed → `optional()` |
 | laravel/sanctum / horizon / reverb / pennant / pulse / boost | 4.3 / 5.50 / 1.12 / 1.26 / 1.8 / 2.10 | all support L13. ⚠ Reverb pins guzzlehttp/psr7 ^2.6, so Guzzle stays on 7.x |
@@ -52,3 +53,7 @@ Checked against Packagist, npm and GitHub. Re-verify with Laravel Boost and Cont
 
 ## Infra
 PostgreSQL 18, Redis 8, Gotenberg 8.37, FrankenPHP 1.13, Caddy 2, WAHA (GOWS engine, pinned tag), ClamAV, GlitchTip. WhatsApp Graph API v25/v26. Captcha: altcha-org/altcha (PHP) + altcha web component.
+
+## Dependency audit (Phase 9a, 2026-10-20)
+- `composer audit`: no advisories. Abandoned but harmless transitive packages: `dragon-code/pretty-array` and `dragon-code/support` (via laravel-lang) and `symplify/rule-doc-generator-contracts` (via rector-laravel, dev only). Revisit when laravel-lang drops them.
+- `pnpm audit` (all dependencies): no known vulnerabilities.
