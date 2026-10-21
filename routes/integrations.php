@@ -15,6 +15,8 @@ Route::middleware(['auth', 'verified'])->prefix('integrations')->name('integrati
     Route::get('email', [IntegrationsController::class, 'email'])->name('email');
     Route::post('email', [IntegrationsController::class, 'saveEmail'])->name('email.update');
     Route::post('email/test', [IntegrationsController::class, 'testEmail'])->middleware('throttle:6,1')->name('email.test');
+    Route::post('email/bounces/token', [IntegrationsController::class, 'rotateBounceToken'])->middleware('throttle:6,1')->name('email.bounces.rotate');
+    Route::delete('email/suppressions/{suppression}', [IntegrationsController::class, 'allowEmail'])->name('email.suppressions.destroy');
     Route::get('cognito', [CognitoController::class, 'index'])->name('cognito.index');
     Route::post('cognito/sources', [CognitoController::class, 'store'])->name('cognito.store');
     Route::get('cognito/sources/{source}', [CognitoController::class, 'show'])->name('cognito.show');

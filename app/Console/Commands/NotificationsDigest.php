@@ -8,6 +8,7 @@ use App\Domain\Access\Models\User;
 use App\Domain\Notifications\Enums\NotificationCategory;
 use App\Domain\Notifications\Mail\NotificationMail;
 use App\Domain\Notifications\Support\DeliveryLog;
+use App\Domain\Notifications\Support\EmailSuppressions;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -43,7 +44,7 @@ final class NotificationsDigest extends Command
                         'url' => is_string($n->data['url'] ?? null) ? $n->data['url'] : null,
                     ])->all());
 
-                if ($items === []) {
+                if ($items === [] || EmailSuppressions::blocks($user->email)) {
                     continue;
                 }
 

@@ -18,6 +18,7 @@ use App\Domain\Integrations\Enums\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\Integrations\WhatsApp\OutgoingMessage;
 use App\Domain\Integrations\WhatsApp\WhatsAppGateway;
+use App\Domain\Notifications\Support\EmailSuppressions;
 use App\Domain\Setup\Support\Settings;
 use App\Support\Actors\Actor;
 use App\Support\Errors\DomainRuleViolation;
@@ -57,6 +58,12 @@ final readonly class SendCandidateMessage
             $message = $channel === MessageChannel::Email ? __('This candidate has no email address.') : __('This candidate has no mobile number.');
 
             throw new DomainRuleViolation('hiring.no_contact', $message, ['channel' => [$message]]);
+        }
+
+        if ($channel === MessageChannel::Email && EmailSuppressions::blocks($to)) {
+            $message = __('Email to this address bounced, so Mawred stopped sending to it.');
+
+            throw new DomainRuleViolation('hiring.email_suppressed', $message, ['channel' => [$message]]);
         }
 
         $locale = $candidate->locale === 'ar' ? 'ar' : 'en';
