@@ -25,10 +25,11 @@ use Illuminate\Support\Facades\Route;
 /*
 | /api/v1 (ADR-0012). Sanctum tokens for the Flutter app and integration bots; Sanctum stateful
 | cookies for the web app's async widgets. Every mutating endpoint accepts `Idempotency-Key`.
+| Each caller gets the `api` limit (Phase 9a) on top of any tighter limit on an endpoint.
 */
 Route::prefix('v1')
     ->name('api.v1.')
-    ->middleware(['auth:sanctum', 'idempotent'])
+    ->middleware(['auth:sanctum', 'throttle:api', 'idempotent'])
     ->group(function (): void {
         Route::get('search', GlobalSearchController::class)->middleware('throttle:120,1')->name('search');
         Route::get('users', UserSearchController::class)->name('users.index');

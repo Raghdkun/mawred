@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Domain\Access\Models\User;
 use App\Domain\Organization\Support\BranchSearchProvider;
 use App\Domain\Organization\Support\DepartmentSearchProvider;
 use App\Domain\People\Support\EmployeeSearchProvider;
@@ -9,11 +10,14 @@ use App\Domain\Setup\Support\Settings;
 use App\Support\Search\GlobalSearch;
 use App\Support\Templates\SafeTemplate;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -44,6 +48,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        // The /api/v1 ceiling per signed-in caller (Phase 9a); endpoints may be tighter.
+        RateLimiter::for('api', fn (Request $request): Limit => Limit::perMinute(300)->by('api:'.($request->user() instanceof User ? (string) $request->user()->id : (string) $request->ip())));
     }
 
     /**

@@ -6,6 +6,7 @@ namespace App\Domain\Setup\Actions;
 
 use App\Domain\Setup\Support\Settings;
 use App\Support\Actors\Actor;
+use App\Support\Files\UploadGuard;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,13 +17,17 @@ use Illuminate\Support\Str;
  */
 final readonly class SaveCompanyProfile
 {
-    public function __construct(private Settings $settings) {}
+    public function __construct(private Settings $settings, private UploadGuard $uploads) {}
 
     /**
      * @param  array{en: string, ar: string}  $name
      */
     public function handle(Actor $actor, array $name, ?string $legalName, ?string $accent, ?UploadedFile $logo, bool $removeLogo = false): void
     {
+        if ($logo instanceof UploadedFile) {
+            $this->uploads->assertClean($logo, 'logo');
+        }
+
         $this->settings->set('company.name', $name);
         $this->settings->set('company.legal_name', $legalName);
         $this->settings->set('company.accent', $accent);

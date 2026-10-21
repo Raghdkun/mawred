@@ -10,6 +10,7 @@ use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeDocument;
 use App\Support\Actors\Actor;
 use App\Support\Errors\DomainRuleViolation;
+use App\Support\Files\UploadGuard;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
@@ -19,6 +20,8 @@ use Illuminate\Support\Str;
  */
 final readonly class SaveEmployeeDocument
 {
+    public function __construct(private UploadGuard $uploads) {}
+
     public function handle(Actor $actor, Employee $employee, EmployeeDocumentInputData $input, ?UploadedFile $file, ?EmployeeDocument $document = null): EmployeeDocument
     {
         $type = DocumentType::query()->where('ulid', $input->documentTypeId)->where('is_active', true)->first();
@@ -33,6 +36,10 @@ final readonly class SaveEmployeeDocument
 
         if (! $document instanceof EmployeeDocument && ! $file instanceof UploadedFile) {
             throw new DomainRuleViolation('people.document_file_required', __('Attach the document file.'), ['file' => [__('Attach the document file.')]]);
+        }
+
+        if ($file instanceof UploadedFile) {
+            $this->uploads->assertClean($file);
         }
 
         $document ??= new EmployeeDocument(['employee_id' => $employee->id, 'uploaded_by' => $actor->user?->id]);

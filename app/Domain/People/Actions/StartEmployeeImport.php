@@ -9,6 +9,7 @@ use App\Domain\People\Models\Import;
 use App\Domain\People\Support\Imports\EmployeeImportFields;
 use App\Support\Actors\Actor;
 use App\Support\Errors\DomainRuleViolation;
+use App\Support\Files\UploadGuard;
 use App\Support\Spreadsheets\SpreadsheetReader;
 use Illuminate\Http\UploadedFile;
 use Throwable;
@@ -18,8 +19,11 @@ use Throwable;
  */
 final readonly class StartEmployeeImport
 {
+    public function __construct(private UploadGuard $uploads) {}
+
     public function handle(Actor $actor, UploadedFile $file): Import
     {
+        $this->uploads->assertClean($file);
         $extension = mb_strtolower($file->getClientOriginalExtension());
 
         try {

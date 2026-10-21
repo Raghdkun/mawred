@@ -14,6 +14,7 @@ use App\Support\Errors\DomainRuleViolation;
 use App\Support\Http\ApiErrorRenderer;
 use App\Support\Http\InertiaErrorRenderer;
 use App\Support\Http\Middleware\AssignRequestId;
+use App\Support\Http\Middleware\ContentSecurityPolicy;
 use App\Support\Http\Middleware\EnforceIdempotency;
 use App\Support\Http\WebDomainErrorRenderer;
 use Illuminate\Foundation\Application;
@@ -47,6 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
         $middleware->web(append: [
+            ContentSecurityPolicy::class,
             TrackUserSession::class,
             ApplyImpersonation::class,
             SetLocale::class,
