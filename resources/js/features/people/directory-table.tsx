@@ -163,7 +163,7 @@ export function DirectoryTable({
                                 </span>
                                 <bdi
                                     dir="ltr"
-                                    className="max-w-full self-start truncate text-caption text-muted-foreground"
+                                    className="max-w-full self-start truncate text-caption text-text-secondary"
                                 >
                                     {row.original.number}
                                 </bdi>
@@ -228,7 +228,7 @@ export function DirectoryTable({
                             {row.original.workPhone ? (
                                 <bdi
                                     dir="ltr"
-                                    className="max-w-full self-start text-caption text-muted-foreground"
+                                    className="max-w-full self-start text-caption text-text-secondary"
                                 >
                                     {row.original.workPhone}
                                 </bdi>
@@ -375,7 +375,7 @@ export function EmployeeCard({ employee }: { employee: Employee }) {
                         .filter(Boolean)
                         .join(' · ')}
                 </span>
-                <bdi dir="ltr" className="max-w-full self-start text-caption text-muted-foreground">
+                <bdi dir="ltr" className="max-w-full self-start text-caption text-text-secondary">
                     {employee.number}
                 </bdi>
             </span>

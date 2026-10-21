@@ -214,7 +214,7 @@ export default function DepartmentsIndex({ departments, options, can }: Props) {
                         </span>
                         <bdi
                             dir="ltr"
-                            className="max-w-full self-start text-caption text-muted-foreground"
+                            className="max-w-full self-start text-caption text-text-secondary"
                         >
                             {department.code}
                         </bdi>

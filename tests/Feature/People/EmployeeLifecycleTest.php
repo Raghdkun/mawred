@@ -124,17 +124,18 @@ it('maintains the reporting closure table through manager changes', function ():
         ->and(DB::table('employee_reporting_paths')->where('ancestor_id', $vp->id)->where('descendant_id', $dev->id)->value('depth'))->toBe(2);
 
     // Lead (and Dev under them) move from VP to CFO.
-    resolve(ChangePlacement::class)->handle(Actor::system('test'), $lead, new PlacementInputData($branch->ulid, managerId: $cfo->ulid), now()->toDateString());
+    // Dated on the branch's own today (New York); near midnight UTC the dates differ.
+    resolve(ChangePlacement::class)->handle(Actor::system('test'), $lead, new PlacementInputData($branch->ulid, managerId: $cfo->ulid), now($branch->timezone)->toDateString());
 
     expect(DB::table('employee_reporting_paths')->where('ancestor_id', $vp->id)->pluck('descendant_id')->all())->toBe([$vp->id])
         ->and(DB::table('employee_reporting_paths')->where('ancestor_id', $cfo->id)->where('descendant_id', $dev->id)->value('depth'))->toBe(2)
         ->and(DB::table('employee_reporting_paths')->where('ancestor_id', $ceo->id)->where('descendant_id', $dev->id)->value('depth'))->toBe(3);
 
-    expect(fn () => resolve(ChangePlacement::class)->handle(Actor::system('test'), $ceo, new PlacementInputData($branch->ulid, managerId: $dev->ulid), now()->toDateString()))
+    expect(fn () => resolve(ChangePlacement::class)->handle(Actor::system('test'), $ceo, new PlacementInputData($branch->ulid, managerId: $dev->ulid), now($branch->timezone)->toDateString()))
         ->toThrow(DomainRuleViolation::class);
 
     $before = paths();
-    expect(fn () => resolve(ChangePlacement::class)->handle(Actor::system('test'), $cfo, new PlacementInputData($branch->ulid, managerId: $cfo->ulid), now()->toDateString()))
+    expect(fn () => resolve(ChangePlacement::class)->handle(Actor::system('test'), $cfo, new PlacementInputData($branch->ulid, managerId: $cfo->ulid), now($branch->timezone)->toDateString()))
         ->toThrow(DomainRuleViolation::class);
     expect(paths())->toBe($before);
 });

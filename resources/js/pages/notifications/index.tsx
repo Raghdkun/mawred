@@ -118,7 +118,7 @@ export default function NotificationsIndex({
                                 ) : null}
                                 <time
                                     dateTime={item.createdAt}
-                                    className="text-caption text-muted-foreground"
+                                    className="text-caption text-text-secondary"
                                 >
                                     {formatDate(item.createdAt, locale, {
                                         dateStyle: 'medium',
