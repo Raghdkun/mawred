@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { PushCard } from '@/features/pwa/push-card';
 import notifications from '@/routes/notifications';
 
 type Row = {
@@ -27,13 +28,14 @@ type WhatsApp = {
 
 type Props = {
     whatsapp: WhatsApp;
+    push: { publicKey: string | null; devices: number };
     matrix: Row[];
     quietHours: { start: string | null; end: string | null };
     digest: boolean;
     timezone: string;
 };
 
-const CHANNELS = ['in_app', 'email', 'whatsapp'] as const;
+const CHANNELS = ['in_app', 'push', 'email', 'whatsapp'] as const;
 
 /**
  * Notification preferences (handoff 44): category × channel switches, quiet hours in the
@@ -45,6 +47,7 @@ export default function NotificationPreferences({
     digest,
     timezone,
     whatsapp,
+    push,
 }: Props) {
     const { t } = useTranslation('notifications');
     const form = useForm({
@@ -87,6 +90,7 @@ export default function NotificationPreferences({
             <PageHeader title={t('preferences.title')} description={t('preferences.description')} />
 
             <div className="mb-8 max-w-3xl">
+                <PushCard publicKey={push.publicKey} devices={push.devices} />
                 <WhatsAppCard whatsapp={whatsapp} />
             </div>
 

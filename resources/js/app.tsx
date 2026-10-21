@@ -3,6 +3,7 @@ import { configureEcho } from '@laravel/echo-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { I18nextProvider } from 'react-i18next';
 import { LocalizedToaster } from '@/components/mw/localized-toaster';
+import { registerServiceWorker } from '@/features/pwa/service-worker';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
 import { i18n, namespacesForPage, prepareLocale } from '@/i18n';
@@ -82,7 +83,5 @@ void createInertiaApp({
 
 initializeTheme();
 
-// Installable app and offline check-in (D70); the service worker only exists in production builds.
-if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-    void navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => undefined);
-}
+// Installable app, offline check-in (D70) and push (D128); production builds only.
+registerServiceWorker();

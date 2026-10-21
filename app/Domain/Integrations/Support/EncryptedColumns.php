@@ -12,6 +12,7 @@ use App\Domain\Hiring\Models\Offer;
 use App\Domain\Integrations\Models\CognitoReceipt;
 use App\Domain\Integrations\Models\CognitoSource;
 use App\Domain\Integrations\Models\IntegrationConnection;
+use App\Domain\Notifications\Models\PushSubscription;
 use App\Domain\People\Models\Employee;
 use App\Domain\People\Models\EmployeeAllowance;
 use App\Domain\People\Models\EmployeeCustomValue;
@@ -49,6 +50,7 @@ final class EncryptedColumns
             EmploymentHistoryEntry::class => ['salary_minor'],
             EmployeeAllowance::class => ['amount_minor'],
             TrainingSession::class => ['checkin_secret'],
+            PushSubscription::class => ['public_key', 'auth_token'],
         ];
     }
 }

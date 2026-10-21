@@ -32,7 +32,7 @@ enum NotificationCategory: string
      */
     public function channels(): array
     {
-        return ['in_app', 'email', 'whatsapp'];
+        return ['in_app', 'push', 'email', 'whatsapp'];
     }
 
     public function canDisable(string $channel): bool

@@ -12,7 +12,12 @@ export type QueuedPunch = {
     accuracy?: number;
     code?: string;
     reason?: string;
+    /** The session's XSRF token when it was queued, so the service worker can send it (D70). */
+    xsrf?: string;
 };
+
+/** The background-sync tag the service worker sends queued punches under. */
+export const SYNC_TAG = 'mawred-punches';
 
 const DB = 'mawred-attendance';
 const STORE = 'punches';
@@ -63,4 +68,35 @@ export async function forgetPunch(id: string): Promise<void> {
 /** A failure that means "no connection" rather than "the server said no". */
 export function isNetworkError(error: unknown): boolean {
     return error instanceof TypeError || (typeof navigator !== 'undefined' && !navigator.onLine);
+}
+
+/**
+ * Sends one queued punch with the time it was tapped and the time it was sent. Works from the
+ * page and from the service worker (no `window`), so a punch can go out after the tab closed.
+ * Resolves `sent`, `rejected` (the server said no; drop it) or throws on no connection.
+ */
+export async function sendQueuedPunch(
+    url: string,
+    punch: QueuedPunch,
+    token: string | null,
+): Promise<'sent' | 'rejected'> {
+    const { id: _id, xsrf: _xsrf, tapped_at: tappedAt, ...rest } = punch;
+    const headers = new Headers({
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+    });
+
+    if (token) {
+        headers.set('X-XSRF-TOKEN', token);
+    }
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        credentials: 'same-origin',
+        body: JSON.stringify({ ...rest, tapped_at: tappedAt, sent_at: new Date().toISOString() }),
+    });
+
+    return response.ok ? 'sent' : 'rejected';
 }

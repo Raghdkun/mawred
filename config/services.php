@@ -38,6 +38,13 @@ return [
     | WhatsApp (ADR-0015). Credentials live in the vault (integration_connections); only the
     | pinned Graph API version and timeouts are configuration.
     */
+    // Web push (D128). Generate the pair once with `php artisan mawred:vapid-keys`.
+    'webpush' => [
+        'public_key' => env('VAPID_PUBLIC_KEY'),
+        'private_key' => env('VAPID_PRIVATE_KEY'),
+        'subject' => env('VAPID_SUBJECT', 'mailto:'.env('MAIL_FROM_ADDRESS', 'hr@example.com')),
+    ],
+
     'whatsapp' => [
         'graph_url' => env('WHATSAPP_GRAPH_URL', 'https://graph.facebook.com'),
         'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v25.0'),

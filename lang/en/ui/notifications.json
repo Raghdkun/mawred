@@ -23,7 +23,8 @@
         "channels": {
             "in_app": "In the app",
             "email": "Email",
-            "whatsapp": "WhatsApp"
+            "whatsapp": "WhatsApp",
+            "push": "Push"
         },
         "categories": {
             "approvals": {
@@ -144,5 +145,20 @@
         "resend": "Send a new code",
         "code": "Code from WhatsApp",
         "confirm": "Confirm"
+    },
+    "push": {
+        "title": "Push notifications on this device",
+        "help": "Get notified on this phone or browser, even when Mawred isn't open. Choose which kinds in the table below.",
+        "state": {
+            "loading": "Checking this device…",
+            "unsupported": "This browser can't receive push notifications. On iPhone, add Mawred to the home screen first.",
+            "unconfigured": "Push notifications aren't set up for this company yet.",
+            "denied": "Notifications are blocked for Mawred in this browser's settings.",
+            "off": "Off on this device.",
+            "on": "On for this device."
+        },
+        "devices": "{count, plural, one {You get push on # device.} other {You get push on # devices.}}",
+        "turnOn": "Turn on",
+        "turnOff": "Turn off"
     }
 }

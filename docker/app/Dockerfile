@@ -5,7 +5,7 @@
 ARG PHP_VERSION=8.4
 
 FROM dunglas/frankenphp:1-php${PHP_VERSION}-bookworm AS base
-RUN install-php-extensions pdo_pgsql pgsql redis intl gd bcmath zip pcntl opcache exif sockets \
+RUN install-php-extensions pdo_pgsql pgsql redis intl gd bcmath gmp zip pcntl opcache exif sockets \
     && apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 COPY docker/app/php.ini /usr/local/etc/php/conf.d/zz-mawred.ini

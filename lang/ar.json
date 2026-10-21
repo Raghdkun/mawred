@@ -933,5 +933,7 @@
     "Report deleted.": "تم حذف التقرير.",
     "Report scheduled. Each file will be in My exports.": "تمت جدولة التقرير. سيصل كل ملف إلى ملفاتي المُصدّرة.",
     "Schedule saved.": "تم حفظ الجدولة.",
-    "Schedule deleted.": "تم حذف الجدولة."
+    "Schedule deleted.": "تم حذف الجدولة.",
+    "Email to this address bounced, so Mawred stopped sending to it.": "ارتدّ البريد المرسل إلى هذا العنوان، لذا توقف مورد عن المراسلة عليه.",
+    "Mawred will email :email again.": "سيراسل مورد :email مجددًا."
 }

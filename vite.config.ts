@@ -22,10 +22,14 @@ export default defineConfig({
         wayfinder({
             formVariants: true,
         }),
-        // Installable app + offline check-in (D70). The service worker sits at the site root so it
-        // can serve /attendance offline; it precaches only the built assets.
+        // Installable app, offline check-in (D70) and push (D128). Our own service worker
+        // (resources/js/sw.ts) sits at the site root so it can serve /attendance offline; it
+        // precaches only the built CSS and caches other built assets as pages use them.
         VitePWA({
-            registerType: 'autoUpdate',
+            strategies: 'injectManifest',
+            srcDir: 'resources/js',
+            filename: 'sw.ts',
+            registerType: 'prompt',
             injectRegister: false,
             outDir: 'public',
             base: '/',
@@ -49,26 +53,11 @@ export default defineConfig({
                 ],
                 shortcuts: [{ name: 'Check in', url: '/attendance' }],
             },
-            workbox: {
+            injectManifest: {
                 globDirectory: 'public/build',
-                // Hashed assets are cached as pages use them (below), not all up front: a phone
-                // only downloads what it opens, and /attendance keeps working offline afterwards.
                 globPatterns: ['**/*.css'],
                 modifyURLPrefix: { '': '/build/' },
                 maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
-                navigateFallback: null,
-                runtimeCaching: [
-                    {
-                        urlPattern: ({ url }) => url.pathname.startsWith('/build/assets/'),
-                        handler: 'CacheFirst',
-                        options: { cacheName: 'mawred-assets', expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 60 } },
-                    },
-                    {
-                        urlPattern: ({ request, url }) => request.mode === 'navigate' && url.pathname === '/attendance',
-                        handler: 'NetworkFirst',
-                        options: { cacheName: 'mawred-check-in', networkTimeoutSeconds: 4 },
-                    },
-                ],
             },
         }),
     ],
