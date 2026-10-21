@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useFlashToast } from '@/hooks/use-flash-toast';
 import { useLocale } from '@/hooks/use-locale';
 import { pageTransition } from '@/lib/motion';
+import { PwaPrompts } from '@/features/pwa/pwa-prompts';
 import { BottomTabBar } from './shell/bottom-tab-bar';
 import { CommandPalette } from './shell/command-palette';
 import { ImpersonationBanner } from './shell/impersonation-banner';
@@ -53,6 +54,7 @@ export default function AppShellLayout({ children }: { children: ReactNode }) {
                 </div>
             </div>
             <BottomTabBar />
+            <PwaPrompts />
             <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
         </div>
     );

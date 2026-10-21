@@ -202,6 +202,13 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Recharts legends colour their text with the series colour and sort by name: pass `itemSorter={null}` and a `formatter` that renders `text-foreground`.
 - SVG `pathLength` draw-ins break with `vector-effect: non-scaling-stroke`; reveal the line with an animated clip rect instead.
 
+## Gotchas learned in Phase 9a
+- The CSP is enforced: new inline `<script>`s need `nonce="{{ Vite::cspNonce() }}"`, new outside origins go in `config/csp.php`, and `tests/Browser/ContentSecurityPolicyTest.php` fails on any violation report.
+- Every path that keeps an uploaded file calls `UploadGuard::assertClean()` (or goes through `StoreFormUpload`).
+- The service worker is `resources/js/sw.ts` (injectManifest): reference the manifest literally as `self.__WB_MANIFEST` or it isn't injected; it only exists in production builds.
+- Email to an address on `email_suppressions` is skipped; check `EmailSuppressions::blocks()` in any new email path.
+- `NotificationPreferences` caches per request: tests that change a switch mid-test reset it (`forgetInstance`).
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

@@ -11,7 +11,9 @@ use App\Domain\Integrations\Models\WhatsAppContact;
 use App\Domain\Integrations\WhatsApp\OutgoingMessage;
 use App\Domain\Integrations\WhatsApp\WhatsAppGateway;
 use App\Domain\Integrations\WhatsApp\WhatsAppRouting;
+use App\Domain\Notifications\Jobs\SendWebPushJob;
 use App\Domain\Notifications\Mail\NotificationMail;
+use App\Domain\Notifications\Models\PushSubscription;
 use App\Domain\Notifications\Notifications\InAppNotification;
 use Carbon\CarbonImmutable;
 use Closure;
@@ -45,6 +47,11 @@ final readonly class NotificationRouter
         foreach ($message->channels as $channel) {
             if ($channel === 'in_app') {
                 $this->attempt($user, $message, 'in_app', fn (): string => $this->inApp($user, $message, $locale));
+
+                // The same news on the person's phones and browsers that have push on (D128).
+                if (PushSubscription::query()->where('user_id', $user->id)->exists()) {
+                    $this->attempt($user, $message, 'push', fn (): string => $this->push($user, $message, $locale));
+                }
 
                 continue;
             }
@@ -113,9 +120,27 @@ final readonly class NotificationRouter
         return 'sent';
     }
 
+    private function push(User $user, NotificationMessage $message, string $locale): string
+    {
+        $content = ($message->content)('in_app', $locale);
+        dispatch(new SendWebPushJob($user->id, [
+            'title' => $content['subject'],
+            'body' => $content['body'] === '' ? null : $content['body'],
+            'url' => $message->url,
+            'tag' => $message->event.':'.$message->sourceKey,
+        ]));
+
+        return 'queued';
+    }
+
     private function email(User $user, NotificationMessage $message, string $locale): string
     {
         $critical = $message->category->isCritical();
+
+        // An address that bounced or complained gets nothing; the chain moves on to WhatsApp (D127).
+        if (EmailSuppressions::blocks($user->email)) {
+            return 'suppressed';
+        }
 
         if (! $critical && $user->digest_enabled) {
             return 'digest';

@@ -3,11 +3,18 @@ import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { DirIcon } from '@/components/mw/dir-icon';
 import { PageHeader } from '@/components/mw/page-header';
+import { type Bounces, EmailBounces } from '@/features/integrations/email-bounces';
 import { type EmailSettings, EmailSettingsForm } from '@/features/integrations/email-settings-form';
 import integrations from '@/routes/integrations';
 
 /** Email connection settings (ADR-0015); the same form as setup step 7. */
-export default function EmailIntegration({ email }: { email: EmailSettings | null }) {
+export default function EmailIntegration({
+    email,
+    bounces,
+}: {
+    email: EmailSettings | null;
+    bounces: Bounces;
+}) {
     const { t } = useTranslation('integrations');
 
     return (
@@ -31,6 +38,7 @@ export default function EmailIntegration({ email }: { email: EmailSettings | nul
                     saveLabel={t('hub.save')}
                 />
             </div>
+            {email ? <EmailBounces bounces={bounces} /> : null}
         </>
     );
 }

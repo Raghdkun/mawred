@@ -161,7 +161,8 @@ it('assigns mandatory courses to their audience with due dates, including joiner
         ->and($assigned->first()?->due_on?->toDateString())->toBe(now('Asia/Riyadh')->addDays(30)->toDateString());
 
     // Someone moving into the branch picks it up; re-running assigns nobody twice.
-    resolve(ChangePlacement::class)->handle(Actor::system('test'), $elsewhere, new PlacementInputData(branchId: $this->branch->ulid), now('Asia/Riyadh')->toDateString());
+    // Dated on the mover's own branch-local today (New York), or late in the UTC day Riyadh's date is tomorrow there.
+    resolve(ChangePlacement::class)->handle(Actor::system('test'), $elsewhere, new PlacementInputData(branchId: $this->branch->ulid), now($this->otherBranch->timezone)->toDateString());
     expect(Enrollment::query()->where('course_id', $course->id)->where('employee_id', $elsewhere->id)->count())->toBe(1);
     $this->artisan('training:assign')->assertSuccessful();
     expect(Enrollment::query()->where('course_id', $course->id)->count())->toBe(3);

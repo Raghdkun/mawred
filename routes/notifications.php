@@ -16,6 +16,8 @@ Route::middleware(['auth', 'verified'])->prefix('notifications')->name('notifica
     Route::post('whatsapp', [NotificationsController::class, 'startWhatsApp'])->middleware('throttle:5,10')->name('whatsapp.start');
     Route::post('whatsapp/confirm', [NotificationsController::class, 'confirmWhatsApp'])->middleware('throttle:10,10')->name('whatsapp.confirm');
     Route::delete('whatsapp', [NotificationsController::class, 'removeWhatsApp'])->name('whatsapp.remove');
+    Route::post('push', [NotificationsController::class, 'subscribePush'])->middleware('throttle:20,1')->name('push.subscribe');
+    Route::post('push/off', [NotificationsController::class, 'unsubscribePush'])->middleware('throttle:20,1')->name('push.unsubscribe');
     Route::post('read-all', [NotificationsController::class, 'markAllRead'])->name('read-all');
     Route::post('{notification}/read', [NotificationsController::class, 'markRead'])->name('read');
 });

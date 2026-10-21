@@ -258,5 +258,22 @@
             "failed": "Failed"
         },
         "defaultTemplate": "hello_world (Meta's sample)"
+    },
+    "bounces": {
+        "title": "Bounces and complaints (Postmark)",
+        "help": "Give Postmark this webhook URL (Bounce and Spam Complaint). Addresses that bounce hard or mark Mawred as spam stop receiving email until you allow them again.",
+        "create": "Create the webhook URL",
+        "rotate": "Issue a new URL",
+        "url": "Webhook URL",
+        "copyNow": "Copy it now: for security it's shown only once.",
+        "current": "Current URL ends in ••••{last4}.",
+        "suppressedTitle": "Addresses Mawred doesn't email",
+        "suppressedEmpty": "No addresses are blocked.",
+        "reasons": {
+            "hard_bounce": "Bounced",
+            "spam_complaint": "Marked as spam"
+        },
+        "allow": "Allow again",
+        "allowLabel": "Email {email} again"
     }
 }

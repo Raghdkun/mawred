@@ -79,5 +79,13 @@
     "impersonation": {
         "notice": "You're viewing Mawred as {target}. Signed in as {impersonator}.",
         "stop": "Stop viewing as"
+    },
+    "pwa": {
+        "updateReady": "A new version of Mawred is ready.",
+        "refresh": "Refresh",
+        "installTitle": "Install Mawred",
+        "installHelp": "Open it from your home screen, with notifications and offline check-in.",
+        "install": "Install",
+        "notNow": "Not now"
     }
 }

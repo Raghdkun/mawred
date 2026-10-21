@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Web\Integrations;
 use App\Domain\Access\Models\User;
 use App\Domain\Forms\Support\FieldSpec;
 use App\Domain\Integrations\Actions\CheckIntegrationHealth;
+use App\Domain\Integrations\Actions\RotateEmailBounceToken;
 use App\Domain\Integrations\Actions\SaveEmailSettings;
 use App\Domain\Integrations\Actions\SendTestEmail;
 use App\Domain\Integrations\Data\EmailSettingsData;
@@ -17,6 +18,8 @@ use App\Domain\Integrations\Models\CognitoReceipt;
 use App\Domain\Integrations\Models\CognitoSource;
 use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\Integrations\Support\Connections;
+use App\Domain\Notifications\Actions\AllowEmailAgain;
+use App\Domain\Notifications\Models\EmailSuppression;
 use App\Http\Controllers\Controller;
 use App\Support\Actors\Actor;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -72,6 +75,11 @@ final class IntegrationsController extends Controller
                 'status' => $connection->status,
                 'lastError' => $connection->last_error,
             ] : null,
+            'bounces' => [
+                'tokenLast4' => $connection instanceof IntegrationConnection && is_string($connection->config['bounce_token_last4'] ?? null) ? $connection->config['bounce_token_last4'] : null,
+                'suppressed' => array_values(EmailSuppression::query()->latest()->limit(100)->get()
+                    ->map(fn (EmailSuppression $s): array => ['id' => $s->ulid, 'email' => $s->email, 'reason' => $s->reason, 'detail' => $s->detail, 'at' => $s->created_at->toIso8601String()])->all()),
+            ],
         ]);
     }
 
@@ -80,6 +88,25 @@ final class IntegrationsController extends Controller
         Gate::authorize('integrations.configure');
         $save->handle(Actor::user($user), $data);
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Email settings saved.')]);
+
+        return back();
+    }
+
+    public function rotateBounceToken(RotateEmailBounceToken $rotate, #[CurrentUser] User $user): RedirectResponse
+    {
+        Gate::authorize('integrations.configure');
+        $connection = Connections::find(IntegrationType::Email);
+        abort_unless($connection instanceof IntegrationConnection, 404);
+        Inertia::flash('bounceUrl', route('hooks.email.bounces', ['token' => $rotate->handle(Actor::user($user), $connection)]));
+
+        return back();
+    }
+
+    public function allowEmail(EmailSuppression $suppression, AllowEmailAgain $allow, #[CurrentUser] User $user): RedirectResponse
+    {
+        Gate::authorize('integrations.configure');
+        $allow->handle(Actor::user($user), $suppression);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Mawred will email :email again.', ['email' => $suppression->email])]);
 
         return back();
     }

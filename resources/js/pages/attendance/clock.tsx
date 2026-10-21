@@ -15,13 +15,14 @@ import {
     isNetworkError,
     queuedPunches,
     queuePunch,
+    SYNC_TAG,
     type QueuedPunch,
 } from '@/features/attendance/offline-queue';
 import { PunchRipple } from '@/features/attendance/punch-ripple';
 import { QrScan } from '@/features/attendance/qr-scan';
 import { type Area, useLocation } from '@/features/attendance/use-location';
 import { useLocale } from '@/hooks/use-locale';
-import { ApiError, postJson } from '@/lib/api';
+import { ApiError, postJson, xsrfToken } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import attendanceRoutes from '@/routes/attendance';
@@ -78,7 +79,7 @@ export default function Clock({
     const needsReason = mode === 'flag' && area !== null && status === 'outside';
 
     const send = useCallback(async (punch: QueuedPunch, offline: boolean) => {
-        const { id: _id, tapped_at: tappedAt, ...rest } = punch;
+        const { id: _id, xsrf: _xsrf, tapped_at: tappedAt, ...rest } = punch;
         await postJson(PunchesApi.store.url(), {
             ...rest,
             ...(offline ? { tapped_at: tappedAt, sent_at: new Date().toISOString() } : {}),
@@ -109,9 +110,20 @@ export default function Clock({
             if (waiting.length > 0 && navigator.onLine) void flush();
         });
         const online = () => void flush();
+        // The service worker sent queued punches in the background: show the server's view.
+        const synced = (event: MessageEvent) => {
+            if ((event.data as { type?: string } | null)?.type === 'punches-synced') {
+                void queuedPunches().then(setQueued);
+                router.reload({ only: ['punches', 'day', 'next'] });
+            }
+        };
         window.addEventListener('online', online);
+        navigator.serviceWorker?.addEventListener('message', synced);
 
-        return () => window.removeEventListener('online', online);
+        return () => {
+            window.removeEventListener('online', online);
+            navigator.serviceWorker?.removeEventListener('message', synced);
+        };
     }, [flush]);
 
     const punch = async (code?: string) => {
@@ -140,7 +152,17 @@ export default function Clock({
             router.reload({ only: ['punches', 'day', 'next'] });
         } catch (e) {
             if (isNetworkError(e)) {
-                await queuePunch(entry);
+                await queuePunch({ ...entry, xsrf: xsrfToken() ?? undefined });
+                // Send it in the background once the phone is back online, even if Mawred is closed.
+                void navigator.serviceWorker?.ready
+                    .then((registration) =>
+                        (
+                            registration as ServiceWorkerRegistration & {
+                                sync?: { register: (tag: string) => Promise<void> };
+                            }
+                        ).sync?.register(SYNC_TAG),
+                    )
+                    .catch(() => undefined);
                 setQueued(await queuedPunches());
                 setLocal({ next, kind: kind === 'in' ? 'out' : 'in' });
                 toast.info(t('clock.queued'));

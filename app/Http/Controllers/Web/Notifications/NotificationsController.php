@@ -12,15 +12,19 @@ use App\Domain\Integrations\Enums\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationConnection;
 use App\Domain\Integrations\Models\WhatsAppContact;
 use App\Domain\Integrations\WhatsApp\WhatsAppGateway;
+use App\Domain\Notifications\Actions\RemovePushSubscription;
 use App\Domain\Notifications\Actions\SaveNotificationPreferences;
+use App\Domain\Notifications\Actions\SavePushSubscription;
 use App\Domain\Notifications\Data\NotificationItemData;
 use App\Domain\Notifications\Data\NotificationPreferencesData;
+use App\Domain\Notifications\Models\PushSubscription;
 use App\Domain\Notifications\Support\NotificationPreferences;
 use App\Domain\People\Models\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Notifications\DatabaseNotification;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -73,7 +77,33 @@ final class NotificationsController extends Controller
             'digest' => $user->digest_enabled,
             'timezone' => $preferences->timezone($user),
             'whatsapp' => $this->whatsApp($user),
+            'push' => [
+                'publicKey' => is_string(config('services.webpush.public_key')) && config('services.webpush.public_key') !== '' ? config('services.webpush.public_key') : null,
+                'devices' => PushSubscription::query()->where('user_id', $user->id)->count(),
+            ],
         ]);
+    }
+
+    /** Push on for this browser or phone (D128), called by the page after the browser subscribes. */
+    public function subscribePush(Request $request, SavePushSubscription $save, #[CurrentUser] User $user): HttpResponse
+    {
+        $request->validate([
+            'endpoint' => ['required', 'string', 'url:https', 'max:2000'],
+            'keys.p256dh' => ['required', 'string', 'max:200'],
+            'keys.auth' => ['required', 'string', 'max:100'],
+            'contentEncoding' => ['nullable', 'in:aes128gcm,aesgcm'],
+        ]);
+        $save->handle($user, $request->string('endpoint')->toString(), $request->string('keys.p256dh')->toString(), $request->string('keys.auth')->toString(), $request->string('contentEncoding', 'aes128gcm')->toString(), $request->userAgent());
+
+        return response()->noContent();
+    }
+
+    public function unsubscribePush(Request $request, RemovePushSubscription $remove, #[CurrentUser] User $user): HttpResponse
+    {
+        $request->validate(['endpoint' => ['required', 'string', 'max:2000']]);
+        $remove->handle($user, $request->string('endpoint')->toString());
+
+        return response()->noContent();
     }
 
     public function startWhatsApp(Request $request, StartWhatsAppVerification $start, #[CurrentUser] User $user): RedirectResponse

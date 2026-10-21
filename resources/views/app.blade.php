@@ -12,7 +12,7 @@
         <meta name="theme-color" content="#0E1626" media="(prefers-color-scheme: dark)">
 
         {{-- Apply the system dark preference before first paint. --}}
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             (function () {
                 const appearance = '{{ $appearance ?? "system" }}';
 
@@ -49,7 +49,7 @@
             <meta property="og:locale" content="{{ $meta['locale'] }}">
             <meta name="twitter:card" content="summary_large_image">
             @if ($meta['jsonLd'])
-                <script type="application/ld+json">{!! json_encode($meta['jsonLd'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+                <script type="application/ld+json" nonce="{{ Vite::cspNonce() }}">{!! json_encode($meta['jsonLd'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
             @endif
         @endisset
 

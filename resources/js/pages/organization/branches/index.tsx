@@ -146,7 +146,7 @@ export default function BranchesIndex({ branches, selected, filters, options, ca
                                                 <span className="truncate text-sm font-medium">
                                                     {localized(branch.name, locale)}
                                                 </span>
-                                                <span className="truncate text-caption text-muted-foreground">
+                                                <span className="truncate text-caption text-text-secondary">
                                                     <bdi dir="ltr">{branch.code}</bdi> ·{' '}
                                                     {countryName(branch.countryCode, locale)}
                                                 </span>

@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Public\CognitoHookController;
+use App\Http\Controllers\Public\CspReportController;
+use App\Http\Controllers\Public\EmailBounceHookController;
 use App\Http\Controllers\Public\WhatsAppHookController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +21,10 @@ Route::prefix('hooks')->name('hooks.')->group(function (): void {
     Route::get('whatsapp/official', [WhatsAppHookController::class, 'verify'])->middleware('throttle:60,1')->name('whatsapp.verify');
     Route::post('whatsapp/official', [WhatsAppHookController::class, 'official'])->middleware('throttle:600,1')->name('whatsapp.official');
     Route::post('whatsapp/waha', [WhatsAppHookController::class, 'waha'])->middleware('throttle:600,1')->name('whatsapp.waha');
+
+    // Postmark bounces and spam complaints (D127).
+    Route::post('email/bounces/{token}', EmailBounceHookController::class)->middleware('throttle:600,1')->name('email.bounces');
+
+    // Content-Security-Policy violation reports from browsers (Phase 9a).
+    Route::post('csp-report', CspReportController::class)->middleware('throttle:60,1')->name('csp');
 });
