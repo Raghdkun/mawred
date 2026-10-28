@@ -102,9 +102,9 @@
 - Prebuilt reports (all in brief §16) plus the **monthly payroll-input export** (D7), dataset registry, custom builder (dataset → columns → filters → grouping → chart), saved/shared/scheduled reports, XLSX/CSV/PDF exports (queued), role dashboards with count-up KPIs.
 - **Exit**: every report has a scope-leak test, and heavy reports are queued.
 
-## Phase 9 — Production readiness (M, split 9a / 9b, D124) — 9a ✅ built (pending CI and owner review)
+## Phase 9 — Production readiness (M, split 9a / 9b, D124) — 9a ✅ 9b ✅ built (pending CI and owner review; nothing has run on the real server)
 - **9a** (D125–D129): upload scanning everywhere, enforced CSP with violation reports, API rate limit, dependency audit, Postmark bounce handling, web push, background sync, install and update prompts, performance and dark-mode accessibility passes.
-- **9b**: server provisioning, backups and a restore drill, monitoring and alerts, the deploy script with rollback (and the Actions workflow that calls it), runbooks, go-live checklist.
+- **9b** (D130–D133): server provisioning and hardening script, encrypted nightly backups offsite with a write-only key and monthly restore drills, health endpoints, GlitchTip, host alerts, the zero-downtime deploy script with automatic rollback and the Actions workflow that calls it, runbooks and the go-live checklist (`deploy/`).
 - PWA hardening (push, background sync, install prompt, update toast), perf pass against the budgets, security review (headers/CSP, upload scanning, rate limits, dependency audit), WCAG 2.2 AA audit.
 - Hostinger provisioning: harden script, Compose prod, Caddy, backups offsite + first restore drill, monitoring and alerts, CI/CD zero-downtime deploy with rollback.
 - Runbooks: backup/restore, WhatsApp token rotation, OpenWA re-pair, APP_KEY rotation, scale-out (separate DB, S3).

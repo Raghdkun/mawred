@@ -13,7 +13,17 @@ import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import SetupLayout from '@/layouts/setup-layout';
 
-configureEcho({ broadcaster: 'reverb' });
+/** Reverb settings come from the page at runtime: one image serves every host (ADR-0019). */
+const reverb = document.querySelector<HTMLMetaElement>('meta[name="mawred-reverb"]')?.dataset ?? {};
+configureEcho({
+    broadcaster: 'reverb',
+    key: reverb.key,
+    wsHost: reverb.host,
+    wsPort: Number(reverb.port) || undefined,
+    wssPort: Number(reverb.port) || undefined,
+    forceTLS: reverb.scheme === 'https',
+    enabledTransports: ['ws', 'wss'],
+});
 
 const queryClient = new QueryClient({
     defaultOptions: { queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false } },

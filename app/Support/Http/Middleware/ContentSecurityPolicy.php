@@ -82,9 +82,9 @@ final class ContentSecurityPolicy
     /** Reverb when it runs on another origin than the app (local and test setups). */
     private function reverbOrigin(): ?string
     {
-        $host = config('broadcasting.connections.reverb.options.host');
-        $port = config('broadcasting.connections.reverb.options.port');
-        $scheme = config('broadcasting.connections.reverb.options.scheme');
+        $host = config('mawred.realtime.host');
+        $port = config('mawred.realtime.port');
+        $scheme = config('mawred.realtime.scheme');
 
         if (! is_string($host) || $host === '') {
             return null;

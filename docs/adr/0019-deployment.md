@@ -21,3 +21,10 @@
 - **Monitoring**: Pulse (with its own DB connection), **GlitchTip** self-hosted with the Sentry SDK (D21; errors and performance, `request_id` correlation, PII scrubbing), a free external uptime ping (it can catch the whole host being down), `/health/live` and `/health/ready`, a cAdvisor-lite approach via `docker stats` + a node-exporter-free script that alerts on disk > 80 % and memory > 90 % through the notification system (email). An optional external uptime ping.
 - **Hardening**: `deploy/harden.sh` sets up a non-root deploy user, SSH keys only, root login disabled, UFW 22/80/443, fail2ban (sshd + Caddy auth-failure jail), unattended-upgrades, a swap file, Docker log rotation and UTC.
 - **Mail**: always through an external transactional provider. Hostinger throttles direct SMTP to 5/min anyway.
+
+## Implementation notes (Phase 9b, D130–D133)
+- Offsite copies go through an `rclone` container with the write-only key, not a Flysystem S3 disk; retention uses `daily/`, `weekly/`, `monthly/` and `yearly/` prefixes with bucket lifecycle rules, since the server can't delete (D130).
+- The monthly drill restores into a throwaway Postgres and checks migrations and counts; the full smoke suite isn't run against it (D130).
+- GlitchTip 6 runs as one container (web and worker); alerts are emailed through `php artisan ops:alert` rather than the notification system (D131).
+- The Caddy auth-failure jail is dropped; fail2ban covers SSH and repeat offenders (D133).
+- The scripts, timers and runbooks live in `deploy/` (see `deploy/README.md`).

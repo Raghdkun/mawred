@@ -24,6 +24,7 @@ const PUBLIC_ROUTE_NAMES = [
     'kiosk.*', // D70: kiosk screens open with a secret link (hash stored) and only show rotating codes
     'careers.*', // D87: the public careers site; applying is hardened like public forms
     'certificates.verify', // D104: shows only name, course, dates and status for a serial; rate limited
+    'health.*', // ADR-0019: liveness and readiness name each check and whether it passed
 ];
 
 /** Package-owned endpoints with their own gates (Horizon, Pulse, Scramble, Sanctum, health…). */

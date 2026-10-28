@@ -55,3 +55,13 @@
 	import security_headers
 	import app_upstream
 }
+
+# Error tracking (GlitchTip, D21): its own host, so its cookies and pages stay apart from Mawred's.
+{$GLITCHTIP_HOST} {
+	encode zstd gzip
+	import security_headers
+	request_body {
+		max_size 20MB
+	}
+	reverse_proxy glitchtip:8000
+}
