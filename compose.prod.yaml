@@ -1,6 +1,7 @@
 # Production stack on a single VPS (ADR-0019). Images come from GHCR; secrets from .env.production.
 # Always run through deploy/ (deploy.sh, backup.sh…): they pin MAWRED_TAG to the deployed image.
-# See deploy/README.md for the server layout, timers and runbooks.
+# The host's nginx (deploy/nginx/) terminates TLS and proxies to the ports published on 127.0.0.1;
+# nothing here listens publicly. See deploy/README.md for the server layout, timers and runbooks.
 name: mawred
 
 x-app: &app
@@ -18,24 +19,19 @@ x-app: &app
     options: { max-size: "10m", max-file: "5" }
 
 services:
-  caddy:
-    image: caddy:2
-    restart: unless-stopped
-    ports: ["80:80", "443:443", "443:443/udp"]
-    environment:
-      APP_HOST: ${APP_HOST}
-      CAREERS_HOST: ${CAREERS_HOST}
-      GLITCHTIP_HOST: ${GLITCHTIP_HOST}
-      ACME_EMAIL: ${ACME_EMAIL}
-    volumes:
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    mem_limit: 128m
-    logging: *logging
-
-  app:
+  # Two slots for zero-downtime deploys (D134): deploy.sh starts the idle one with the new image,
+  # points nginx at its port, then stops the other. Only one runs between deploys; the profile
+  # keeps a plain `docker compose up` from starting both.
+  app-blue:
     <<: *app
+    profiles: [app]
+    ports: ["127.0.0.1:${MAWRED_BLUE_PORT:-8081}:8080"]
+    mem_limit: 1536m
+
+  app-green:
+    <<: *app
+    profiles: [app]
+    ports: ["127.0.0.1:${MAWRED_GREEN_PORT:-8082}:8080"]
     mem_limit: 1536m
 
   horizon:
@@ -63,6 +59,7 @@ services:
   reverb:
     <<: *app
     command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
+    ports: ["127.0.0.1:${MAWRED_REVERB_PORT:-8090}:8080"]
     healthcheck: { disable: true }
     mem_limit: 256m
 
@@ -131,6 +128,7 @@ services:
       ENABLE_ORGANIZATION_CREATION: "false"
       GLITCHTIP_MAX_EVENT_LIFE_DAYS: "30"
       GRANIAN_WORKERS_MAX_RSS: "640"
+    ports: ["127.0.0.1:${MAWRED_GLITCHTIP_PORT:-8070}:8000"]
     depends_on:
       pgsql: { condition: service_healthy }
       redis: { condition: service_healthy }
@@ -158,7 +156,5 @@ volumes:
   backups:
   pgsql:
   redis:
-  caddy_data:
-  caddy_config:
   waha:
   clamav:

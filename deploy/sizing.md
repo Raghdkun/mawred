@@ -1,12 +1,12 @@
 # Memory and disk budget (KVM 4: 4 vCPU, 16 GB, 200 GB NVMe)
 
 Compose memory limits are ceilings, not typical use. Steady state is the sum of the limits; a
-deploy briefly runs a second `app`; the restore drill adds a throwaway Postgres at 04:00 UTC.
+deploy briefly runs both app slots; the restore drill adds a throwaway Postgres at 04:00 UTC. The
+host's nginx (TLS and proxy, D134) runs outside Docker and needs a few tens of MB.
 
 | Service | Limit | Notes |
 |---|---:|---|
-| caddy | 128 MB | TLS, HTTP/3, proxy |
-| app | 1.5 GB | FrankenPHP; ×2 for about a minute during a deploy |
+| app (live slot) | 1.5 GB | FrankenPHP; both slots for about a minute during a deploy |
 | horizon | 1 GB | queue workers |
 | scheduler | 256 MB | |
 | ssr | 384 MB | careers pages |
@@ -17,7 +17,7 @@ deploy briefly runs a second `app`; the restore drill adds a throwaway Postgres 
 | waha | 512 MB | unofficial WhatsApp (GOWS engine) |
 | clamav | 1.5 GB | signatures in memory (D20) |
 | glitchtip | 1 GB | web and worker in one container |
-| **Steady total** | **10 GB** | leaves ~5 GB for the OS, page cache and Postgres' file cache |
+| **Steady total** | **9.9 GB** | leaves ~5 GB for the OS, page cache and Postgres' file cache |
 | Deploy peak | +1.5 GB | second `app` |
 | Restore drill | +1.5 GB | throwaway Postgres, monthly |
 

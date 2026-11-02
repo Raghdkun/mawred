@@ -5,11 +5,17 @@ Tick each line on the day. Owners: IT (server, DNS, keys) and HR admin (settings
 ## Domain and TLS (D126)
 - [ ] Real domain chosen; `APP_HOST`, `CAREERS_HOST`, `GLITCHTIP_HOST`, `APP_URL`,
       `REVERB_BROWSER_HOST` and `MAIL_FROM_ADDRESS` set in `.env.production` (no `example.com` left).
-- [ ] DNS A/AAAA records for all three hosts point at the server; certificates issued (open each).
+- [ ] DNS A/AAAA records for all three hosts point at the server; `nginx-site.sh` run and
+      certificates issued (open each); `sudo certbot renew --dry-run` passes.
+- [ ] `http://<APP_HOST>` redirects to HTTPS; a WebSocket connects (a live notification arrives
+      without a reload).
 - [ ] `CAREERS_ON_OWN_HOST=true` if the careers site uses its own host (D11, D87).
 
 ## Server
-- [ ] `harden.sh` run; root and password SSH logins refused; `ufw status` shows 22/80/443 only.
+- [ ] `harden.sh` run; root and password SSH logins refused; `ufw status` shows 22/80/443 only;
+      `ss -ltn` shows the Mawred ports (8081/8082/8090/8070) on 127.0.0.1 only.
+- [ ] A test deploy switches slots with no failed requests (`deploy.sh status` shows the other
+      slot live afterwards).
 - [ ] `.env.production` complete (`deploy/env.production.example`), `chmod 600`, copy in the
       password manager (with `APP_KEY`, `BLIND_INDEX_KEY`, `BACKUP_ARCHIVE_PASSWORD`).
 - [ ] WAHA image tag pinned (D8); GlitchTip tag pinned.

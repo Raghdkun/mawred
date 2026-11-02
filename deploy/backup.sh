@@ -25,10 +25,10 @@ bucket="$(env_get BACKUP_S3_BUCKET)"
 [ -n "$(env_get BACKUP_ARCHIVE_PASSWORD)" ] || die "BACKUP_ARCHIVE_PASSWORD is not set; archives would not be encrypted"
 
 log "creating the archive"
-dc exec -T app php artisan backup:run --no-interaction
-dc exec -T app php artisan backup:clean --no-interaction
+dc exec -T "$(app_service)" php artisan backup:run --no-interaction
+dc exec -T "$(app_service)" php artisan backup:clean --no-interaction
 
-archive="$(dc exec -T app sh -c 'ls -1t storage/backups/mawred/*.zip | head -n 1')"
+archive="$(dc exec -T "$(app_service)" sh -c 'ls -1t storage/backups/mawred/*.zip | head -n 1')"
 archive="$(basename "${archive//$'\r'/}")"
 [ -n "$archive" ] || die "no archive found after backup:run"
 

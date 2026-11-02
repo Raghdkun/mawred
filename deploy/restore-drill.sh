@@ -49,10 +49,10 @@ if [ "$from_offsite" = yes ]; then
     log "downloading daily/$archive"
     fetch copyto "offsite:$bucket/daily/$archive" /drill/archive.zip
 else
-    [ -n "$archive" ] || archive="$(dc exec -T app sh -c 'ls -1t storage/backups/mawred/*.zip | head -n 1')"
+    [ -n "$archive" ] || archive="$(dc exec -T "$(app_service)" sh -c 'ls -1t storage/backups/mawred/*.zip | head -n 1')"
     archive="$(basename "${archive//$'\r'/}")"
     log "using local $archive"
-    dc run --rm --no-deps --user root -v "$run_id:/drill" --entrypoint cp app \
+    dc run --rm --no-deps --user root -v "$run_id:/drill" --entrypoint cp "$(app_service)" \
         "storage/backups/mawred/$archive" /drill/archive.zip
 fi
 
@@ -60,7 +60,7 @@ fi
 # from the container's own environment (.env.production), never the command line.
 log "decrypting and unpacking"
 # shellcheck disable=SC2016 # PHP code, expanded by PHP
-dc run --rm --no-deps --user root -v "$run_id:/drill" --entrypoint php app -r '
+dc run --rm --no-deps --user root -v "$run_id:/drill" --entrypoint php "$(app_service)" -r '
     $zip = new ZipArchive();
     if ($zip->open("/drill/archive.zip") !== true) { fwrite(STDERR, "cannot open the archive\n"); exit(1); }
     $zip->setPassword((string) getenv("BACKUP_ARCHIVE_PASSWORD"));

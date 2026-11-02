@@ -13,17 +13,23 @@ import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import SetupLayout from '@/layouts/setup-layout';
 
-/** Reverb settings come from the page at runtime: one image serves every host (ADR-0019). */
-const reverb = document.querySelector<HTMLMetaElement>('meta[name="mawred-reverb"]')?.dataset ?? {};
-configureEcho({
-    broadcaster: 'reverb',
-    key: reverb.key,
-    wsHost: reverb.host,
-    wsPort: Number(reverb.port) || undefined,
-    wssPort: Number(reverb.port) || undefined,
-    forceTLS: reverb.scheme === 'https',
-    enabledTransports: ['ws', 'wss'],
-});
+/**
+ * Reverb settings come from the page at runtime: one image serves every host (ADR-0019). The
+ * SSR server runs this module too, and has no page to read them from.
+ */
+if (typeof document !== 'undefined') {
+    const reverb =
+        document.querySelector<HTMLMetaElement>('meta[name="mawred-reverb"]')?.dataset ?? {};
+    configureEcho({
+        broadcaster: 'reverb',
+        key: reverb.key,
+        wsHost: reverb.host,
+        wsPort: Number(reverb.port) || undefined,
+        wssPort: Number(reverb.port) || undefined,
+        forceTLS: reverb.scheme === 'https',
+        enabledTransports: ['ws', 'wss'],
+    });
+}
 
 const queryClient = new QueryClient({
     defaultOptions: { queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false } },

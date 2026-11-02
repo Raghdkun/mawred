@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
 
 /*
-| ADR-0019: liveness and readiness for Caddy, the deploy script and the uptime ping. Readiness
+| ADR-0019: liveness and readiness for the deploy script, monitoring and the uptime ping. Readiness
 | needs the database, Redis and the private disk; Gotenberg only degrades it.
 */
 beforeEach(function (): void {

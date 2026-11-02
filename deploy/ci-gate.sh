@@ -8,7 +8,7 @@ root="$(cd "$(dirname "$0")/.." && pwd)"
 
 case "${SSH_ORIGINAL_COMMAND:-}" in
 bundle)
-    exec tar -xzf - -C "$root" --no-same-owner compose.prod.yaml docker/caddy deploy
+    exec tar -xzf - -C "$root" --no-same-owner compose.prod.yaml deploy
     ;;
 "deploy "*)
     tag="${SSH_ORIGINAL_COMMAND#deploy }"

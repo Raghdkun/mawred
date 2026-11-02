@@ -106,7 +106,7 @@
 - **9a** (D125–D129): upload scanning everywhere, enforced CSP with violation reports, API rate limit, dependency audit, Postmark bounce handling, web push, background sync, install and update prompts, performance and dark-mode accessibility passes.
 - **9b** (D130–D133): server provisioning and hardening script, encrypted nightly backups offsite with a write-only key and monthly restore drills, health endpoints, GlitchTip, host alerts, the zero-downtime deploy script with automatic rollback and the Actions workflow that calls it, runbooks and the go-live checklist (`deploy/`).
 - PWA hardening (push, background sync, install prompt, update toast), perf pass against the budgets, security review (headers/CSP, upload scanning, rate limits, dependency audit), WCAG 2.2 AA audit.
-- Hostinger provisioning: harden script, Compose prod, Caddy, backups offsite + first restore drill, monitoring and alerts, CI/CD zero-downtime deploy with rollback.
+- Hostinger provisioning: harden script, Compose prod, host nginx (D134), backups offsite + first restore drill, monitoring and alerts, CI/CD zero-downtime deploy with rollback.
 - Runbooks: backup/restore, WhatsApp token rotation, OpenWA re-pair, APP_KEY rotation, scale-out (separate DB, S3).
 
 ## Testing strategy

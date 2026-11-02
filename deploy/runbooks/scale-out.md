@@ -34,8 +34,10 @@ When the database needs more memory or I/O than the box can give.
 
 ## 3. More app capacity
 
-- Raise `app` to two replicas behind Caddy: `--scale app=2` already works (deploys do it briefly);
-  make it permanent with `deploy.replicas: 2` and adjust `deploy.sh` to roll one at a time.
+- Serve from both app slots at once: list both ports in nginx's `mawred_app` upstream
+  (`.deploy/nginx-upstream.conf`) and change `deploy.sh` to replace one slot at a time, taking it
+  out of the upstream while it restarts. A second app server joins the same way, over the private
+  network.
 - Move Horizon to a second server sharing Redis and Postgres over the private network. Keep the
   scheduler on exactly one machine (`onOneServer()` guards it, but one is simpler).
 - Redis on its own server when queues and cache outgrow 512 MB; keep cache, queue and session on

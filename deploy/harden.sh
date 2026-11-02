@@ -4,17 +4,18 @@
 #
 #   sudo ./deploy/harden.sh <deploy-user> <admin-keys.pub> [ci-deploy-key.pub]
 #
-# It installs Docker, creates the deploy user (SSH keys only, in the docker group), turns off root
-# and password logins, opens only 22/80/443 in UFW, sets up fail2ban, security-only unattended
-# upgrades, a swap file, Docker log rotation, UTC, and the backup, monitor and drill timers.
-# Keep your current SSH session open until a new login as <deploy-user> works.
+# It installs Docker, nginx and certbot, creates the deploy user (SSH keys only, in the docker
+# group, allowed to test and reload nginx), turns off root and password logins, opens only
+# 22/80/443 in UFW, sets up fail2ban, security-only unattended upgrades, a swap file, Docker log
+# rotation, UTC, and the backup, monitor and drill timers. The project lives in /core/mawred
+# (MAWRED_ROOT to change it). Keep your current SSH session open until a login as <deploy-user> works.
 
 set -Eeuo pipefail
 
 user="${1:?usage: harden.sh <deploy-user> <admin-keys.pub> [ci-deploy-key.pub]}"
 admin_keys="${2:?usage: harden.sh <deploy-user> <admin-keys.pub> [ci-deploy-key.pub]}"
 ci_key="${3:-}"
-root_dir="${MAWRED_ROOT:-/srv/mawred}"
+root_dir="${MAWRED_ROOT:-/core/mawred}"
 bundle_dir="$(cd "$(dirname "$0")" && pwd)"
 
 log() { printf '\n== %s\n' "$*"; }
@@ -34,7 +35,7 @@ timedatectl set-timezone UTC
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -q
 apt-get upgrade -yq
-apt-get install -yq ca-certificates curl gnupg ufw fail2ban unattended-upgrades jq
+apt-get install -yq ca-certificates curl gnupg ufw fail2ban unattended-upgrades jq nginx certbot
 
 log "Docker Engine and the Compose plugin (Docker's apt repository)"
 if ! command -v docker >/dev/null; then
@@ -72,6 +73,15 @@ chown "$user:$user" "$home/.ssh/authorized_keys"
 chmod 600 "$home/.ssh/authorized_keys"
 install -d -m 750 -o "$user" -g "$user" "$root_dir"
 
+log "nginx: running, and reloadable by $user for blue/green switches (D134)"
+systemctl enable --now nginx >/dev/null
+cat >/etc/sudoers.d/mawred-nginx <<CONF
+# deploy/deploy.sh tests and reloads nginx after pointing it at the new app slot.
+$user ALL=(root) NOPASSWD: /usr/sbin/nginx -t -q, /usr/bin/systemctl reload nginx
+CONF
+chmod 440 /etc/sudoers.d/mawred-nginx
+visudo -cf /etc/sudoers.d/mawred-nginx >/dev/null
+
 log "SSH: keys only, no root login"
 cat >/etc/ssh/sshd_config.d/10-mawred.conf <<CONF
 PermitRootLogin no
@@ -86,15 +96,14 @@ CONF
 sshd -t
 systemctl restart ssh
 
-log "firewall: 22, 80, 443 (TCP and HTTP/3) only"
+log "firewall: 22, 80, 443 only"
 ufw default deny incoming >/dev/null
 ufw default allow outgoing >/dev/null
 ufw limit 22/tcp >/dev/null
 ufw allow 80/tcp >/dev/null
 ufw allow 443/tcp >/dev/null
-ufw allow 443/udp >/dev/null
 ufw --force enable >/dev/null
-# Docker publishes ports past UFW: compose.prod.yaml publishes only Caddy's 80/443, keep it so.
+# Docker publishes ports past UFW: compose.prod.yaml binds every port to 127.0.0.1, keep it so.
 
 log "fail2ban: SSH, plus a longer ban for repeat offenders"
 cat >/etc/fail2ban/jail.d/mawred.local <<'CONF'
@@ -162,4 +171,5 @@ Next (deploy/runbooks/provision-server.md):
   1. In a NEW terminal, check: ssh $user@<server>   (keep this session open until it works)
   2. As $user: put the bundle and .env.production in $root_dir, docker login ghcr.io
   3. $root_dir/deploy/deploy.sh init <commit-sha>
+  4. sudo $root_dir/deploy/nginx-site.sh   (certificates and the site; DNS must point here)
 NEXT

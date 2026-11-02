@@ -26,7 +26,7 @@ Token facts that shape the code:
 
 ```
                 ┌────────────── Hostinger VPS (Ubuntu LTS, Docker Compose) ──────────────┐
- Browser/PWA ──►│ Caddy (TLS, HTTP/3, WS) ─► app (PHP)  ─┬─► PostgreSQL 17/18             │
+ Browser/PWA ──►│ nginx (TLS, WebSocket)  ─► app (PHP)  ─┬─► PostgreSQL 17/18             │
  Flutter app ──►│        │                 ├ horizon     ├─► Redis (cache/queue/session) │
  Cognito ──────►│        └──── /app/* ───► reverb (WS)   ├─► Gotenberg (HTML→PDF)        │
  Meta WA Cloud ►│                          ├ scheduler   ├─► WAHA (unofficial WA, priv.) │
@@ -339,9 +339,9 @@ Pint, Rector (dry-run in CI), Larastan level max with a committed baseline that 
 
 ## 12. Deployment (summary — [ADR-017](adr/0017-runtime-and-proxy.md), [ADR-019](adr/0019-deployment.md))
 
-- Single Ubuntu LTS VPS running Docker Compose. Caddy is the edge (automatic Let's Encrypt, WebSocket proxy to Reverb).
+- Single Ubuntu LTS VPS running Docker Compose. The host's nginx is the edge (Let's Encrypt through certbot, WebSocket proxy to Reverb); containers publish on 127.0.0.1 only (D134).
 - One PHP image runs the app, horizon, scheduler and reverb.
-- GitHub Actions builds and tests the images, pushes them to GHCR, and deploys over SSH with a blue/green switch of the `app` service behind Caddy. The sequence is: migrate (expand-only), warm caches, `horizon:terminate`, health check, then switch or roll back.
+- GitHub Actions builds and tests the images, pushes them to GHCR, and deploys over SSH with a blue/green switch between the `app-blue` and `app-green` slots behind nginx. The sequence is: migrate (expand-only), warm caches, `horizon:terminate`, health check, then switch or roll back.
 - Nightly encrypted spatie/laravel-backup to Hostinger Object Storage (D15), plus a monthly restore drill runbook.
 - KVM 4 (4 vCPU / 16 GB) with ClamAV on (D20). GlitchTip self-hosted plus an external uptime ping (D21).
 - Hardening script: deploy user, SSH keys only, UFW 22/80/443, fail2ban, unattended-upgrades, swap, Docker log rotation, UTC.

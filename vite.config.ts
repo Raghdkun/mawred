@@ -61,6 +61,10 @@ export default defineConfig({
             },
         }),
     ],
+    // The production image drops node_modules after building, so the SSR bundle carries its own.
+    ssr: {
+        noExternal: true,
+    },
     server: {
         // A name, not [::1]: browsers reject IPv6 literals in the CSP that lists the dev server.
         host: 'localhost',

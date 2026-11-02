@@ -11,7 +11,7 @@ Not in the archive, on purpose:
 - `.env.production` (`APP_KEY`, `BLIND_INDEX_KEY`, the archive password…): kept in the password
   manager. **Without `APP_KEY` and `BLIND_INDEX_KEY`, encrypted fields in a restored database can't
   be read or searched.**
-- The GlitchTip database (30 days of error events; disposable), Caddy's certificates (reissued),
+- The GlitchTip database (30 days of error events; disposable), the Let's Encrypt certificates (`nginx-site.sh` reissues them),
   the WAHA session (re-pair), Redis (cache, queues and sessions; queued jobs are retried by their
   sources, people sign in again).
 
@@ -50,12 +50,12 @@ cleanup), capped at `BACKUP_LOCAL_MAX_MB`.
 - **Monthly, automatic** (`mawred-restore-drill.timer`, the 3rd at 04:00 UTC): restores the newest
   local archive into a throwaway Postgres, checks every migration is present with the deployed
   release, counts users, employees and files, and emails the result either way. Results are also
-  appended to `/srv/mawred/.deploy/drills.log`.
+  appended to `/core/mawred/.deploy/drills.log`.
 - **Quarterly, by hand, from offsite**, so the bucket copy and the reader key are proven too:
   ```bash
   read -rs RESTORE_S3_ACCESS_KEY_ID; read -rs RESTORE_S3_SECRET_ACCESS_KEY
   export RESTORE_S3_ACCESS_KEY_ID RESTORE_S3_SECRET_ACCESS_KEY
-  /srv/mawred/deploy/restore-drill.sh --offsite
+  /core/mawred/deploy/restore-drill.sh --offsite
   ```
   Then copy one archive to the second location named in the IT register (ADR-0019: a quarterly copy
   outside Hostinger), and note the date and result there.

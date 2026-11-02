@@ -85,6 +85,6 @@ jobs:
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
       # The key is limited to these two commands by deploy/ci-gate.sh on the server.
       - name: Send the deploy bundle
-        run: tar -czf - compose.prod.yaml docker/caddy deploy | ssh -i ~/.ssh/deploy -o StrictHostKeyChecking=yes "$TARGET" bundle
+        run: tar -czf - compose.prod.yaml deploy | ssh -i ~/.ssh/deploy -o StrictHostKeyChecking=yes "$TARGET" bundle
       - name: Deploy
         run: ssh -i ~/.ssh/deploy -o StrictHostKeyChecking=yes -o ServerAliveInterval=30 "$TARGET" "deploy $SHA"

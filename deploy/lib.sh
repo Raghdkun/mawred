@@ -3,9 +3,10 @@
 # restore-drill.sh and monitor.sh; never run on its own.
 #
 # Layout on the server (deploy/README.md):
-#   /srv/mawred/compose.prod.yaml, docker/caddy/, deploy/   the deploy bundle (sent by CI)
-#   /srv/mawred/.env.production                            secrets, chmod 600, never in git
-#   /srv/mawred/.deploy/                                    current-tag, previous-tag, lock, alerts
+#   /core/mawred/compose.prod.yaml, deploy/   the deploy bundle (sent by CI)
+#   /core/mawred/.env.production              secrets, chmod 600, never in git
+#   /core/mawred/.deploy/                     current-tag, previous-tag, live-slot,
+#                                             nginx-upstream.conf, lock, alerts
 
 set -Eeuo pipefail
 
@@ -38,6 +39,23 @@ env_get() {
 current_tag() { cat "$STATE_DIR/current-tag" 2>/dev/null || echo latest; }
 previous_tag() { cat "$STATE_DIR/previous-tag" 2>/dev/null || true; }
 
+# The app runs in one of two slots (D134): the live one serves through nginx, the idle one takes
+# the next release. compose.prod.yaml publishes them on 127.0.0.1 (MAWRED_BLUE_PORT, default 8081;
+# MAWRED_GREEN_PORT, default 8082).
+live_slot() { cat "$STATE_DIR/live-slot" 2>/dev/null || echo blue; }
+idle_slot() { if [ "$(live_slot)" = blue ]; then echo green; else echo blue; fi; }
+slot_port() {
+    local port
+    if [ "$1" = blue ]; then
+        port="$(env_get MAWRED_BLUE_PORT)"
+        echo "${port:-8081}"
+    else
+        port="$(env_get MAWRED_GREEN_PORT)"
+        echo "${port:-8082}"
+    fi
+}
+app_service() { echo "app-$(live_slot)"; }
+
 # docker compose for the production project, pinned to the deployed image unless MAWRED_TAG is set.
 dc() {
     MAWRED_TAG="${MAWRED_TAG:-$(current_tag)}" docker compose \
@@ -51,7 +69,25 @@ dc() {
 # external uptime ping is what notices.
 alert() {
     log "alert: $1"
-    dc exec -T app php artisan ops:alert "$1" "$2" >/dev/null 2>&1 || log "could not send the alert through the app"
+    dc exec -T "$(app_service)" php artisan ops:alert "$1" "$2" >/dev/null 2>&1 || log "could not send the alert through the app"
+}
+
+# Points nginx's app upstream at a slot and reloads it (graceful: requests already sent finish on
+# the old slot). The deploy user may run exactly these two commands as root (harden.sh, sudoers).
+# If nginx rejects the change, the previous upstream stays.
+point_nginx() {
+    local file="$STATE_DIR/nginx-upstream.conf" before=""
+    [ -f "$file" ] && before="$(cat "$file")"
+    printf '# Written by deploy/deploy.sh: the live app slot (%s).\nserver 127.0.0.1:%s;\n' "$1" "$(slot_port "$1")" >"$file.tmp"
+    mv "$file.tmp" "$file"
+    if sudo -n /usr/sbin/nginx -t -q && sudo -n /usr/bin/systemctl reload nginx; then
+        printf '%s\n' "$1" >"$STATE_DIR/live-slot"
+        return 0
+    fi
+    if [ -n "$before" ]; then
+        printf '%s\n' "$before" >"$file"
+    fi
+    return 1
 }
 
 # Pings a heartbeat URL (healthchecks.io style: <url> on success, <url>/fail on failure).

@@ -9,7 +9,7 @@ use App\Support\Health\ReadinessProbe;
 use Illuminate\Http\JsonResponse;
 
 /**
- * Liveness and readiness for Caddy, the deploy script and the external uptime ping (ADR-0019).
+ * Liveness and readiness for the deploy script, monitoring and the external uptime ping (ADR-0019).
  * Answers name each check and whether it passed, nothing more.
  */
 final class HealthController extends Controller

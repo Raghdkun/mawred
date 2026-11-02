@@ -215,6 +215,10 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Deploy scripts source `deploy/lib.sh` (`set -Eeuo pipefail`): a function called in an `if`/`||` runs without errexit, so `rollout` checks each step itself. People at a shell use `deploy/dc.sh`, never `source lib.sh`.
 - macOS has no `flock`: to try the scripts locally, run them in a `docker:cli` container with util-linux and the Docker socket mounted, under a separate `COMPOSE_PROJECT_NAME`.
 - Secrets never go on a `docker run` command line (`ps` shows them): export them and pass `-e NAME` alone, or read them from the container's own env file.
+- Production's edge is the host's nginx (D134): containers publish on 127.0.0.1 only, and the app is `app-blue` or `app-green` (`.deploy/live-slot`). `deploy/dc.sh … app …` means the live slot; scripts use `app_service`.
+- nginx's default proxy header buffer (4–8 KB) is smaller than the app's response headers (CSP nonce, preload links, cookies) and turns pages into 502s; `deploy/nginx/mawred-proxy.conf` sets 32 KB.
+- The SSR server runs `app.tsx` on Node: guard browser globals at module level (`typeof document`). The image has no `node_modules`, so `vite.config.ts` bundles every dependency into SSR (`ssr.noExternal`).
+- Vite's dev host is pinned to `localhost`: browsers ignore `[::1]` in a CSP, which blanked pages under `composer dev`.
 
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.

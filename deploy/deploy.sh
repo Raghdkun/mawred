@@ -1,28 +1,30 @@
 #!/usr/bin/env bash
-# Zero-downtime rollout with rollback (ADR-0019, D125). Run on the server as the deploy user,
+# Zero-downtime blue/green rollout with rollback (ADR-0019, D125, D134). Run on the server as the deploy user,
 # by hand or by .github/workflows/deploy.yml through deploy/ci-gate.sh.
 #
 #   deploy.sh <tag>        roll out ghcr.io/raghdkun/mawred-app:<tag> (the git SHA CI pushed)
 #   deploy.sh rollback     go back to the previous tag (no migrations: they are expand-only)
 #   deploy.sh init <tag>   first start on a new server: databases, migrations, every service
-#   deploy.sh up           apply compose.prod.yaml changes to the other services (may restart them)
-#   deploy.sh status       show the deployed tags and containers
+#   deploy.sh up           apply compose.prod.yaml changes to the other services (may restart
+#                          them); the app slots pick up changes on the next deploy
+#   deploy.sh status       show the deployed tags, the live slot and the containers
 
 # shellcheck source=deploy/lib.sh
 source "$(dirname "$0")/lib.sh"
 
 valid_tag() { [[ "$1" =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$ ]] || die "not an image tag: $1"; }
 
-# Waits until a container's Docker health check passes and /health/ready answers 200 inside it.
-# A container that keeps crashing (restarted twice) or turns unhealthy fails at once.
+# Waits until a slot's container passes its Docker health check and /health/ready answers 200 on
+# the loopback port nginx will use. A container that keeps crashing (restarted twice) or turns
+# unhealthy fails at once.
 wait_ready() {
-    local id="$1" deadline=$((SECONDS + ${2:-240})) health
+    local id="$1" port="$2" deadline=$((SECONDS + ${3:-240})) health
     while ((SECONDS < deadline)); do
         health="$(docker inspect -f '{{if ge .RestartCount 2}}crashing{{else if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$id" 2>/dev/null || echo gone)"
         case "$health" in
         gone | unhealthy | crashing) return 1 ;;
         healthy)
-            docker exec "$id" curl -fsS -m 5 -o /dev/null http://127.0.0.1:8080/health/ready && return 0
+            curl -fsS -m 5 -o /dev/null "http://127.0.0.1:$port/health/ready" && return 0
             ;;
         esac
         sleep 3
@@ -30,7 +32,7 @@ wait_ready() {
     return 1
 }
 
-# Through Caddy, as a visitor would arrive (TLS and all), but without leaving the machine.
+# Through nginx, as a visitor would arrive (TLS and all), but without leaving the machine.
 smoke() {
     local host
     host="$(env_get APP_HOST)"
@@ -38,50 +40,49 @@ smoke() {
         --resolve "$host:443:127.0.0.1" "https://$host/health/ready"
 }
 
-# Starts <tag> beside the running app container, waits for it, then retires the old one; Caddy's
-# upstream health checks move traffic across. Workers follow once the web tier is on <tag>.
-# Callers test its status, which turns off `set -e` inside it, so every step checks itself.
+# Starts <tag> in the idle slot, waits for it, points nginx at it, then retires the live slot
+# (D134). Workers follow once the web tier is on <tag>. Callers test its status, which turns off
+# `set -e` inside it, so every step checks itself.
 rollout() {
-    local tag="$1" migrate="$2" id new=""
-    local -a old
+    local tag="$1" migrate="$2" from to id
+    from="$(live_slot)"
+    to="$(idle_slot)"
 
     log "pulling $IMAGE:$tag" # commit tags never change, so a local copy is used as is
-    MAWRED_TAG="$tag" dc pull --quiet --policy missing app || return 1
+    MAWRED_TAG="$tag" dc pull --quiet --policy missing "app-$to" || return 1
 
     if [ "$migrate" = yes ]; then
         log "running migrations (expand-only, the running release keeps working)"
-        MAWRED_TAG="$tag" dc run --rm --no-deps -e MAWRED_OPTIMIZE=false app php artisan migrate --force --no-interaction || return 1
+        MAWRED_TAG="$tag" dc run --rm --no-deps -e MAWRED_OPTIMIZE=false "app-$to" php artisan migrate --force --no-interaction || return 1
     fi
 
-    mapfile -t old < <(dc ps -q app)
-    log "starting $tag next to ${#old[@]} running app container(s)"
-    MAWRED_TAG="$tag" dc up -d --no-deps --no-recreate --scale "app=$((${#old[@]} + 1))" app || return 1
+    dc rm -sf "app-$to" >/dev/null 2>&1 || true # left over from an interrupted deploy
+    log "starting $tag in the $to slot (127.0.0.1:$(slot_port "$to")); $from keeps serving"
+    MAWRED_TAG="$tag" dc up -d --no-deps "app-$to" || return 1
+    id="$(dc ps -q "app-$to")"
 
-    for id in $(dc ps -q app); do
-        [[ " ${old[*]} " == *" $id "* ]] || new="$id"
-    done
-    if [ -z "$new" ]; then
-        log "the new app container did not start"
+    if [ -z "$id" ] || ! wait_ready "$id" "$(slot_port "$to")"; then
+        log "the $to slot never became ready; $from keeps serving"
+        [ -z "$id" ] || docker logs --tail 80 "$id" >&2 || true
+        dc rm -sf "app-$to" >/dev/null 2>&1 || true
         return 1
     fi
 
-    if ! wait_ready "$new"; then
-        log "the new container never became ready; the old one keeps serving"
-        docker logs --tail 80 "$new" >&2 || true
-        docker rm -f "$new" >/dev/null
+    if ! point_nginx "$to"; then
+        log "nginx refused the switch (see: sudo nginx -t); $from keeps serving"
+        dc rm -sf "app-$to" >/dev/null 2>&1 || true
         return 1
     fi
 
-    sleep 3 # Caddy re-resolves the app upstreams every second
-    for id in "${old[@]}"; do
-        log "retiring $id"
-        docker stop -t 30 "$id" >/dev/null && docker rm "$id" >/dev/null
-    done
+    sleep 5 # nginx's old workers finish the requests they already sent to the old slot
+    if [ -n "$(dc ps -q "app-$from")" ]; then
+        log "retiring the $from slot"
+        dc stop -t 30 "app-$from" >/dev/null && dc rm -f "app-$from" >/dev/null
+    fi
 
     # Horizon finishes its running jobs on SIGTERM (stop_grace_period in compose.prod.yaml).
     log "moving horizon, scheduler, reverb and ssr to $tag"
     MAWRED_TAG="$tag" dc up -d --no-deps horizon scheduler reverb ssr || return 1
-    dc exec -T caddy caddy reload --config /etc/caddy/Caddyfile >/dev/null 2>&1 || log "caddy reload failed; it keeps its previous config"
 }
 
 record() {
@@ -109,7 +110,7 @@ deploy() {
     was="$(current_tag)"
 
     if ! rollout "$tag" yes; then
-        alert "Deploy of $tag failed" "The new release never became ready. $was is still serving. Logs: journalctl or docker compose logs app."
+        alert "Deploy of $tag failed" "The new release never became ready, or nginx refused the switch. $was is still serving. See deploy/runbooks/deploy-and-rollback.md."
         exit 1
     fi
 
@@ -122,7 +123,7 @@ deploy() {
 
     log "smoke check failed; rolling back to $was"
     if rollout "$was" no && smoke; then
-        alert "Deploy of $tag rolled back" "The release started but failed the smoke check through Caddy, so $was is serving again."
+        alert "Deploy of $tag rolled back" "The release started but failed the smoke check through nginx, so $was is serving again."
     else
         alert "Deploy of $tag failed and rollback to $was failed" "Mawred may be down. Follow deploy/runbooks/deploy-and-rollback.md now."
     fi
@@ -141,14 +142,16 @@ rollback() {
 }
 
 init() {
-    local tag="$1" user database
+    local tag="$1" user database slot
     valid_tag "$tag"
     take_lock 0
     user="$(env_get DB_USERNAME)"
     database="$(env_get DB_DATABASE)"
+    slot="$(live_slot)"
 
     log "pulling $tag and the service images"
     MAWRED_TAG="$tag" dc pull --quiet --policy missing
+    MAWRED_TAG="$tag" dc pull --quiet --policy missing "app-$slot"
 
     MAWRED_TAG="$tag" dc up -d --wait pgsql redis
     if ! dc exec -T pgsql psql -U "$user" -d "$database" -tAc "SELECT 1 FROM pg_database WHERE datname = 'glitchtip'" | grep -q 1; then
@@ -156,12 +159,17 @@ init() {
         dc exec -T pgsql createdb -U "$user" glitchtip
     fi
 
-    MAWRED_TAG="$tag" dc run --rm --no-deps -e MAWRED_OPTIMIZE=false app php artisan migrate --force --no-interaction
+    MAWRED_TAG="$tag" dc run --rm --no-deps -e MAWRED_OPTIMIZE=false "app-$slot" php artisan migrate --force --no-interaction
     MAWRED_TAG="$tag" dc up -d
-    wait_ready "$(dc ps -q app | head -n 1)" || die "the app never became ready; see docker compose logs app"
+    MAWRED_TAG="$tag" dc up -d --no-deps "app-$slot"
+    wait_ready "$(dc ps -q "app-$slot")" "$(slot_port "$slot")" || die "the app never became ready; see deploy/dc.sh logs app-$slot"
     record "$tag"
-    smoke || log "warning: the smoke check through Caddy failed (DNS or the certificate may not be ready yet)"
-    log "Mawred $tag is running. Next: php artisan mawred:install (deploy/runbooks/provision-server.md)"
+    printf '%s\n' "$slot" >"$STATE_DIR/live-slot"
+    if point_nginx "$slot" && smoke; then
+        log "Mawred $tag is running behind nginx. Next: php artisan mawred:install (deploy/runbooks/provision-server.md)"
+    else
+        log "Mawred $tag is running on 127.0.0.1:$(slot_port "$slot"). Next: sudo $MAWRED_ROOT/deploy/nginx-site.sh, then php artisan mawred:install (deploy/runbooks/provision-server.md)"
+    fi
 }
 
 case "${1:-}" in
@@ -172,9 +180,9 @@ up)
     dc up -d --remove-orphans
     ;;
 status)
-    printf 'current:  %s\nprevious: %s\n\n' "$(current_tag)" "$(previous_tag)"
+    printf 'current:  %s\nprevious: %s\nlive:     %s (127.0.0.1:%s)\n\n' "$(current_tag)" "$(previous_tag)" "$(live_slot)" "$(slot_port "$(live_slot)")"
     dc ps
     ;;
-"" | -h | --help) sed -n '2,10p' "$0" ;;
+"" | -h | --help) sed -n '2,11p' "$0" ;;
 *) deploy "$1" ;;
 esac

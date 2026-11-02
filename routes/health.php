@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 | Health probes (ADR-0019), outside the `web` group: no session, cookies or CSRF, and no rate
-| limiter, which would itself need Redis. `/up` stays for Caddy's upstream checks.
+| limiter, which would itself need Redis. `/up` stays for Docker's health check.
 */
 Route::prefix('health')->name('health.')->group(function (): void {
     Route::get('live', [HealthController::class, 'live'])->name('live');

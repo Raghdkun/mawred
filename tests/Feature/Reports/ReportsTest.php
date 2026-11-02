@@ -46,6 +46,8 @@ beforeEach(function (): void {
     Storage::fake('local');
     seedAccess();
     resolve(SeedRequestTypes::class)->handle();
+    // Mid-month, so the attendance and leave days set up below fall in the month reports cover.
+    $this->travelTo(CarbonImmutable::now()->startOfMonth()->addDays(14)->setTime(9, 0));
     $this->today = CarbonImmutable::now()->startOfDay();
     $this->documentType = DocumentType::query()->create(['code' => 'ID', 'name' => ['en' => 'ID card', 'ar' => 'الهوية']]);
     $this->unpaid = LeaveType::query()->create(['code' => 'UNPAID', 'name' => ['en' => 'Unpaid leave', 'ar' => 'إجازة بدون راتب'], 'unit' => 'days', 'is_paid' => false]);

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Host checks every five minutes (ADR-0019), run by mawred-monitor.timer: disk, memory, containers
-# and pending reboots. Each problem emails OPS_ALERT_EMAILS once, then again every six hours while
+# Host checks every five minutes (ADR-0019), run by mawred-monitor.timer: disk, memory, containers,
+# the host's nginx and pending reboots. Each problem emails OPS_ALERT_EMAILS once, then again every six hours while
 # it lasts. The external uptime ping covers the whole host going down.
 
 # shellcheck source=deploy/lib.sh
@@ -33,12 +33,15 @@ else
 fi
 
 problems=""
-for service in $(dc config --services); do
+for service in $(dc config --services) "$(app_service)"; do
     state="$(dc ps --all --format '{{.State}} {{.Health}}' "$service" 2>/dev/null | head -n 1)"
     case "$state" in
     "running unhealthy"* | "" | exited* | dead* | restarting*) problems+="$service: ${state:-no container}"$'\n' ;;
     esac
 done
+if ! systemctl is-active --quiet nginx; then
+    problems+="nginx (host): $(systemctl is-active nginx 2>/dev/null || true)"$'\n'
+fi
 if [ -n "$problems" ]; then
     raise containers "A Mawred service is down" "$problems"$'\n'"See: deploy/deploy.sh status, docker compose logs <service>."
 else
