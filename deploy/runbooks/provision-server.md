@@ -1,7 +1,16 @@
 # Provision a server
 
-For a new Hostinger KVM 4 with Ubuntu 24.04. Needs: root SSH access, the domain's DNS, a GitHub
+For a Hostinger KVM 4 with Ubuntu 24.04. Needs: root SSH access, the domain's DNS, a GitHub
 token that can read the GHCR package, and the values for `.env.production`.
+
+**A server that already runs other sites** (D135): use `harden.sh --shared` in step 2. It checks
+that Docker (with Compose), nginx and certbot are there and sets up only Mawred's parts: the
+deploy user, `/core/mawred`, the nginx sudo rule and the timers. It leaves SSH, the firewall,
+Docker's settings, packages, swap and kernel settings alone, because other sites depend on them.
+Before step 5, check that ports 8070, 8081, 8082 and 8090 are free
+(`ss -ltnp | grep -E ':(8070|8081|8082|8090) '`); if not, set `MAWRED_*_PORT` in `.env.production`.
+Mawred's memory limits add up to about 10 GB ([sizing](../sizing.md)): check `free -h` leaves
+that much beside the other sites.
 
 1. **DNS.** Point `APP_HOST`, `CAREERS_HOST` and `GLITCHTIP_HOST` (A and AAAA) at the server.
 2. **Harden.** From a checkout on your machine:
@@ -9,6 +18,7 @@ token that can read the GHCR package, and the values for `.env.production`.
    tar -czf - compose.prod.yaml deploy | ssh root@<server> 'mkdir -p /root/mawred && tar -xzf - -C /root/mawred'
    ssh root@<server> '/root/mawred/deploy/harden.sh deploy /root/.ssh/authorized_keys /root/ci-deploy.pub'
    ```
+   On a shared server: `harden.sh --shared deploy …` with the same arguments.
    The second key file is the **public** half of a key made only for GitHub Actions
    (`ssh-keygen -t ed25519 -f ci-deploy -C mawred-ci`); leave it out to add it later by re-running.
    Keep the root session open and check `ssh deploy@<server>` works from a new terminal.

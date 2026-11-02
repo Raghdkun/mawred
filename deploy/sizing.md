@@ -1,5 +1,8 @@
 # Memory and disk budget (KVM 4: 4 vCPU, 16 GB, 200 GB NVMe)
 
+On a shared server (D135) the other sites' use comes on top: keep about 10 GB free for Mawred,
+and consider a swap file (`harden.sh` adds one only on a server of its own).
+
 Compose memory limits are ceilings, not typical use. Steady state is the sum of the limits; a
 deploy briefly runs both app slots; the restore drill adds a throwaway Postgres at 04:00 UTC. The
 host's nginx (TLS and proxy, D134) runs outside Docker and needs a few tens of MB.

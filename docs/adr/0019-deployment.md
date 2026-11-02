@@ -29,3 +29,4 @@
 - The Caddy auth-failure jail is dropped; fail2ban covers SSH and repeat offenders (D133).
 - The scripts, timers and runbooks live in `deploy/` (see `deploy/README.md`).
 - The edge is the host's nginx instead of a Caddy container, and the project lives in `/core/mawred` (D134). The app runs in two slots (`app-blue` on 127.0.0.1:8081, `app-green` on :8082); a deploy starts the idle one, points `.deploy/nginx-upstream.conf` at it and reloads nginx (the deploy user may run only `nginx -t -q` and `systemctl reload nginx` as root), then stops the other. `deploy/nginx-site.sh` writes the nginx site and gets certificates.
+- The first server is shared with other sites (D135): `harden.sh --shared` sets up only Mawred's parts and leaves SSH, the firewall and Docker's settings to the server's owner.

@@ -92,7 +92,8 @@ record() {
     printf '%s\n' "$tag" >"$STATE_DIR/current-tag"
 }
 
-# Keeps the deployed and previous images (rollback) and drops older ones.
+# Keeps the deployed and previous images (rollback) and drops older Mawred ones. Never a
+# host-wide prune: the server may run other projects (D135).
 prune_images() {
     local keep_current keep_previous
     keep_current="$(current_tag)"
@@ -100,7 +101,6 @@ prune_images() {
     docker images "$IMAGE" --format '{{.Tag}}' |
         grep -vxF -e "$keep_current" -e "${keep_previous:-$keep_current}" -e '<none>' |
         while read -r tag; do docker rmi "$IMAGE:$tag" >/dev/null 2>&1 || true; done
-    docker image prune -f >/dev/null
 }
 
 deploy() {
