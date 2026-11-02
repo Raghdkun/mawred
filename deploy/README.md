@@ -32,6 +32,7 @@ then run `nginx-site.sh` and a deploy.
 | Script | Runs | Does |
 |---|---|---|
 | `harden.sh` | once, as root | Docker, nginx and certbot, deploy user (may test and reload nginx), SSH keys only, UFW 22/80/443, fail2ban, unattended upgrades, swap, log rotation, UTC, timers. `--shared` on a server with other sites: only the deploy user, `/core/mawred`, the nginx sudo rule and the timers (D135) |
+| `make-env.sh <host> <email>` | once, as the deploy user | Writes `.env.production` with the hosts filled in and the secrets generated on the server; never overwrites |
 | `nginx-site.sh` | as root, after `.env.production` exists and whenever a host or `deploy/nginx/` changes | Certificates for each host, the nginx site, the renewal hook |
 | `deploy.sh <sha>` | CI or by hand | Migrate (expand-only), start the new release in the idle slot, wait for `/health/ready`, point nginx at it, retire the old slot, move workers, smoke-test through nginx, roll back by itself if that fails |
 | `deploy.sh rollback` / `init <sha>` / `up` / `status` | by hand | See the header of `deploy.sh` |

@@ -29,10 +29,16 @@ that much beside the other sites.
    ```bash
    tar -czf - compose.prod.yaml deploy | ssh deploy@<server> 'tar -xzf - -C /core/mawred'
    ```
-   Create `/core/mawred/.env.production` from `deploy/env.production.example` and `.env.example`
-   (`chmod 600`). Generate `APP_KEY` with `php artisan key:generate --show`, `GLITCHTIP_SECRET_KEY`
-   and `BACKUP_ARCHIVE_PASSWORD` with `openssl rand -base64 48`, VAPID keys with
-   `php artisan mawred:vapid-keys`. Put a copy of the file in the password manager **now**.
+   Then, still as `deploy`, generate `.env.production` on the server:
+   ```bash
+   /core/mawred/deploy/make-env.sh <app-host> <ops-email> [glitchtip-host]
+   ```
+   It fills in the hosts and the alert address and creates every secret Mawred makes for itself
+   (`APP_KEY`, `BLIND_INDEX_KEY`, the database password, Reverb's keys, GlitchTip's key, the backup
+   archive password) with `openssl`, prints none of them, and never overwrites an existing file.
+   Fill in the lines it lists (Postmark, the From address, the backup bucket) with `nano`. VAPID
+   keys come after the first start (`deploy/dc.sh exec app php artisan mawred:vapid-keys`). Put a
+   copy of the file in the password manager **now**.
 4. **Registry.** `echo <token> | docker login ghcr.io -u <github user> --password-stdin` (a
    fine-grained token with `read:packages` only).
 5. **First start.** `/core/mawred/deploy/deploy.sh init <commit sha>` creates the GlitchTip
