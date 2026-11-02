@@ -62,6 +62,8 @@ export default defineConfig({
         }),
     ],
     server: {
+        // A name, not [::1]: browsers reject IPv6 literals in the CSP that lists the dev server.
+        host: 'localhost',
         watch: {
             ignored: [
                 '**/.agents/**',
