@@ -22,7 +22,7 @@ jobs:
     name: PHP lint & static analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - uses: shivammathur/setup-php@v2
@@ -30,7 +30,7 @@ jobs:
           php-version: ${{ env.PHP_VERSION }}
           extensions: ${{ env.PHP_EXTENSIONS }}
           coverage: none
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: vendor
           key: composer-${{ hashFiles('composer.lock') }}
@@ -42,7 +42,7 @@ jobs:
     name: JS lint, types, unit tests & build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - uses: shivammathur/setup-php@v2
@@ -51,8 +51,8 @@ jobs:
           extensions: ${{ env.PHP_EXTENSIONS }}
           coverage: none
       - run: composer install --no-interaction --prefer-dist --no-progress
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v5
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
@@ -82,7 +82,7 @@ jobs:
         image: redis:8-alpine
         ports: ['6389:6379']
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - uses: shivammathur/setup-php@v2
@@ -91,8 +91,8 @@ jobs:
           extensions: ${{ env.PHP_EXTENSIONS }}
           coverage: none
       - run: composer install --no-interaction --prefer-dist --no-progress
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v5
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
