@@ -20,7 +20,7 @@ Format: Context → Decision → Consequences → Alternatives. Status: Proposed
 | [0014](0014-pdf-gotenberg.md) | PDF via Gotenberg | Proposed |
 | [0015](0015-integrations.md) | Integrations: credential vault, drivers, routing | Accepted |
 | [0016](0016-notifications-templates.md) | Notifications + logic-less templates | Accepted |
-| [0017](0017-runtime-and-proxy.md) | FrankenPHP (classic) + Caddy edge | Proposed |
+| [0017](0017-runtime-and-proxy.md) | FrankenPHP (classic) + host nginx edge | Proposed |
 | [0018](0018-partitioning.md) | Monthly partitioning | Proposed |
 | [0019](0019-deployment.md) | Single-VPS Compose deploy, zero-downtime | Proposed |
 | [0020](0020-frontend-data-and-libs.md) | Frontend data flow & libraries | Proposed |

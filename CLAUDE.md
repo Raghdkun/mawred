@@ -209,6 +209,17 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 - Email to an address on `email_suppressions` is skipped; check `EmailSuppressions::blocks()` in any new email path.
 - `NotificationPreferences` caches per request: tests that change a switch mid-test reset it (`forgetInstance`).
 
+## Gotchas learned in Phase 9b
+- Browsers read Reverb's address from `<meta name="mawred-reverb">` (`config('mawred.realtime')`), not `VITE_REVERB_*`: the image is built once from `.env.example`, so build-time values would point production at localhost.
+- The production image's entrypoint runs `php artisan optimize` before every command; one-off containers that don't need it set `MAWRED_OPTIMIZE=false`.
+- Deploy scripts source `deploy/lib.sh` (`set -Eeuo pipefail`): a function called in an `if`/`||` runs without errexit, so `rollout` checks each step itself. People at a shell use `deploy/dc.sh`, never `source lib.sh`.
+- macOS has no `flock`: to try the scripts locally, run them in a `docker:cli` container with util-linux and the Docker socket mounted, under a separate `COMPOSE_PROJECT_NAME`.
+- Secrets never go on a `docker run` command line (`ps` shows them): export them and pass `-e NAME` alone, or read them from the container's own env file.
+- Production's edge is the host's nginx (D134): containers publish on 127.0.0.1 only, and the app is `app-blue` or `app-green` (`.deploy/live-slot`). `deploy/dc.sh … app …` means the live slot; scripts use `app_service`.
+- nginx's default proxy header buffer (4–8 KB) is smaller than the app's response headers (CSP nonce, preload links, cookies) and turns pages into 502s; `deploy/nginx/mawred-proxy.conf` sets 32 KB.
+- The SSR server runs `app.tsx` on Node: guard browser globals at module level (`typeof document`). The image has no `node_modules`, so `vite.config.ts` bundles every dependency into SSR (`ssr.noExternal`).
+- Vite's dev host is pinned to `localhost`: browsers ignore `[::1]` in a CSP, which blanked pages under `composer dev`.
+
 ## Git
 - Branches `feat/<phase>-<slug>`, `fix/<slug>`. Conventional commits. Open a PR per feature, and CI must be green before merge.
 - Commit or push only when asked. Never commit secrets: integration credentials live in the DB vault and infra secrets in env.

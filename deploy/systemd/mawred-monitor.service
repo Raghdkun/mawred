@@ -1,0 +1,9 @@
+[Unit]
+Description=Mawred host checks: disk, memory, containers, reboots (deploy/monitor.sh)
+After=docker.service
+
+[Service]
+Type=oneshot
+User=@USER@
+ExecStart=@ROOT@/deploy/monitor.sh
+TimeoutStartSec=2min

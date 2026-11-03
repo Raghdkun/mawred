@@ -10,6 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="theme-color" content="#4570C0" media="(prefers-color-scheme: light)">
         <meta name="theme-color" content="#0E1626" media="(prefers-color-scheme: dark)">
+        <meta name="mawred-reverb" data-key="{{ config('mawred.realtime.key') }}" data-host="{{ config('mawred.realtime.host') }}" data-port="{{ config('mawred.realtime.port') }}" data-scheme="{{ config('mawred.realtime.scheme') }}">
 
         {{-- Apply the system dark preference before first paint. --}}
         <script nonce="{{ Vite::cspNonce() }}">

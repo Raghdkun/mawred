@@ -40,6 +40,8 @@ final class ContentSecurityPolicy
         $connect = config('csp.connect', []);
         $script = ["'self'", "'nonce-{$nonce}'"];
         $style = ["'self'", "'unsafe-inline'"];
+        $img = ["'self'", 'data:', 'blob:'];
+        $font = ["'self'", 'data:'];
         $connectSrc = ["'self'", ...$connect];
         $reverb = $this->reverbOrigin();
 
@@ -47,11 +49,13 @@ final class ContentSecurityPolicy
             $connectSrc[] = $reverb;
         }
 
-        // The Vite dev server serves scripts, styles and hot updates from its own origin.
+        // The Vite dev server serves scripts, styles, imported assets and hot updates from its own origin.
         if (Vite::isRunningHot()) {
             $hot = rtrim((string) file_get_contents(Vite::hotFile()));
             $script[] = $hot;
             $style[] = $hot;
+            $img[] = $hot;
+            $font[] = $hot;
             $connectSrc[] = $hot;
             $connectSrc[] = preg_replace('#^http#', 'ws', $hot) ?? $hot;
         }
@@ -60,8 +64,8 @@ final class ContentSecurityPolicy
             'default-src' => ["'self'"],
             'script-src' => $script,
             'style-src' => $style,
-            'img-src' => ["'self'", 'data:', 'blob:'],
-            'font-src' => ["'self'", 'data:'],
+            'img-src' => $img,
+            'font-src' => $font,
             'connect-src' => array_values(array_unique($connectSrc)),
             'media-src' => ["'self'", 'blob:'],
             'worker-src' => ["'self'", 'blob:'],
@@ -82,9 +86,9 @@ final class ContentSecurityPolicy
     /** Reverb when it runs on another origin than the app (local and test setups). */
     private function reverbOrigin(): ?string
     {
-        $host = config('broadcasting.connections.reverb.options.host');
-        $port = config('broadcasting.connections.reverb.options.port');
-        $scheme = config('broadcasting.connections.reverb.options.scheme');
+        $host = config('mawred.realtime.host');
+        $port = config('mawred.realtime.port');
+        $scheme = config('mawred.realtime.scheme');
 
         if (! is_string($host) || $host === '') {
             return null;

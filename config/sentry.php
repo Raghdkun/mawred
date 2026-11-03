@@ -55,6 +55,9 @@ return [
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send_default_pii
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),
 
+    // Request bodies carry sensitive fields (IDs, bank details, form answers): never send them (D21).
+    'max_request_body_size' => 'never',
+
     // Configures which data is collected automatically, `null` keeps collecting data based on `send_default_pii`
     'data_collection' => null,
 

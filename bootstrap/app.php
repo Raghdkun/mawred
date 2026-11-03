@@ -33,10 +33,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function (): void {
             Route::group([], base_path('routes/hooks.php'));
+            Route::group([], base_path('routes/health.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(AssignRequestId::class);
+
+        // The host's nginx terminates TLS and reaches the app over loopback or the Docker bridge
+        // (ADR-0019); the app ports are never published publicly, so private ranges are the proxy.
+        $middleware->trustProxies(at: ['127.0.0.1', '::1', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']);
 
         $middleware->statefulApi();
         $middleware->api(append: [SetLocale::class, SetAuditContext::class, EnsureTwoFactorEnrolled::class]);

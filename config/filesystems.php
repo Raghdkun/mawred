@@ -49,6 +49,14 @@ return [
             'report' => false,
         ],
 
+        // Backup archives before `deploy/backup.sh` copies them offsite (ADR-0019, the `backups` volume).
+        'backups' => [
+            'driver' => 'local',
+            'root' => storage_path('backups'),
+            'throw' => true,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

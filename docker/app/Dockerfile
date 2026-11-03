@@ -5,10 +5,16 @@
 ARG PHP_VERSION=8.4
 
 FROM dunglas/frankenphp:1-php${PHP_VERSION}-bookworm AS base
+# pg_dump must match the server's major version (Postgres 18) for backups, so it comes from PGDG.
 RUN install-php-extensions pdo_pgsql pgsql redis intl gd bcmath gmp zip pcntl opcache exif sockets \
-    && apt-get update && apt-get install -y --no-install-recommends curl \
+    && apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && install -d /usr/share/postgresql-common/pgdg \
+    && curl -fsSo /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+    && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update && apt-get install -y --no-install-recommends postgresql-client-18 \
     && rm -rf /var/lib/apt/lists/*
 COPY docker/app/php.ini /usr/local/etc/php/conf.d/zz-mawred.ini
+COPY --chmod=0755 docker/app/entrypoint.sh /usr/local/bin/mawred-entrypoint
 WORKDIR /app
 
 # --- Build: PHP deps, then front-end (Wayfinder needs PHP to generate typed routes) ---
@@ -42,10 +48,11 @@ ENV APP_ENV=production \
 # Node runs only the Inertia SSR server (careers pages, D87); the bundle is built above.
 COPY --from=node:24-bookworm-slim /usr/local/bin/node /usr/local/bin/node
 COPY --from=build --chown=www-data:www-data /app /app
-RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
+RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs storage/backups bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && setcap -r /usr/local/bin/frankenphp || true
 USER www-data
 EXPOSE 8080
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 CMD curl -fsS http://127.0.0.1:8080/up || exit 1
+ENTRYPOINT ["mawred-entrypoint"]
 CMD ["frankenphp", "php-server", "--root", "/app/public", "--listen", ":8080"]

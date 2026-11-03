@@ -26,3 +26,6 @@ Schedule::command('reports:prune')->dailyAt('03:40')->onOneServer()->withoutOver
 Schedule::command('notifications:digest')->dailyAt('05:00')->onOneServer()->withoutOverlapping();
 Schedule::command('horizon:snapshot')->everyFiveMinutes();
 Schedule::command('model:prune', ['--model' => [IdempotencyKey::class, FormUpload::class]])->hourly();
+// Backups (ADR-0019): deploy/backup.sh makes them at night; this emails OPS_ALERT_EMAILS when the
+// newest one is over a day old or the volume is too full.
+Schedule::command('backup:monitor')->dailyAt('07:30')->onOneServer();
