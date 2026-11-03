@@ -60,6 +60,7 @@ set_key REVERB_APP_ID "$((100000 + $(od -An -N4 -tu4 /dev/urandom | tr -d ' ') %
 set_key REVERB_APP_KEY "$(hex 10)"
 set_key REVERB_APP_SECRET "$(hex 32)"
 set_key GLITCHTIP_SECRET_KEY "$(hex 32)"
+set_key WAHA_API_KEY "$(hex 24)"
 set_key BACKUP_ARCHIVE_PASSWORD "$(hex 32)"
 
 mv "$work" "$target"
@@ -67,7 +68,7 @@ trap - EXIT
 chmod 600 "$target"
 
 printf 'Wrote %s (chmod 600) for https://%s.\n' "$target" "$app_host"
-printf 'Generated: APP_KEY, BLIND_INDEX_KEY, DB_PASSWORD, REVERB_APP_ID/KEY/SECRET, GLITCHTIP_SECRET_KEY, BACKUP_ARCHIVE_PASSWORD.\n\n'
+printf 'Generated: APP_KEY, BLIND_INDEX_KEY, DB_PASSWORD, REVERB_APP_ID/KEY/SECRET, GLITCHTIP_SECRET_KEY, WAHA_API_KEY, BACKUP_ARCHIVE_PASSWORD.\n\n'
 printf 'Still yours to fill in (nano %s):\n' "$target"
 grep -nE '^[A-Z0-9_]+=($|.*example\.com|.*<)' "$target" |
     grep -vE '^[0-9]+:(CAREERS_HOST|GLITCHTIP_HOST|SENTRY_LARAVEL_DSN|VAPID_PUBLIC_KEY|VAPID_PRIVATE_KEY|BACKUP_HEARTBEAT_URL)=' |
