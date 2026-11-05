@@ -114,12 +114,20 @@ final class EmployeeRecordsController extends Controller
         $this->authorizeUpdate($employee);
         $request->validate(['email' => ['nullable', 'email', 'max:254'], 'locale' => ['nullable', Rule::in(SetLocale::SUPPORTED)]]);
 
-        $invite->handle(
+        ['invitation' => $invitation, 'url' => $url] = $invite->handle(
             Actor::user($user),
             $employee,
             $request->filled('email') ? $request->string('email')->toString() : null,
             $request->filled('locale') ? $request->string('locale')->toString() : null,
         );
+
+        // Shown once, so HR can also hand the link over themselves (WhatsApp, chat) when email is
+        // slow or not set up yet. Only its hash is stored.
+        Inertia::flash('invitationLink', [
+            'url' => $url,
+            'email' => $invitation->email,
+            'expiresAt' => $invitation->expires_at->toIso8601String(),
+        ]);
 
         return $this->done(__('Invitation sent.'));
     }

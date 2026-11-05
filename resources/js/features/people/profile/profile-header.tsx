@@ -18,6 +18,7 @@ import { localized, personName } from '@/lib/localized';
 import people from '@/routes/people';
 import { EmployeeStatusBadge } from '../employee-status-badge';
 import { PersonAvatar } from '../person-avatar';
+import { InvitationLinkDialog } from './invitation-link-dialog';
 import { type ProfileProps, today } from './types';
 
 /** Profile header (screen 8): avatar, name, role line, status and the record-level actions. */
@@ -109,6 +110,7 @@ export function ProfileHeader({ profile, can }: Pick<ProfileProps, 'profile' | '
                     onClose={() => setTerminating(false)}
                 />
             ) : null}
+            <InvitationLinkDialog />
         </header>
     );
 }

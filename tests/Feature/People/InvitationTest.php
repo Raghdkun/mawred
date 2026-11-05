@@ -67,3 +67,22 @@ it('expires invitations after a week', function (): void {
 
     $this->get($url)->assertNotFound();
 });
+
+it('hands HR the invitation link once so they can share it themselves', function (): void {
+    Notification::fake();
+    $employee = Employee::factory()->placedIn(Branch::factory()->create())->create(['work_email' => 'nora@mawred.test']);
+    $hr = userWithRoles('hr_admin');
+    $hr->forceFill(['two_factor_secret' => encrypt('s'), 'two_factor_confirmed_at' => now()])->save();
+
+    $response = $this->actingAs($hr)->post(route('people.invitation.store', $employee))->assertRedirect();
+    /** @var array{url: string, email: string, expiresAt: string} $link */
+    $link = $response->getSession()->get('inertia.flash_data.invitationLink');
+
+    expect($link['email'])->toBe('nora@mawred.test')
+        ->and($link['url'])->toContain('/invite/')
+        ->and($link['expiresAt'])->toBe(UserInvitation::query()->sole()->expires_at->toIso8601String());
+    Notification::assertSentTo(new AnonymousNotifiable, EmployeeInvitationNotification::class, fn ($n): bool => $n->url === $link['url']);
+
+    auth()->logout();
+    $this->get($link['url'])->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->component('auth/invitation'));
+});
