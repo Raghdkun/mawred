@@ -97,3 +97,19 @@ it('imports employees from a CSV end to end', function (): void {
 
     expect(Employee::query()->where('work_email', 'noura@mawred.test')->sole()->current_manager_id)->toBe($this->manager->id);
 });
+
+it('shows the invitation link to copy after inviting someone', function (string $locale): void {
+    $this->root->forceFill(['locale' => $locale])->save();
+    $this->manager->forceFill(['work_email' => 'sara@mawred.test'])->save();
+    $this->actingAs($this->root);
+
+    visit("/people/{$this->manager->ulid}")
+        ->click('[data-invite]')
+        ->wait(0.8)
+        ->assertPresent('[data-invitation-link] input')
+        ->assertAttributeContains('[data-invitation-link] input', 'value', '/invite/')
+        ->assertSee('sara@mawred.test')
+        ->assertNoJavaScriptErrors()
+        ->assertNoAccessibilityIssues()
+        ->screenshot(filename: "invitation-link-{$locale}");
+})->with(['en', 'ar']);

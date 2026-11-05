@@ -67,7 +67,7 @@ Laravel Boost guidelines (generated, git-ignored; run `php artisan boost:install
 
 ## Commands
 - **Local services**: `docker compose up -d` (Postgres 18 on 5442, Redis on 6389, Gotenberg on 3001, Mailpit on 8025). WAHA and ClamAV are opt-in profiles: `docker compose --profile whatsapp --profile clamav up -d`.
-- **Fresh install**: `php artisan migrate:fresh --seed`, then `php artisan mawred:install --name=… --email=…`, then open the printed one-time link. Use `--relink` to reissue it.
+- **Fresh install**: `php artisan migrate:fresh --seed`, then `php artisan mawred:install --name=… --email=…`, then open the printed one-time link. Use `--relink` to reissue it. More admins: `php artisan mawred:create-admin --name=… --email=… [--role=hr_admin]` prints a password link (`--relink --email=…` reissues it).
 - **Dev**: `composer dev` (server, queue, Reverb on 8090, Vite, logs) or `php artisan serve` with `pnpm build`.
 - **Tests**:
   - `composer test`: Pest Unit + Feature + Arch, in parallel, on Postgres.

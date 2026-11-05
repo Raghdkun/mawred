@@ -358,5 +358,13 @@
             "other": "Other"
         }
     },
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "invitationLink": {
+        "title": "Invitation link",
+        "description": "Send it to them yourself, for example on WhatsApp. It works once, until {date}.",
+        "for": "For",
+        "label": "Invitation link",
+        "warning": "Copy it now: Mawred won't show it again. Anyone with this link can create the account, so send it only to this person.",
+        "done": "Done"
+    }
 }

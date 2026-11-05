@@ -54,6 +54,10 @@ that much beside the other sites.
    /core/mawred/deploy/dc.sh exec app php artisan mawred:install --name='…' --email='…'
    ```
    Open the printed one-time link and finish setup in the browser.
+
+   More admins later, without email: `deploy/dc.sh exec app php artisan mawred:create-admin
+   --name='…' --email='…'` (Super Admin; add `--role=hr_admin` for HR) prints a one-time password
+   link, valid 60 minutes; `--relink --email='…'` issues a fresh one (D136).
 8. **Monitoring and backups.** Follow [monitoring](monitoring.md) (GlitchTip project, DSN, uptime
    ping) and [backups](backup-and-restore.md) (bucket, keys, lifecycle, first manual run).
 9. Work through the [go-live checklist](../go-live-checklist.md).

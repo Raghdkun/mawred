@@ -115,6 +115,7 @@ export function OverviewTab({
                         {can.invite ? (
                             <Button
                                 size="sm"
+                                data-invite
                                 onClick={() =>
                                     router.post(
                                         people.invitation.store.url(summary.id),
